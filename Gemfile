@@ -54,6 +54,8 @@ group :development, :test do
   gem "rspec-rails"
 
   gem "standard"
+
+  gem "brakeman", require: false
 end
 
 group :development do
