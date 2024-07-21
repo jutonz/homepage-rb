@@ -6,10 +6,7 @@ image: jutonz/homepage-rb
 
 # Deploy to these servers.
 servers:
-  - littlebox.local
-
-ssh:
-  user: jutonz
+  - homepagerb
 
 # Credentials for your image host.
 registry:
@@ -29,6 +26,13 @@ registry:
 #     DB_HOST: 192.168.0.2
 #   secret:
 #     - RAILS_MASTER_KEY
+
+env:
+  clear:
+    RAILS_LOG_TO_STDOUT: 1
+    RAILS_ENV: production
+  secret:
+    - RAILS_MASTER_KEY
 
 # Use a different ssh user than root
 # ssh:
