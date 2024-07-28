@@ -58,6 +58,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
+      - run: "ssh jutonz@jutonz.com -C \"whoami\""
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
       - run: gem install kamal
