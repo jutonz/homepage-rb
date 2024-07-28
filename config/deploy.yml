@@ -6,7 +6,7 @@ image: jutonz/homepage-rb
 
 # Deploy to these servers.
 servers:
-  - homepagerb
+  - homepagerb.local
 
 # Credentials for your image host.
 registry:
@@ -31,6 +31,9 @@ env:
 # Use a different ssh user than root
 # ssh:
 #   user: app
+ssh:
+  proxy: jutonz@jutonz.com
+#  proxy_command: "ssh -W %h:%p jutonz@jutonz.com"
 
 # Configure builder setup.
 # builder:
@@ -41,6 +44,12 @@ env:
 #   remote:
 #     arch: amd64
 #     host: ssh://app@192.168.0.1
+
+builder:
+  multiarch: false
+  cache:
+    type: registry
+    options: mode=max,image-manifest=true,oci-mediatypes=true
 
 # Use accessory services (secrets come from .env).
 # accessories:
