@@ -6,7 +6,7 @@ image: jutonz/homepage-rb
 
 # Deploy to these servers.
 servers:
-  - homepagerb
+  - homepagerb.local
 
 # Credentials for your image host.
 registry:
@@ -31,6 +31,8 @@ env:
 # Use a different ssh user than root
 # ssh:
 #   user: app
+ssh:
+  proxy: jutonz@jutonz.com
 
 # Configure builder setup.
 # builder:

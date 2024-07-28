@@ -52,9 +52,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install Ruby and gems
-        uses: ruby/setup-ruby@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+      - name: SSH Auth
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
       - run: gem install kamal
       - run: kamal deploy
