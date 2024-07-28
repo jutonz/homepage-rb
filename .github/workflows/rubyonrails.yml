@@ -59,7 +59,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
       - run: "ssh-keyscan -H jutonz.com > ~/.ssh/known_hosts"
-      - run: "ssh jutonz@jutonz.com -vvv -C \"whoami\""
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
       - run: gem install kamal

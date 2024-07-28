@@ -32,9 +32,8 @@ env:
 # ssh:
 #   user: app
 ssh:
-#  proxy: jutonz@jutonz.com
-  log_level: debug
-  proxy_command: "ssh -W %h:%p jutonz@jutonz.com"
+  proxy: jutonz@jutonz.com
+#  proxy_command: "ssh -W %h:%p jutonz@jutonz.com"
 
 # Configure builder setup.
 # builder:
