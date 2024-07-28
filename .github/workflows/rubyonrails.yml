@@ -22,15 +22,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      # Add or replace dependency steps here
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      # Add or replace database setup steps here
       - name: Set up database schema
         run: bin/rails db:schema:load
-      # Add or replace test runners here
       - name: Run tests
         run: bin/rspec
 
@@ -45,3 +42,27 @@ jobs:
           bundler-cache: true
       - run: bundle exec standardrb
       - run: bundle exec brakeman
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+    concurrency:
+      group: deploy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: SSH Auth
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+      - run: "ssh-keyscan -H jutonz.com > ~/.ssh/known_hosts"
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+      - run: gem install kamal
+      - run: kamal deploy
