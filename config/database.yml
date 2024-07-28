@@ -79,6 +79,4 @@ test:
 #
 production:
   <<: *default
-  database: homepage_rb_production
-  username: homepage_rb
-  password: <%= ENV["HOMEPAGE_DATABASE_PASSWORD"] %>
+  url: <%= Rails.application.credentials.db&.url %>
