@@ -13,9 +13,9 @@ jobs:
         ports:
           - "5432:5432"
         env:
-          POSTGRES_DB: rails_test
-          POSTGRES_USER: rails
-          POSTGRES_PASSWORD: password
+          POSTGRES_DB: homepage_rb_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
     env:
       RAILS_ENV: test
       DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
@@ -26,6 +26,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: echo -n "${{ secrets.TEST_KEY }}" > config/credentials/test.key
       - name: Set up database schema
         run: bin/rails db:schema:load
       - name: Run tests
