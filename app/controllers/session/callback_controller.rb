@@ -9,8 +9,18 @@ module Session
         Rails.application.credentials.auth.secret,
         true,
         {algorithm: "HS512"}
-      )
-      render json: decoded
+      )[0]
+
+      foreign_id = decoded.dig("sub", "id")
+      user = User.create_with(
+        email: decoded.dig("sub", "email"),
+        access_token: params[:access_token],
+        refresh_token: params[:refresh_token]
+      ).find_or_create_by(foreign_id:)
+
+      session[:current_user_id] = user.id
+
+      render json: user.as_json
     end
   end
 end
