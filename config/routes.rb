@@ -9,6 +9,9 @@ Rails.application.routes.draw do
     resource :current_ip, only: :show
   end
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  resource :session, only: %i[new destroy] do
+    resource :callback, only: :show, controller: "session/callback"
+  end
+
+  root to: "session#new"
 end
