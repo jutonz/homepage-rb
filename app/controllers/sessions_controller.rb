@@ -1,0 +1,11 @@
+class SessionsController < ApplicationController
+  def new
+    provider_url = Rails.application.credentials.auth.provider_url
+    query = {sso_redirect: session_callback_url}.to_query
+    uri = "#{provider_url}?#{query}"
+    redirect_to uri, allow_other_host: true
+  end
+
+  def destroy
+  end
+end
