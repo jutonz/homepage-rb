@@ -13,5 +13,7 @@ Rails.application.routes.draw do
     resource :callback, only: :show, controller: "session/callback"
   end
 
-  root to: "session#new"
+  resource :home, only: :show
+
+  root to: "homes#show"
 end

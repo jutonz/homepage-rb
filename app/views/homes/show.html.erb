@@ -1,0 +1,7 @@
+<div>
+  Hi <%= current_user.email %>
+</div>
+
+<div>
+  <%= button_to("Logout", session_path, method: :delete) %>
+</div>
