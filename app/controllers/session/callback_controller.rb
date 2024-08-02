@@ -18,7 +18,11 @@ module Session
         refresh_token: params[:refresh_token]
       ).find_or_create_by(foreign_id:)
 
-      session[:current_user_id] = user.id
+      warden.set_user(user)
+
+      if (return_to = session.delete(:return_to))
+        redirect_to return_to and return
+      end
 
       render json: user.as_json
     end
