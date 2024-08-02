@@ -27,10 +27,9 @@ jobs:
         with:
           bundler-cache: true
       - run: echo -n "${{ secrets.TEST_KEY }}" > config/credentials/test.key
-      - name: Set up database schema
-        run: bin/rails db:schema:load
-      - name: Run tests
-        run: bin/rspec
+      - run: bin/rails db:schema:load
+      - run: bin/rails assets:precompile
+      - run: bin/rspec
 
   lint:
     runs-on: ubuntu-latest

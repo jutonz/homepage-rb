@@ -7,5 +7,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    warden.logout
+    redirect_to "/up"
   end
 end
