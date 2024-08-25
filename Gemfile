@@ -35,6 +35,7 @@ gem "redis", ">= 4.0.1"
 gem "jwt"
 gem "warden"
 gem "solid_queue"
+gem "faraday"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -75,4 +76,5 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webmock"
 end

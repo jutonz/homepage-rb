@@ -29,6 +29,11 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
+require "webmock/rspec"
+
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { require _1 }
+
 RSpec.configure do |config|
   config.fixture_paths = [
     Rails.root.join("spec/fixtures")
