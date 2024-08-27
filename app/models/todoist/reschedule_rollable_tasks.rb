@@ -7,7 +7,7 @@ module Todoist
     end
 
     def perform
-      tasks.each { rescheule_task(_1) }
+      tasks.map { rescheule_task(_1) }
     end
 
     private
@@ -15,7 +15,12 @@ module Todoist
     attr_reader :tasks
 
     def rescheule_task(task)
-      task.update({"due_string" => "tomorrow"})
+      tomorrow = (task.due.date + 1.day).iso8601
+
+      task.update({
+        "due_string" => task.due.string,
+        "due_date" => tomorrow
+      })
     end
   end
 end

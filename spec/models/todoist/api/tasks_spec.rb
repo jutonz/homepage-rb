@@ -12,7 +12,12 @@ RSpec.describe Todoist::Api::Tasks do
         "id" => "123",
         "is_completed" => "123",
         "priority" => "123",
-        "project_id" => "123"
+        "project_id" => "123",
+        "due" => {
+          "date" => "2024-08-26",
+          "is_recurring" => false,
+          "string" => "tomorrow"
+        }
       }
 
       result = described_class.from_json(json)
@@ -26,7 +31,12 @@ RSpec.describe Todoist::Api::Tasks do
         id: "123",
         is_completed: "123",
         priority: "123",
-        project_id: "123"
+        project_id: "123",
+        due: described_class::Due.new(
+          date: Date.parse("2024-08-26"),
+          is_recurring: false,
+          string: "tomorrow"
+        )
       ))
     end
   end
