@@ -12,5 +12,23 @@ FactoryBot.define do
     is_completed { false }
     priority { 1 }
     project_id { "123" }
+    due do
+      Todoist::Api::Tasks::Due.new(
+        date: due_date,
+        string: due_string,
+        is_recurring: due_is_recurring
+      )
+    end
+
+    transient do
+      due_date { Date.current }
+      due_string { "today" }
+      due_is_recurring { false }
+    end
+
+    trait :recurring do
+      due_string { "every! 3 days" }
+      due_is_recurring { true }
+    end
   end
 end

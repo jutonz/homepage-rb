@@ -6,8 +6,10 @@ module Todoist
       Task = Data.define(
         :assignee_id,
         :assigner_id,
-        :content, :creator_id,
+        :content,
+        :creator_id,
         :description,
+        :due,
         :id,
         :is_completed,
         :priority,
@@ -15,6 +17,12 @@ module Todoist
       ) do
         def update(...) = Todoist::Api::Tasks.update(id, ...)
       end
+
+      Due = Data.define(
+        :date,
+        :string,
+        :is_recurring
+      )
 
       # https://developer.todoist.com/rest/v2/#get-active-tasks
       def self.rollable
@@ -44,7 +52,12 @@ module Todoist
           id: json["id"],
           is_completed: json["is_completed"],
           priority: json["priority"],
-          project_id: json["project_id"]
+          project_id: json["project_id"],
+          due: Due.new(
+            date: Date.parse(json.dig("due", "date")),
+            string: json.dig("due", "string"),
+            is_recurring: json.dig("due", "is_recurring")
+          )
         )
       end
     end
