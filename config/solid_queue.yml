@@ -5,7 +5,7 @@ default: &default
       recurring_tasks:
         reschedule_rollable_tasks:
           class: "Todoist::RescheduleRollableTasksJob"
-          schedule: "0 3 * * *"
+          schedule: "0 2 * * *"
   workers:
     - queues: "*"
       threads: 3
