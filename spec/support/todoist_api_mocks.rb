@@ -11,13 +11,12 @@ module TodoistApiMocks
   end
 
   def self.mock_task_update(task, result:)
-    WebMock::API.stub_request(
-      :post,
-      "https://api.todoist.com/rest/v2/tasks/#{task.id}"
-    ).to_return(
-      status: 200,
-      body: result.to_json,
-      headers: {"content-type" => "application/json"}
-    )
+    WebMock::API
+      .stub_request(:post, "https://api.todoist.com/rest/v2/tasks/#{task.id}")
+      .to_return(
+        status: 200,
+        body: result.to_json,
+        headers: {"content-type" => "application/json"}
+      )
   end
 end
