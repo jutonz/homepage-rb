@@ -39,15 +39,58 @@ RSpec.describe Todoist::Api::Tasks do
         )
       ))
     end
+
+    it "handles due being blank" do
+      json = {
+        "assignee_id" => "123",
+        "assigner_id" => "123",
+        "content" => "123",
+        "creator_id" => "123",
+        "description" => "123",
+        "id" => "123",
+        "is_completed" => "123",
+        "priority" => "123",
+        "project_id" => "123",
+        "due" => nil
+      }
+
+      result = described_class.from_json(json)
+
+      expect(result).to eql(described_class::Task.new(
+        assignee_id: "123",
+        assigner_id: "123",
+        content: "123",
+        creator_id: "123",
+        description: "123",
+        id: "123",
+        is_completed: "123",
+        priority: "123",
+        project_id: "123",
+        due: nil
+      ))
+    end
+  end
+
+  describe ".create" do
+    it "creates a task" do
+      task = build(:todoist_api_task, content: "hi")
+      mock = TodoistApiMocks.mock_tasks_create(task)
+
+      result = described_class.create(content: "hi")
+
+      expect(mock).to have_been_requested
+      expect(result.content).to eql("hi")
+    end
   end
 
   describe ".rollable" do
     it "returns rollable tasks due today" do
       task = build(:todoist_api_task)
-      TodoistApiMocks.mock_tasks_rollable(task)
+      mock = TodoistApiMocks.mock_tasks_rollable(task)
 
       result = described_class.rollable
 
+      expect(mock).to have_been_requested
       expect(result).to eql([task])
     end
   end

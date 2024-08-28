@@ -24,6 +24,28 @@ module Todoist
         :is_recurring
       )
 
+      # https://developer.todoist.com/rest/v2/#create-a-new-task
+      def self.create(
+        content:,
+        description: nil,
+        project_id: nil,
+        labels: [],
+        due_string: nil,
+        due_date: nil
+      )
+        params = {"content" => content}
+        params["description"] = description if description
+        params["project_id"] = project_id if project_id
+        params["labels"] = labels if labels
+        params["due_string"] = due_string if due_string
+        params["due_date"] = due_date if due_date
+
+        Todoist::Api::Client
+          .post("/rest/v2/tasks", params)
+          .body
+          .then { from_json(_1) }
+      end
+
       # https://developer.todoist.com/rest/v2/#get-active-tasks
       def self.rollable
         params = {"filter" => "@rollable,today"}
@@ -43,6 +65,15 @@ module Todoist
       end
 
       def self.from_json(json)
+        due =
+          if json["due"].present?
+            Due.new(
+              date: Date.parse(json.dig("due", "date")),
+              string: json.dig("due", "string"),
+              is_recurring: json.dig("due", "is_recurring")
+            )
+          end
+
         Task.new(
           assignee_id: json["assignee_id"],
           assigner_id: json["assigner_id"],
@@ -53,11 +84,7 @@ module Todoist
           is_completed: json["is_completed"],
           priority: json["priority"],
           project_id: json["project_id"],
-          due: Due.new(
-            date: Date.parse(json.dig("due", "date")),
-            string: json.dig("due", "string"),
-            is_recurring: json.dig("due", "is_recurring")
-          )
+          due:
         )
       end
     end
