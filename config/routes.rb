@@ -7,6 +7,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     resource :current_ip, only: :show
+
+    namespace :todoist do
+      resource :tasks, only: :create
+    end
   end
 
   resource :session, only: %i[new destroy] do

@@ -1,5 +1,5 @@
 module TodoistApiMocks
-  def self.mock_tasks_create(task)
+  def self.mock_tasks_create(task = FactoryBot.build(:todoist_api_task))
     WebMock::API.stub_request(
       :post,
       "https://api.todoist.com/rest/v2/tasks"
