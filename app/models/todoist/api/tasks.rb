@@ -48,7 +48,7 @@ module Todoist
 
       # https://developer.todoist.com/rest/v2/#get-active-tasks
       def self.rollable
-        params = {"filter" => "@rollable,today"}
+        params = {"filter" => "@rollable,today | overdue"}
 
         Todoist::Api::Client
           .get("/rest/v2/tasks", params)
