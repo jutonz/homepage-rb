@@ -13,7 +13,6 @@ jobs:
         ports:
           - "5432:5432"
         env:
-          POSTGRES_DB: homepage_rb_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
     env:
@@ -28,7 +27,7 @@ jobs:
         with:
           bundler-cache: true
       - run: echo -n $TEST_KEY > config/credentials/test.key
-      - run: bin/rails db:schema:load
+      - run: bin/rails db:setup
       - run: bin/rails assets:precompile
       - run: bin/rspec
 
