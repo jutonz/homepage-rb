@@ -23,5 +23,9 @@ module Homepage
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # SolidQueue wants to use a different db in prod.
+    # Let's do that in every env so we can test it.
+    config.solid_queue.connects_to = {database: {writing: :queue}}
   end
 end
