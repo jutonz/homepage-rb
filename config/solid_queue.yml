@@ -9,14 +9,14 @@ default: &default
   workers:
     - queues: "*"
       threads: 3
-      processes: 1
+      processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
       polling_interval: 10 # seconds; default 0.1
 
 development:
- <<: *default
+  <<: *default
 
 test:
- <<: *default
+  <<: *default
 
 production:
- <<: *default
+  <<: *default
