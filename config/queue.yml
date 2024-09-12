@@ -2,10 +2,6 @@ default: &default
   dispatchers:
     - polling_interval: 1
       batch_size: 500
-      recurring_tasks:
-        reschedule_rollable_tasks:
-          class: "Todoist::RescheduleRollableTasksJob"
-          schedule: "0 2 * * *"
   workers:
     - queues: "*"
       threads: 3
