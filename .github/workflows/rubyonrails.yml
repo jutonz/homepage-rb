@@ -64,5 +64,8 @@ jobs:
       - run: "ssh-keyscan -H jutonz.com > ~/.ssh/known_hosts"
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
-      - run: gem install kamal
-      - run: kamal deploy
+        env:
+          BUNDLE_GEMFILE: ./kamal/Gemfile
+        with:
+          bundler-cache: true
+      - run: bin/kamal deploy
