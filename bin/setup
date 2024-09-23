@@ -17,6 +17,19 @@ FileUtils.chdir APP_ROOT do
   system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
 
+  puts "\n== Adding credentials via `op` cli =="
+  %w[development production].each do |env|
+    system! <<~BASH
+      op item get \
+        "credentials/#{env}.key" \
+        --account="my.1password.com" \
+        --vault="Homepage" \
+        --fields=password \
+        --reveal \
+      | cat > config/credentials/#{env}.key
+    BASH
+  end
+
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
   #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
