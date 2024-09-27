@@ -287,6 +287,9 @@ GEM
       websocket (~> 1.0)
     shoulda-matchers (6.4.0)
       activesupport (>= 5.2.0)
+    simple_form (5.3.1)
+      actionpack (>= 5.2)
+      activemodel (>= 5.2)
     solid_queue (1.0.0)
       activejob (>= 7.1)
       activerecord (>= 7.1)
@@ -384,6 +387,7 @@ DEPENDENCIES
   rspec-rails
   selenium-webdriver
   shoulda-matchers
+  simple_form
   solid_queue
   sprockets-rails
   standard

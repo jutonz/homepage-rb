@@ -1,0 +1,15 @@
+<div class="flex w-full justify-between items-center">
+  <h1 class="text-xl">Rooms</h1>
+
+  <%= link_to(
+    "New Room",
+    new_todo_room_path,
+    class: "button"
+  ) %>
+</div>
+
+<% @rooms.each do |room| %>
+  <div class="border-2 border-rose-600 p-4">
+    <%= tag.div(room.name) %>
+  </div>
+<% end %>
