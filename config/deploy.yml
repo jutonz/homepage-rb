@@ -46,7 +46,7 @@ ssh:
 #     host: ssh://app@192.168.0.1
 
 builder:
-  multiarch: false
+  arch: amd64
   cache:
     type: registry
     options: mode=max,image-manifest=true,oci-mediatypes=true
