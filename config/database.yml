@@ -19,6 +19,7 @@ default: &default
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   url: <%= Rails.application.credentials.dig(:db, :url) %>
+  migrations_paths: ["db/migrate"]
 
 queue_default: &queue_default
   adapter: postgresql
@@ -27,6 +28,7 @@ queue_default: &queue_default
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   url: <%= Rails.application.credentials.dig(:db, :queue_url) %>
+  migrations_paths: ["db/queue_migrate"]
 
 development:
   primary:
