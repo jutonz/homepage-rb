@@ -135,17 +135,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_25_153547) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "email", null: false
-    t.string "foreign_id", null: false
-    t.string "access_token", null: false
-    t.string "refresh_token", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["foreign_id"], name: "index_users_on_foreign_id", unique: true
-  end
-
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
