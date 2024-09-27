@@ -31,8 +31,10 @@ queue_default: &queue_default
 development:
   primary:
     <<: *default
+    migrations_path: db/migrate
   queue:
     <<: *queue_default
+    migrations_path: db/queue_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
