@@ -1,2 +1,2 @@
 source "https://rubygems.org"
-gem "kamal", "~> 1.9.0"
+gem "kamal", "~> 2.0.0"
