@@ -8,6 +8,11 @@ image: jutonz/homepage-rb
 servers:
   - homepagerb.local
 
+# Configure kamal-proxy
+proxy:
+  # host: app.jutonz.com
+  app_port: 3000
+
 # Credentials for your image host.
 registry:
   # Specify the registry server, if you're not using Docker Hub
