@@ -15,6 +15,10 @@
 #  index_users_on_email       (email) UNIQUE
 #  index_users_on_foreign_id  (foreign_id) UNIQUE
 #
-class User < ActiveRecord::Base
-  has_many :todo_rooms, class_name: "Todo::Room"
+require "rails_helper"
+
+RSpec.describe User do
+  describe "associations" do
+    it { is_expected.to have_many(:todo_rooms) }
+  end
 end

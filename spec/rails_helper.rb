@@ -50,6 +50,7 @@ RSpec.configure do |config|
   config.after(:each) { Warden.test_reset! }
 
   config.include FactoryBot::Syntax::Methods
+  config.include CapybaraPage, type: :request
 end
 
 Shoulda::Matchers.configure do |config|
@@ -58,3 +59,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+WebMock.disable_net_connect!(allow_localhost: true)

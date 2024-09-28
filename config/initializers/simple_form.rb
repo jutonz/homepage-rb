@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Uncomment this and change the path if necessary to include your own
 # components.
@@ -13,8 +14,13 @@ SimpleForm.setup do |config|
   # wrapper, change the order or even add your own to the
   # stack. The options given below are used to wrap the
   # whole input.
-  config.wrappers :default, class: :input,
-    hint_class: :field_with_hint, error_class: :field_with_errors, valid_class: :field_without_errors do |b|
+  config.wrappers(
+    :default,
+    class: "hp-form flex flex-col",
+    hint_class: :field_with_hint,
+    error_class: "invalid text-rose-600",
+    valid_class: :field_without_errors
+  ) do |b|
     ## Extensions enabled by default
     # Any of these extensions can be disabled for a
     # given input by passing: `f.input EXTENSION_NAME => false`.
@@ -52,10 +58,10 @@ SimpleForm.setup do |config|
     b.optional :readonly
 
     ## Inputs
-    # b.use :input, class: 'input', error_class: 'is-invalid', valid_class: 'is-valid'
     b.use :label_input
-    b.use :hint,  wrap_with: { tag: :span, class: :hint }
-    b.use :error, wrap_with: { tag: :span, class: :error }
+    # b.use :input, class: "input", error_class: "border-rose-600", valid_class: "is-valid"
+    b.use :hint, wrap_with: {tag: :span, class: :hint}
+    b.use :error, wrap_with: {tag: :span, class: :error}
 
     ## full_messages_for
     # If you want to display the full error message for the attribute, you can
@@ -85,7 +91,7 @@ SimpleForm.setup do |config|
   config.error_notification_tag = :div
 
   # CSS class to add for error notification helper.
-  config.error_notification_class = 'error_notification'
+  config.error_notification_class = "error_notification"
 
   # Series of attempts to detect a default label method for collection.
   # config.collection_label_methods = [ :to_label, :name, :title, :to_s ]
@@ -114,7 +120,7 @@ SimpleForm.setup do |config|
 
   # You can define the default class to be used on forms. Can be overridden
   # with `html: { :class }`. Defaulting to none.
-  # config.default_form_class = nil
+  config.default_form_class = "space-y-4"
 
   # You can define which elements should obtain additional classes
   # config.generate_additional_classes_for = [:wrapper, :label, :input]
@@ -161,7 +167,7 @@ SimpleForm.setup do |config|
   # config.input_class = nil
 
   # Define the default class of the input wrapper of the boolean input.
-  config.boolean_label_class = 'checkbox'
+  config.boolean_label_class = "checkbox"
 
   # Defines if the default input wrapper class should be included in radio
   # collection wrappers.
@@ -172,5 +178,5 @@ SimpleForm.setup do |config|
 
   # Defines validation classes to the input_field. By default it's nil.
   # config.input_field_valid_class = 'is-valid'
-  # config.input_field_error_class = 'is-invalid'
+  # config.input_field_error_class = "hello border-rose-600"
 end

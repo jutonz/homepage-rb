@@ -27,3 +27,15 @@
     &:hover { filter: brightness(85%) }
   }
 }
+
+.hp-form {
+  input {
+    @apply rounded-sm;
+  }
+}
+
+.hp-form.invalid {
+  input {
+    @apply border-rose-600;
+  }
+}
