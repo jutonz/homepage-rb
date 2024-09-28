@@ -13,6 +13,10 @@ Rails.application.routes.draw do
     resource :callback, only: :show, controller: "session/callback"
   end
 
+  namespace :todo do
+    resources :rooms, only: %i[index new create]
+  end
+
   resource :home, only: :show
 
   root to: "homes#show"
