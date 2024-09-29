@@ -10,8 +10,16 @@
 
 <div class="flex gap-4">
   <% @rooms.each do |room| %>
-    <div class="border-2 border-fuchsia-500 rounded-md p-4 min-w-32 max-w-32 text-center" data-role="room">
+    <%= link_to(
+      todo_room_path(room),
+      class: "border-2 border-fuchsia-500 rounded-md p-4 min-w-32 max-w-32 text-center",
+      data: {role: "room"}
+    ) do %>
       <%= tag.div(room.name) %>
-    </div>
+    <% end %>
   <% end %>
+
+  <span class="hidden only:block">
+    No rooms
+  </span>
 </div>

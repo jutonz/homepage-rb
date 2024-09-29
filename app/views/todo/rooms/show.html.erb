@@ -1,0 +1,21 @@
+<div class="flex w-full justify-between items-center mb-8">
+  <h1 class="text-xl" data-role="room-name">
+    <%= @room.name %>
+  </h1>
+
+  <div class="flex">
+    <%= link_to(
+      "Edit room",
+      edit_todo_room_path(@room),
+      class: "button"
+    ) %>
+    <%= button_to(
+      "Delete",
+      todo_room_path(@room),
+      method: "delete",
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger ml-4"
+    ) %>
+  </div>
+</div>
+

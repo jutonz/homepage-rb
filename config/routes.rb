@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   end
 
   namespace :todo do
-    resources :rooms, only: %i[index new create]
+    resources :rooms
   end
 
   resource :home, only: :show

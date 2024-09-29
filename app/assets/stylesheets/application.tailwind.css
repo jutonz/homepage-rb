@@ -5,27 +5,27 @@
 .button {
   @apply bg-blue-500 text-white font-bold py-2 px-4 rounded inline-block;
   &:hover { @apply bg-blue-700; }
+}
 
-  &--danger {
-    @apply bg-red-500;
-    &:hover { @apply bg-red-700; }
-  }
+.button--danger {
+  @apply bg-rose-600;
+  &:hover { @apply bg-rose-700; }
+}
 
-  &--small {
-    @apply py-1 px-2;
-    @apply text-sm;
-  }
+.button--small {
+  @apply py-1 px-2;
+  @apply text-sm;
+}
 
-  &--secondary {
-    @apply bg-zinc-500;
-    &:hover { @apply bg-zinc-700; }
-  }
+.button--secondary {
+  @apply bg-zinc-500;
+  &:hover { @apply bg-zinc-700; }
+}
 
-  &--inline {
-    @apply bg-transparent hover:bg-transparent p-0;
-    color: var(--brand-primary);
-    &:hover { filter: brightness(85%) }
-  }
+.button--inline {
+  @apply bg-transparent hover:bg-transparent p-0;
+  color: var(--brand-primary);
+  &:hover { filter: brightness(85%) }
 }
 
 .hp-form {
