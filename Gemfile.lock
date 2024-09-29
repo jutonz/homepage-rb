@@ -285,6 +285,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    sentry-rails (5.20.1)
+      railties (>= 5.0)
+      sentry-ruby (~> 5.20.1)
+    sentry-ruby (5.20.1)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
     shoulda-matchers (6.4.0)
       activesupport (>= 5.2.0)
     simple_form (5.3.1)
@@ -304,6 +310,7 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
+    stackprof (0.2.26)
     standard (1.40.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -386,10 +393,13 @@ DEPENDENCIES
   redis (>= 4.0.1)
   rspec-rails
   selenium-webdriver
+  sentry-rails
+  sentry-ruby
   shoulda-matchers
   simple_form
   solid_queue
   sprockets-rails
+  stackprof
   standard
   stimulus-rails
   tailwindcss-rails
