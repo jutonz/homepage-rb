@@ -1,12 +1,14 @@
-<div class="flex w-full justify-between items-center mb-8">
-  <h1 class="text-xl">Rooms</h1>
-
-  <%= link_to(
-    "New Room",
-    new_todo_room_path,
-    class: "button"
-  ) %>
-</div>
+<%= render(HeaderComponent.new(
+  title: "Rooms"
+)) do |c| %>
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Room",
+      new_todo_room_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
 
 <div class="flex gap-4">
   <% @rooms.each do |room| %>

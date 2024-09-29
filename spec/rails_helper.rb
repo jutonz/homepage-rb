@@ -30,6 +30,9 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 
+require "capybara/rspec"
+require "view_component/system_test_helpers"
+require "view_component/test_helpers"
 require "webmock/rspec"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { require _1 }
@@ -51,6 +54,9 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
   config.include CapybaraPage, type: :request
+  config.include ViewComponent::TestHelpers, type: :component
+  config.include ViewComponent::SystemTestHelpers, type: :component
+  config.include Capybara::RSpecMatchers, type: :component
 end
 
 Shoulda::Matchers.configure do |config|

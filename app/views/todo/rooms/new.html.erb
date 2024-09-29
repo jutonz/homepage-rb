@@ -1,3 +1,5 @@
-<h1 class="text-xl">New Room</h1>
+<%= render(HeaderComponent.new(
+  title: "New Room"
+)) %>
 
 <%= render partial: "form", form: @form %>
