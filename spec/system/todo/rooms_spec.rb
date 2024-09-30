@@ -27,7 +27,7 @@ RSpec.describe "Todo rooms" do
     fill_in("Name", with: "after")
     click_button("Update Room")
 
-    find("[data-role=room-name]", text: "after")
+    find("h1", text: "after")
   end
 
   it "allows deleting a room" do
@@ -41,8 +41,6 @@ RSpec.describe "Todo rooms" do
       click_button("Delete")
     end
 
-    expect(page).not_to have_css(
-      "[data-role=room]", text: room.name
-    )
+    expect(page).not_to have_css("h1", text: room.name)
   end
 end

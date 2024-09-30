@@ -1,3 +1,5 @@
-<h1 class="text-xl">Edit</h1>
+<%= render(HeaderComponent.new(
+  title: "Edit #{@room.name}"
+)) %>
 
 <%= render partial: "form", form: @form %>

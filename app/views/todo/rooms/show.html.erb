@@ -1,14 +1,15 @@
-<div class="flex w-full justify-between items-center mb-8">
-  <h1 class="text-xl" data-role="room-name">
-    <%= @room.name %>
-  </h1>
-
-  <div class="flex">
+<%= render(HeaderComponent.new(
+  title: @room.name
+)) do |c| %>
+  <%= c.with_action do %>
     <%= link_to(
       "Edit room",
       edit_todo_room_path(@room),
       class: "button"
     ) %>
+  <% end %>
+
+  <%= c.with_action do %>
     <%= button_to(
       "Delete",
       todo_room_path(@room),
@@ -16,6 +17,5 @@
       data: {turbo_confirm: "Are you sure?"},
       class: "button button--danger ml-4"
     ) %>
-  </div>
-</div>
-
+  <% end %>
+<% end %>
