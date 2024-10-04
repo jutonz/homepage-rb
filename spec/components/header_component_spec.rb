@@ -18,4 +18,15 @@ RSpec.describe HeaderComponent, type: :component do
     expect(page).to have_text("action1")
     expect(page).to have_text("action2")
   end
+
+  it "renders breadcrumbs" do
+    component = described_class.new(title: "hello").tap do |c|
+      c.with_crumb("hi", "/hello")
+      c.with_crumb("bye", "/later")
+    end
+    render_inline(component)
+
+    expect(page).to have_link("hi", href: "/hello")
+    expect(page).to have_link("bye", href: "/later")
+  end
 end
