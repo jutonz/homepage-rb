@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_28_160427) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_05_133428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -135,12 +135,28 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_28_160427) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "todo_room_tasks", force: :cascade do |t|
+    t.bigint "task_id", null: false
+    t.bigint "room_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_todo_room_tasks_on_room_id"
+    t.index ["task_id"], name: "index_todo_room_tasks_on_task_id"
+  end
+
   create_table "todo_rooms", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_todo_rooms_on_user_id"
+  end
+
+  create_table "todo_tasks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "todoist_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -160,4 +176,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_28_160427) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "todo_room_tasks", "todo_rooms", column: "room_id"
+  add_foreign_key "todo_room_tasks", "todo_tasks", column: "task_id"
 end
