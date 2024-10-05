@@ -1,0 +1,11 @@
+<%= render(HeaderComponent.new(
+  title: "Todo"
+)) %>
+
+<div class="flex">
+  <%= link_to(
+    "Rooms",
+    todo_rooms_path,
+    class: "button"
+  ) %>
+</div>

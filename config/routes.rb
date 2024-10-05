@@ -13,8 +13,10 @@ Rails.application.routes.draw do
     resource :callback, only: :show, controller: "session/callback"
   end
 
-  namespace :todo do
-    resources :rooms
+  resource :todo, only: :show do
+    scope module: :todo do
+      resources :rooms
+    end
   end
 
   resource :home, only: :show
