@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   resource :todo, only: :show do
     scope module: :todo do
       resources :rooms
+      resources :tasks
     end
   end
 

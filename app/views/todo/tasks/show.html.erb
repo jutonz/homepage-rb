@@ -1,0 +1,24 @@
+<%= render(HeaderComponent.new(
+  title: @task.name
+)) do |c| %>
+  <%= c.with_crumb("Todo", todo_path) %>
+  <%= c.with_crumb("Tasks", todo_tasks_path) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Edit task",
+      edit_todo_task_path(@task),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      todo_task_path(@task),
+      method: "delete",
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger ml-4"
+    ) %>
+  <% end %>
+<% end %>

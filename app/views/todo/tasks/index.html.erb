@@ -1,0 +1,28 @@
+<%= render(HeaderComponent.new(
+  title: "Tasks"
+)) do |c| %>
+  <%= c.with_crumb("Todo", todo_path) %>
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Task",
+      new_todo_task_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="flex gap-4">
+  <% @tasks.each do |task| %>
+    <%= link_to(
+      todo_task_path(task),
+      class: "border-2 border-fuchsia-500 rounded-md p-4 min-w-32 max-w-32 text-center",
+      data: {role: "task"}
+    ) do %>
+      <%= tag.div(task.name) %>
+    <% end %>
+  <% end %>
+
+  <span class="hidden only:block">
+    No tasks
+  </span>
+</div>

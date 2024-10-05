@@ -23,5 +23,7 @@ module Todo
     belongs_to :user
     has_many :room_tasks
     has_many :rooms, through: :room_tasks
+
+    validates :name, presence: true
   end
 end
