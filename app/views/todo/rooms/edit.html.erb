@@ -1,5 +1,8 @@
 <%= render(HeaderComponent.new(
-  title: "Edit #{@room.name}"
-)) %>
+  title: "Edit"
+)) do |c| %>
+  <%= c.with_crumb("Rooms", todo_rooms_path) %>
+  <%= c.with_crumb(@room.name, todo_room_path(@room)) %>
+<% end %>
 
 <%= render partial: "form", form: @form %>

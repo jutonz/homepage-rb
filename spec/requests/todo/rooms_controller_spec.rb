@@ -38,6 +38,17 @@ RSpec.describe Todo::RoomsController do
     end
   end
 
+  describe "show" do
+    it "has crumbs" do
+      room = create(:todo_room)
+      login_as(room.user)
+
+      get(todo_room_path(room))
+
+      expect(page).to have_link("Rooms", href: todo_rooms_path)
+    end
+  end
+
   describe "update" do
     it "redirects" do
       user = create(:user)
@@ -60,6 +71,18 @@ RSpec.describe Todo::RoomsController do
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(page).to have_text("can't be blank")
+    end
+  end
+
+  describe "edit" do
+    it "has crumbs" do
+      room = create(:todo_room)
+      login_as(room.user)
+
+      get(edit_todo_room_path(room))
+
+      expect(page).to have_link("Rooms", href: todo_rooms_path)
+      expect(page).to have_link(room.name, href: todo_room_path(room))
     end
   end
 
