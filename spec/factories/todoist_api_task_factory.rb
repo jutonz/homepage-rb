@@ -12,6 +12,7 @@ FactoryBot.define do
     is_completed { false }
     priority { 1 }
     project_id { "123" }
+    labels { ["rollable"] }
     due do
       association(
         :todoist_api_task_due,
