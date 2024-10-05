@@ -12,6 +12,7 @@ module Todoist
         :due,
         :id,
         :is_completed,
+        :labels,
         :priority,
         :project_id
       ) do
@@ -23,6 +24,13 @@ module Todoist
         :string,
         :is_recurring
       )
+
+      def self.get(id)
+        Todoist::Api::Client
+          .get("/rest/v2/tasks/#{id}")
+          .body
+          .then { from_json(_1) }
+      end
 
       # https://developer.todoist.com/rest/v2/#create-a-new-task
       def self.create(
@@ -80,11 +88,12 @@ module Todoist
           content: json["content"],
           creator_id: json["creator_id"],
           description: json["description"],
+          due:,
           id: json["id"],
           is_completed: json["is_completed"],
+          labels: json["labels"] || [],
           priority: json["priority"],
-          project_id: json["project_id"],
-          due:
+          project_id: json["project_id"]
         )
       end
     end

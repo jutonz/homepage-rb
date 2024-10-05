@@ -11,6 +11,7 @@ RSpec.describe Todoist::Api::Tasks do
         "description" => "123",
         "id" => "123",
         "is_completed" => "123",
+        "labels" => ["rollable"],
         "priority" => "123",
         "project_id" => "123",
         "due" => {
@@ -30,6 +31,7 @@ RSpec.describe Todoist::Api::Tasks do
         description: "123",
         id: "123",
         is_completed: "123",
+        labels: ["rollable"],
         priority: "123",
         project_id: "123",
         due: described_class::Due.new(
@@ -66,8 +68,21 @@ RSpec.describe Todoist::Api::Tasks do
         is_completed: "123",
         priority: "123",
         project_id: "123",
-        due: nil
+        due: nil,
+        labels: []
       ))
+    end
+  end
+
+  describe ".get" do
+    it "returns a task" do
+      task = build(:todoist_api_task, content: "hi")
+      mock = TodoistApiMocks.mock_tasks_get(task)
+
+      result = described_class.get(task.id)
+
+      expect(mock).to have_been_requested
+      expect(result.content).to eql("hi")
     end
   end
 
