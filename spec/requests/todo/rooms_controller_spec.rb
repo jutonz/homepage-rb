@@ -45,6 +45,7 @@ RSpec.describe Todo::RoomsController do
 
       get(todo_room_path(room))
 
+      expect(page).to have_link("Todo", href: todo_path)
       expect(page).to have_link("Rooms", href: todo_rooms_path)
     end
   end
@@ -81,6 +82,7 @@ RSpec.describe Todo::RoomsController do
 
       get(edit_todo_room_path(room))
 
+      expect(page).to have_link("Todo", href: todo_path)
       expect(page).to have_link("Rooms", href: todo_rooms_path)
       expect(page).to have_link(room.name, href: todo_room_path(room))
     end

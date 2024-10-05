@@ -1,6 +1,7 @@
 <%= render(HeaderComponent.new(
   title: "Rooms"
 )) do |c| %>
+  <%= c.with_crumb("Todo", todo_path) %>
   <%= c.with_action do %>
     <%= link_to(
       "New Room",

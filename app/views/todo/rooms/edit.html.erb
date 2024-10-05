@@ -1,6 +1,7 @@
 <%= render(HeaderComponent.new(
   title: "Edit"
 )) do |c| %>
+  <%= c.with_crumb("Todo", todo_path) %>
   <%= c.with_crumb("Rooms", todo_rooms_path) %>
   <%= c.with_crumb(@room.name, todo_room_path(@room)) %>
 <% end %>
