@@ -17,6 +17,8 @@ module Todo
     self.table_name = "todo_rooms"
 
     belongs_to :user
+    has_many :room_tasks
+    has_many :tasks, through: :room_tasks
 
     validates :name, presence: true
   end

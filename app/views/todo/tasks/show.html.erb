@@ -22,3 +22,19 @@
     ) %>
   <% end %>
 <% end %>
+
+<h2 class="text-lg mb-3">Rooms</h2>
+<div class="flex gap-4">
+  <% @task.rooms.each do |room| %>
+    <%= link_to(
+      todo_room_path(room),
+      class: "border-2 border-fuchsia-500 rounded-md p-4 min-w-32 max-w-32 text-center",
+      data: {role: "room"}
+    ) do %>
+      <%= tag.div(room.name) %>
+    <% end %>
+  <% end %>
+  <span class="hidden only:block">
+    This task is not used in any rooms.
+  </span>
+</div>

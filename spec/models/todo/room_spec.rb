@@ -15,11 +15,9 @@
 require "rails_helper"
 
 RSpec.describe Todo::Room do
-  describe "associations" do
-    it { is_expected.to belong_to(:user) }
-  end
+  it { is_expected.to belong_to(:user) }
+  it { is_expected.to have_many(:room_tasks) }
+  it { is_expected.to have_many(:tasks) }
 
-  describe "validations" do
-    it { is_expected.to validate_presence_of(:name) }
-  end
+  it { is_expected.to validate_presence_of(:name) }
 end

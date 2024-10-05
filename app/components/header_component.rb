@@ -10,7 +10,7 @@ class HeaderComponent < ViewComponent::Base
             <span class="last:hidden">/</span>
           <% end %>
         </div>
-        <h1 class="text-xl">
+        <h1 class="text-2xl">
           <%= @title %>
         </h1>
       </div>
