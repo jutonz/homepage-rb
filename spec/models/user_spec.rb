@@ -18,7 +18,6 @@
 require "rails_helper"
 
 RSpec.describe User do
-  describe "associations" do
-    it { is_expected.to have_many(:todo_rooms) }
-  end
+  it { is_expected.to have_many(:todo_rooms) }
+  it { is_expected.to have_many(:todo_tasks) }
 end
