@@ -2,7 +2,13 @@
   title: "Todo"
 )) %>
 
-<div class="flex">
+<div class="flex space-x-5">
+  <%= link_to(
+    "Tasks",
+    todo_tasks_path,
+    class: "button"
+  ) %>
+
   <%= link_to(
     "Rooms",
     todo_rooms_path,
