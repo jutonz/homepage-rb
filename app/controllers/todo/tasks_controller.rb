@@ -7,7 +7,7 @@ module Todo
     end
 
     def new
-      @task = Task.new
+      @task = Task.new(task_params)
     end
 
     def create
@@ -46,7 +46,15 @@ module Todo
     private
 
     def task_params
-      params.require(:todo_task).permit(:name)
+      params.fetch(:todo_task, {}).permit(:name, room_ids: []).tap do |p|
+        if (room_ids = p[:room_ids]).present?
+          p[:room_ids] =
+            current_user
+              .todo_rooms
+              .where(id: room_ids)
+              .pluck(:id)
+        end
+      end
     end
 
     def find_task

@@ -1,4 +1,9 @@
 <%= simple_form_for(@task) do |form| %>
   <%= form.input(:name) %>
+  <%= form.association(
+    :rooms,
+    collection: current_user.todo_rooms.order(:name),
+    as: :check_boxes
+  ) %>
   <%= form.button(:submit) %>
 <% end %>

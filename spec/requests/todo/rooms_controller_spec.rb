@@ -48,6 +48,29 @@ RSpec.describe Todo::RoomsController do
       expect(page).to have_link("Todo", href: todo_path)
       expect(page).to have_link("Rooms", href: todo_rooms_path)
     end
+
+    it "has an empty state if no tasks" do
+      room = create(:todo_room)
+      login_as(room.user)
+
+      get(todo_room_path(room))
+
+      expect(page).to have_text("This room doesn't have any tasks yet")
+      expect(page).to have_link(
+        "Add one",
+        href: new_todo_task_path(todo_task: {room_ids: [room.id]})
+      )
+    end
+
+    it "links to tasks" do
+      room = create(:todo_room, :with_task)
+      task = room.tasks.first
+      login_as(room.user)
+
+      get(todo_room_path(room))
+
+      expect(page).to have_link(task.name, href: todo_task_path(task))
+    end
   end
 
   describe "update" do
