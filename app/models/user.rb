@@ -17,4 +17,5 @@
 #
 class User < ActiveRecord::Base
   has_many :todo_rooms, class_name: "Todo::Room"
+  has_many :todo_tasks, class_name: "Todo::Task"
 end
