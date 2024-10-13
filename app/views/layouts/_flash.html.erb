@@ -1,9 +1,8 @@
 <% flash.each do |flash_type, message| %>
-  <%= tag.div(
-    message,
-    data: {
-      role: "flash",
-      flash_type: flash_type
-    }
-  ) %>
+  <div class="flex gap-y-3 absolute bottom-20 left-10">
+    <%= render(FlashComponent.new(
+      message:,
+      type: flash_type
+    )) %>
+  </div>
 <% end %>
