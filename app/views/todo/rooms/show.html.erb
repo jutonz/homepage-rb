@@ -26,10 +26,10 @@
 <h2 class="text-lg mb-3">Tasks</h2>
 <div class="flex gap-4">
   <% @room.tasks.each do |task| %>
-    <%= link_to(
-      todo_task_path(task),
+    <%= button_to(
+      todo_task_occurrence_path(task, room_id: @room.id),
       class: "border-2 border-fuchsia-500 rounded-md p-4 min-w-32 max-w-32 text-center",
-      data: {role: "room"}
+      data: {role: "room", turbo_confirm: "Schedule this task?"}
     ) do %>
       <%= tag.div(task.name) %>
     <% end %>

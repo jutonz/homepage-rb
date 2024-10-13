@@ -1,0 +1,9 @@
+<% flash.each do |flash_type, message| %>
+  <%= tag.div(
+    message,
+    data: {
+      role: "flash",
+      flash_type: flash_type
+    }
+  ) %>
+<% end %>

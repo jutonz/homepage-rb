@@ -61,16 +61,6 @@ RSpec.describe Todo::RoomsController do
         href: new_todo_task_path(todo_task: {room_ids: [room.id]})
       )
     end
-
-    it "links to tasks" do
-      room = create(:todo_room, :with_task)
-      task = room.tasks.first
-      login_as(room.user)
-
-      get(todo_room_path(room))
-
-      expect(page).to have_link(task.name, href: todo_task_path(task))
-    end
   end
 
   describe "update" do

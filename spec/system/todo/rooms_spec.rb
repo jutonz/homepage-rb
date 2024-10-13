@@ -43,4 +43,24 @@ RSpec.describe "Todo rooms" do
 
     expect(page).not_to have_css("h1", text: room.name)
   end
+
+  it "schedules a task occurrence" do
+    user = create(:user)
+    room = create(:todo_room, user:)
+    task = create(:todo_task, rooms: [room], user:)
+    mock = TodoistApiMocks.mock_tasks_create(build(:todoist_api_task))
+    login_as(user)
+
+    visit(todo_room_path(room))
+
+    accept_confirm do
+      click_button(task.name)
+    end
+
+    expect(page).to have_css(
+      "[data-flash-type=notice]",
+      text: "Created task :)"
+    )
+    expect(mock).to have_been_requested
+  end
 end
