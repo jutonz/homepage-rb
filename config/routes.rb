@@ -16,7 +16,11 @@ Rails.application.routes.draw do
   resource :todo, only: :show do
     scope module: :todo do
       resources :rooms
-      resources :tasks
+      resources :tasks do
+        scope module: :tasks do
+          resource :occurrence, only: %i[create]
+        end
+      end
     end
   end
 
