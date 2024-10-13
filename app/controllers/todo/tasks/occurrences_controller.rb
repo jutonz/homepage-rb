@@ -8,7 +8,8 @@ module Todo
         Todoist::Api::Tasks.create(
           content: @task.name,
           labels: %w[rollable],
-          due_string: "today"
+          due_string: "today",
+          project_id: Todoist::Api::Projects::CJ_PROJECT_ID
         )
         redirect_to(
           todo_room_path(room_id(@task)),
