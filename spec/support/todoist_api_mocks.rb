@@ -24,7 +24,7 @@ module TodoistApiMocks
   def self.mock_tasks_rollable(tasks)
     WebMock::API.stub_request(
       :get,
-      "https://api.todoist.com/rest/v2/tasks?filter=@rollable,today | overdue"
+      "https://api.todoist.com/rest/v2/tasks?filter=@rollable,overdue"
     ).to_return(
       status: 200,
       body: Array(tasks).to_json,
