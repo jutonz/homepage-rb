@@ -19,7 +19,7 @@
 #
 class Gallery < ActiveRecord::Base
   belongs_to :user
-  has_many :images, class_name: "Galleries::Image"
+  has_many :images
 
   validates :name, presence: true, uniqueness: true
 end

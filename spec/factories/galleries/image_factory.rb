@@ -16,7 +16,8 @@
 #  fk_rails_...  (gallery_id => galleries.id)
 #
 FactoryBot.define do
-  factory :gallery_image, class: "Galleries::Image" do
+  factory :image, class: "Image" do
     gallery
+    file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/audiosurf.jpg"), "image/jpeg") }
   end
 end

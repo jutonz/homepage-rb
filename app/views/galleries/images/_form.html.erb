@@ -1,0 +1,4 @@
+<%= simple_form_for([@gallery, @image]) do |form| %>
+  <%= form.input(:file, as: :file) %>
+  <%= form.button(:submit) %>
+<% end %>

@@ -15,11 +15,12 @@
 #
 #  fk_rails_...  (gallery_id => galleries.id)
 #
-module Galleries
-  class Image < ActiveRecord::Base
-    self.table_name = "gallery_images"
+require "rails_helper"
 
-    has_one_attached :file
-    belongs_to :gallery
+RSpec.describe Image do
+  it { is_expected.to belong_to(:gallery) }
+
+  it "has a valid factory" do
+    expect(create(:image)).to be_valid
   end
 end

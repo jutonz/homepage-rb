@@ -1,0 +1,28 @@
+<%= render(HeaderComponent.new(
+  title: "Image"
+)) do |c| %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Edit",
+      edit_gallery_image_path(@gallery, @image),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      gallery_image_path(@gallery, @image),
+      method: "delete",
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger ml-4"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="flex gap-4">
+  <%= image_tag(@image.file) %>
+</div>

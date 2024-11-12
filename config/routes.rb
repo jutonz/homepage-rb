@@ -24,7 +24,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :galleries
+  resources :galleries do
+    scope module: :galleries do
+      resources :images
+    end
+  end
 
   resource :home, only: :show
 
