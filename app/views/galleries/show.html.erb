@@ -5,9 +5,17 @@
 
   <%= c.with_action do %>
     <%= link_to(
+      "Add image",
+      new_gallery_image_path(@gallery),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= link_to(
       "Edit",
       edit_gallery_path(@gallery),
-      class: "button"
+      class: "button ml-4"
     ) %>
   <% end %>
 
@@ -22,4 +30,20 @@
   <% end %>
 <% end %>
 
-TODO: images
+<div class="flex gap-4">
+  <% @gallery.images.each do |image| %>
+    <%= link_to(
+      "hi",
+      gallery_image_path(@gallery, image),
+      data: {role: "image", image_id: image.id}
+    ) %>
+  <% end %>
+  <span class="hidden only:block">
+    This gallery doesn't have any images yet.
+    <br />
+    <%= link_to(
+      "Add one",
+      new_gallery_image_path(@gallery)
+    ) %>
+</span>
+</div>
