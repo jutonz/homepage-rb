@@ -1,0 +1,7 @@
+<%= render(HeaderComponent.new(
+  title: "New Gallery"
+)) do |c| %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+<% end %>
+
+<%= render partial: "form", form: @form %>

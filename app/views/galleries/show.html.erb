@@ -1,0 +1,25 @@
+<%= render(HeaderComponent.new(
+  title: @gallery.name
+)) do |c| %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Edit",
+      edit_gallery_path(@gallery),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      gallery_path(@gallery),
+      method: "delete",
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger ml-4"
+    ) %>
+  <% end %>
+<% end %>
+
+TODO: images

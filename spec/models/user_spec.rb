@@ -18,6 +18,7 @@
 require "rails_helper"
 
 RSpec.describe User do
+  it { is_expected.to have_many(:galleries) }
   it { is_expected.to have_many(:todo_rooms) }
   it { is_expected.to have_many(:todo_tasks) }
 end

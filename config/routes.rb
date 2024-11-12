@@ -24,6 +24,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :galleries
+
   resource :home, only: :show
 
   root to: "homes#show"
