@@ -1,0 +1,26 @@
+<%= render(HeaderComponent.new(
+  title: "Galleries"
+)) do |c| %>
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Gallery",
+      new_gallery_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="flex gap-4">
+  <% @galleries.each do |gallery| %>
+    <%= link_to(
+      gallery_path(gallery),
+      data: {role: "gallery"}
+    ) do %>
+      <%= tag.div(gallery.name) %>
+    <% end %>
+  <% end %>
+
+  <span class="hidden only:block">
+    No galleries
+  </span>
+</div>
