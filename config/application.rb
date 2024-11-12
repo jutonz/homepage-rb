@@ -27,5 +27,7 @@ module Homepage
     # SolidQueue wants to use a different db in prod.
     # Let's do that in every env so we can test it.
     config.solid_queue.connects_to = {database: {writing: :queue}}
+
+    config.active_storage.service = :block_storage
   end
 end
