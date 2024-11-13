@@ -10,7 +10,7 @@ class GalleriesController < ApplicationController
     @images =
       @gallery
         .images
-        .includes(file_attachment: :blob)
+        .with_attached_file
         .page(params[:page])
         .per(50)
   end

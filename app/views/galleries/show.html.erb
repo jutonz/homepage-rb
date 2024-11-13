@@ -38,7 +38,7 @@
         data: {role: "image", image_id: image.id}
       ) do %>
         <div>
-          <%= image_tag(image.file) %>
+          <%= image_tag(image.file.url) %>
         </div>
       <% end %>
     <% end %>
