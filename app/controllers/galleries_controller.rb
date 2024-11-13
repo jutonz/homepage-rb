@@ -7,6 +7,12 @@ class GalleriesController < ApplicationController
 
   def show
     @gallery = find_gallery
+    @images =
+      @gallery
+        .images
+        .includes(file_attachment: :blob)
+        .page(params[:page])
+        .per(50)
   end
 
   def new
