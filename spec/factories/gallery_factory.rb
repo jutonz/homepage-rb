@@ -3,6 +3,7 @@
 # Table name: galleries
 #
 #  id         :bigint           not null, primary key
+#  hidden_at  :datetime
 #  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -21,5 +22,9 @@ FactoryBot.define do
   factory :gallery, class: "Gallery" do
     user
     sequence(:name) { "Gallery #{_1}" }
+
+    trait :hidden do
+      hidden_at { Time.current }
+    end
   end
 end

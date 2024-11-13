@@ -55,12 +55,41 @@ RSpec.describe GalleriesController do
       user = create(:user)
       gallery = create(:gallery, user:)
       login_as(user)
-      params = {gallery: {name: "after"}}
+      params = {
+        gallery: {
+          name: "after",
+          hidden_at: "1"
+        }
+      }
+
+      freeze_time do
+        put(gallery_path(gallery), params:)
+
+        expect(response).to redirect_to(gallery_path(gallery))
+        expect(gallery.reload).to have_attributes({
+          name: "after",
+          hidden_at: Time.current
+        })
+      end
+    end
+
+    it "can unhide" do
+      user = create(:user)
+      gallery = create(:gallery, :hidden, user:)
+      login_as(user)
+      params = {
+        gallery: {
+          name: "after",
+          hidden_at: nil
+        }
+      }
 
       put(gallery_path(gallery), params:)
 
       expect(response).to redirect_to(gallery_path(gallery))
-      expect(gallery.reload).to have_attributes(params[:gallery])
+      expect(gallery.reload).to have_attributes({
+        hidden_at: nil
+      })
     end
 
     it "shows error messages" do

@@ -3,6 +3,7 @@
 # Table name: galleries
 #
 #  id         :bigint           not null, primary key
+#  hidden_at  :datetime
 #  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -22,4 +23,6 @@ class Gallery < ActiveRecord::Base
   has_many :images
 
   validates :name, presence: true, uniqueness: true
+
+  def self.visible = where(hidden_at: nil)
 end

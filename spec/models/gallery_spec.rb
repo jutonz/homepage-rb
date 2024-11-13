@@ -3,6 +3,7 @@
 # Table name: galleries
 #
 #  id         :bigint           not null, primary key
+#  hidden_at  :datetime
 #  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -32,5 +33,16 @@ RSpec.describe Gallery do
 
   it "has a valid factory" do
     expect(create(:gallery)).to be_valid
+  end
+
+  describe ".visible" do
+    it "does not include hidden galleries" do
+      visible = create(:gallery)
+      _hidden = create(:gallery, :hidden)
+
+      result = described_class.visible.pluck(:id)
+
+      expect(result).to eql([visible.id])
+    end
   end
 end

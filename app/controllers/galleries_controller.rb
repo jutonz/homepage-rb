@@ -2,7 +2,7 @@ class GalleriesController < ApplicationController
   before_action :ensure_authenticated!
 
   def index
-    @galleries = current_user.galleries
+    @galleries = current_user.galleries.visible
   end
 
   def show
@@ -55,6 +55,14 @@ class GalleriesController < ApplicationController
   end
 
   def gallery_params
-    params.require(:gallery).permit(:name)
+    params
+      .require(:gallery)
+      .permit(:name, :hidden_at)
+      .tap do |params|
+        params[:hidden_at] =
+          if ActiveModel::Type::Boolean.new.cast(params[:hidden_at]).present?
+            Time.current
+          end
+      end
   end
 end

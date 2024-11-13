@@ -53,6 +53,7 @@ RSpec.configure do |config|
   config.after(:each) { Warden.test_reset! }
 
   config.include FactoryBot::Syntax::Methods
+  config.include ActiveSupport::Testing::TimeHelpers
   config.include CapybaraPage, type: :request
   config.include ViewComponent::TestHelpers, type: :component
   config.include ViewComponent::SystemTestHelpers, type: :component
