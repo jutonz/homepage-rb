@@ -1,4 +1,10 @@
 <%= simple_form_for(@gallery) do |form| %>
   <%= form.input(:name, autofocus: true) %>
+  <%= form.input(
+    :hidden_at,
+    as: :boolean,
+    label: "Hidden"
+    # input_html: {name: "gallery[hidden_at]"},
+  ) %>
   <%= form.button(:submit) %>
 <% end %>
