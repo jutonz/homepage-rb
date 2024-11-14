@@ -20,4 +20,6 @@ class Image < ActiveRecord::Base
 
   has_one_attached :file
   belongs_to :gallery
+
+  validates :file, presence: true
 end
