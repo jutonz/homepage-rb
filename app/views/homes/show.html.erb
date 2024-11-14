@@ -5,3 +5,12 @@
 <div>
   <%= button_to("Logout", session_path, method: :delete) %>
 </div>
+
+<div class="mt-5">
+  <div>
+    <%= link_to("Galleries", galleries_path) %>
+  </div>
+  <div>
+    <%= link_to("API Tokens", settings_api_tokens_path) %>
+  </div>
+</div>

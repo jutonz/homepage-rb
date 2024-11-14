@@ -1,0 +1,28 @@
+<%= render(HeaderComponent.new(
+  title: @token.name
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Tokens", settings_api_tokens_path) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Edit",
+      edit_settings_api_token_path(@token),
+      class: "button ml-4"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      settings_api_token_path(@token),
+      method: "delete",
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger ml-4"
+    ) %>
+  <% end %>
+<% end %>
+
+<div>
+  Token: <%= @token.token %>
+</div>
