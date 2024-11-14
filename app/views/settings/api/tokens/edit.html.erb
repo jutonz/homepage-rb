@@ -1,0 +1,8 @@
+<%= render(HeaderComponent.new(
+  title: "Edit token"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Tokens", settings_api_tokens_path) %>
+<% end %>
+
+<%= render partial: "form" %>

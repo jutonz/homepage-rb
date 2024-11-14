@@ -1,27 +1,27 @@
 <%= render(HeaderComponent.new(
-  title: "Galleries"
+  title: "Tokens"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_action do %>
     <%= link_to(
-      "New Gallery",
-      new_gallery_path,
+      "New Token",
+      new_settings_api_token_path,
       class: "button"
     ) %>
   <% end %>
 <% end %>
 
 <div class="flex gap-4">
-  <% @galleries.each do |gallery| %>
+  <% @tokens.each do |token| %>
     <%= link_to(
-      gallery_path(gallery),
-      data: {role: "gallery"}
+      settings_api_token_path(token),
+      data: {role: "token"}
     ) do %>
-      <%= tag.div(gallery.name) %>
+      <%= tag.div(token.name) %>
     <% end %>
   <% end %>
 
   <span class="hidden only:block">
-    No galleries
+    No tokens
   </span>
 </div>

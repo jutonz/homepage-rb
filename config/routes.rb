@@ -31,6 +31,12 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :settings do
+    namespace :api do
+      resources :tokens
+    end
+  end
+
   resource :home, only: :show
 
   root to: "homes#show"

@@ -1,0 +1,7 @@
+<%= simple_form_for([:settings, @token]) do |form| %>
+
+  You'll be able to see the generated token on the next page.
+
+  <%= form.input(:name, autofocus: true) %>
+  <%= form.button(:submit) %>
+<% end %>
