@@ -25,4 +25,6 @@ class Gallery < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
   def self.visible = where(hidden_at: nil)
+
+  def self.hidden = where.not(hidden_at: nil)
 end

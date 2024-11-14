@@ -45,4 +45,15 @@ RSpec.describe Gallery do
       expect(result).to eql([visible.id])
     end
   end
+
+  describe ".hidden" do
+    it "does not include hidden galleries" do
+      _visible = create(:gallery)
+      hidden = create(:gallery, :hidden)
+
+      result = described_class.hidden.pluck(:id)
+
+      expect(result).to eql([hidden.id])
+    end
+  end
 end

@@ -1,5 +1,5 @@
 <%= render(HeaderComponent.new(
-  title: "New Image"
+  title: "Upload images"
 )) do |c| %>
   <%= c.with_crumb("Galleries", galleries_path) %>
   <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
