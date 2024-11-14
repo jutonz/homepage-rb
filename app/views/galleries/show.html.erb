@@ -30,7 +30,7 @@
   <% end %>
 <% end %>
 
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4 mb-20">
   <div class="grid gap-4 grid-cols-5">
     <% @images.each do |image| %>
       <%= link_to(
@@ -38,7 +38,7 @@
         data: {role: "image", image_id: image.id}
       ) do %>
         <div>
-          <%= image_tag(image.file) %>
+          <%= image_tag(image.file.variant(resize_to_limit: [200, 200])) %>
         </div>
       <% end %>
     <% end %>
