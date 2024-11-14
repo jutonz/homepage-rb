@@ -8,6 +8,11 @@ Rails.application.routes.draw do
   namespace :api do
     resource :current_ip, only: :show
     resource :current_user, only: :show
+    resources :galleries, only: [] do
+      scope module: :galleries do
+        resources :images, only: %w[create]
+      end
+    end
   end
 
   resource :session, only: %i[new destroy] do
