@@ -1,6 +1,7 @@
 Rails.application.config.middleware.use Warden::Manager do |warden_config|
   warden_config.default_strategies :password
   warden_config.default_scope = :user
+  warden_config.intercept_401 = false
 
   warden_config.failure_app = ->(env) do
     env["REQUEST_METHOD"] = "GET"
