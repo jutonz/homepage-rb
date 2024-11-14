@@ -1,0 +1,14 @@
+<%= simple_form_for(
+  @bulk_upload,
+  url: gallery_bulk_upload_path(@gallery)
+) do |form| %>
+  <%= form.input(
+    :files,
+    as: :file,
+    input_html: {
+      direct_upload: true,
+      multiple: true
+    }
+  ) %>
+  <%= form.button(:submit) %>
+<% end %>

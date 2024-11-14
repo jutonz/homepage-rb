@@ -11,25 +11,9 @@ module Galleries
       @image = find_image
     end
 
-    def new
-      @gallery = find_gallery
-      @image = @gallery.images.new
-    end
-
     def edit
       @gallery = find_gallery
       @image = find_image
-    end
-
-    def create
-      @gallery = find_gallery
-      @image = @gallery.images.new(image_params)
-
-      if @image.save
-        redirect_to [@gallery, @image], notice: "Image was successfully created."
-      else
-        render :new, status: :unprocessable_entity
-      end
     end
 
     def update

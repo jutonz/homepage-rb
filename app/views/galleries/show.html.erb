@@ -5,8 +5,8 @@
 
   <%= c.with_action do %>
     <%= link_to(
-      "Add image",
-      new_gallery_image_path(@gallery),
+      "Add images",
+      new_gallery_bulk_upload_path(@gallery),
       class: "button"
     ) %>
   <% end %>
@@ -47,8 +47,8 @@
     This gallery doesn't have any images yet.
     <br />
     <%= link_to(
-      "Add one",
-      new_gallery_image_path(@gallery)
+      "Add some",
+      new_gallery_bulk_upload_path(@gallery)
     ) %>
   </span>
 

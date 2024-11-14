@@ -16,20 +16,6 @@ RSpec.describe Galleries::ImagesController do
     end
   end
 
-  describe "create" do
-    it "redirects" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      login_as(user)
-      params = {image: {file: fixture_file_upload("audiosurf.jpg", "image/jpeg")}}
-
-      post(gallery_images_path(gallery), params:)
-
-      image = Image.last
-      expect(response).to redirect_to(gallery_image_path(gallery, image))
-    end
-  end
-
   describe "show" do
     it "has crumbs" do
       user = create(:user)
