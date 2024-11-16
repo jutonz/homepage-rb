@@ -7,7 +7,7 @@ RSpec.describe Galleries::BulkUploadsController do
       gallery = create(:gallery, user:)
       login_as(user)
       params = {
-        galleries_bulk_upload: {
+        bulk_upload: {
           files: [
             fixture_file_upload("audiosurf.jpg", "image/jpeg"),
             fixture_file_upload("audiosurf.jpg", "image/jpeg")
