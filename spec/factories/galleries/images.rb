@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: gallery_images
+# Table name: galleries_images
 #
 #  id         :bigint           not null, primary key
 #  created_at :datetime         not null
@@ -9,14 +9,14 @@
 #
 # Indexes
 #
-#  index_gallery_images_on_gallery_id  (gallery_id)
+#  index_galleries_images_on_gallery_id  (gallery_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (gallery_id => galleries.id)
 #
 FactoryBot.define do
-  factory :image, class: "Image" do
+  factory :galleries_image, class: "Galleries::Image" do
     gallery
     file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/audiosurf.jpg"), "image/jpeg") }
   end

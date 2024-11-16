@@ -20,9 +20,11 @@
 #
 class Gallery < ActiveRecord::Base
   belongs_to :user
-  has_many :images, dependent: :destroy
   has_many :tags,
     class_name: "Galleries::Tag",
+    dependent: :destroy
+  has_many :images,
+    class_name: "Galleries::Image",
     dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
