@@ -1,6 +1,7 @@
 <%= render(HeaderComponent.new(
   title: @gallery.name
 )) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Galleries", galleries_path) %>
 
   <%= c.with_action do %>
@@ -8,6 +9,14 @@
       "Add images",
       new_gallery_bulk_upload_path(@gallery),
       class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Tags",
+      gallery_tags_path(@gallery),
+      class: "button ml-4"
     ) %>
   <% end %>
 

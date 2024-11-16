@@ -1,0 +1,31 @@
+<%= render(HeaderComponent.new(
+  title: "Tags"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+  <%= c.with_crumb("Tags", gallery_tags_path(@gallery)) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Tag",
+      new_gallery_tag_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="flex gap-4">
+  <% @gallery.tags.each do |tag| %>
+    <%= link_to(
+      gallery_tag_path(@gallery, tag),
+      data: {role: "tag"}
+    ) do %>
+      <div><%= tag.name %> </div>
+    <% end %>
+  <% end %>
+
+  <span class="hidden only:block">
+    No tags
+  </span>
+</div>

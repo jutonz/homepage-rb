@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_14_022509) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_16_140252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -61,6 +61,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_14_022509) do
     t.datetime "hidden_at"
     t.index ["name"], name: "index_galleries_on_name", unique: true
     t.index ["user_id"], name: "index_galleries_on_user_id"
+  end
+
+  create_table "galleries_tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "gallery_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gallery_id", "name"], name: "index_galleries_tags_on_gallery_id_and_name", unique: true
+    t.index ["gallery_id"], name: "index_galleries_tags_on_gallery_id"
+    t.index ["user_id"], name: "index_galleries_tags_on_user_id"
   end
 
   create_table "gallery_images", force: :cascade do |t|
@@ -230,6 +241,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_14_022509) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "galleries", "users"
+  add_foreign_key "galleries_tags", "galleries"
+  add_foreign_key "galleries_tags", "users"
   add_foreign_key "gallery_images", "galleries"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
