@@ -19,6 +19,10 @@ module Galleries
   class Image < ActiveRecord::Base
     has_one_attached :file
     belongs_to :gallery
+    has_many :image_tags,
+      class_name: "Galleries::ImageTag",
+      dependent: :destroy
+    has_many :tags, through: :image_tags
 
     validates :file, presence: true
   end

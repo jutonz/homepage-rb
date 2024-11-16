@@ -25,6 +25,10 @@ module Galleries
   class Tag < ApplicationRecord
     belongs_to :gallery
     belongs_to :user
+    has_many :image_tags,
+      class_name: "Galleries::ImageTag",
+      dependent: :destroy
+    has_many :images, through: :image_tags
 
     validates :name,
       presence: true,

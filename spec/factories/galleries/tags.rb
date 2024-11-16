@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: tags
+# Table name: galleries_tags
 #
 #  id         :bigint           not null, primary key
 #  name       :string           not null
@@ -11,8 +11,9 @@
 #
 # Indexes
 #
-#  index_tags_on_gallery_id  (gallery_id)
-#  index_tags_on_user_id     (user_id)
+#  index_galleries_tags_on_gallery_id           (gallery_id)
+#  index_galleries_tags_on_gallery_id_and_name  (gallery_id,name) UNIQUE
+#  index_galleries_tags_on_user_id              (user_id)
 #
 # Foreign Keys
 #
