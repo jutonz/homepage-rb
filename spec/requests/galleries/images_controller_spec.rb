@@ -5,8 +5,8 @@ RSpec.describe Galleries::ImagesController do
     it "shows images for the gallery" do
       user = create(:user)
       gallery, other_gallery = create_pair(:gallery, user:)
-      image = create(:image, gallery:)
-      other_image = create(:image, gallery: other_gallery)
+      image = create(:galleries_image, gallery:)
+      other_image = create(:galleries_image, gallery: other_gallery)
       login_as(user)
 
       get(gallery_path(gallery))
@@ -20,7 +20,7 @@ RSpec.describe Galleries::ImagesController do
     it "has crumbs" do
       user = create(:user)
       gallery = create(:gallery, user:)
-      image = create(:image, gallery:)
+      image = create(:galleries_image, gallery:)
       login_as(user)
 
       get(gallery_image_path(gallery, image))
@@ -34,7 +34,7 @@ RSpec.describe Galleries::ImagesController do
     it "redirects" do
       user = create(:user)
       gallery = create(:gallery, user:)
-      image = create(:image, gallery:)
+      image = create(:galleries_image, gallery:)
       login_as(user)
       params = {image: {file: fixture_file_upload("audiosurf.jpg", "image/jpeg")}}
 
@@ -48,7 +48,7 @@ RSpec.describe Galleries::ImagesController do
     it "has crumbs" do
       user = create(:user)
       gallery = create(:gallery, user:)
-      image = create(:image, gallery:)
+      image = create(:galleries_image, gallery:)
       login_as(user)
 
       get(edit_gallery_image_path(gallery, image))

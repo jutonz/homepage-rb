@@ -17,11 +17,11 @@
 #
 require "rails_helper"
 
-RSpec.describe Image do
+RSpec.describe Galleries::Image do
   it { is_expected.to belong_to(:gallery) }
   it { is_expected.to validate_presence_of(:file) }
 
   it "has a valid factory" do
-    expect(create(:image)).to be_valid
+    expect(create(:galleries_image)).to be_valid
   end
 end

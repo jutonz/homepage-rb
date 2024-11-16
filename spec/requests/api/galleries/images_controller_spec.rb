@@ -13,7 +13,7 @@ RSpec.describe Api::Galleries::ImagesController do
       post(api_gallery_images_path(gallery), params:)
 
       expect(response).to have_http_status(:created)
-      image = Image.last
+      image = Galleries::Image.last
       expect(json_response).to include({
         "id" => image.id,
         "gallery_id" => gallery.id
