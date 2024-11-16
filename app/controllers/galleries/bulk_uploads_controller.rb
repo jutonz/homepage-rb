@@ -30,7 +30,7 @@ module Galleries
 
     def bulk_upload_params
       params
-        .require(:galleries_bulk_upload)
+        .require(:bulk_upload)
         .permit(files: [])
     end
   end

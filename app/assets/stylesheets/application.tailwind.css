@@ -40,3 +40,15 @@
     @apply border-rose-600;
   }
 }
+
+.hp-header-actions {
+  form.button_to {
+    @apply flex;
+    @apply w-full;
+  }
+
+  .button {
+    @apply text-nowrap;
+    @apply w-full;
+  }
+}

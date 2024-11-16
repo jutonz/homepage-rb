@@ -2,23 +2,26 @@ class HeaderComponent < ViewComponent::Base
   include Rails.application.routes.url_helpers
 
   erb_template <<~ERB
-    <div class="flex w-full justify-between items-center mb-8">
-      <div class="flex flex-col">
-        <div class="mb-3 text-md">
-          <% crumbs.each do |crumb| %>
-            <%= crumb %>
-            <span class="last:hidden">/</span>
-          <% end %>
-        </div>
-        <h1 class="text-2xl">
-          <%= @title %>
-        </h1>
+    <div class="flex w-full mb-8 flex-col">
+      <div class="flex space-x-1 w-full mb-3 text-md">
+        <% crumbs.each do |crumb| %>
+          <%= crumb %>
+          <span class="last:hidden">/</span>
+        <% end %>
       </div>
 
-      <div class="flex">
-      <% actions.each do |action| %>
-        <%= action %>
-      <% end %>
+      <div class="flex w-full justify-between flex-col sm:flex-row sm:items-center">
+        <div class="flex flex-col">
+          <h1 class="text-2xl">
+            <%= @title %>
+          </h1>
+        </div>
+
+        <div class="hp-header-actions flex flex-col space-y-2 mt-5 text-center sm:text-left sm:space-y-0 sm:space-x-2 sm:flex-row">
+          <% actions.each do |action| %>
+            <%= action %>
+          <% end %>
+        </div>
       </div>
     </div>
   ERB

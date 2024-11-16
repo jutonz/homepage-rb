@@ -16,7 +16,7 @@
     <%= link_to(
       "Tags",
       gallery_tags_path(@gallery),
-      class: "button ml-4"
+      class: "button"
     ) %>
   <% end %>
 
@@ -24,7 +24,7 @@
     <%= link_to(
       "Edit",
       edit_gallery_path(@gallery),
-      class: "button ml-4"
+      class: "button"
     ) %>
   <% end %>
 
@@ -34,19 +34,19 @@
       gallery_path(@gallery),
       method: "delete",
       data: {turbo_confirm: "Are you sure?"},
-      class: "button button--danger ml-4"
+      class: "button button--danger"
     ) %>
   <% end %>
 <% end %>
 
 <div class="flex flex-col gap-4 mb-20">
-  <div class="grid gap-4 grid-cols-5">
+  <div class="grid gap-4 grid-cols-2 sm:grid-cols-5">
     <% @images.each do |image| %>
       <%= link_to(
         gallery_image_path(@gallery, image),
         data: {role: "image", image_id: image.id}
       ) do %>
-        <div>
+        <div class="flex justify-center">
           <%= image_tag(image.file.variant(resize_to_limit: [200, 200])) %>
         </div>
       <% end %>
