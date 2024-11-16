@@ -24,6 +24,6 @@ FactoryBot.define do
   factory :galleries_tag, class: "Galleries::Tag" do
     sequence(:name) { "Tag #{_1}" }
     gallery
-    user
+    user { instance.gallery.user || build(:user) }
   end
 end

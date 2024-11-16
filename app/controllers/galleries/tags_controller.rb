@@ -3,7 +3,8 @@ module Galleries
     before_action :ensure_authenticated!
 
     def index
-      @gallery = find_gallery(includes: :tags)
+      @gallery = find_gallery
+      @tags = @gallery.tags.order(:name)
     end
 
     def new
@@ -58,10 +59,9 @@ module Galleries
 
     private
 
-    def find_gallery(includes: nil)
+    def find_gallery
       current_user
         .galleries
-        .tap { _1.includes(includes) if includes.present? }
         .find(params[:gallery_id])
     end
 
