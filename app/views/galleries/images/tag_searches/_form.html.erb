@@ -1,0 +1,33 @@
+<%= turbo_frame_tag("tag-search") do %>
+  <h3 class="text-lg mb-3">Add tag</h3>
+
+  <%= simple_form_for(
+    tag_search,
+    url: gallery_image_tag_search_path(@gallery, @image),
+    method: :get,
+  ) do |form| %>
+    <div class="flex w-full gap-3">
+      <%= form.input(
+        :query,
+        label: false,
+        wrapper_html: {class: "grow"},
+      ) %>
+      <%= form.button(:submit, "Search") %>
+    </div>
+  <% end %>
+
+  <div>
+    <% Array(@search_results).each do |result| %>
+      <%= turbo_frame_tag("tag-search-result-#{result.id}") do %>
+        <div class="flex gap-4 my-2">
+          <%= result.name %>
+          <%= button_to(
+            "Add tag",
+            gallery_image_tags_path(@gallery, @image, tag_id: result.id),
+            class: "button"
+          ) %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

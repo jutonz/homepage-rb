@@ -1,0 +1,8 @@
+<%= turbo_stream.replace(
+  "image-tags",
+  partial: "galleries/images/tags",
+  locals: { tags: @image.tags }
+) %>
+<%= turbo_stream.remove(
+  "tag-search-result-#{@tag.id}"
+) %>

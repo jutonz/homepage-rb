@@ -1,6 +1,7 @@
 <%= render(HeaderComponent.new(
   title: "Image"
 )) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Galleries", galleries_path) %>
   <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
 
@@ -24,5 +25,24 @@
 <% end %>
 
 <div class="flex gap-4">
-  <%= image_tag(@image.file) %>
+  <%= link_to(@image.file) do %>
+    <%= image_tag(@image.file) %>
+  <% end %>
 </div>
+
+<h2 class="text-xl mt-10 mb-5">Tags</h2>
+
+<div class="flex flex-col">
+  <%= render(partial: "tags", locals: {tags: @image.tags}) %>
+
+  <turbo-frame id="tag-search">
+    <%= render(
+      partial: "galleries/images/tag_searches/form",
+      locals: {
+        tag_search: Galleries::Images::TagSearch.new
+      }
+    ) %>
+  </turbo-frame>
+</div>
+
+<div class="pb-32"></div>

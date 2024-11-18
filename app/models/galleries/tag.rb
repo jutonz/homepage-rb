@@ -33,5 +33,13 @@ module Galleries
     validates :name,
       presence: true,
       uniqueness: {scope: :gallery_id}
+
+    def self.search(term, image:)
+      if term.blank?
+        all
+      else
+        where("name ILIKE ?", "%#{term}%")
+      end
+    end
   end
 end
