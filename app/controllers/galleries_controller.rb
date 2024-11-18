@@ -11,8 +11,8 @@ class GalleriesController < ApplicationController
       @gallery
         .images
         .includes(file_attachment: :blob)
+        .order(created_at: :desc)
         .page(params[:page])
-        .per(50)
   end
 
   def new
