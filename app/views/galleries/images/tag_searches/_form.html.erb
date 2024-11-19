@@ -17,6 +17,19 @@
   <% end %>
 
   <div>
+    <% if tag_search.query.present? %>
+      <%= simple_form_for(
+        [@gallery, Galleries::Tag.new(name: tag_search.query)],
+        html: {
+          data: {turbo: false}
+        },
+        url: gallery_tags_path(@gallery, add_to_image_id: @image.id)
+      ) do |f| %>
+        <%= f.input(:name, as: :hidden) %>
+        <%= f.button(:submit, "Create new tag") %>
+      <% end %>
+    <% end %>
+
     <% Array(@search_results).each do |result| %>
       <%= turbo_frame_tag("tag-search-result-#{result.id}") do %>
         <div class="flex gap-4 my-2">
