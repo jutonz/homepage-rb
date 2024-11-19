@@ -32,8 +32,11 @@ Rails.application.routes.draw do
 
   resources :galleries do
     scope module: :galleries do
-      resources :images, except: %w[new create]
-      resource :bulk_upload, only: %w[new create]
+      resources :images, except: %i[new create] do
+        resource :tag_search, only: %i[show], module: :images
+        resources :tags, only: %i[create destroy], module: :images
+      end
+      resource :bulk_upload, only: %i[new create]
       resources :tags
     end
   end

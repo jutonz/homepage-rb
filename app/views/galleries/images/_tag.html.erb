@@ -1,0 +1,12 @@
+<%= turbo_frame_tag(tag) do %>
+  <div class="flex gap-3 items-center">
+    <div><%= tag.name %></div>
+    <%= button_to(
+      "Remove",
+      gallery_image_tag_path(@gallery, @image, tag),
+      method: :delete,
+      class: "button button--danger",
+      data: {turbo_confirm: "Are you sure?"}
+    ) %>
+  </div>
+<% end %>
