@@ -15,6 +15,12 @@ module Galleries
     def show
       @gallery = find_gallery
       @tag = find_tag
+      @images =
+        @tag
+          .images
+          .includes(file_attachment: :blob)
+          .order(created_at: :desc)
+          .page(params[:page])
     end
 
     def create

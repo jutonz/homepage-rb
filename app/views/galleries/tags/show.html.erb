@@ -25,6 +25,7 @@
   <% end %>
 <% end %>
 
-<div class="flex gap-4">
-  hi. eventually this will show images with this tag, etc
-</div>
+<%= render(
+  partial: "galleries/images",
+  locals: {images: @images}
+) %>

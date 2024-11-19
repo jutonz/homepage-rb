@@ -1,0 +1,8 @@
+<%= link_to(
+  gallery_image_path(@gallery, image),
+  data: {role: "image", image_id: image.id}
+) do %>
+  <div class="flex justify-center">
+    <%= image_tag(image.file.variant(resize_to_limit: [200, 200])) %>
+  </div>
+<% end %>
