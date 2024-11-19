@@ -23,6 +23,12 @@ module Galleries
       @tag.user = current_user
 
       if @tag.save
+        if params[:add_to_image_id]
+          image = @gallery.images.find_by(id: params[:add_to_image_id])
+          image.add_tag(@tag)
+          redirect_to([@gallery, image]) and return
+        end
+
         redirect_to [@gallery, @tag], notice: "Tag was successfully created."
       else
         render :new, status: :unprocessable_entity

@@ -25,5 +25,12 @@ module Galleries
     has_many :tags, through: :image_tags
 
     validates :file, presence: true
+
+    def add_tag(tag)
+      unless tags.include?(tag)
+        tags << tag
+        save!
+      end
+    end
   end
 end

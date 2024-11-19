@@ -8,10 +8,7 @@ module Galleries
         @image = find_image
         @tag = find_tag
 
-        unless @image.tags.include?(@tag)
-          @image.tags << @tag
-          @image.save!
-        end
+        @image.add_tag(@tag)
 
         respond_to do |format|
           format.turbo_stream
