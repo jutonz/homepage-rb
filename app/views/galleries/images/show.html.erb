@@ -39,7 +39,10 @@
     <%= render(
       partial: "galleries/images/tag_searches/form",
       locals: {
-        tag_search: Galleries::Images::TagSearch.new
+        tag_search: Galleries::Images::TagSearch.new(
+          gallery: @gallery,
+          image: @image
+        )
       }
     ) %>
   </turbo-frame>

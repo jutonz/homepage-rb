@@ -3,6 +3,5 @@
   partial: "galleries/images/tags",
   locals: { tags: @image.tags }
 ) %>
-<%= turbo_stream.remove(
-  "tag-search-result-#{@tag.id}"
-) %>
+<%= turbo_stream.remove("tag-search-result-#{@tag.id}") %>
+<%= turbo_stream.remove("recently-added-tag-#{@tag.id}") %>

@@ -32,4 +32,11 @@ class Gallery < ActiveRecord::Base
   def self.visible = where(hidden_at: nil)
 
   def self.hidden = where.not(hidden_at: nil)
+
+  def recently_used_tags
+    tags
+      .joins(:image_tags)
+      .order(galleries_image_tags: {created_at: :desc})
+      .limit(10)
+  end
 end

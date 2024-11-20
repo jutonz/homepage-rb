@@ -23,7 +23,7 @@ module Galleries
       # end
       #
 
-      def search
+      def results
         gallery
           .tags
           .where("galleries_tags.name ILIKE ?", "%#{query}%")
