@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Todo tasks" do
-  it "allows creating tasks" do
+  it "allows creating tasks", :js do
     user = create(:user)
     login_as(user)
 
@@ -30,7 +30,7 @@ RSpec.describe "Todo tasks" do
     find("h1", text: "after")
   end
 
-  it "allows deleting a task" do
+  it "allows deleting a task", :js do
     user = create(:user)
     task = create(:todo_task, user:)
     login_as(user)

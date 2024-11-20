@@ -11,7 +11,6 @@ module Galleries
           image: @image,
           query: tag_search_params[:query]
         )
-        @search_results = @tag_search.search
       end
 
       private

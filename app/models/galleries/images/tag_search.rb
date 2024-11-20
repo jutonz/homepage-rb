@@ -24,6 +24,8 @@ module Galleries
       #
 
       def results
+        return Tag.none if query.nil?
+
         gallery
           .tags
           .where("galleries_tags.name ILIKE ?", "%#{query}%")
