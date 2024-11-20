@@ -37,6 +37,8 @@ class Gallery < ActiveRecord::Base
     tags
       .joins(:image_tags)
       .order(galleries_image_tags: {created_at: :desc})
-      .limit(10)
+      .limit(100)
+      .uniq
+      .take(10)
   end
 end
