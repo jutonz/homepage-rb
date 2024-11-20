@@ -57,4 +57,47 @@ RSpec.describe Gallery do
       expect(result).to eql([hidden.id])
     end
   end
+
+  describe "#recently_used_tags" do
+    it "returns tags recently used" do
+      gallery = create(:gallery)
+      image1, image2 = create_pair(:galleries_image, gallery:)
+      tag1, tag2 = create_pair(:galleries_tag, gallery:)
+      _image_tag1 = create(
+        :galleries_image_tag,
+        image: image1,
+        tag: tag1,
+        created_at: 1.day.ago
+      )
+      create(
+        :galleries_image_tag,
+        image: image2,
+        tag: tag2
+      )
+
+      result = gallery.recently_used_tags.first
+
+      expect(result).to eql(tag2)
+    end
+
+    it "only includes a tag once" do
+      gallery = create(:gallery)
+      image1, image2 = create_pair(:galleries_image, gallery:)
+      tag = create(:galleries_tag, gallery:)
+      _image_tag1 = create(
+        :galleries_image_tag,
+        image: image1,
+        tag:
+      )
+      create(
+        :galleries_image_tag,
+        image: image2,
+        tag:
+      )
+
+      result = gallery.recently_used_tags
+
+      expect(result).to eql([tag])
+    end
+  end
 end
