@@ -30,13 +30,27 @@
       <% end %>
     <% end %>
 
-    <% Array(@search_results).each do |result| %>
-      <%= turbo_frame_tag("tag-search-result-#{result.id}") do %>
+    <% Array(tag_search.results).each do |tag| %>
+      <%= turbo_frame_tag("tag-search-result-#{tag.id}") do %>
         <div class="flex gap-4 my-2">
-          <%= result.name %>
+          <%= tag.name %>
           <%= button_to(
             "Add tag",
-            gallery_image_tags_path(@gallery, @image, tag_id: result.id),
+            gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
+            class: "button"
+          ) %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <h4 class="text-md mt-10">Recently used tags</h4>
+    <% @gallery.recently_used_tags.each do |tag| %>
+      <%= turbo_frame_tag("recently-added-tag-#{tag.id}") do %>
+        <div class="flex gap-4 my-2">
+          <%= tag.name %>
+          <%= button_to(
+            "Add tag",
+            gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
             class: "button"
           ) %>
         </div>
