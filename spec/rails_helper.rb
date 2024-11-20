@@ -59,6 +59,18 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
+
+  config.before(:each, type: :system) do
+    driven_by :rack_test
+  end
+
+  config.before(:each, type: :system, js: true) do
+    driven_by :selenium_chrome_headless, screen_size: [1400, 900]
+  end
+
+  config.before(:each, type: :system, debug: true) do
+    driven_by :selenium, using: :chrome, screen_size: [1400, 900]
+  end
 end
 
 Shoulda::Matchers.configure do |config|

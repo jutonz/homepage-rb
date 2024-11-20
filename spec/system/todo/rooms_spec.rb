@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Todo rooms" do
-  it "allows creating rooms" do
+  it "allows creating rooms", :js do
     user = create(:user)
     login_as(user)
 
@@ -37,9 +37,7 @@ RSpec.describe "Todo rooms" do
 
     visit(todo_room_path(room))
 
-    accept_confirm do
-      click_button("Delete")
-    end
+    click_button("Delete")
 
     expect(page).not_to have_css("h1", text: room.name)
   end
@@ -53,9 +51,7 @@ RSpec.describe "Todo rooms" do
 
     visit(todo_room_path(room))
 
-    accept_confirm do
-      click_button(task.name)
-    end
+    click_button(task.name)
 
     expect(page).to have_css(
       "[data-flash-type=notice]",
