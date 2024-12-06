@@ -7,28 +7,12 @@ module Galleries
       attr_accessor :image
       attr_accessor :query
 
-      # validates :name, presence: true
-      #
-      # def save
-      #   return false unless valid?
-
-      # ActiveRecord::Base.transaction do
-      #   files.each do |file|
-      #     next if file.blank?
-      #     gallery.images.create!(file:)
-      #   end
-      # end
-
-      #   true
-      # end
-      #
-
       def results
         return Tag.none if query.nil?
 
         gallery
           .tags
-          .where("galleries_tags.name ILIKE ?", "%#{query}%")
+          .where("galleries_tags.name ILIKE ?", "%#{query.strip}%")
           .where.not(id: image.tags.select(:id))
       end
     end
