@@ -14,6 +14,22 @@ RSpec.describe Galleries::TagsController do
       expect(page).to have_tag(tag)
       expect(page).not_to have_tag(other_tag)
     end
+
+    it "orders tags by name" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag_b = create(:galleries_tag, gallery:, name: "Tag B")
+      tag_a = create(:galleries_tag, gallery:, name: "Tag A")
+      login_as(user)
+
+      get(gallery_tags_path(gallery))
+
+      tags =
+        page
+          .all("[data-role=tag]")
+          .map { _1.text.strip }
+      expect(tags).to eql([tag_a.name, tag_b.name])
+    end
   end
 
   describe "new" do

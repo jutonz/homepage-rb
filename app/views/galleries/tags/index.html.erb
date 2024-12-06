@@ -15,8 +15,8 @@
   <% end %>
 <% end %>
 
-<div class="flex gap-4">
-  <% @gallery.tags.each do |tag| %>
+<div class="flex flex-col gap-4">
+  <% @tags.each do |tag| %>
     <%= link_to(
       gallery_tag_path(@gallery, tag),
       data: {role: "tag"}
