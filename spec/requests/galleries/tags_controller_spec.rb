@@ -28,7 +28,7 @@ RSpec.describe Galleries::TagsController do
         page
           .all("[data-role=tag]")
           .map { _1.text.strip }
-      expect(tags).to eql([tag_a.name, tag_b.name])
+      expect(tags).to eql([tag_a.display_name, tag_b.display_name])
     end
   end
 

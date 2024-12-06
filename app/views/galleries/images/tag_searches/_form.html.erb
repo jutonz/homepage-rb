@@ -34,7 +34,7 @@
     <% Array(tag_search.results).each do |tag| %>
       <%= turbo_frame_tag("tag-search-result-#{tag.id}") do %>
         <div class="flex gap-4 my-2">
-          <%= tag.name %>
+          <%= tag.display_name %>
           <%= button_to(
             "Add tag",
             gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
@@ -48,7 +48,7 @@
     <% @gallery.recently_used_tags.each do |tag| %>
       <%= turbo_frame_tag("recently-added-tag-#{tag.id}") do %>
         <div class="flex gap-4 my-2">
-          <%= tag.name %>
+          <%= tag.display_name %>
           <%= button_to(
             "Add tag",
             gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
