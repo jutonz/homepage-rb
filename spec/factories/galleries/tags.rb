@@ -2,12 +2,13 @@
 #
 # Table name: galleries_tags
 #
-#  id         :bigint           not null, primary key
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  gallery_id :bigint           not null
-#  user_id    :bigint           not null
+#  id               :bigint           not null, primary key
+#  image_tags_count :integer          default(0), not null
+#  name             :string           not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  gallery_id       :bigint           not null
+#  user_id          :bigint           not null
 #
 # Indexes
 #

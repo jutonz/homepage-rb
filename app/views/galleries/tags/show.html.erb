@@ -25,6 +25,10 @@
   <% end %>
 <% end %>
 
+<% if @images.none? %>
+  <div>This tag has no images.</div>
+<% end %>
+
 <%= render(
   partial: "galleries/images",
   locals: {images: @images}

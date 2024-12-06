@@ -22,7 +22,9 @@
 module Galleries
   class ImageTag < ApplicationRecord
     belongs_to :image, class_name: "Galleries::Image"
-    belongs_to :tag, class_name: "Galleries::Tag"
+    belongs_to :tag,
+      class_name: "Galleries::Tag",
+      counter_cache: :image_tags_count
 
     validates :tag, uniqueness: {scope: :image_id}
   end

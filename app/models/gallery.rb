@@ -47,6 +47,6 @@ class Gallery < ActiveRecord::Base
         .where(galleries_images: {id: recently_tagged_image_ids})
         .distinct
 
-    tags.where(id: tag_ids).order(:name).tap { puts _1.to_sql }
+    tags.where(id: tag_ids).order(:name)
   end
 end
