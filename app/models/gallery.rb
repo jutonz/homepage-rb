@@ -33,12 +33,20 @@ class Gallery < ActiveRecord::Base
 
   def self.hidden = where.not(hidden_at: nil)
 
-  def recently_used_tags
-    tags
-      .joins(:image_tags)
-      .order(galleries_image_tags: {created_at: :desc})
-      .limit(100)
-      .uniq
-      .take(10)
+  def recently_used_tags(image_limit: 4)
+    recently_tagged_image_ids =
+      images
+        .joins(:image_tags)
+        .order(galleries_image_tags: {created_at: :desc})
+        .limit(image_limit)
+        .select(:id)
+
+    tag_ids =
+      tags
+        .joins(:images)
+        .where(galleries_images: {id: recently_tagged_image_ids})
+        .distinct
+
+    tags.where(id: tag_ids).order(:name).tap { puts _1.to_sql }
   end
 end
