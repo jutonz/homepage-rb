@@ -83,6 +83,18 @@ RSpec.describe Gallery do
       expect(result).to eql([tag2.id])
     end
 
+    it "can exlude tags for a given image" do
+      gallery = create(:gallery)
+      image1, image2 = create_pair(:galleries_image, gallery:)
+      tag1, tag2 = create_pair(:galleries_tag, gallery:)
+      image1.add_tag(tag1)
+      image2.add_tag(tag2)
+
+      result = gallery.recently_used_tags(excluded_image_ids: [image2.id]).pluck(:id)
+
+      expect(result).to eql([tag1.id])
+    end
+
     it "doen't include a tag more than once" do
       gallery = create(:gallery)
       image1, image2 = create_pair(:galleries_image, gallery:)

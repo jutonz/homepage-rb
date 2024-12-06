@@ -45,7 +45,7 @@
     <% end %>
 
     <h4 class="text-md mt-10">Recently used tags</h4>
-    <% @gallery.recently_used_tags.each do |tag| %>
+    <% @gallery.recently_used_tags(excluded_image_ids: [@image.id]).each do |tag| %>
       <%= turbo_frame_tag("recently-added-tag-#{tag.id}") do %>
         <div class="flex gap-4 my-2">
           <%= tag.display_name %>

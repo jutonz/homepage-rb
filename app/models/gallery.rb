@@ -33,13 +33,17 @@ class Gallery < ActiveRecord::Base
 
   def self.hidden = where.not(hidden_at: nil)
 
-  def recently_used_tags(image_limit: 4)
+  def recently_used_tags(excluded_image_ids: nil, image_limit: 4)
     recently_tagged_image_ids =
       images
         .joins(:image_tags)
         .order(galleries_image_tags: {created_at: :desc})
         .limit(image_limit)
         .select(:id)
+
+    if excluded_image_ids.present?
+      recently_tagged_image_ids = recently_tagged_image_ids.where.not(id: excluded_image_ids)
+    end
 
     tag_ids =
       tags
