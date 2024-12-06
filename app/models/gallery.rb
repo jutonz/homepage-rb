@@ -70,6 +70,7 @@ class Gallery < ActiveRecord::Base
           .joins(:images)
           .where.not(galleries_images: {id: excluded_image_ids})
           .where(id: result.pluck(:id))
+          .distinct
       else
         result
       end
