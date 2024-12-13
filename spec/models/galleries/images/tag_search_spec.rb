@@ -82,5 +82,16 @@ RSpec.describe Galleries::Images::TagSearch do
 
       expect(result).to be_blank
     end
+
+    it "orders tags by name" do
+      search = build(:galleries_images_tag_search, query: "Tag")
+      gallery = search.gallery
+      tag_b = create(:galleries_tag, gallery:, name: "Tag B")
+      tag_a = create(:galleries_tag, gallery:, name: "Tag A")
+
+      result = search.results.pluck(:name)
+
+      expect(result).to eql([tag_a.name, tag_b.name])
+    end
   end
 end
