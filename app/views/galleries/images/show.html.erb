@@ -33,7 +33,7 @@
 <h2 class="text-xl mt-10 mb-5">Tags</h2>
 
 <div class="flex flex-col">
-  <%= render(partial: "tags", locals: {tags: @image.tags}) %>
+  <%= render(partial: "tags", locals: {tags: @image.tags.order(:name)}) %>
 
   <turbo-frame id="tag-search">
     <%= render(
