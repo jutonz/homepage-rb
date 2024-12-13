@@ -2,24 +2,14 @@ module Galleries
   class RecentTagsQuery
     def self.call(...) = new(...).call
 
-    def initialize(gallery:, excluded_image_ids:, image_limit:)
+    def initialize(gallery:, image_limit:, excluded_image_ids: nil)
       @gallery = gallery
-      @excluded_image_ids = excluded_image_ids
+      @excluded_image_ids = excluded_image_ids || -1
       @image_limit = image_limit
     end
 
     def call
-      Galleries::Tag.find_by_sql(sanitized_sql).then do |result|
-        if excluded_image_ids.present?
-          Galleries::Tag
-            .joins(:images)
-            .where.not(galleries_images: {id: excluded_image_ids})
-            .where(id: result.pluck(:id))
-            .distinct
-        else
-          result
-        end
-      end
+      Galleries::Tag.find_by_sql(sanitized_sql)
     end
 
     private
@@ -45,6 +35,7 @@ module Galleries
         JOIN galleries_tags
           ON galleries_image_tags.tag_id = galleries_tags.id
         WHERE galleries_images.gallery_id = ?
+          AND galleries_images.id NOT IN (?)
         GROUP BY galleries_images.id
         ORDER BY max_created_at DESC
         LIMIT ?
@@ -58,6 +49,7 @@ module Galleries
       ActiveRecord::Base.sanitize_sql_array([
         SQL,
         gallery.id,
+        Array(excluded_image_ids),
         image_limit
       ])
     end
