@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.4"
+ruby "3.4.1"
 
 gem "annotate", "~> 3.2"
 gem "aws-sdk-s3"
