@@ -13,6 +13,14 @@ FileUtils.chdir APP_ROOT do
   # This script is idempotent, so that you can run it at any time and get an expectable outcome.
   # Add necessary setup steps to this file.
 
+  begin
+    system!("command -v op > /dev/null")
+  rescue
+    puts "It doesn't look like `op` is installed"
+    puts "Run `brew install 1password-cli`"
+    exit
+  end
+
   puts "== Installing dependencies =="
   system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
