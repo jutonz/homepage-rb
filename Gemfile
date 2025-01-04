@@ -64,5 +64,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "shoulda-matchers"
+  gem "super_diff"
   gem "webmock"
 end
