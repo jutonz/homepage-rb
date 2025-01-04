@@ -30,6 +30,28 @@ RSpec.describe Galleries::TagsController do
           .map { _1.text.strip }
       expect(tags).to eql([tag_a.display_name, tag_b.display_name])
     end
+
+    it "includes a count of the number of tags" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create_pair(:galleries_tag, gallery:)
+      login_as(user)
+
+      get(gallery_tags_path(gallery))
+
+      expect(page).to have_text("Total number of tags: 2")
+    end
+
+    it "includes a count of the number of images" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create_pair(:galleries_image, gallery:)
+      login_as(user)
+
+      get(gallery_tags_path(gallery))
+
+      expect(page).to have_text("Total number of images: 2")
+    end
   end
 
   describe "new" do
