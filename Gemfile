@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 ruby "3.4.1"
 
+gem "after_party"
 gem "annotate", "~> 3.2"
 gem "aws-sdk-s3"
 gem "faraday"

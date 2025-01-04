@@ -14,11 +14,22 @@ module Galleries
       ActiveRecord::Base.transaction do
         files.each do |file|
           next if file.blank?
-          gallery.images.create!(file:)
+          image = gallery.images.create!(file:)
+          image.add_tag(tagging_needed)
         end
       end
 
       true
+    end
+
+    private
+
+    def tagging_needed
+      @_tagging_needed ||=
+        gallery
+          .tags
+          .create_with(user: gallery.user)
+          .find_or_create_by(name: "tagging needed")
     end
   end
 end

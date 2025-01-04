@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_06_163613) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_04_161552) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -211,6 +211,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_06_163613) do
     t.index ["expires_at"], name: "index_solid_queue_semaphores_on_expires_at"
     t.index ["key", "value"], name: "index_solid_queue_semaphores_on_key_and_value"
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
+  end
+
+  create_table "task_records", id: false, force: :cascade do |t|
+    t.string "version", null: false
   end
 
   create_table "todo_room_tasks", force: :cascade do |t|
