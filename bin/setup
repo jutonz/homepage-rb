@@ -31,7 +31,7 @@ FileUtils.chdir APP_ROOT do
       op item get \
         "credentials/#{env}.key" \
         --account="my.1password.com" \
-        --vault="Homepage" \
+        --vault="Homepage RB" \
         --fields=password \
         --reveal \
       | cat > config/credentials/#{env}.key
