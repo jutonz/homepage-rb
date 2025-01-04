@@ -28,6 +28,22 @@ RSpec.describe Galleries::ImagesController do
       expect(page).to have_link("Galleries", href: galleries_path)
       expect(page).to have_link(gallery.name, href: gallery_path(gallery))
     end
+
+    it "shows tags sorted by name" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      tag2 = create(:galleries_tag, gallery:, name: "tag 2")
+      tag1 = create(:galleries_tag, gallery:, name: "tag 1")
+      image.add_tag(tag2)
+      image.add_tag(tag1)
+      login_as(user)
+
+      get(gallery_image_path(gallery, image))
+
+      tags = page.all("[data-role=tag-link]").map { _1.text.strip }
+      expect(tags).to eql(["tag 1 (1)", "tag 2 (1)"])
+    end
   end
 
   describe "update" do

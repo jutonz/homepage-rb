@@ -34,6 +34,7 @@ require "capybara/rspec"
 require "view_component/system_test_helpers"
 require "view_component/test_helpers"
 require "webmock/rspec"
+require "super_diff/rspec-rails"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { require _1 }
 
