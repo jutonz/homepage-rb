@@ -36,6 +36,29 @@ RSpec.describe Galleries::Tag, type: :model do
       .scoped_to(:gallery_id)
   end
 
+  describe ".tagging_needed" do
+    it "if a 'tagging needed' tag already exists, returns it" do
+      gallery = create(:gallery)
+      tag = create(:galleries_tag, gallery:, name: "tagging needed")
+
+      result = described_class.tagging_needed(gallery)
+
+      expect(result).to eql(tag)
+    end
+
+    it "creates and returns a 'tagging needed' tag if it doesn't exist" do
+      gallery = create(:gallery)
+
+      tag = described_class.tagging_needed(gallery)
+
+      expect(tag).to have_attributes(
+        name: "tagging needed",
+        user: gallery.user
+      )
+      expect(gallery.tags.size).to eql(1)
+    end
+  end
+
   describe "#display_name" do
     it "is the name plus the number of times it's been used" do
       gallery = create(:gallery)

@@ -8,6 +8,7 @@ module Api
         @image = @gallery.images.build(image_params)
 
         if @image.save
+          @image.add_tag(tagging_needed)
           render json: @image, status: :created
         else
           render json: {
@@ -24,6 +25,10 @@ module Api
 
       def image_params
         {file: params[:file]}
+      end
+
+      def tagging_needed
+        ::Galleries::Tag.tagging_needed(@gallery)
       end
     end
   end

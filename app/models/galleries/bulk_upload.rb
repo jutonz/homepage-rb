@@ -25,11 +25,7 @@ module Galleries
     private
 
     def tagging_needed
-      @_tagging_needed ||=
-        gallery
-          .tags
-          .create_with(user: gallery.user)
-          .find_or_create_by(name: "tagging needed")
+      @_tagging_needed ||= Galleries::Tag.tagging_needed(gallery)
     end
   end
 end
