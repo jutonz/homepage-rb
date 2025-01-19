@@ -35,6 +35,13 @@ module Galleries
       presence: true,
       uniqueness: {scope: :gallery_id}
 
+    def self.tagging_needed(gallery)
+      gallery
+        .tags
+        .create_with(user: gallery.user)
+        .find_or_create_by(name: "tagging needed")
+    end
+
     def display_name
       "#{name} (#{image_tags.size})"
     end
