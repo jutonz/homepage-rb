@@ -1,3 +1,6 @@
 reschedule_rollable_tasks:
   class: "Todoist::RescheduleRollableTasksJob"
   schedule: "0 * * * *"
+tagging_needed:
+  class: "Galleries::TaggingNeededJob"
+  schedule: "10 * * * *"
