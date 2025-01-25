@@ -42,6 +42,17 @@ RSpec.describe Galleries::BulkUpload do
       image = gallery.images.first
       expect(image.tags.pluck(:name)).to eql(["tagging needed"])
     end
+
+    it "generates image variants" do
+      gallery = create(:gallery)
+      bulk_upload = described_class.new(gallery:, files: [audiosurf_jpg])
+
+      result = bulk_upload.save
+
+      expect(result).to be(true)
+      image = gallery.images.first
+      expect(image.file.variant(:thumb).blob).to be_present
+    end
   end
 
   private

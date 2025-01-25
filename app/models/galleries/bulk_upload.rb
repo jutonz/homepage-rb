@@ -11,13 +11,17 @@ module Galleries
     def save
       return false unless valid?
 
-      ActiveRecord::Base.transaction do
-        files.each do |file|
-          next if file.blank?
-          image = gallery.images.create!(file:)
-          image.add_tag(tagging_needed)
+      images =
+        ActiveRecord::Base.transaction do
+          files.filter_map do |file|
+            next if file.blank?
+            image = gallery.images.create!(file:)
+            image.add_tag(tagging_needed)
+            image
+          end
         end
-      end
+
+      generate_variants(images)
 
       true
     end
@@ -26,6 +30,13 @@ module Galleries
 
     def tagging_needed
       @_tagging_needed ||= Galleries::Tag.tagging_needed(gallery)
+    end
+
+    def generate_variants(images)
+      # Generate inline since we will immediately redirect to page where
+      # variant is shown after this returns. We also already should have the
+      # image downloaded so processing will be faster this way.
+      images.each { Galleries::ImageVariantJob.perform_now(_1) }
     end
   end
 end
