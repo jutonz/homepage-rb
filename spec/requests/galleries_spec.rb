@@ -48,6 +48,22 @@ RSpec.describe GalleriesController do
 
       expect(page).to have_link("Galleries", href: galleries_path)
     end
+
+    it "doesn't raise an InvariantError if the image is not variable" do
+      gallery = create(:gallery)
+      create(
+        :galleries_image,
+        gallery:,
+        file: Rack::Test::UploadedFile.new(
+          fixture_file_upload("testing.pdf")
+        )
+      )
+      login_as(gallery.user)
+
+      expect {
+        get(gallery_path(gallery))
+      }.not_to raise_error
+    end
   end
 
   describe "update" do
