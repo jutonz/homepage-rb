@@ -17,7 +17,10 @@
 #
 module Galleries
   class Image < ActiveRecord::Base
-    has_one_attached :file
+    has_one_attached :file do |file|
+      file.variant(:thumb, resize_to_limit: [200, 200])
+    end
+
     belongs_to :gallery
     has_many :image_tags,
       class_name: "Galleries::ImageTag",

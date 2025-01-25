@@ -9,6 +9,7 @@ module Api
 
         if @image.save
           @image.add_tag(tagging_needed)
+          ::Galleries::ImageVariantJob.perform_later(@image)
           render json: @image, status: :created
         else
           render json: {
