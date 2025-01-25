@@ -3,6 +3,10 @@
   data: {role: "image", image_id: image.id}
 ) do %>
   <div class="flex justify-center">
-    <%= image_tag(image.file.variant(resize_to_limit: [200, 200])) %>
+    <% if image.file.variable? %>
+      <%= image_tag(image.file.variant(resize_to_limit: [200, 200])) %>
+    <% else %>
+      <%= image_tag(image.file) %>
+    <% end %>
   </div>
 <% end %>
