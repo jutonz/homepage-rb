@@ -4,7 +4,10 @@
     url: gallery_image_tag_search_path(gallery, image),
     method: :get,
     html: {
-      data: {turbo_frame: "tag-search"}
+      data: {
+        turbo_frame: "tag-search",
+        controller: "auto-submit-form"
+      }
     }
   ) do |form| %>
     <div class="flex w-full gap-3">
@@ -16,6 +19,9 @@
           autocorrect: "off",
           autocomplete: "off",
           aria: {label: "Tag search query"},
+          data: {
+            action: "input->auto-submit-form#submit"
+          }
         }
       ) %>
       <%= form.button(:submit, "Search") %>
