@@ -82,3 +82,5 @@ Shoulda::Matchers.configure do |config|
 end
 
 WebMock.disable_net_connect!(allow_localhost: true)
+
+Capybara.enable_aria_label = true

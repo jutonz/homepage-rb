@@ -3,5 +3,14 @@
   partial: "galleries/images/tags",
   locals: { tags: @image.tags }
 ) %>
+<%= turbo_stream.update(
+  "tag-search-form",
+  partial: "galleries/images/tag_searches/form",
+  locals: {
+    tag_search: Galleries::Images::TagSearch.new,
+    gallery: @image.gallery,
+    image: @image
+  }
+) %>
 <%= turbo_stream.remove("tag-search-result-#{@tag.id}") %>
 <%= turbo_stream.remove("recently-added-tag-#{@tag.id}") %>
