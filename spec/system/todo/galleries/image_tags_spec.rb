@@ -53,4 +53,18 @@ RSpec.describe "Gallery image tags", type: :system do
       text: tag2.name
     )
   end
+
+  it "automatically submits search form", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    tag = create(:galleries_tag, gallery:)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: tag.name)
+
+    expect(page).to have_css("[data-role=tag-search-result]", text: tag.name)
+  end
 end
