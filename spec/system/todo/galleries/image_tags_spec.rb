@@ -58,13 +58,17 @@ RSpec.describe "Gallery image tags", type: :system do
     user = create(:user)
     gallery = create(:gallery, user:)
     image = create(:galleries_image, gallery:)
-    tag = create(:galleries_tag, gallery:)
+    tag = create(:galleries_tag, gallery:, name: "tagging")
     login_as(user)
 
     visit(gallery_image_path(gallery, image))
 
-    fill_in("Tag search query", with: tag.name)
+    # does not auto submit short query
+    fill_in("Tag search query", with: "tag")
+    expect(page).not_to have_css("[data-role=tag-search-result]", text: tag.name)
 
+    # auto submits after 3 characters
+    fill_in("Tag search query", with: "tagg")
     expect(page).to have_css("[data-role=tag-search-result]", text: tag.name)
   end
 end
