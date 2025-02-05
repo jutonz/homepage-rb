@@ -11,6 +11,11 @@ module Galleries
           image: @image,
           query: tag_search_params[:query]
         )
+
+        respond_to do |format|
+          format.turbo_stream
+          format.html { render "galleries/images/show" }
+        end
       end
 
       private

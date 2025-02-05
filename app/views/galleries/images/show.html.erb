@@ -33,12 +33,11 @@
 <h2 class="text-xl mt-10 mb-5">Tags</h2>
 
 <div class="flex flex-col">
-  <%= render(partial: "tags", locals: {tags: @image.tags.order(:name)}) %>
-
-  <%= render(Galleries::Images::TagSearch.new(
-    gallery: @gallery,
-    image: @image
-  )) %>
+  <%= render(
+    partial: "galleries/images/tags",
+    locals: {tags: @image.tags.order(:name)}
+  ) %>
+  <%= render(@tag_search) %>
 </div>
 
 <div class="pb-32"></div>

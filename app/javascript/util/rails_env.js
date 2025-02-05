@@ -4,6 +4,6 @@ export function railsEnv() {
     ?.getAttribute("content")
 }
 
-export function isProduction() {
-  return railsEnv() === "production"
+export function isTest() {
+  return railsEnv() === "test"
 }

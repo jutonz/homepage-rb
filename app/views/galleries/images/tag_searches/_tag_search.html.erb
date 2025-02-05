@@ -1,54 +1,19 @@
-<%= turbo_frame_tag("tag-search") do %>
-  <h3 class="text-lg mb-3">Add tag</h3>
+<h3 class="text-lg mb-3">Add tag</h3>
 
-  <%= render(
-    partial: "galleries/images/tag_searches/form",
-    locals: {
-      tag_search:,
-      gallery: @gallery,
-      image: @image
-    }
-  ) %>
+<%= render(
+  partial: "galleries/images/tag_searches/form",
+  locals: {
+    tag_search:,
+    gallery: @gallery,
+    image: @image
+  }
+) %>
 
-  <div>
-    <% if tag_search.query.present? %>
-      <%= simple_form_for(
-        [@gallery, Galleries::Tag.new(name: tag_search.query)],
-        html: {
-          data: {turbo: false}
-        },
-        url: gallery_tags_path(@gallery, add_to_image_id: @image.id)
-      ) do |f| %>
-        <%= f.input(:name, as: :hidden) %>
-        <%= f.button(:submit, "Create new tag") %>
-      <% end %>
-    <% end %>
-
-    <% Array(tag_search.results).each do |tag| %>
-      <%= turbo_frame_tag("tag-search-result-#{tag.id}") do %>
-        <div class="flex gap-4 my-2" data-role="tag-search-result">
-          <%= tag.display_name %>
-          <%= button_to(
-            "Add tag",
-            gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
-            class: "button"
-          ) %>
-        </div>
-      <% end %>
-    <% end %>
-
-    <h4 class="text-md mt-10">Recently used tags</h4>
-    <% @gallery.recently_used_tags(excluded_image_ids: [@image.id]).each do |tag| %>
-      <%= turbo_frame_tag("recently-added-tag-#{tag.id}") do %>
-        <div class="flex gap-4 my-2">
-          <%= tag.display_name %>
-          <%= button_to(
-            "Add tag",
-            gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
-            class: "button"
-          ) %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
-<% end %>
+<%= render(
+  partial: "galleries/images/tag_searches/results",
+  locals: {
+    tag_search:,
+    gallery: @gallery,
+    image: @image
+  }
+) %>
