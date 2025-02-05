@@ -8,11 +8,13 @@ module Galleries
       attr_accessor :query
 
       def results
-        return Tag.none if query.nil?
+        ilike = query&.strip
+        return Tag.none if ilike.nil?
+        ilike = ActiveRecord::Base.sanitize_sql_like(ilike)
 
         gallery
           .tags
-          .where("galleries_tags.name ILIKE ?", "%#{query.strip}%")
+          .where("galleries_tags.name ILIKE ?", "%#{ilike}%")
           .where.not(id: image.tags.select(:id))
           .order(Galleries::Tag.arel_table[:name])
       end

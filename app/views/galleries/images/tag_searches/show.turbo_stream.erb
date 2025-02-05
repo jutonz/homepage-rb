@@ -1,0 +1,9 @@
+<%= turbo_stream.replace(
+  "tag-search-results",
+  partial: "galleries/images/tag_searches/results",
+  locals: {
+    tag_search: @tag_search,
+    gallery: @gallery,
+    image: @image
+  }
+) %>

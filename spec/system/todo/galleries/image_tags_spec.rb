@@ -30,6 +30,33 @@ RSpec.describe "Gallery image tags", type: :system do
     expect(image.reload.tags).to be_empty
   end
 
+  it "can add and remove tags without JS" do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    tag = create(:galleries_tag, gallery:)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    click_on("Search")
+    within("[data-role=tag-search-result]", text: tag.name) do
+      click_on("Add tag")
+    end
+    expect(page).not_to have_css(
+      "[data-role=tag-search-result]",
+      text: tag.name
+    )
+
+    within("turbo-frame#tag_#{tag.id}", text: tag.name) do
+      expect(image.reload.tags).to include(tag)
+      click_on("Remove")
+    end
+
+    expect(page).not_to have_css("turbo-frame#tag_#{tag.id}")
+    expect(image.reload.tags).to be_empty
+  end
+
   it "clears the search input when adding a tag", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
