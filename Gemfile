@@ -25,7 +25,6 @@ gem "warden"
 
 # Sentry
 gem "stackprof"
-gem "sentry-ruby"
 gem "sentry-rails"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]

@@ -454,7 +454,6 @@ DEPENDENCIES
   rspec-rails
   selenium-webdriver
   sentry-rails
-  sentry-ruby
   shoulda-matchers
   simple_form
   solid_queue
