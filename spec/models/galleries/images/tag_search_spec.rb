@@ -83,15 +83,25 @@ RSpec.describe Galleries::Images::TagSearch do
       expect(result).to be_blank
     end
 
-    it "orders tags by name" do
+    it "orders tags by image_tags_count" do
       search = build(:galleries_images_tag_search, query: "Tag")
       gallery = search.gallery
-      tag_b = create(:galleries_tag, gallery:, name: "Tag B")
-      tag_a = create(:galleries_tag, gallery:, name: "Tag A")
+      tag_b = create(
+        :galleries_tag,
+        gallery:,
+        name: "Tag B",
+        image_tags_count: 2
+      )
+      tag_a = create(
+        :galleries_tag,
+        gallery:,
+        name: "Tag A",
+        image_tags_count: 1
+      )
 
       result = search.results.pluck(:name)
 
-      expect(result).to eql([tag_a.name, tag_b.name])
+      expect(result).to eql([tag_b.name, tag_a.name])
     end
   end
 end

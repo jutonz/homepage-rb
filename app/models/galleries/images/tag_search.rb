@@ -16,7 +16,7 @@ module Galleries
           .tags
           .where("galleries_tags.name ILIKE ?", "%#{ilike}%")
           .where.not(id: image.tags.select(:id))
-          .order(Galleries::Tag.arel_table[:name])
+          .order(image_tags_count: :desc)
       end
     end
   end
