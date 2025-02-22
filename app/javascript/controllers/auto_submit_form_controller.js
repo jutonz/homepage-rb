@@ -5,7 +5,7 @@ import { isTest } from "util/rails_env"
 export default class extends Controller {
   connect() {
     this.debouncedSubmit = debounce((event) => {
-      if (event.target.value.length > 3) {
+      if (event.target.value.length > 2) {
         this.element.requestSubmit()
       }
     }, this.timeoutDuration())

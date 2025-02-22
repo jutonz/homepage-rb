@@ -91,11 +91,11 @@ RSpec.describe "Gallery image tags", type: :system do
     visit(gallery_image_path(gallery, image))
 
     # does not auto submit short query
-    fill_in("Tag search query", with: "tag")
+    fill_in("Tag search query", with: "ta")
     expect(page).not_to have_css("[data-role=tag-search-result]", text: tag.name)
 
-    # auto submits after 3 characters
-    fill_in("Tag search query", with: "tagg")
+    # auto submits after 2 characters
+    fill_in("Tag search query", with: "tag")
     expect(page).to have_css("[data-role=tag-search-result]", text: tag.name)
   end
 end
