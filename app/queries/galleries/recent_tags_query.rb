@@ -1,23 +1,5 @@
 module Galleries
   class RecentTagsQuery
-    def self.call(...) = new(...).call
-
-    def initialize(gallery:, image_limit:, excluded_image_ids: nil)
-      @gallery = gallery
-      @excluded_image_ids = excluded_image_ids || -1
-      @image_limit = image_limit
-    end
-
-    def call
-      Galleries::Tag.find_by_sql(sanitized_sql)
-    end
-
-    private
-
-    attr_reader :gallery
-    attr_reader :excluded_image_ids
-    attr_reader :image_limit
-
     SQL = <<~SQL
       SELECT DISTINCT
         galleries_tags.*,
@@ -44,6 +26,24 @@ module Galleries
       ORDER BY galleries_tags.name
       ;
     SQL
+
+    def self.call(...) = new(...).call
+
+    def initialize(gallery:, image_limit:, excluded_image_ids: nil)
+      @gallery = gallery
+      @excluded_image_ids = excluded_image_ids || -1
+      @image_limit = image_limit
+    end
+
+    def call
+      Galleries::Tag.find_by_sql(sanitized_sql)
+    end
+
+    private
+
+    attr_reader :gallery
+    attr_reader :excluded_image_ids
+    attr_reader :image_limit
 
     def sanitized_sql
       ActiveRecord::Base.sanitize_sql_array([

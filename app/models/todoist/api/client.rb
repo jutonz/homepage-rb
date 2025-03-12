@@ -3,6 +3,8 @@
 module Todoist
   module Api
     class Client
+      URL = "https://api.todoist.com"
+
       def self.get(...) = new.get(...)
 
       def self.post(...) = new.post(...)
@@ -19,7 +21,6 @@ module Todoist
 
       attr_reader :connection
 
-      URL = "https://api.todoist.com"
       def build_connection
         Faraday.new(url: URL) do |conn|
           conn.headers["Authorization"] = "Bearer #{api_key}"
