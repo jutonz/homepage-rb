@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe Galleries::Images::TagSearch do
+RSpec.describe Galleries::TagSearch do
   describe "#results" do
     it "returns nothing if the query is nil" do
       search = build(
-        :galleries_images_tag_search,
+        :galleries_tag_search,
         query: nil
       )
 
@@ -13,13 +13,11 @@ RSpec.describe Galleries::Images::TagSearch do
 
     it "returns tags matching the name" do
       gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
       matching_tag = create(:galleries_tag, gallery:, name: "hello")
       _not_matching_tag = create(:galleries_tag, gallery:, name: "goodbye")
       search = build(
-        :galleries_images_tag_search,
+        :galleries_tag_search,
         gallery:,
-        image:,
         query: "hello"
       )
 
@@ -30,12 +28,10 @@ RSpec.describe Galleries::Images::TagSearch do
 
     it "supports partial matches" do
       gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
       tag = create(:galleries_tag, gallery:, name: "hello")
       search = build(
-        :galleries_images_tag_search,
+        :galleries_tag_search,
         gallery:,
-        image:,
         query: "hel"
       )
 
@@ -46,12 +42,10 @@ RSpec.describe Galleries::Images::TagSearch do
 
     it "ignores trailing whitespace in the query" do
       gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
       tag = create(:galleries_tag, gallery:, name: "hello")
       search = build(
-        :galleries_images_tag_search,
+        :galleries_tag_search,
         gallery:,
-        image:,
         query: "hello "
       )
 
@@ -61,7 +55,7 @@ RSpec.describe Galleries::Images::TagSearch do
     end
 
     it "doesn't return tags belonging to other galleries" do
-      search = build(:galleries_images_tag_search, query: "hello")
+      search = build(:galleries_tag_search, query: "hello")
       gallery = search.gallery
       tag = create(:galleries_tag, gallery:, name: "hello")
       _other_tag = create(:galleries_tag, name: "hello")
@@ -71,8 +65,8 @@ RSpec.describe Galleries::Images::TagSearch do
       expect(result).to eql([tag.id])
     end
 
-    it "excludes tags already applied to the image" do
-      search = build(:galleries_images_tag_search, query: "hello")
+    it "if given an image, excludes tags applied to the image" do
+      search = build(:galleries_tag_search, :with_image, query: "hello")
       gallery = search.gallery
       image = search.image
       tag = create(:galleries_tag, gallery:, name: "hello")
@@ -84,7 +78,7 @@ RSpec.describe Galleries::Images::TagSearch do
     end
 
     it "orders tags by image_tags_count" do
-      search = build(:galleries_images_tag_search, query: "Tag")
+      search = build(:galleries_tag_search, query: "Tag")
       gallery = search.gallery
       tag_b = create(
         :galleries_tag,

@@ -5,9 +5,9 @@
 ) %>
 <%= turbo_stream.update(
   "tag-search-form",
-  partial: "galleries/images/tag_searches/form",
+  partial: "galleries/tag_searches/form",
   locals: {
-    tag_search: Galleries::Images::TagSearch.new,
+    tag_search: Galleries::TagSearch.new,
     gallery: @image.gallery,
     image: @image
   }

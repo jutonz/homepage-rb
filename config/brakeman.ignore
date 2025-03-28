@@ -1,0 +1,39 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "f9bff64d933d72241f1edbc64b646fb6b53edc0ebf4bafdc8d1b50f126150d88",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/galleries/images/show.html.erb",
+      "line": 40,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => Galleries::TagSearch.new(:gallery => find_gallery, :image => find_image, :query => params[:tag_query]), {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Galleries::ImagesController",
+          "method": "show",
+          "line": 13,
+          "file": "app/controllers/galleries/images_controller.rb",
+          "rendered": {
+            "name": "galleries/images/show",
+            "file": "app/views/galleries/images/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "galleries/images/show"
+      },
+      "user_input": "params[:tag_query]",
+      "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
+      "note": ""
+    }
+  ],
+  "brakeman_version": "7.0.0"
+}
