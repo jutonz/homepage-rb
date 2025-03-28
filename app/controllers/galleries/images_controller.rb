@@ -9,7 +9,7 @@ module Galleries
     def show
       @gallery = find_gallery
       @image = find_image
-      @tag_search = Galleries::Images::TagSearch.new(
+      @tag_search = Galleries::TagSearch.new(
         gallery: @gallery,
         image: @image,
         query: params[:tag_query]

@@ -1,7 +1,7 @@
 <%= turbo_frame_tag("tag-search-form") do %>
   <%= simple_form_for(
     tag_search,
-    url: gallery_image_tag_search_path(gallery, image),
+    url: gallery_tag_search_path(gallery),
     method: :get,
     html: {
       data: {
@@ -10,7 +10,12 @@
       }
     }
   ) do |form| %>
-    <div class="flex w-full gap-3">
+  <div class="flex w-full gap-3">
+      <%= form.input(
+        :image_id,
+        as: :hidden,
+        input_html: {value: image.id},
+      ) %>
       <%= form.input(
         :query,
         label: false,

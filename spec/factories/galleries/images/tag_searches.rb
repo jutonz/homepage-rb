@@ -1,8 +1,10 @@
 FactoryBot.define do
-  factory :galleries_images_tag_search, class: "Galleries::Images::TagSearch" do
+  factory :galleries_tag_search, class: "Galleries::TagSearch" do
     skip_create
+    gallery factory: :gallery
 
-    image factory: :galleries_image
-    gallery { instance.image.gallery }
+    trait :with_image do
+      image { build(:galleries_image, gallery: instance.gallery) }
+    end
   end
 end
