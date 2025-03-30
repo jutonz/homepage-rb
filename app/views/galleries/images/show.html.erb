@@ -37,7 +37,12 @@
     partial: "galleries/images/tags",
     locals: {tags: @image.tags.order(:name)}
   ) %>
-  <%= render(@tag_search) %>
+  <%= render(
+    partial: "galleries/images/tag_searches/tag_search",
+    locals: {
+      tag_search: @tag_search
+    }
+  ) %>
 </div>
 
 <div class="pb-32"></div>

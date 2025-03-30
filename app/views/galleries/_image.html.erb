@@ -1,6 +1,6 @@
 <%= link_to(
   gallery_image_path(@gallery, image),
-  data: {role: "image", image_id: image.id}
+  data: {role: "image", image_id: image.id, turbo: false}
 ) do %>
   <div class="flex justify-center">
     <% if image.file.variable? %>

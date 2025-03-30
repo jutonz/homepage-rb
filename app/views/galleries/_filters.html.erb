@@ -1,0 +1,79 @@
+<div class="">
+  <h2 class="text-xl mb-5">Filter by tag</h2>
+
+  <div class="flex mb-4 gap-2 flex-wrap">
+    <% @filter_tags.each do |tag| %>
+      <%= link_to(
+        url_for(
+          tag_ids: params.fetch(:tag_ids, []) - [tag.id.to_s],
+          tag_search: {query: @tag_search.query}
+        ),
+        class: "bg-gray-200 rounded-full px-4 py-2",
+        data: {
+          turbo: false,
+          role: "tag-filter-remove-button",
+        }
+      ) do %>
+        <span>×</span>
+        <span class="font-bold">
+          <%= tag.name %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= turbo_frame_tag("gallery-tag-search") do %>
+    <%= simple_form_for(
+      @tag_search,
+      url: url_for,
+      method: :get,
+      html: {
+        data: {
+          controller: "auto-submit-form"
+        },
+        class: "w-full",
+      }
+    ) do |form| %>
+      <% params.fetch(:tag_ids, []).each do |tag_id| %>
+        <input name="tag_ids[]" value="<%= tag_id %>" type="hidden" />
+      <% end %>
+      <div class="flex gap-3">
+        <%= form.input(
+          :query,
+          label: false,
+          wrapper_html: {class: "grow"},
+          input_html: {
+            autocorrect: "off",
+            autocomplete: "off",
+            aria: {label: "Tag search query"},
+            data: {
+              action: "input->auto-submit-form#submit",
+              turbo_permanent: true
+            },
+            class: "w-full"
+          }
+        ) %>
+        <%= form.button(:submit, "Search") %>
+      </div>
+    <% end %>
+
+    <%= turbo_frame_tag("gallery-tag-search-results") do %>
+      <% Array(@tag_search.results).each do |tag| %>
+        <% next if @filter_tags.include?(tag) %>
+        <div class="flex gap-4 my-2" data-role="gallery-tag-search-result">
+          <%= tag.display_name %>
+          <%= link_to(
+            "Add",
+            gallery_path(
+              @gallery,
+              tag_search: {query: @tag_search.query},
+              tag_ids: (params.fetch(:tag_ids, []) + [tag.id]).uniq
+            ),
+            class: "button",
+            data: {turbo: false}
+          ) %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
+</div>

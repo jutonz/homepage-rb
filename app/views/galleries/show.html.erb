@@ -39,7 +39,22 @@
   <% end %>
 <% end %>
 
-<%= render(
-  partial: "images",
-  locals: {images: @images}
-) %>
+<div class="grid gap-5 grid-cols-1 lg:grid-cols-4">
+  <%= turbo_frame_tag("gallery-filters") do %>
+    <%= render(
+      partial: "filters",
+      locals: {
+        tags: @filter_tags
+      }
+    ) %>
+  <% end %>
+
+  <div class="lg:col-span-3">
+    <%= turbo_frame_tag("gallery-images") do %>
+      <%= render(
+        partial: "images",
+        locals: {images: @images}
+      ) %>
+    <% end %>
+  </div>
+</div>
