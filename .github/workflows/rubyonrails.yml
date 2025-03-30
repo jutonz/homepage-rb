@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - run: sudo apt install imagemagick libvips
+      - run: sudo apt-get update && sudo apt-get install imagemagick libvips
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:

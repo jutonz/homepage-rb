@@ -29,6 +29,14 @@ module Galleries
 
     validates :file, presence: true
 
+    def self.by_tags(tag_ids)
+      joins(:tags)
+        .where(tags: {id: tag_ids})
+        .group(arel_table[:id])
+        .having("COUNT(tags.id) = ?", Array(tag_ids).size)
+        .distinct
+    end
+
     def add_tag(tag)
       unless tags.include?(tag)
         tags << tag

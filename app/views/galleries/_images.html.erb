@@ -1,15 +1,10 @@
 <div class="flex flex-col gap-4 mb-20">
   <div class="grid gap-4 grid-cols-2 sm:grid-cols-5">
     <%= render(partial: "galleries/image", collection: images) %>
+    <div class="hidden only:flex flex-row">
+      No images.
+    </div>
   </div>
-  <span class="hidden only:block">
-    This gallery doesn't have any images yet.
-    <br />
-    <%= link_to(
-      "Add some",
-      new_gallery_bulk_upload_path(@gallery)
-    ) %>
-  </span>
 
   <div class="flex justify-center">
     <%= paginate images %>

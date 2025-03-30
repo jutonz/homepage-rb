@@ -7,12 +7,18 @@ class GalleriesController < ApplicationController
 
   def show
     @gallery = find_gallery
+    @filter_tags = find_filter_tags
     @images =
       @gallery
         .images
         .includes(file_attachment: :blob)
         .order(created_at: :desc)
+        .then { @filter_tags.any? ? it.by_tags(@filter_tags) : it }
         .page(params[:page])
+    @tag_search = Galleries::TagSearch.new(
+      gallery: @gallery,
+      query: params.dig(:tag_search, :query)
+    )
   end
 
   def new
@@ -70,5 +76,10 @@ class GalleriesController < ApplicationController
             Time.current
           end
       end
+  end
+
+  def find_filter_tags
+    ids = params.fetch(:tag_ids, [])
+    @gallery.tags.where(id: ids)
   end
 end
