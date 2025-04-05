@@ -45,12 +45,11 @@ jobs:
       - run: ./bin/brakeman
 
   deploy:
-    if: github.ref == 'refs/heads/main'
+    #if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
       KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
-      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
     concurrency:
       group: deploy
     steps:
@@ -58,15 +57,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: SSH Auth
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-      - run: "ssh-keyscan -H jutonz.com > ~/.ssh/known_hosts"
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         env:
           BUNDLE_GEMFILE: ./kamal/Gemfile
         with:
           bundler-cache: true
-      - run: bin/kamal deploy
+      - run: bin/kamal build push
