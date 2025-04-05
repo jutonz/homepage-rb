@@ -70,12 +70,12 @@ jobs:
           method: service-account
           k8s-url: ${{ secrets.KUBERNETES_URL }}
           k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
-      - run: kubectl get deployments -nhomepage-rb
+      #- run: kubectl get deployments -nhomepage-rb
       - run: kubectl set image deployment/web web=jutonz/homepage-rb:latest -nhomepage-rb
       # - uses: actions-hub/kubectl@master
       #   env:
       #     KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
       #   with:
-      #     args: get pods
+      #     args: get deployments -nhomepage-rb
       - run: bin/kamal build create
       - run: bin/kamal build push
