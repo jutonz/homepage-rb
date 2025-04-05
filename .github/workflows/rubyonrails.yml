@@ -77,5 +77,5 @@ jobs:
           method: service-account
           k8s-url: ${{ secrets.KUBERNETES_URL }}
           k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
-      - run: kubectl set image deployment/web web=jutonz/homepage-rb:latest -nhomepage-rb
+      - run: kubectl set image deployment/web web=jutonz/homepage-rb:${{ github.sha }} -nhomepage-rb
       - run: kubectl rollout status deployment/web -nhomepage-rb
