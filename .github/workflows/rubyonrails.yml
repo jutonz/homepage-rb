@@ -50,6 +50,7 @@ jobs:
     env:
       KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
       KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
     concurrency:
       group: deploy
     steps:
@@ -57,12 +58,18 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: SSH Auth
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+      - run: "ssh-keyscan -H jutonz.com > ~/.ssh/known_hosts"
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         env:
           BUNDLE_GEMFILE: ./kamal/Gemfile
         with:
           bundler-cache: true
+      - run: bin/kamal deploy
       - uses: azure/setup-kubectl@v4
       - name: Set the Kubernetes context
         uses: azure/k8s-set-context@v4
@@ -70,12 +77,5 @@ jobs:
           method: service-account
           k8s-url: ${{ secrets.KUBERNETES_URL }}
           k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
-      #- run: kubectl get deployments -nhomepage-rb
       - run: kubectl set image deployment/web web=jutonz/homepage-rb:latest -nhomepage-rb
-      # - uses: actions-hub/kubectl@master
-      #   env:
-      #     KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-      #   with:
-      #     args: get deployments -nhomepage-rb
-      - run: bin/kamal build create
-      - run: bin/kamal build push
+      - run: kubectl rollout status deployment/web -nhomepage-rb
