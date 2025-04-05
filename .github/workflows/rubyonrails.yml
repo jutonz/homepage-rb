@@ -45,7 +45,7 @@ jobs:
       - run: ./bin/brakeman
 
   deploy:
-    #if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
@@ -74,6 +74,7 @@ jobs:
       - name: Set the Kubernetes context
         uses: azure/k8s-set-context@v4
         with:
+          # https://github.com/Azure/k8s-set-context?tab=readme-ov-file#service-account-approach
           method: service-account
           k8s-url: ${{ secrets.KUBERNETES_URL }}
           k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
