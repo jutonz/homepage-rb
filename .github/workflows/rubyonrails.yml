@@ -64,3 +64,19 @@ jobs:
         with:
           bundler-cache: true
       - run: bin/kamal build push
+      - name: Set the Kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          method: service-account
+          k8s-url: ${{ secrets.KUBERNETES_URL }}
+          k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+      - name: Deploy to the Kubernetes cluster
+        uses: azure/k8s-deploy@v5
+        with:
+          pull-images: false
+          namespace: homepage-rb
+          manifests: |
+            kubernetes
+          images: |
+            # The full URL of your image
+            jutonz/homepage-rb:latest
