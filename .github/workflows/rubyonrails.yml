@@ -70,3 +70,13 @@ jobs:
         with:
           bundler-cache: true
       - run: bin/kamal deploy
+      - uses: azure/setup-kubectl@v4
+      - name: Set the Kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          # https://github.com/Azure/k8s-set-context?tab=readme-ov-file#service-account-approach
+          method: service-account
+          k8s-url: ${{ secrets.KUBERNETES_URL }}
+          k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+      - run: kubectl set image deployment/web web=jutonz/homepage-rb:${{ github.sha }} -nhomepage-rb
+      - run: kubectl rollout status deployment/web -nhomepage-rb
