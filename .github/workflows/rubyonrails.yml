@@ -45,12 +45,8 @@ jobs:
       - run: ./bin/brakeman
 
   deploy:
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    # env:
-      # KAMAL_REGISTRY_USERNAME: ${{ secrets.KAMAL_REGISTRY_USERNAME }}
-      # KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
-      # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
     concurrency:
       group: deploy
     steps:
