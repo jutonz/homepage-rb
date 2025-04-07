@@ -7,3 +7,6 @@
 - match:
     dependency_name: "standard"
     update_type: semver:patch
+- match:
+    dependency_name: "tailwindcss-rails"
+    update_type: semver:patch
