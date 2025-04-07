@@ -5,6 +5,9 @@
     dependency_name: "brakeman"
     update_type: semver:minor
 - match:
+    dependency_name: "selenium-webdriver"
+    update_type: semver:minor
+- match:
     dependency_name: "standard"
     update_type: semver:patch
 - match:
