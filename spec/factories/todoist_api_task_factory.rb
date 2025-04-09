@@ -8,7 +8,7 @@ FactoryBot.define do
     content { "Do something" }
     creator_id { "123" }
     description { "Please?" }
-    sequence(:id) { _1.to_s }
+    sequence(:id) { it.to_s }
     is_completed { false }
     priority { 1 }
     project_id { "123" }

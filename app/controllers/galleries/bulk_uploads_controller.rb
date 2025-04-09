@@ -13,7 +13,7 @@ module Galleries
         bulk_upload_params
           .to_h
           .merge({gallery: @gallery})
-          .then { Galleries::BulkUpload.new(_1) }
+          .then { Galleries::BulkUpload.new(it) }
 
       if @bulk_upload.save
         redirect_to @gallery, notice: "Bulk upload successful"

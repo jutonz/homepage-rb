@@ -7,7 +7,7 @@ module Todoist
     end
 
     def perform
-      tasks.map { rescheule_task(_1) }
+      tasks.map { rescheule_task(it) }
     end
 
     private

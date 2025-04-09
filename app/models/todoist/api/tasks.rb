@@ -29,7 +29,7 @@ module Todoist
         Todoist::Api::Client
           .get("/rest/v2/tasks/#{id}")
           .body
-          .then { from_json(_1) }
+          .then { from_json(it) }
       end
 
       # https://developer.todoist.com/rest/v2/#create-a-new-task
@@ -51,7 +51,7 @@ module Todoist
         Todoist::Api::Client
           .post("/rest/v2/tasks", params)
           .body
-          .then { from_json(_1) }
+          .then { from_json(it) }
       end
 
       # https://developer.todoist.com/rest/v2/#get-active-tasks
@@ -61,7 +61,7 @@ module Todoist
         Todoist::Api::Client
           .get("/rest/v2/tasks", params)
           .body
-          .map { from_json(_1) }
+          .map { from_json(it) }
       end
 
       # https://developer.todoist.com/rest/v2/#update-a-task
@@ -69,7 +69,7 @@ module Todoist
         Todoist::Api::Client
           .post("/rest/v2/tasks/#{id}", params)
           .body
-          .then { from_json(_1) }
+          .then { from_json(it) }
       end
 
       def self.from_json(json)

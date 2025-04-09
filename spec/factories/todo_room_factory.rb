@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory(:todo_room, class: "Todo::Room") do
-    sequence(:name) { "Room#{_1}" }
+    sequence(:name) { "Room#{it}" }
     user
 
     trait :with_task do

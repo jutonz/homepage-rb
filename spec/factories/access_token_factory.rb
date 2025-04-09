@@ -4,10 +4,10 @@ FactoryBot.define do
       user { nil }
     end
 
-    sequence(:email_sequence) { "user#{_1}@exmaple.com" }
+    sequence(:email_sequence) { "user#{it}@exmaple.com" }
     email { user&.email || email_sequence }
 
-    sequence(:id_sequence) { _1.to_s }
+    sequence(:id_sequence) { it.to_s }
     id { user&.foreign_id || id_sequence }
 
     initialize_with do

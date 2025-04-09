@@ -41,7 +41,7 @@ RSpec.describe Galleries::ImagesController do
 
       get(gallery_image_path(gallery, image))
 
-      tags = page.all("[data-role=tag-link]").map { _1.text.strip }
+      tags = page.all("[data-role=tag-link]").map { it.text.strip }
       expect(tags).to eql(["tag 1 (1)", "tag 2 (1)"])
     end
   end
