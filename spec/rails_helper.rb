@@ -36,7 +36,7 @@ require "view_component/test_helpers"
 require "webmock/rspec"
 require "super_diff/rspec-rails"
 
-Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { require _1 }
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { require it }
 
 RSpec.configure do |config|
   config.fixture_paths = [

@@ -23,7 +23,7 @@
 #
 FactoryBot.define do
   factory :galleries_tag, class: "Galleries::Tag" do
-    sequence(:name) { "Tag #{_1}" }
+    sequence(:name) { "Tag #{it}" }
     gallery
     user { instance.gallery.user || build(:user) }
   end

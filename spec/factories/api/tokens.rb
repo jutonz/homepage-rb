@@ -18,7 +18,7 @@
 FactoryBot.define do
   factory :api_token, class: "Api::Token" do
     user
-    sequence(:name) { "Api Token #{_1}" }
-    sequence(:token) { "token#{_1}" }
+    sequence(:name) { "Api Token #{it}" }
+    sequence(:token) { "token#{it}" }
   end
 end

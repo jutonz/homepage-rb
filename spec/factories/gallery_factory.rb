@@ -21,7 +21,7 @@
 FactoryBot.define do
   factory :gallery, class: "Gallery" do
     user
-    sequence(:name) { "Gallery #{_1}" }
+    sequence(:name) { "Gallery #{it}" }
 
     trait :hidden do
       hidden_at { Time.current }

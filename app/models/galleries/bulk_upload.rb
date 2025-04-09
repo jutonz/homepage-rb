@@ -36,7 +36,7 @@ module Galleries
       # Generate inline since we will immediately redirect to page where
       # variant is shown after this returns. We also already should have the
       # image downloaded so processing will be faster this way.
-      images.each { Galleries::ImageVariantJob.perform_now(_1) }
+      images.each { Galleries::ImageVariantJob.perform_now(it) }
     end
   end
 end
