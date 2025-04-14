@@ -29,5 +29,7 @@ module Homepage
     config.solid_queue.connects_to = {database: {writing: :queue}}
 
     config.active_storage.service = :block_storage
+
+    config.x.enable_metrics = false
   end
 end
