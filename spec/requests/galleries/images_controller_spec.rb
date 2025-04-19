@@ -44,6 +44,24 @@ RSpec.describe Galleries::ImagesController do
       tags = page.all("[data-role=tag-link]").map { it.text.strip }
       expect(tags).to eql(["tag 1 (1)", "tag 2 (1)"])
     end
+
+    it "shows similar images" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image1, image2 = create_pair(:galleries_image, gallery:)
+      tag = create(:galleries_tag, gallery:)
+      image1.add_tag(tag)
+      image1.add_tag(tag)
+      login_as(user)
+
+      get(gallery_image_path(gallery, image1))
+
+      within("[data-role=similar-images]") do
+        expect(page).to have_css(
+          "[data-image-id='#{image2.id}']"
+        )
+      end
+    end
   end
 
   describe "update" do

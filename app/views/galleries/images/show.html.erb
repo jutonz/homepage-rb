@@ -1,8 +1,7 @@
 <%= render(HeaderComponent.new(
   title: "Image"
 )) do |c| %>
-  <%= c.with_crumb("Home", home_path) %>
-  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb("Home", home_path) %> <%= c.with_crumb("Galleries", galleries_path) %>
   <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
 
   <%= c.with_action do %>
@@ -43,6 +42,13 @@
       tag_search: @tag_search
     }
   ) %>
+</div>
+
+<div class="mt-5">
+  <%= render(SimilarImagesComponent.new(
+    image: @image,
+    similar_images: Galleries::SimilarImages.new(image: @image)
+  )) %>
 </div>
 
 <div class="pb-32"></div>
