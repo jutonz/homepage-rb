@@ -1,12 +1,1 @@
-<%= link_to(
-  gallery_image_path(@gallery, image),
-  data: {role: "image", image_id: image.id, turbo: false}
-) do %>
-  <div class="flex justify-center">
-    <% if image.file.variable? %>
-      <%= image_tag(image.file.variant(:thumb)) %>
-    <% else %>
-      <%= image_tag(image.file) %>
-    <% end %>
-  </div>
-<% end %>
+<%= render(ImageComponent.new(image: image)) %>
