@@ -8,7 +8,7 @@ module Galleries
 
     def call
       ActiveRecord::Base.transaction do
-        image.image_similar_images.destroy_all
+        Galleries::ImageSimilarImage.where(parent_image: image).delete_all
         Galleries::ImageSimilarImage.insert_all(similar_images)
       end
     end
