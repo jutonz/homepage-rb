@@ -1,6 +1,6 @@
 module Galleries
   class ImageVariantJob < ApplicationJob
-    queue_as :default
+    queue_as :background
 
     def perform(image)
       if image.file.variable?
