@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ImageComponent, type: :component do
+RSpec.describe Galleries::ImageComponent, type: :component do
   it "renders a link to the image" do
     image = create(:galleries_image)
     component = described_class.new(image:)
