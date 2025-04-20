@@ -27,6 +27,14 @@ module Galleries
       dependent: :destroy
     has_many :tags, through: :image_tags
 
+    has_many :image_similar_images,
+      -> { order(:position) },
+      class_name: "Galleries::ImageSimilarImage",
+      inverse_of: :parent_image
+    has_many :similar_images,
+      through: :image_similar_images,
+      source: :image
+
     validates :file, presence: true
 
     def self.by_tags(tag_ids)
@@ -42,6 +50,13 @@ module Galleries
         tags << tag
         save!
       end
+
+      Galleries::UpdateSimilarImagesJob.perform_later(self)
+    end
+
+    def remove_tag(tag)
+      image_tags.where(tag:).destroy_all
+      Galleries::UpdateSimilarImagesJob.perform_later(self)
     end
   end
 end

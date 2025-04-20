@@ -6,7 +6,7 @@ class SimilarImagesComponent < ViewComponent::Base
       <h2 class="text-xl mb-4">Similar images</h2>
 
       <div class="flex gap-3 overflow-x-scroll">
-        <% @similar_images.take(5).each do |image| %>
+        <% @similar_images.take(20).each do |image| %>
           <div class="min-w-[100px]">
             <%= render(ImageComponent.new(image:)) %>
           </div>

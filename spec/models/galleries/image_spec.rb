@@ -22,6 +22,8 @@ RSpec.describe Galleries::Image do
   it { is_expected.to validate_presence_of(:file) }
   it { is_expected.to have_many(:image_tags) }
   it { is_expected.to have_many(:tags) }
+  it { is_expected.to have_many(:image_similar_images) }
+  it { is_expected.to have_many(:similar_images) }
 
   it "has a valid factory" do
     expect(create(:galleries_image)).to be_valid
@@ -49,6 +51,50 @@ RSpec.describe Galleries::Image do
       result = described_class.by_tags([tag1, tag2]).pluck(:id)
 
       expect(result).to eql([has_both_tags.id])
+    end
+  end
+
+  describe "#add_tag" do
+    it "adds a tag to the image" do
+      image = create(:galleries_image)
+      tag = create(:galleries_tag)
+
+      image.add_tag(tag)
+
+      expect(image.reload.tag_ids).to eql([tag.id])
+    end
+
+    it "enqueues UpdateSimilarImagesJob" do
+      image = create(:galleries_image)
+      tag = create(:galleries_tag)
+      expect(Galleries::UpdateSimilarImagesJob)
+        .to receive(:perform_later)
+        .with(image)
+
+      image.add_tag(tag)
+    end
+  end
+
+  describe "#remove_tag" do
+    it "removes a tag from the image" do
+      image = create(:galleries_image)
+      tag = create(:galleries_tag)
+      create(:galleries_image_tag, image:, tag:)
+
+      image.remove_tag(tag)
+
+      expect(image.reload.tag_ids).to be_blank
+    end
+
+    it "enqueues UpdateSimilarImagesJob" do
+      image = create(:galleries_image)
+      tag = create(:galleries_tag)
+      create(:galleries_image_tag, image:, tag:)
+      expect(Galleries::UpdateSimilarImagesJob)
+        .to receive(:perform_later)
+        .with(image)
+
+      image.remove_tag(tag)
     end
   end
 end

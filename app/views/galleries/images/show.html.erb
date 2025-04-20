@@ -47,7 +47,7 @@
 <div class="mt-5">
   <%= render(SimilarImagesComponent.new(
     image: @image,
-    similar_images: Galleries::SimilarImages.new(image: @image)
+    similar_images: @image.similar_images
   )) %>
 </div>
 
