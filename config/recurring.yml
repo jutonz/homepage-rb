@@ -4,3 +4,6 @@ reschedule_rollable_tasks:
 tagging_needed:
   class: "Galleries::TaggingNeededJob"
   schedule: "0 22 * * *" # daily at 10pm
+solid_queue_metrics:
+  class: "Metrics::SolidQueueMetricsJob"
+  schedule: "0 * * * *" # every minute
