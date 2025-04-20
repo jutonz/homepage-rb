@@ -21,6 +21,7 @@ module Galleries
         Galleries::Image
           .joins(:tags)
           .where(tags: {id: image.tag_ids})
+          .distinct
           .where.not(id: image.id)
 
       this_weighted_tags = weighted_tags(image)
