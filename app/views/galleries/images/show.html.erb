@@ -45,10 +45,12 @@
 </div>
 
 <div class="mt-5">
-  <%= render(SimilarImagesComponent.new(
-    image: @image,
-    similar_images: @image.similar_images
-  )) %>
+  <%= turbo_frame_tag("similar-images") do %>
+    <%= render(Galleries::SimilarImagesComponent.new(
+      image: @image,
+      page: params.fetch(:similar_images_page, 1)
+    )) %>
+  <% end %>
 </div>
 
 <div class="pb-32"></div>
