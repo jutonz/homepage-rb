@@ -30,7 +30,8 @@ module Galleries
     has_many :image_similar_images,
       -> { order(:position) },
       class_name: "Galleries::ImageSimilarImage",
-      inverse_of: :parent_image
+      inverse_of: :parent_image,
+      dependent: :destroy
     has_many :similar_images,
       through: :image_similar_images,
       source: :image
