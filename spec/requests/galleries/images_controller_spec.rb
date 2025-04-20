@@ -92,6 +92,20 @@ RSpec.describe Galleries::ImagesController do
     end
   end
 
+  describe "destroy" do
+    it "deletes the image" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image1, image2 = create_pair(:galleries_image, gallery:)
+      create(:galleries_image_similar_image, parent_image: image1, image: image2)
+      login_as(user)
+
+      delete(gallery_image_path(gallery, image1))
+
+      expect(response).to redirect_to(gallery_path(gallery))
+    end
+  end
+
   def have_image(image)
     have_css("[data-role=image][data-image-id='#{image.id}']")
   end
