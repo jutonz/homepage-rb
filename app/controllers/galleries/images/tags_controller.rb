@@ -26,10 +26,7 @@ module Galleries
         @image = find_image
         @tag = find_tag
 
-        Galleries::ImageTag.find_by(
-          image: @image,
-          tag: @tag
-        ).destroy
+        @image.remove_tag(@tag)
 
         respond_to do |format|
           format.turbo_stream
