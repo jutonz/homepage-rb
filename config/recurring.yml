@@ -6,4 +6,4 @@ tagging_needed:
   schedule: "0 22 * * *" # daily at 10pm
 solid_queue_metrics:
   class: "Metrics::SolidQueueMetricsJob"
-  schedule: "* * * * *" # every minute
+  schedule: "*/15 * * * * *" # every 15 seconds
