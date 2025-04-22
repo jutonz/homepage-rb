@@ -22,7 +22,7 @@ RSpec.describe Galleries::Image do
   it { is_expected.to validate_presence_of(:file) }
   it { is_expected.to have_many(:image_tags).dependent(:destroy) }
   it { is_expected.to have_many(:tags) }
-  it { is_expected.to have_many(:image_similar_images).dependent(:destroy) }
+  it { is_expected.to have_many(:image_similar_images).dependent(:delete_all) }
   it { is_expected.to have_many(:similar_images) }
 
   it "has a valid factory" do
