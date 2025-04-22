@@ -26,7 +26,7 @@ require "rails_helper"
 RSpec.describe Galleries::Tag, type: :model do
   it { is_expected.to belong_to(:gallery) }
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to have_many(:image_tags) }
+  it { is_expected.to have_many(:image_tags).dependent(:destroy) }
   it { is_expected.to have_many(:images) }
 
   it { is_expected.to validate_presence_of(:name) }
@@ -67,6 +67,18 @@ RSpec.describe Galleries::Tag, type: :model do
       image.add_tag(tag)
 
       expect(tag.display_name).to eql("blah (1)")
+    end
+  end
+
+  describe "#tagging_needed?" do
+    it "is true if the name is 'tagging needed'" do
+      tag = build(:galleries_tag, :tagging_needed)
+      expect(tag.tagging_needed?).to be(true)
+    end
+
+    it "is false if the name is not 'tagging needed'" do
+      tag = build(:galleries_tag, name: "else")
+      expect(tag.tagging_needed?).to be(false)
     end
   end
 end

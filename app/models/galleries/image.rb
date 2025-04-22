@@ -52,12 +52,17 @@ module Galleries
         save!
       end
 
-      Galleries::UpdateSimilarImagesJob.perform_later(self)
+      unless tag.tagging_needed?
+        Galleries::UpdateSimilarImagesJob.perform_later(self)
+      end
     end
 
     def remove_tag(tag)
       image_tags.where(tag:).destroy_all
-      Galleries::UpdateSimilarImagesJob.perform_later(self)
+
+      unless tag.tagging_needed?
+        Galleries::UpdateSimilarImagesJob.perform_later(self)
+      end
     end
   end
 end

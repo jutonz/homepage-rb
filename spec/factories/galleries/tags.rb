@@ -26,5 +26,9 @@ FactoryBot.define do
     sequence(:name) { "Tag #{it}" }
     gallery
     user { instance.gallery.user || build(:user) }
+
+    trait :tagging_needed do
+      name { instance.class::TAGGING_NEEDED_NAME }
+    end
   end
 end

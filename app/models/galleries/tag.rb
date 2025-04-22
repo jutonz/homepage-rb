@@ -24,6 +24,8 @@
 
 module Galleries
   class Tag < ApplicationRecord
+    TAGGING_NEEDED_NAME = "tagging needed"
+
     belongs_to :gallery
     belongs_to :user
     has_many :image_tags,
@@ -39,11 +41,13 @@ module Galleries
       gallery
         .tags
         .create_with(user: gallery.user)
-        .find_or_create_by(name: "tagging needed")
+        .find_or_create_by(name: TAGGING_NEEDED_NAME)
     end
 
     def display_name
       "#{name} (#{image_tags.size})"
     end
+
+    def tagging_needed? = name == TAGGING_NEEDED_NAME
   end
 end

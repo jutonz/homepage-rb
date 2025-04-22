@@ -73,6 +73,15 @@ RSpec.describe Galleries::Image do
 
       image.add_tag(tag)
     end
+
+    it "does not enqueue UpdateSimilarImagesJob if the tag added is 'tagging needed'" do
+      image = create(:galleries_image)
+      tag = Galleries::Tag.tagging_needed(image.gallery)
+      expect(Galleries::UpdateSimilarImagesJob)
+        .not_to receive(:perform_later)
+
+      image.add_tag(tag)
+    end
   end
 
   describe "#remove_tag" do
@@ -93,6 +102,16 @@ RSpec.describe Galleries::Image do
       expect(Galleries::UpdateSimilarImagesJob)
         .to receive(:perform_later)
         .with(image)
+
+      image.remove_tag(tag)
+    end
+
+    it "does not enqueue UpdateSimilarImagesJob if the tag removed is 'tagging needed'" do
+      image = create(:galleries_image)
+      tag = Galleries::Tag.tagging_needed(image.gallery)
+      create(:galleries_image_tag, image:, tag:)
+      expect(Galleries::UpdateSimilarImagesJob)
+        .not_to receive(:perform_later)
 
       image.remove_tag(tag)
     end
