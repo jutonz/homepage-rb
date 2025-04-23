@@ -27,15 +27,6 @@ module Galleries
       dependent: :destroy
     has_many :tags, through: :image_tags
 
-    has_many :image_similar_images,
-      -> { order(:position) },
-      class_name: "Galleries::ImageSimilarImage",
-      inverse_of: :parent_image,
-      dependent: :delete_all
-    has_many :similar_images,
-      through: :image_similar_images,
-      source: :image
-
     validates :file, presence: true
 
     def self.by_tags(tag_ids)
@@ -45,6 +36,8 @@ module Galleries
         .having("COUNT(tags.id) = ?", Array(tag_ids).size)
         .distinct
     end
+
+    def similar_images = SimilarImagesQuery.call(image: self)
 
     def add_tag(tag)
       unless tags.include?(tag)
