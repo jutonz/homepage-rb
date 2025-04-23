@@ -37,9 +37,12 @@ module Galleries
           SUM(wt1.weight * wt2.weight) AS similarity_score
         FROM
           galleries_images images
-        JOIN galleries_image_tags it1 ON it1.image_id = images.id
-        JOIN weighted_tags wt1 ON wt1.image_id = it1.image_id AND wt1.tag_id = it1.tag_id
-        JOIN weighted_tags wt2 ON wt2.tag_id = it1.tag_id
+        JOIN galleries_image_tags tags
+          ON tags.image_id = images.id
+        JOIN weighted_tags wt1
+          ON wt1.image_id = tags.image_id AND wt1.tag_id = tags.tag_id
+        JOIN weighted_tags wt2
+          ON wt2.tag_id = tags.tag_id
         WHERE
           wt2.image_id = ?
           AND images.id != ?
