@@ -6,7 +6,7 @@ module Galleries
       <div data-role="similar-images">
         <h2 class="text-xl mb-4">Similar images</h2>
 
-        <div class="flex gap-3 overflow-x-scroll">
+        <div class="flex gap-3 overflow-x-auto">
           <div class="flex items-center px-4">
             <%= link_to_prev_page(
               @similar_images,
@@ -32,7 +32,7 @@ module Galleries
       </div>
     ERB
 
-    PER_PAGE = 10
+    PER_PAGE = 20
 
     def initialize(image:, page: 1)
       @image = image

@@ -22,8 +22,6 @@ RSpec.describe Galleries::Image do
   it { is_expected.to validate_presence_of(:file) }
   it { is_expected.to have_many(:image_tags).dependent(:destroy) }
   it { is_expected.to have_many(:tags) }
-  it { is_expected.to have_many(:image_similar_images).dependent(:delete_all) }
-  it { is_expected.to have_many(:similar_images) }
 
   it "has a valid factory" do
     expect(create(:galleries_image)).to be_valid
@@ -57,30 +55,20 @@ RSpec.describe Galleries::Image do
   describe "#add_tag" do
     it "adds a tag to the image" do
       image = create(:galleries_image)
-      tag = create(:galleries_tag)
+      tag = create(:galleries_tag, gallery: image.gallery)
 
       image.add_tag(tag)
 
       expect(image.reload.tag_ids).to eql([tag.id])
     end
 
-    it "enqueues UpdateSimilarImagesJob" do
+    it "can add multiple tags at once" do
       image = create(:galleries_image)
-      tag = create(:galleries_tag)
-      expect(Galleries::UpdateSimilarImagesJob)
-        .to receive(:perform_later)
-        .with(image)
+      tag1, tag2 = create_pair(:galleries_tag, gallery: image.gallery)
 
-      image.add_tag(tag)
-    end
+      image.add_tag(tag1, tag2)
 
-    it "does not enqueue UpdateSimilarImagesJob if the tag added is 'tagging needed'" do
-      image = create(:galleries_image)
-      tag = Galleries::Tag.tagging_needed(image.gallery)
-      expect(Galleries::UpdateSimilarImagesJob)
-        .not_to receive(:perform_later)
-
-      image.add_tag(tag)
+      expect(image.reload.tag_ids).to contain_exactly(tag1.id, tag2.id)
     end
   end
 
@@ -93,27 +81,6 @@ RSpec.describe Galleries::Image do
       image.remove_tag(tag)
 
       expect(image.reload.tag_ids).to be_blank
-    end
-
-    it "enqueues UpdateSimilarImagesJob" do
-      image = create(:galleries_image)
-      tag = create(:galleries_tag)
-      create(:galleries_image_tag, image:, tag:)
-      expect(Galleries::UpdateSimilarImagesJob)
-        .to receive(:perform_later)
-        .with(image)
-
-      image.remove_tag(tag)
-    end
-
-    it "does not enqueue UpdateSimilarImagesJob if the tag removed is 'tagging needed'" do
-      image = create(:galleries_image)
-      tag = Galleries::Tag.tagging_needed(image.gallery)
-      create(:galleries_image_tag, image:, tag:)
-      expect(Galleries::UpdateSimilarImagesJob)
-        .not_to receive(:perform_later)
-
-      image.remove_tag(tag)
     end
   end
 end

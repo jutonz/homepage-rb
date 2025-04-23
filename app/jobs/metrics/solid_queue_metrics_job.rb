@@ -5,6 +5,8 @@ module Metrics
     queue_as :priority
 
     def perform
+      return unless Rails.application.config.x.enable_metrics
+
       client = PrometheusExporter::Client.default
 
       client.register(
