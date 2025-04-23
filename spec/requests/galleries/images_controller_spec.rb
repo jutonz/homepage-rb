@@ -96,8 +96,7 @@ RSpec.describe Galleries::ImagesController do
     it "deletes the image" do
       user = create(:user)
       gallery = create(:gallery, user:)
-      image1, image2 = create_pair(:galleries_image, gallery:)
-      create(:galleries_image_similar_image, parent_image: image1, image: image2)
+      image1 = create(:galleries_image, gallery:)
       login_as(user)
 
       delete(gallery_image_path(gallery, image1))

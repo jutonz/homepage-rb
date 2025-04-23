@@ -5,9 +5,9 @@ RSpec.describe "Gallery similar images" do
     user = create(:user)
     gallery = create(:gallery, user:)
     image1, image2, image3 = create_list(:galleries_image, 3, gallery:)
-    [image2, image3].each do |image|
-      create(:galleries_image_similar_image, parent_image: image1, image:)
-    end
+    tag1, tag2 = create_pair(:galleries_tag, gallery:)
+    [image1, image2].each { it.add_tag(tag1, tag2) }
+    [image1, image3].each { it.add_tag(tag1) }
     login_as(user)
     stub_const("Galleries::SimilarImagesComponent::PER_PAGE", 1)
 

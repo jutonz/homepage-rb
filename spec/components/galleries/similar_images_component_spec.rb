@@ -4,11 +4,9 @@ RSpec.describe Galleries::SimilarImagesComponent, type: :component do
   it "renders a link to the similar images" do
     gallery = create(:gallery)
     image, similar_image = create_pair(:galleries_image, gallery:)
-    create(
-      :galleries_image_similar_image,
-      parent_image: image,
-      image: similar_image
-    )
+    tag = create(:galleries_tag, gallery:)
+    [image, similar_image].each { it.add_tag(tag) }
+
     component = described_class.new(image:)
     render_inline(component)
 

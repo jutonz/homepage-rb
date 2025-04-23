@@ -1,39 +1,28 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "Dynamic Render Path",
-      "warning_code": 15,
-      "fingerprint": "f9bff64d933d72241f1edbc64b646fb6b53edc0ebf4bafdc8d1b50f126150d88",
-      "check_name": "Render",
-      "message": "Render path contains parameter value",
-      "file": "app/views/galleries/images/show.html.erb",
-      "line": 40,
-      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => Galleries::TagSearch.new(:gallery => find_gallery, :image => find_image, :query => params[:tag_query]), {})",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "Galleries::ImagesController",
-          "method": "show",
-          "line": 13,
-          "file": "app/controllers/galleries/images_controller.rb",
-          "rendered": {
-            "name": "galleries/images/show",
-            "file": "app/views/galleries/images/show.html.erb"
-          }
-        }
-      ],
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "d7f00523de84e846f620c49848877a3be3ad398935695ea1b54aa9ec039771bc",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/queries/galleries/similar_images_query.rb",
+      "line": 17,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "Arel.sql(\"array_position(ARRAY[#{ActiveRecord::Base.sanitize_sql_array([QUERY, image.id, image.id]).then do\n ActiveRecord::Base.connection.execute(it)\n end.map do\n it[\"id\"]\n end.join(\", \")}], id)\")",
+      "render_path": null,
       "location": {
-        "type": "template",
-        "template": "galleries/images/show"
+        "type": "method",
+        "class": "Galleries::SimilarImagesQuery",
+        "method": "call"
       },
-      "user_input": "params[:tag_query]",
-      "confidence": "Weak",
+      "user_input": "ActiveRecord::Base.sanitize_sql_array([QUERY, image.id, image.id]).then do\n ActiveRecord::Base.connection.execute(it)\n end.map do\n it[\"id\"]\n end.join(\", \")",
+      "confidence": "Medium",
       "cwe_id": [
-        22
+        89
       ],
       "note": ""
     }
   ],
-  "brakeman_version": "7.0.0"
+  "brakeman_version": "7.0.2"
 }

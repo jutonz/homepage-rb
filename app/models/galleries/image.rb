@@ -39,23 +39,17 @@ module Galleries
 
     def similar_images = SimilarImagesQuery.call(image: self)
 
-    def add_tag(tag)
-      unless tags.include?(tag)
-        tags << tag
-        save!
+    def add_tag(*tags)
+      Array(tags).each do |tag|
+        unless self.tags.include?(tag)
+          self.tags << tag
+        end
       end
-
-      unless tag.tagging_needed?
-        Galleries::UpdateSimilarImagesJob.perform_later(self)
-      end
+      save!
     end
 
     def remove_tag(tag)
       image_tags.where(tag:).destroy_all
-
-      unless tag.tagging_needed?
-        Galleries::UpdateSimilarImagesJob.perform_later(self)
-      end
     end
   end
 end

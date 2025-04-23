@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_20_142853) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_23_133608) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,17 +61,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_142853) do
     t.datetime "hidden_at"
     t.index ["name"], name: "index_galleries_on_name", unique: true
     t.index ["user_id"], name: "index_galleries_on_user_id"
-  end
-
-  create_table "galleries_image_similar_images", force: :cascade do |t|
-    t.bigint "parent_image_id", null: false
-    t.bigint "image_id", null: false
-    t.integer "position", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["image_id"], name: "index_galleries_image_similar_images_on_image_id"
-    t.index ["parent_image_id", "position"], name: "idx_on_parent_image_id_position_ab63f755a1", unique: true
-    t.index ["parent_image_id"], name: "index_galleries_image_similar_images_on_parent_image_id"
   end
 
   create_table "galleries_image_tags", force: :cascade do |t|
@@ -267,8 +256,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_20_142853) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "galleries", "users"
-  add_foreign_key "galleries_image_similar_images", "galleries_images", column: "image_id"
-  add_foreign_key "galleries_image_similar_images", "galleries_images", column: "parent_image_id"
   add_foreign_key "galleries_image_tags", "galleries_images", column: "image_id"
   add_foreign_key "galleries_image_tags", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_images", "galleries"
