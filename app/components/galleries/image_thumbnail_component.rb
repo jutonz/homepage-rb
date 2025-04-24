@@ -1,11 +1,11 @@
 module Galleries
-  class ImageComponent < ViewComponent::Base
+  class ImageThumbnailComponent < ViewComponent::Base
     include Rails.application.routes.url_helpers
 
     erb_template <<~ERB
       <%= link_to(
         gallery_image_path(@gallery, @image),
-        data: {role: "image", image_id: @image.id, turbo: false}
+        data: {role: "image-thumbnail", image_id: @image.id, turbo: false}
       ) do %>
         <div class="flex justify-center">
           <% if @image.file.variable? %>

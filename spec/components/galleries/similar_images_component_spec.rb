@@ -11,7 +11,7 @@ RSpec.describe Galleries::SimilarImagesComponent, type: :component do
     render_inline(component)
 
     expect(page).to have_css(
-      "a[data-role=image][data-image-id='#{similar_image.id}']"
+      "a[data-role=image-thumbnail][data-image-id='#{similar_image.id}']"
     )
   end
 end
