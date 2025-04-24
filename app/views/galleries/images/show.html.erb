@@ -24,9 +24,7 @@
 <% end %>
 
 <div class="flex gap-4">
-  <%= link_to(@image.file) do %>
-    <%= image_tag(@image.file) %>
-  <% end %>
+  <%= render(Galleries::ImageComponent.new(image: @image)) %>
 </div>
 
 <h2 class="text-xl mt-10 mb-5">Tags</h2>

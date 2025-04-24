@@ -18,6 +18,14 @@
 FactoryBot.define do
   factory :galleries_image, class: "Galleries::Image" do
     gallery
-    file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/audiosurf.jpg"), "image/jpeg") }
+    image
+
+    trait :image do
+      file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/audiosurf.jpg"), "image/jpeg") }
+    end
+
+    trait :webm do
+      file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/video.webm"), "video/webm") }
+    end
   end
 end

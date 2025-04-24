@@ -8,7 +8,9 @@ module Galleries
         data: {role: "image-thumbnail", image_id: @image.id, turbo: false}
       ) do %>
         <div class="flex justify-center">
-          <% if @image.file.variable? %>
+          <% if @image.video? %>
+            <%= video_tag(@image.file, preload: "metadata") %>
+          <% elsif @image.file.variable? %>
             <%= image_tag(@image.file.variant(:thumb)) %>
           <% else %>
             <%= image_tag(@image.file) %>
