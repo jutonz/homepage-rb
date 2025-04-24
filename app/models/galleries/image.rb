@@ -51,5 +51,7 @@ module Galleries
     def remove_tag(tag)
       image_tags.where(tag:).destroy_all
     end
+
+    def video? = file.content_type.start_with?("video/")
   end
 end

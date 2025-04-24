@@ -83,4 +83,20 @@ RSpec.describe Galleries::Image do
       expect(image.reload.tag_ids).to be_blank
     end
   end
+
+  describe "#video?" do
+    it "is true if the content_type starts with 'video/'" do
+      image = create(:galleries_image)
+      expect(image.file).to receive(:content_type).and_return("video/webm")
+
+      expect(image.video?).to be(true)
+    end
+
+    it "is false if the content type does not start with 'video/'" do
+      image = create(:galleries_image)
+      expect(image.file).to receive(:content_type).and_return("image/png")
+
+      expect(image.video?).to be(false)
+    end
+  end
 end
