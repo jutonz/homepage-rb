@@ -17,7 +17,7 @@ module Galleries
 
           <% @similar_images.each do |image| %>
             <div class="min-w-[100px]">
-              <%= render(Galleries::ImageComponent.new(image:)) %>
+              <%= render(Galleries::ImageThumbnailComponent.new(image:)) %>
             </div>
           <% end %>
 

@@ -11,8 +11,8 @@ RSpec.describe Galleries::ImagesController do
 
       get(gallery_path(gallery))
 
-      expect(page).to have_image(image)
-      expect(page).not_to have_image(other_image)
+      expect(page).to have_image_thumbnail(image)
+      expect(page).not_to have_image_thumbnail(other_image)
     end
   end
 
@@ -105,7 +105,7 @@ RSpec.describe Galleries::ImagesController do
     end
   end
 
-  def have_image(image)
-    have_css("[data-role=image][data-image-id='#{image.id}']")
+  def have_image_thumbnail(image)
+    have_css("[data-role=image-thumbnail][data-image-id='#{image.id}']")
   end
 end
