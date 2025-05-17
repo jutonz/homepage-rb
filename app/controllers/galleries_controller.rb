@@ -5,6 +5,7 @@ class GalleriesController < ApplicationController
     @galleries = current_user.galleries.visible
   end
 
+  PER_PAGE = 20
   def show
     @gallery = find_gallery
     @filter_tags = find_filter_tags
@@ -15,6 +16,7 @@ class GalleriesController < ApplicationController
         .order(created_at: :desc)
         .then { @filter_tags.any? ? it.by_tags(@filter_tags) : it }
         .page(params[:page])
+        .per(PER_PAGE)
     @tag_search = Galleries::TagSearch.new(
       gallery: @gallery,
       query: params.dig(:tag_search, :query)
