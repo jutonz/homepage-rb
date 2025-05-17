@@ -53,6 +53,19 @@ RSpec.describe Galleries::BulkUpload do
       image = gallery.images.first
       expect(image.file.variant(:thumb).blob).to be_present
     end
+
+    it "generates perceptual hashes" do
+      gallery = create(:gallery)
+      bulk_upload = described_class.new(gallery:, files: [audiosurf_jpg])
+      expect(ActiveJob).to receive(:perform_all_later) do |jobs|
+        expect(jobs.size).to eql(1)
+        expect(jobs.first.class).to eql(Galleries::ImagePerceptualHashJob)
+      end
+
+      result = bulk_upload.save
+
+      expect(result).to be(true)
+    end
   end
 
   private

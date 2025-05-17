@@ -2,10 +2,11 @@
 #
 # Table name: galleries_images
 #
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  gallery_id :bigint           not null
+#  id              :bigint           not null, primary key
+#  perceptual_hash :vector(64)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  gallery_id      :bigint           not null
 #
 # Indexes
 #
@@ -37,6 +38,15 @@ module Galleries
         .distinct
     end
 
+    def similar_by_phash
+      self.class.order(
+        Arel.sql(
+          "perceptual_hash <-> ?::vector ASC",
+          perceptual_hash
+        )
+      ).where.not(id:)
+    end
+
     def similar_images = SimilarImagesQuery.call(image: self)
 
     def add_tag(*tags)
@@ -53,5 +63,25 @@ module Galleries
     end
 
     def video? = file.content_type.start_with?("video/")
+
+    def calculate_perceptual_hash!
+      return if video?
+
+      file.open do |file|
+        ImageHash
+          .new(file.path)
+          .binary_hash
+          .then { hash_to_vector(it) }
+          .then { update!(perceptual_hash: it) }
+      end
+    end
+
+    def hash_to_vector(binary_hash)
+      vector = Array.new(binary_hash.length)
+      vector.length.times do |n|
+        vector[n] = binary_hash[n]
+      end
+      vector
+    end
   end
 end

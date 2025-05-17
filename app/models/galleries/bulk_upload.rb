@@ -33,10 +33,14 @@ module Galleries
     end
 
     def generate_variants(images)
-      # Generate inline since we will immediately redirect to page where
-      # variant is shown after this returns. We also already should have the
-      # image downloaded so processing will be faster this way.
+      # Generate inline since, after this returns, we will immediately redirect
+      # to page where variant is shown. We also already should have the image
+      # downloaded so processing will be faster this way.
       images.each { Galleries::ImageVariantJob.perform_now(it) }
+
+      images
+        .map { Galleries::ImagePerceptualHashJob.new(it) }
+        .then { ActiveJob.perform_all_later(it) }
     end
   end
 end

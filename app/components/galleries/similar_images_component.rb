@@ -4,7 +4,7 @@ module Galleries
 
     erb_template <<~ERB
       <div data-role="similar-images">
-        <h2 class="text-xl mb-4">Similar images</h2>
+        <h2 class="text-xl mb-4"><%= @title %></h2>
 
         <div class="flex gap-3 overflow-x-auto">
           <div class="flex items-center px-4">
@@ -34,9 +34,10 @@ module Galleries
 
     PER_PAGE = 20
 
-    def initialize(image:, page: 1)
+    def initialize(image:, scope:, title: "Similar Images", page: 1)
+      @title = title
       @image = image
-      @similar_images = @image.similar_images.page(page).per(PER_PAGE)
+      @similar_images = scope.page(page).per(PER_PAGE)
     end
   end
 end

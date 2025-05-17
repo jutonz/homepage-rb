@@ -2,10 +2,11 @@
 #
 # Table name: galleries_images
 #
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  gallery_id :bigint           not null
+#  id              :bigint           not null, primary key
+#  perceptual_hash :vector(64)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  gallery_id      :bigint           not null
 #
 # Indexes
 #
@@ -97,6 +98,34 @@ RSpec.describe Galleries::Image do
       expect(image.file).to receive(:content_type).and_return("image/png")
 
       expect(image.video?).to be(false)
+    end
+  end
+
+  describe "#calculate_perceptual_hash!" do
+    it "calculates and saves a perceptual_hash" do
+      image = create(:galleries_image, perceptual_hash: nil)
+
+      image.calculate_perceptual_hash!
+
+      expect(image.perceptual_hash).to be_present
+    end
+
+    it "does nothing if the image is a video" do
+      image = create(:galleries_image, :webm, perceptual_hash: nil)
+
+      image.calculate_perceptual_hash!
+
+      expect(image.perceptual_hash).to be_blank
+    end
+  end
+
+  describe "#hash_to_vector" do
+    it "turns the binary hash into an array" do
+      image = build(:galleries_image)
+
+      vector = image.hash_to_vector("001")
+
+      expect(vector).to eql(%w[0 0 1])
     end
   end
 end

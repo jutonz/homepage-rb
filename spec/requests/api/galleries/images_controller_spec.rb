@@ -42,6 +42,18 @@ RSpec.describe Api::Galleries::ImagesController do
         "errors" => ["File can't be blank"]
       })
     end
+
+    it "enqueues ImageVariantJob and ImagePerceptualHashJob" do
+      gallery = create(:gallery)
+      login_as(gallery.user)
+      params = {file: audiosurf_jpg}
+      expect(Galleries::ImageVariantJob).to receive(:perform_later)
+      expect(Galleries::ImagePerceptualHashJob).to receive(:perform_later)
+
+      post(api_gallery_images_path(gallery), params:)
+
+      expect(response).to have_http_status(:created)
+    end
   end
 
   def audiosurf_jpg = fixture_file_upload("audiosurf.jpg", "image/jpeg")

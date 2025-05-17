@@ -23,6 +23,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install imagemagick libvips
+      - name: Install pgvector
+        run: |
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install postgresql-17-pgvector
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
