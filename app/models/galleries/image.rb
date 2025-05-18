@@ -79,7 +79,7 @@ module Galleries
     def hash_to_vector(binary_hash)
       vector = Array.new(binary_hash.length)
       vector.length.times do |n|
-        vector[n] = binary_hash[n]
+        vector[n] = binary_hash[n].to_i
       end
       vector
     end

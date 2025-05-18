@@ -125,7 +125,7 @@ RSpec.describe Galleries::Image do
 
       vector = image.hash_to_vector("001")
 
-      expect(vector).to eql(%w[0 0 1])
+      expect(vector).to eql([0, 0, 1])
     end
   end
 end
