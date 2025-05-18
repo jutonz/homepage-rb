@@ -62,6 +62,17 @@ RSpec.describe Galleries::ImagesController do
         )
       end
     end
+
+    it "has an empty state for images similar by phash" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      login_as(gallery.user)
+
+      get(gallery_image_path(gallery, image))
+
+      expect(response).to have_http_status(:ok)
+      expect(page).to have_text("This image doesn't have a perceptual_hash")
+    end
   end
 
   describe "update" do

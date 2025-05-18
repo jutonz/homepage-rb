@@ -2,10 +2,11 @@
 #
 # Table name: galleries_images
 #
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  gallery_id :bigint           not null
+#  id              :bigint           not null, primary key
+#  perceptual_hash :vector(64)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  gallery_id      :bigint           not null
 #
 # Indexes
 #

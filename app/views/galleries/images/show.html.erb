@@ -46,9 +46,29 @@
   <%= turbo_frame_tag("similar-images") do %>
     <%= render(Galleries::SimilarImagesComponent.new(
       image: @image,
-      page: params.fetch(:similar_images_page, 1)
+      scope: @image.similar_images,
+      page: params.fetch(:similar_images_page, 1),
+      title: "Similar images (by tag)"
     )) %>
   <% end %>
 </div>
+
+<% if @image.perceptual_hash.present? %>
+  <div class="mt-5">
+    <%= turbo_frame_tag("similar-images") do %>
+      <%= render(Galleries::SimilarImagesComponent.new(
+        image: @image,
+        scope: @image.similar_by_phash,
+        page: params.fetch(:similar_images_page, 1),
+        title: "Similar images (by calculation)"
+      )) %>
+    <% end %>
+  </div>
+<% else %>
+  <div>
+    This image doesn't have a perceptual_hash, so similar images cannot be
+    found via that method
+  </div>
+<% end %>
 
 <div class="pb-32"></div>
