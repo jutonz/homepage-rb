@@ -39,12 +39,17 @@ module Galleries
     end
 
     def similar_by_phash
-      self.class.order(
-        Arel.sql(
-          "perceptual_hash <-> ? ASC",
-          perceptual_hash.join(',').then { "[#{it}]" }
+      return self.class.none if perceptual_hash.nil?
+
+      self.class
+        .where(gallery_id:)
+        .where.not(id:)
+        .order(
+          Arel.sql(
+            "perceptual_hash <-> ? ASC",
+            perceptual_hash.join(",").then { "[#{it}]" }
+          )
         )
-      ).where.not(id:)
     end
 
     def similar_images = SimilarImagesQuery.call(image: self)
