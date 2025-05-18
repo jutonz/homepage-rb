@@ -41,8 +41,8 @@ module Galleries
     def similar_by_phash
       self.class.order(
         Arel.sql(
-          "perceptual_hash <-> '[?]' ASC",
-          perceptual_hash
+          "perceptual_hash <-> ? ASC",
+          perceptual_hash.join(',').then { "[#{it}]" }
         )
       ).where.not(id:)
     end
