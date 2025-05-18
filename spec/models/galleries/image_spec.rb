@@ -119,6 +119,31 @@ RSpec.describe Galleries::Image do
     end
   end
 
+  describe "#simlar_by_phash" do
+    it "is empty if the image has no perceptual_hash" do
+      image = build(:galleries_image, perceptual_hash: nil)
+      expect(image.similar_by_phash).to be_empty
+    end
+
+    it "returns similar images" do
+      gallery = create(:gallery)
+      image1, image2 = create_pair(
+        :galleries_image,
+        :with_perceptual_hash,
+        gallery:
+      )
+      expect(image1.similar_by_phash.pluck(:id)).to eql([image2.id])
+    end
+
+    it "only returns images for the same gallery" do
+      image1, _image2 = create_pair(
+        :galleries_image,
+        :with_perceptual_hash
+      )
+      expect(image1.similar_by_phash).to be_empty
+    end
+  end
+
   describe "#hash_to_vector" do
     it "turns the binary hash into an array" do
       image = build(:galleries_image)

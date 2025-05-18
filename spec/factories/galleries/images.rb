@@ -21,6 +21,10 @@ FactoryBot.define do
     gallery
     image
 
+    trait :with_perceptual_hash do
+      perceptual_hash { Array.new(64, 0) }
+    end
+
     trait :image do
       file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/audiosurf.jpg"), "image/jpeg") }
     end
