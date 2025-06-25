@@ -98,4 +98,22 @@ RSpec.describe "Gallery image tags", type: :system do
     fill_in("Tag search query", with: "tag")
     expect(page).to have_css("[data-role=tag-search-result]", text: tag.name)
   end
+
+  it "allows you to visit a tag by clicking on its search result", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    tag = create(:galleries_tag, gallery:)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: tag.name)
+    click_on("Search")
+
+    within("[data-role=tag-search-result]", text: tag.name) do
+      click_on(tag.display_name)
+    end
+    expect(current_path).to eql(gallery_tag_path(gallery, tag))
+  end
 end
