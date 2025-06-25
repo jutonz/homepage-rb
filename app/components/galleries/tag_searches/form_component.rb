@@ -1,9 +1,6 @@
 module Galleries
   module TagSearches
-    class FormComponent < ViewComponent::Base
-      include Rails.application.routes.url_helpers
-      include Turbo::FramesHelper
-
+    class FormComponent < ApplicationComponent
       erb_template <<~ERB
         <%= turbo_frame_tag("tag-search-form") do %>
           <%= simple_form_for(

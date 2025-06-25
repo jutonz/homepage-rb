@@ -1,8 +1,5 @@
 module Galleries
-  class ImageTagSearchComponent < ViewComponent::Base
-    include Rails.application.routes.url_helpers
-    include Turbo::FramesHelper
-
+  class ImageTagSearchComponent < ApplicationComponent
     erb_template <<~ERB
       <h3 class="text-lg mb-3">Add tag</h3>
 
