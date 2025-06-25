@@ -1,0 +1,8 @@
+<%= simple_form_for([@gallery, @tag, @social_media_link]) do |form| %>
+  <%= form.input(
+    :platform,
+    collection: Galleries::SocialMediaLink.platforms.keys
+  ) %>
+  <%= form.input(:username) %>
+  <%= form.button(:submit) %>
+<% end %>
