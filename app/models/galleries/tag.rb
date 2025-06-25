@@ -32,6 +32,9 @@ module Galleries
       class_name: "Galleries::ImageTag",
       dependent: :destroy
     has_many :images, through: :image_tags
+    has_many :social_media_links,
+      class_name: "Galleries::SocialMediaLink",
+      dependent: :destroy
 
     validates :name,
       presence: true,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_17_223632) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_25_175450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -80,6 +80,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_17_223632) do
     t.datetime "updated_at", null: false
     t.vector "perceptual_hash", limit: 64
     t.index ["gallery_id"], name: "index_galleries_images_on_gallery_id"
+  end
+
+  create_table "galleries_social_media_links", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.string "platform", null: false
+    t.string "username", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["platform", "username"], name: "index_galleries_social_media_links_on_platform_and_username", unique: true
+    t.index ["tag_id"], name: "index_galleries_social_media_links_on_tag_id"
   end
 
   create_table "galleries_tags", force: :cascade do |t|
@@ -261,6 +271,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_17_223632) do
   add_foreign_key "galleries_image_tags", "galleries_images", column: "image_id"
   add_foreign_key "galleries_image_tags", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_images", "galleries"
+  add_foreign_key "galleries_social_media_links", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
