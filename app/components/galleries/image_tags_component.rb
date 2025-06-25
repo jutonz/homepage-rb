@@ -1,8 +1,5 @@
 module Galleries
-  class ImageTagsComponent < ViewComponent::Base
-    include Rails.application.routes.url_helpers
-    include Turbo::FramesHelper
-
+  class ImageTagsComponent < ApplicationComponent
     erb_template <<~ERB
       <%= turbo_frame_tag("image-tags") do %>
         <div class="flex mb-5 flex-col gap-3" data-role="tags">

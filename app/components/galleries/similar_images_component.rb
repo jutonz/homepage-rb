@@ -1,7 +1,5 @@
 module Galleries
-  class SimilarImagesComponent < ViewComponent::Base
-    include Rails.application.routes.url_helpers
-
+  class SimilarImagesComponent < ApplicationComponent
     erb_template <<~ERB
       <div data-role="similar-images">
         <h2 class="text-xl mb-4"><%= @title %></h2>

@@ -1,7 +1,5 @@
 module Galleries
-  class ImageComponent < ViewComponent::Base
-    include Rails.application.routes.url_helpers
-
+  class ImageComponent < ApplicationComponent
     erb_template <<~ERB
       <div data-role="image" data-image-id='<%= @image.id %>'>
         <% if @image.video? %>

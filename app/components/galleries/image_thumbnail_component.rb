@@ -1,7 +1,5 @@
 module Galleries
-  class ImageThumbnailComponent < ViewComponent::Base
-    include Rails.application.routes.url_helpers
-
+  class ImageThumbnailComponent < ApplicationComponent
     erb_template <<~ERB
       <%= link_to(
         gallery_image_path(@gallery, @image),

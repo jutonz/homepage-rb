@@ -1,6 +1,4 @@
-class HeaderComponent < ViewComponent::Base
-  include Rails.application.routes.url_helpers
-
+class HeaderComponent < ApplicationComponent
   erb_template <<~ERB
     <div class="flex w-full mb-8 flex-col">
       <div class="flex space-x-1 w-full mb-3 text-md">
