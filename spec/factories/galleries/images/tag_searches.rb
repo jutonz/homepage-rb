@@ -4,7 +4,7 @@ FactoryBot.define do
     gallery factory: :gallery
 
     trait :with_image do
-      image { build(:galleries_image, gallery: instance.gallery) }
+      image { association(:galleries_image, gallery: instance.gallery) }
     end
   end
 end
