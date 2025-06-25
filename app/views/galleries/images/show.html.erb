@@ -31,12 +31,7 @@
 
 <div class="flex flex-col">
   <%= render(Galleries::ImageTagsComponent.new(image: @image)) %>
-  <%= render(
-    partial: "galleries/images/tag_searches/tag_search",
-    locals: {
-      tag_search: @tag_search
-    }
-  ) %>
+  <%= render(Galleries::ImageTagSearchComponent.new(tag_search: @tag_search)) %>
 </div>
 
 <div class="mt-5">

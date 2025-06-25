@@ -1,14 +1,13 @@
 <%= turbo_stream.replace("image-tags") do %>
   <%= render(Galleries::ImageTagsComponent.new(image: @image)) %>
 <% end %>
-<%= turbo_stream.update(
-  "tag-search-form",
-  partial: "galleries/images/tag_searches/form",
-  locals: {
-    tag_search: Galleries::TagSearch.new,
-    gallery: @image.gallery,
-    image: @image
-  }
-) %>
+<%= turbo_stream.update("tag-search-form") do %>
+  <%= render(Galleries::TagSearches::FormComponent.new(
+    tag_search: Galleries::TagSearch.new(
+      gallery: @image.gallery,
+      image: @image
+    )
+  )) %>
+<% end %>
 <%= turbo_stream.remove("tag-search-result-#{@tag.id}") %>
 <%= turbo_stream.remove("recently-added-tag-#{@tag.id}") %>
