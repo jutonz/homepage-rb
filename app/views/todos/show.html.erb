@@ -1,6 +1,8 @@
 <%= render(HeaderComponent.new(
   title: "Todo"
-)) %>
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+<% end %>
 
 <div class="flex space-x-5">
   <%= link_to(
