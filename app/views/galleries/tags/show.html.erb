@@ -29,6 +29,28 @@
   <div>This tag has no images.</div>
 <% end %>
 
+<div class="mb-5">
+  <h3 class="text-xl mb-4">Social media links</h3>
+  <div class="mb-5">
+    <%= link_to(
+      "Add social media link",
+      new_gallery_tag_social_media_link_path(@gallery, @tag),
+      class: "button"
+    ) %>
+  </div>
+
+  <% @tag.social_media_links.each do |link| %>
+    <div data-role="social-link">
+      <%= link.platform %> - <%= link.username %>
+      <%= link_to(
+        "Edit",
+        edit_gallery_tag_social_media_link_path(@gallery, @tag, link)
+      ) %>
+    </div>
+  <% end %>
+</div>
+
+
 <%= render(
   partial: "galleries/images",
   locals: {images: @images}

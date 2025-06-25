@@ -1,0 +1,15 @@
+<%= render(HeaderComponent.new(
+  title: "Edit social media link"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+  <%= c.with_crumb("Tags", gallery_tags_path(@gallery)) %>
+  <%= c.with_crumb(@tag.name, gallery_tag_path(@gallery, @tag)) %>
+  <%= c.with_crumb(
+    @social_media_link.username,
+    gallery_tag_social_media_link_path(@gallery, @tag, @social_media_link)
+  ) %>
+<% end %>
+
+<%= render partial: "form" %>
