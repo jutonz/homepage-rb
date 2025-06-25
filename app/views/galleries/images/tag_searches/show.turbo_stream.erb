@@ -1,9 +1,5 @@
-<%= turbo_stream.replace(
-  "tag-search-results",
-  partial: "galleries/images/tag_searches/results",
-  locals: {
-    tag_search: @tag_search,
-    gallery: @gallery,
-    image: @image
-  }
-) %>
+<%= turbo_stream.replace("tag-search-results") do %>
+  <%= render(Galleries::TagSearches::ResultsComponent.new(
+    tag_search: @tag_search
+  )) %>
+<% end %>

@@ -7,14 +7,23 @@ module Galleries
         tag_search: @tag_search
       )) %>
 
-      <%= render(
-        partial: "galleries/images/tag_searches/results",
-        locals: {
-          tag_search: @tag_search,
-          gallery: @gallery,
-          image: @image
-        }
-      ) %>
+      <%= render(Galleries::TagSearches::ResultsComponent.new(
+        tag_search: @tag_search
+      )) %>
+
+      <h4 class="text-md mt-10">Recently used tags</h4>
+      <% @gallery.recently_used_tags(excluded_image_ids: [@image.id]).each do |tag| %>
+        <%= turbo_frame_tag("recently-added-tag-\#{tag.id}") do %>
+          <div class="flex gap-4 my-2">
+            <%= tag.display_name %>
+            <%= button_to(
+              "Add tag",
+              gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
+              class: "button"
+            ) %>
+          </div>
+        <% end %>
+      <% end %>
     ERB
 
     def initialize(tag_search:)
