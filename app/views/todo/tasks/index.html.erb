@@ -1,6 +1,7 @@
 <%= render(HeaderComponent.new(
   title: "Tasks"
 )) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Todo", todo_path) %>
   <%= c.with_action do %>
     <%= link_to(
