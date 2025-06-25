@@ -21,7 +21,8 @@ module Galleries
               <div class="flex gap-4 my-2" data-role="tag-search-result">
                 <%= link_to(
                   tag.display_name,
-                  gallery_tag_path(tag.gallery, tag)
+                  gallery_tag_path(tag.gallery, tag),
+                  data: {turbo: false}
                 ) %>
                 <%= button_to(
                   "Add tag",
