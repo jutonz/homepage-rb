@@ -1,8 +1,0 @@
-<%= turbo_frame_tag("image-tags") do %>
-  <div class="flex mb-5 flex-col gap-3" data-role="tags">
-    <%= render(partial: "galleries/images/tag", collection: tags) %>
-    <span class="hidden only:block">
-      This image doesn't have any tags yet.
-    </span>
-  </div>
-<% end %>
