@@ -10,21 +10,20 @@ RSpec.describe "Gallery social media links" do
     visit(gallery_tag_path(gallery, tag))
     click_on("Add social media link")
 
-    select("tiktok", from: "Platform")
     fill_in("Username", with: "testuser")
     click_on("Create Social media link")
 
-    within("[data-role=social-link]", text: "tiktok - testuser") do
+    within("[data-role=social-link]", text: "instagram - testuser") do
       click_on("Edit")
     end
 
-    select("instagram", from: "Platform")
+    select("tiktok", from: "Platform")
     fill_in("Username", with: "testuser2")
     click_on("Update Social media link")
 
     expect(page).to have_css(
       "[data-role=social-link]",
-      text: "instagram - testuser2"
+      text: "tiktok - testuser2"
     )
   end
 end
