@@ -40,16 +40,9 @@
   </div>
 
   <% @tag.social_media_links.each do |link| %>
-    <div data-role="social-link">
-      <%= link.platform %> - <%= link.username %>
-      <%= link_to(
-        "Edit",
-        edit_gallery_tag_social_media_link_path(@gallery, @tag, link)
-      ) %>
-    </div>
+    <%= render(Galleries::SocialMediaLinkComponent.new(link:)) %>
   <% end %>
 </div>
-
 
 <%= render(
   partial: "galleries/images",

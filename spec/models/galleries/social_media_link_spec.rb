@@ -34,4 +34,30 @@ RSpec.describe Galleries::SocialMediaLink do
   it "has a valid factory" do
     expect(build(:galleries_social_media_link)).to be_valid
   end
+
+  describe "#href" do
+    it "handles an instagram link" do
+      link = build(:galleries_social_media_link, :instagram)
+      expect(link.href).to eql("https://instagram.com/#{link.username}")
+    end
+
+    it "handles a tiktok link" do
+      link = build(:galleries_social_media_link, :tiktok)
+      expect(link.href).to eql("https://tiktok.com/@#{link.username}")
+    end
+
+    it "handles a url link" do
+      link = build(:galleries_social_media_link, :url)
+      expect(link.href).to eql(link.username)
+    end
+
+    it "is not blank for any supported platform" do
+      link = build(:galleries_social_media_link)
+
+      described_class.platforms.keys.each do |platform|
+        link.platform = platform
+        expect(link.href).to be_present
+      end
+    end
+  end
 end

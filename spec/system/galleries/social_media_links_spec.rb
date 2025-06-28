@@ -13,7 +13,7 @@ RSpec.describe "Gallery social media links" do
     fill_in("Username", with: "testuser")
     click_on("Create Social media link")
 
-    within("[data-role=social-link]", text: "instagram - testuser") do
+    within("[data-role=social-link]", text: "testuser") do
       click_on("Edit")
     end
 
@@ -23,7 +23,7 @@ RSpec.describe "Gallery social media links" do
 
     expect(page).to have_css(
       "[data-role=social-link]",
-      text: "tiktok - testuser2"
+      text: "testuser2"
     )
   end
 end

@@ -23,5 +23,10 @@ FactoryBot.define do
     tag factory: :galleries_tag
     sequence(:username) { "user#{it}" }
     instagram
+
+    trait :url do
+      platform { "url" }
+      sequence(:username) { "https://example#{it}.com" }
+    end
   end
 end
