@@ -1,7 +1,9 @@
 <%= simple_form_for([@gallery, @tag, @social_media_link]) do |form| %>
   <%= form.input(
     :platform,
-    collection: Galleries::SocialMediaLink.platforms.keys,
+    collection: Galleries::SocialMediaLink.platforms.to_a,
+    label_method: :last,
+    value_method: :first,
     selected: Galleries::SocialMediaLink.platforms.fetch(:instagram)
   ) %>
   <%= form.input(:username) %>
