@@ -21,6 +21,7 @@
 module Galleries
   class SocialMediaLink < ApplicationRecord
     belongs_to :tag
+    has_one :gallery, through: :tag
 
     enum :platform, {
       instagram: "instagram",
@@ -30,5 +31,13 @@ module Galleries
 
     validates :platform, presence: true
     validates :username, presence: true, uniqueness: {scope: :platform}
+
+    def href
+      case platform
+      when "instagram" then "https://instagram.com/#{username}"
+      when "tiktok" then "https://tiktok.com/@#{username}"
+      when "url" then username
+      end
+    end
   end
 end
