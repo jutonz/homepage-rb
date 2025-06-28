@@ -24,7 +24,8 @@ module Galleries
 
     enum :platform, {
       instagram: "instagram",
-      tiktok: "tiktok"
+      tiktok: "tiktok",
+      url: "URL"
     }, validate: true
 
     validates :platform, presence: true
