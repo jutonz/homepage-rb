@@ -25,10 +25,17 @@ RSpec.describe Galleries::SocialMediaLink do
 
   it { is_expected.to validate_presence_of(:platform) }
   it { is_expected.to validate_presence_of(:username) }
+  it { is_expected.to normalize(:username).from(" f ").to("f") }
+  it { is_expected.to normalize(:username).from("F").to("f") }
 
   describe "username uniqueness" do
     subject { build(:galleries_social_media_link) }
-    it { is_expected.to validate_uniqueness_of(:username).scoped_to(:platform) }
+    it do
+      is_expected
+        .to validate_uniqueness_of(:username)
+        .scoped_to(:platform)
+        .ignoring_case_sensitivity
+    end
   end
 
   it "has a valid factory" do
