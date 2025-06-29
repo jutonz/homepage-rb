@@ -52,5 +52,18 @@ module Galleries
     end
 
     def tagging_needed? = name == TAGGING_NEEDED_NAME
+
+    AUTO_CREATE_SOCIAL_PREFIXES = {
+      "IG:" => "instagram",
+      "TT:" => "tiktok"
+    }
+    def auto_create_social_links
+      AUTO_CREATE_SOCIAL_PREFIXES.each do |(prefix, platform)|
+        if name.start_with?(prefix)
+          username = name.split(prefix).last
+          social_media_links.find_or_create_by!(platform:, username:)
+        end
+      end
+    end
   end
 end

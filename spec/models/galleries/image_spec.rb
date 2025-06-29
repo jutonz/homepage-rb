@@ -71,6 +71,15 @@ RSpec.describe Galleries::Image do
 
       expect(image.reload.tag_ids).to contain_exactly(tag1.id, tag2.id)
     end
+
+    it "creates social links" do
+      image = create(:galleries_image)
+      gallery = image.gallery
+      tag = create(:galleries_tag, gallery:, name: "IG:testin")
+      expect(tag).to receive(:auto_create_social_links)
+
+      image.add_tag(tag)
+    end
   end
 
   describe "#remove_tag" do
