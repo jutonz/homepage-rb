@@ -81,4 +81,30 @@ RSpec.describe Galleries::Tag, type: :model do
       expect(tag.tagging_needed?).to be(false)
     end
   end
+
+  describe "#auto_create_social_links" do
+    it "creates an insta link for a tag prefixed with IG:" do
+      tag = create(:galleries_tag, name: "IG:testin")
+
+      tag.auto_create_social_links
+
+      expect(tag.reload.social_media_links.length).to eq(1)
+      expect(tag.social_media_links.first).to have_attributes(
+        platform: "instagram",
+        username: "testin"
+      )
+    end
+
+    it "creates a tiktok link for a tag prefixed with TT:" do
+      tag = create(:galleries_tag, name: "TT:testin")
+
+      tag.auto_create_social_links
+
+      expect(tag.reload.social_media_links.length).to eq(1)
+      expect(tag.social_media_links.first).to have_attributes(
+        platform: "tiktok",
+        username: "testin"
+      )
+    end
+  end
 end

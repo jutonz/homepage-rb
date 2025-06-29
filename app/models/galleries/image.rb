@@ -61,6 +61,7 @@ module Galleries
         end
       end
       save!
+      self.tags.each(&:auto_create_social_links)
     end
 
     def remove_tag(tag)
