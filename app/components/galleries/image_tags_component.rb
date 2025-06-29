@@ -24,7 +24,7 @@ module Galleries
                   gallery_image_tag_path(@gallery, @image, tag),
                   method: :delete,
                   class: "button button--danger",
-                  data: {turbo_confirm: "Are you sure?"}
+                  data: {turbo_confirm: "Really remove tag '\#{tag.name}'?"}
                 ) %>
               </div>
             <% end %>

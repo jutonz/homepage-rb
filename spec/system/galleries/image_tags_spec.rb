@@ -21,7 +21,7 @@ RSpec.describe "Gallery image tags", type: :system do
 
     within("turbo-frame#tag_#{tag.id}", text: tag.name) do
       expect(image.reload.tags).to include(tag)
-      accept_confirm do
+      accept_confirm("Really remove tag '#{tag.name}'?") do
         click_on("Remove")
       end
     end
