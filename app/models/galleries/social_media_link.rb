@@ -29,6 +29,8 @@ module Galleries
       url: "URL"
     }, validate: true
 
+    normalizes :username, with: -> { it.strip.downcase }
+
     validates :platform, presence: true
     validates :username, presence: true, uniqueness: {scope: :platform}
 
