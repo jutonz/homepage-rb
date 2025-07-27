@@ -63,7 +63,7 @@ module Galleries
           self.tags << tag
         end
       end
-      
+
       save!
       self.tags.each(&:auto_create_social_links)
     end

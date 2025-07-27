@@ -87,7 +87,7 @@ RSpec.describe Galleries::Image do
       main_tag = create(:galleries_tag, gallery:)
       auto_tag1 = create(:galleries_tag, gallery:)
       auto_tag2 = create(:galleries_tag, gallery:)
-      
+
       create(:galleries_auto_add_tag, tag: main_tag, auto_add_tag: auto_tag1)
       create(:galleries_auto_add_tag, tag: main_tag, auto_add_tag: auto_tag2)
 
@@ -101,7 +101,7 @@ RSpec.describe Galleries::Image do
       gallery = image.gallery
       main_tag = create(:galleries_tag, gallery:)
       auto_tag = create(:galleries_tag, gallery:)
-      
+
       create(:galleries_auto_add_tag, tag: main_tag, auto_add_tag: auto_tag)
       image.add_tag(auto_tag) # Add the auto_tag first
 

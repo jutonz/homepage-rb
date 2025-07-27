@@ -59,6 +59,10 @@ module Galleries
 
     def tagging_needed? = name == TAGGING_NEEDED_NAME
 
+    def available_auto_add_tags
+      gallery.tags.where.not(id: [id] + auto_add_tag_ids)
+    end
+
     AUTO_CREATE_SOCIAL_PREFIXES = {
       "IG:" => "instagram",
       "RD:" => "reddit",

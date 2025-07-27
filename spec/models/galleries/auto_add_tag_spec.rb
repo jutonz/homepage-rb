@@ -30,7 +30,7 @@ RSpec.describe Galleries::AutoAddTag do
       tag = create(:galleries_tag)
       auto_add_tag = create(:galleries_tag, gallery: tag.gallery)
       create(:galleries_auto_add_tag, tag:, auto_add_tag:)
-      
+
       duplicate = build(:galleries_auto_add_tag, tag:, auto_add_tag:)
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:auto_add_tag]).to include("has already been taken")
@@ -46,10 +46,10 @@ RSpec.describe Galleries::AutoAddTag do
     it "prevents circular reference" do
       tag = create(:galleries_tag)
       auto_add_tag = create(:galleries_tag, gallery: tag.gallery)
-      
+
       # Create tag1 -> tag2
       create(:galleries_auto_add_tag, tag:, auto_add_tag:)
-      
+
       # Try to create tag2 -> tag1 (circular)
       circular = build(:galleries_auto_add_tag, tag: auto_add_tag, auto_add_tag: tag)
       expect(circular).not_to be_valid
