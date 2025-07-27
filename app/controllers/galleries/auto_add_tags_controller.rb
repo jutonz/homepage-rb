@@ -14,6 +14,7 @@ module Galleries
       @auto_add_tag = @tag.auto_add_tag_associations.build(auto_add_tag_params)
 
       if @auto_add_tag.save
+        BackfillAutoTagsJob.perform_later(@auto_add_tag)
         redirect_to(
           gallery_tag_path(@gallery, @tag),
           notice: "Auto add tag was successfully created"
