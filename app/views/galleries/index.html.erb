@@ -11,17 +11,27 @@
   <% end %>
 <% end %>
 
-<div class="flex flex-col gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
   <% @galleries.each do |gallery| %>
     <%= link_to(
       gallery_path(gallery),
-      data: {role: "gallery"}
+      data: {role: "gallery"},
+      class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 group"
     ) do %>
-      <%= tag.div(gallery.name) %>
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-medium text-gray-900 group-hover:text-gray-700"><%= gallery.name %></span>
+      </div>
+      <div class="flex gap-2">
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= gallery.images.size %> images</span>
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= gallery.tags.size %> tags</span>
+      </div>
     <% end %>
   <% end %>
-
-  <span class="hidden only:block">
-    No galleries
-  </span>
 </div>
+
+<% if @galleries.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No galleries yet</div>
+    <div class="text-sm">Create your first gallery to get started organizing your images.</div>
+  </div>
+<% end %>
