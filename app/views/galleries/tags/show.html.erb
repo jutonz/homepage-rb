@@ -29,6 +29,34 @@
   <div>This tag has no images.</div>
 <% end %>
 
+<div class="mb-5" data-role="auto-add-tags">
+  <h3 class="text-xl mb-4">Auto-add tags</h3>
+  <div class="mb-5">
+    <%= link_to(
+      "Add auto-add tag",
+      new_gallery_tag_auto_add_tag_path(@gallery, @tag),
+      class: "button"
+    ) %>
+  </div>
+
+  <% @tag.auto_add_tag_associations.each do |auto_add_tag_association| %>
+    <div data-role="auto-add-tag" class="flex gap-4 mb-4">
+      <div class="flex items-center">
+        <%= auto_add_tag_association.auto_add_tag.name %>
+      </div>
+      <div class="flex items-center gap-4">
+        <%= button_to(
+          "Remove",
+          gallery_tag_auto_add_tag_path(@gallery, @tag, auto_add_tag_association),
+          method: "delete",
+          data: {turbo_confirm: "Are you sure?"},
+          class: "button button--danger"
+        ) %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
 <div class="mb-5">
   <h3 class="text-xl mb-4">Social media links</h3>
   <div class="mb-5">

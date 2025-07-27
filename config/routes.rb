@@ -39,6 +39,7 @@ Rails.application.routes.draw do
       resource :bulk_upload, only: %i[new create]
       resources :tags do
         resources :social_media_links, only: %i[new create edit update]
+        resources :auto_add_tags, only: %i[new create destroy]
       end
       resource :tag_search, only: %i[show]
     end

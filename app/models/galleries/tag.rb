@@ -35,6 +35,12 @@ module Galleries
     has_many :social_media_links,
       class_name: "Galleries::SocialMediaLink",
       dependent: :destroy
+    has_many :auto_add_tag_associations,
+      class_name: "Galleries::AutoAddTag",
+      dependent: :destroy
+    has_many :auto_add_tags,
+      through: :auto_add_tag_associations,
+      source: :auto_add_tag
 
     validates :name,
       presence: true,
@@ -48,23 +54,13 @@ module Galleries
     end
 
     def display_name
-      "#{name} (#{image_tags.size})"
+      "#{name} (#{image_tags_count})"
     end
 
     def tagging_needed? = name == TAGGING_NEEDED_NAME
 
-    AUTO_CREATE_SOCIAL_PREFIXES = {
-      "IG:" => "instagram",
-      "RD:" => "reddit",
-      "TT:" => "tiktok"
-    }
-    def auto_create_social_links
-      AUTO_CREATE_SOCIAL_PREFIXES.each do |(prefix, platform)|
-        if name.start_with?(prefix)
-          username = name.split(prefix).last
-          social_media_links.find_or_create_by!(platform:, username:)
-        end
-      end
+    def available_auto_add_tags
+      gallery.tags.where.not(id: [id] + auto_add_tag_ids)
     end
   end
 end

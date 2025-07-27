@@ -14,8 +14,8 @@ RSpec.describe Galleries::ImageTagsComponent, type: :component do
 
     expect(page).to have_css("[data-role=tags]")
     tags = page.all("[data-role=tag]")
-    expect(tags.first.text).to include(tag_a.display_name)
-    expect(tags.last.text).to include(tag_b.display_name)
+    expect(tags.first.text).to include(tag_a.reload.display_name)
+    expect(tags.last.text).to include(tag_b.reload.display_name)
   end
 
   it "renders a link to the tag" do
@@ -27,7 +27,7 @@ RSpec.describe Galleries::ImageTagsComponent, type: :component do
     render_inline(component)
 
     expect(page).to have_link(
-      tag.display_name,
+      tag.reload.display_name,
       href: gallery_tag_path(gallery, tag)
     )
   end
