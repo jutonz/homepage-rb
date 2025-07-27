@@ -7,12 +7,13 @@ module Galleries
     }
 
     def self.call(tag)
-      AUTO_CREATE_SOCIAL_PREFIXES.each do |(prefix, platform)|
-        if tag.name.start_with?(prefix)
-          username = tag.name.split(prefix).last
-          tag.social_media_links.find_or_create_by!(platform:, username:)
-        end
+      prefix, platform = AUTO_CREATE_SOCIAL_PREFIXES.find do |prefix, _|
+        tag.name.start_with?(prefix)
       end
+      return unless prefix
+
+      username = tag.name.delete_prefix(prefix)
+      tag.social_media_links.find_or_create_by!(platform:, username:)
     end
   end
 end
