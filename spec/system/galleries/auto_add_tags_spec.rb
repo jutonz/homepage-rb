@@ -27,6 +27,10 @@ RSpec.describe "Gallery auto add tags", type: :system do
 
     within("[data-role=auto-add-tags]") do
       expect(page).to have_content(auto_tag.name)
+      expect(page).to have_link(
+        auto_tag.name,
+        href: gallery_tag_path(gallery, auto_tag)
+      )
     end
 
     # Remove auto-add tag

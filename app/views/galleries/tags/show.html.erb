@@ -42,7 +42,10 @@
   <% @tag.auto_add_tag_associations.each do |auto_add_tag_association| %>
     <div data-role="auto-add-tag" class="flex gap-4 mb-4">
       <div class="flex items-center">
-        <%= auto_add_tag_association.auto_add_tag.name %>
+        <%= link_to(
+          auto_add_tag_association.auto_add_tag.name,
+          gallery_tag_path(@gallery, auto_add_tag_association.auto_add_tag)
+        ) %>
       </div>
       <div class="flex items-center gap-4">
         <%= button_to(
