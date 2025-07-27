@@ -4,6 +4,17 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.raise = true # raise an error if n+1 query occurs
+
+    # Ignore false positive for ActiveStorage attachment record eager loading
+    Bullet.add_safelist type: :unused_eager_loading,
+      class_name: "ActiveStorage::Attachment",
+      association: :record
+  end
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.

@@ -12,7 +12,7 @@ class GalleriesController < ApplicationController
     @images =
       @gallery
         .images
-        .includes(file_attachment: :blob)
+        .includes(:file_attachment)
         .order(created_at: :desc)
         .then { @filter_tags.any? ? it.by_tags(@filter_tags) : it }
         .page(params[:page])
