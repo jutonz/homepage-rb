@@ -22,7 +22,7 @@ module Galleries
       file.variant(:thumb, resize_to_limit: [200, 200])
     end
 
-    belongs_to :gallery
+    belongs_to :gallery, counter_cache: true
     has_many :image_tags,
       class_name: "Galleries::ImageTag",
       dependent: :destroy

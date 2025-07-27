@@ -26,7 +26,7 @@ module Galleries
   class Tag < ApplicationRecord
     TAGGING_NEEDED_NAME = "tagging needed"
 
-    belongs_to :gallery
+    belongs_to :gallery, counter_cache: true
     belongs_to :user
     has_many :image_tags,
       class_name: "Galleries::ImageTag",
