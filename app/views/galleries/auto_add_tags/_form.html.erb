@@ -1,7 +1,7 @@
 <%= simple_form_for([@gallery, @tag, @auto_add_tag]) do |form| %>
   <%= form.input(
     :auto_add_tag_id,
-    collection: @tag.available_auto_add_tags.pluck(:id, :name),
+    collection: @tag.available_auto_add_tags.order(:name).pluck(:id, :name),
     label_method: :last,
     value_method: :first,
     label: "Auto add tag",
