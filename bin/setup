@@ -21,6 +21,16 @@ FileUtils.chdir APP_ROOT do
     exit
   end
 
+  brew_deps = %w[imagemagick vips]
+  begin
+    system!("command -v brew > /dev/null")
+    system!("brew install #{brew_deps.join(" ")}")
+  rescue
+    puts "It doesn't look like `brew` is installed"
+    puts "We'll skip installing these deps: #{brew_deps.join(", ")}"
+    puts "Make sure to install them manually"
+  end
+
   puts "== Installing dependencies =="
   system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
