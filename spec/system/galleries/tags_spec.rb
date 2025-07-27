@@ -61,8 +61,8 @@ RSpec.describe "Gallery tags page" do
 
     visit(gallery_tags_path(gallery))
 
-    expect(page).to have_content("Total number of images: 3")
-    expect(page).to have_content("Total number of tags: 2")
+    expect(page).to have_content("3 images")
+    expect(page).to have_content("2 tags")
   end
 
   it "manages a tag" do

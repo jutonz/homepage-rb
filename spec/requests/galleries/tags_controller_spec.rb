@@ -37,7 +37,7 @@ RSpec.describe Galleries::TagsController do
 
       get(gallery_tags_path(gallery))
 
-      expect(page).to have_text("Total number of tags: 2")
+      expect(page).to have_text("2 tags")
     end
 
     it "includes a count of the number of images" do
@@ -48,7 +48,7 @@ RSpec.describe Galleries::TagsController do
 
       get(gallery_tags_path(gallery))
 
-      expect(page).to have_text("Total number of images: 2")
+      expect(page).to have_text("2 images")
     end
   end
 
