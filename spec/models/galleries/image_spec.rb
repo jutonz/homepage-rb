@@ -76,7 +76,7 @@ RSpec.describe Galleries::Image do
       image = create(:galleries_image)
       gallery = image.gallery
       tag = create(:galleries_tag, gallery:, name: "IG:testin")
-      expect(tag).to receive(:auto_create_social_links)
+      expect(Galleries::SocialLinksCreator).to receive(:call).with(tag)
 
       image.add_tag(tag)
     end

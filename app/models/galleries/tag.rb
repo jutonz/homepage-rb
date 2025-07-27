@@ -54,7 +54,7 @@ module Galleries
     end
 
     def display_name
-      "#{name} (#{image_tags.size})"
+      "#{name} (#{image_tags_count})"
     end
 
     def tagging_needed? = name == TAGGING_NEEDED_NAME
@@ -63,18 +63,5 @@ module Galleries
       gallery.tags.where.not(id: [id] + auto_add_tag_ids)
     end
 
-    AUTO_CREATE_SOCIAL_PREFIXES = {
-      "IG:" => "instagram",
-      "RD:" => "reddit",
-      "TT:" => "tiktok"
-    }
-    def auto_create_social_links
-      AUTO_CREATE_SOCIAL_PREFIXES.each do |(prefix, platform)|
-        if name.start_with?(prefix)
-          username = name.split(prefix).last
-          social_media_links.find_or_create_by!(platform:, username:)
-        end
-      end
-    end
   end
 end

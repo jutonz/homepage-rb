@@ -68,7 +68,7 @@ RSpec.describe Galleries::Tag, type: :model do
       image = create(:galleries_image, gallery:)
       image.add_tag(tag)
 
-      expect(tag.display_name).to eql("blah (1)")
+      expect(tag.reload.display_name).to eql("blah (1)")
     end
   end
 
@@ -84,31 +84,6 @@ RSpec.describe Galleries::Tag, type: :model do
     end
   end
 
-  describe "#auto_create_social_links" do
-    it "creates an insta link for a tag prefixed with IG:" do
-      tag = create(:galleries_tag, name: "IG:testin")
-
-      tag.auto_create_social_links
-
-      expect(tag.reload.social_media_links.length).to eq(1)
-      expect(tag.social_media_links.first).to have_attributes(
-        platform: "instagram",
-        username: "testin"
-      )
-    end
-
-    it "creates a tiktok link for a tag prefixed with TT:" do
-      tag = create(:galleries_tag, name: "TT:testin")
-
-      tag.auto_create_social_links
-
-      expect(tag.reload.social_media_links.length).to eq(1)
-      expect(tag.social_media_links.first).to have_attributes(
-        platform: "tiktok",
-        username: "testin"
-      )
-    end
-  end
 
   describe "#available_auto_add_tags" do
     it "returns other tags in the same gallery" do
