@@ -84,7 +84,6 @@ RSpec.describe Galleries::Tag, type: :model do
     end
   end
 
-
   describe "#available_auto_add_tags" do
     it "returns other tags in the same gallery" do
       gallery = create(:gallery)

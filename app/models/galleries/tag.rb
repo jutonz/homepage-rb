@@ -62,6 +62,5 @@ module Galleries
     def available_auto_add_tags
       gallery.tags.where.not(id: [id] + auto_add_tag_ids)
     end
-
   end
 end
