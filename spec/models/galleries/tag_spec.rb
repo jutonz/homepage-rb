@@ -28,6 +28,8 @@ RSpec.describe Galleries::Tag, type: :model do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:image_tags).dependent(:destroy) }
   it { is_expected.to have_many(:images) }
+  it { is_expected.to have_many(:auto_add_tag_associations).dependent(:destroy) }
+  it { is_expected.to have_many(:auto_add_tags) }
 
   it { is_expected.to validate_presence_of(:name) }
   it do
@@ -105,6 +107,53 @@ RSpec.describe Galleries::Tag, type: :model do
         platform: "tiktok",
         username: "testin"
       )
+    end
+  end
+
+  describe "#available_auto_add_tags" do
+    it "returns other tags in the same gallery" do
+      gallery = create(:gallery)
+      tag1 = create(:galleries_tag, gallery:, name: "tag1")
+      create(:galleries_tag, gallery:, name: "tag2")
+      create(:galleries_tag, gallery:, name: "tag3")
+
+      available = tag1.available_auto_add_tags
+
+      expect(available.pluck(:name)).to contain_exactly("tag2", "tag3")
+    end
+
+    it "excludes itself from available tags" do
+      gallery = create(:gallery)
+      tag1 = create(:galleries_tag, gallery:, name: "tag1")
+      create(:galleries_tag, gallery:, name: "tag2")
+
+      available = tag1.available_auto_add_tags
+
+      expect(available.pluck(:name)).not_to include("tag1")
+    end
+
+    it "excludes already configured auto-add tags" do
+      gallery = create(:gallery)
+      tag1 = create(:galleries_tag, gallery:, name: "tag1")
+      tag2 = create(:galleries_tag, gallery:, name: "tag2")
+      create(:galleries_tag, gallery:, name: "tag3")
+      create(:galleries_auto_add_tag, tag: tag1, auto_add_tag: tag2)
+
+      available = tag1.available_auto_add_tags
+
+      expect(available.pluck(:name)).to contain_exactly("tag3")
+    end
+
+    it "excludes tags from other galleries" do
+      gallery1 = create(:gallery)
+      gallery2 = create(:gallery)
+      tag1 = create(:galleries_tag, gallery: gallery1, name: "tag1")
+      create(:galleries_tag, gallery: gallery1, name: "tag2")
+      create(:galleries_tag, gallery: gallery2, name: "tag3")
+
+      available = tag1.available_auto_add_tags
+
+      expect(available.pluck(:name)).to contain_exactly("tag2")
     end
   end
 end
