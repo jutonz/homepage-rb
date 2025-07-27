@@ -25,6 +25,7 @@ module Galleries
 
     enum :platform, {
       instagram: "instagram",
+      reddit: "reddit",
       tiktok: "tiktok",
       url: "URL"
     }, validate: true
@@ -37,6 +38,7 @@ module Galleries
     def href
       case platform
       when "instagram" then "https://instagram.com/#{username}"
+      when "reddit" then "https://reddit.com/u/#{username}"
       when "tiktok" then "https://tiktok.com/@#{username}"
       when "url" then username
       end

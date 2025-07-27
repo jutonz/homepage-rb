@@ -48,6 +48,11 @@ RSpec.describe Galleries::SocialMediaLink do
       expect(link.href).to eql("https://instagram.com/#{link.username}")
     end
 
+    it "handles a reddit link" do
+      link = build(:galleries_social_media_link, :reddit)
+      expect(link.href).to eql("https://reddit.com/u/#{link.username}")
+    end
+
     it "handles a tiktok link" do
       link = build(:galleries_social_media_link, :tiktok)
       expect(link.href).to eql("https://tiktok.com/@#{link.username}")

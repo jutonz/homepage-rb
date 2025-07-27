@@ -30,6 +30,7 @@ module Galleries
     def icon_path
       case @link.platform
       when "instagram" then "socials/instagram.png"
+      when "reddit" then "socials/reddit.png"
       when "tiktok" then "socials/tiktok.png"
       end
     end

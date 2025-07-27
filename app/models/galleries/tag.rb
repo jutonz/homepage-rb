@@ -55,6 +55,7 @@ module Galleries
 
     AUTO_CREATE_SOCIAL_PREFIXES = {
       "IG:" => "instagram",
+      "RD:" => "reddit",
       "TT:" => "tiktok"
     }
     def auto_create_social_links
