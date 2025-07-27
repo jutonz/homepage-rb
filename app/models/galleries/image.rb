@@ -56,7 +56,8 @@ module Galleries
 
     def add_tag(*tags)
       tags = Array(tags)
-      tags_to_add = Set.new(tags + tags.flat_map(&:auto_add_tags))
+      tags_relation = Tag.where(id: tags.map(&:id)).includes(:auto_add_tags)
+      tags_to_add = Set.new(tags_relation + tags_relation.flat_map(&:auto_add_tags))
 
       tags_to_add.each do |tag|
         unless self.tags.include?(tag)
