@@ -35,7 +35,12 @@ module Galleries
     def initialize(image:, scope:, title: "Similar Images", page: 1)
       @title = title
       @image = image
-      @similar_images = scope.page(page).per(PER_PAGE)
+      @similar_images =
+        scope
+          .includes(:gallery)
+          .includes(:file_attachment)
+          .page(page)
+          .per(PER_PAGE)
     end
   end
 end
