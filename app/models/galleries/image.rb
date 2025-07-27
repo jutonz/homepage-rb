@@ -55,11 +55,15 @@ module Galleries
     def similar_images = SimilarImagesQuery.call(image: self)
 
     def add_tag(*tags)
-      Array(tags).each do |tag|
+      tags = Array(tags)
+      tags_to_add = Set.new(tags + tags.flat_map(&:auto_add_tags))
+
+      tags_to_add.each do |tag|
         unless self.tags.include?(tag)
           self.tags << tag
         end
       end
+      
       save!
       self.tags.each(&:auto_create_social_links)
     end

@@ -35,6 +35,12 @@ module Galleries
     has_many :social_media_links,
       class_name: "Galleries::SocialMediaLink",
       dependent: :destroy
+    has_many :auto_add_tag_associations,
+      class_name: "Galleries::AutoAddTag",
+      dependent: :destroy
+    has_many :auto_add_tags,
+      through: :auto_add_tag_associations,
+      source: :auto_add_tag
 
     validates :name,
       presence: true,

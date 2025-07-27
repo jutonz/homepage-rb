@@ -80,6 +80,35 @@ RSpec.describe Galleries::Image do
 
       image.add_tag(tag)
     end
+
+    it "automatically adds auto_add_tags when adding a tag" do
+      image = create(:galleries_image)
+      gallery = image.gallery
+      main_tag = create(:galleries_tag, gallery:)
+      auto_tag1 = create(:galleries_tag, gallery:)
+      auto_tag2 = create(:galleries_tag, gallery:)
+      
+      create(:galleries_auto_add_tag, tag: main_tag, auto_add_tag: auto_tag1)
+      create(:galleries_auto_add_tag, tag: main_tag, auto_add_tag: auto_tag2)
+
+      image.add_tag(main_tag)
+
+      expect(image.reload.tag_ids).to contain_exactly(main_tag.id, auto_tag1.id, auto_tag2.id)
+    end
+
+    it "does not duplicate tags when auto-adding" do
+      image = create(:galleries_image)
+      gallery = image.gallery
+      main_tag = create(:galleries_tag, gallery:)
+      auto_tag = create(:galleries_tag, gallery:)
+      
+      create(:galleries_auto_add_tag, tag: main_tag, auto_add_tag: auto_tag)
+      image.add_tag(auto_tag) # Add the auto_tag first
+
+      image.add_tag(main_tag) # This should not duplicate auto_tag
+
+      expect(image.reload.tag_ids).to contain_exactly(main_tag.id, auto_tag.id)
+    end
   end
 
   describe "#remove_tag" do
