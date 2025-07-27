@@ -6,6 +6,8 @@ RSpec.describe "Gallery auto add tags", type: :system do
     gallery = create(:gallery, user:)
     main_tag = create(:galleries_tag, gallery:, name: "main tag")
     auto_tag = create(:galleries_tag, gallery:, name: "auto tag")
+    create(:galleries_tag, gallery:, name: "Zebra tag")
+    create(:galleries_tag, gallery:, name: "Apple tag")
     login_as(user)
 
     visit(gallery_tag_path(gallery, main_tag))
@@ -18,6 +20,12 @@ RSpec.describe "Gallery auto add tags", type: :system do
     expect(page).to have_current_path(
       new_gallery_tag_auto_add_tag_path(gallery, main_tag)
     )
+
+    # Verify tags are ordered alphabetically
+    select_options = page.all('select[name="auto_add_tag[auto_add_tag_id]"] option')
+      .map(&:text)
+      .reject { |text| text.blank? || text == "Select a tag to auto-add" }
+    expect(select_options).to eq(["Apple tag", "auto tag", "Zebra tag"])
 
     select(auto_tag.name, from: "Auto add tag")
     click_on("Create Auto add tag")
