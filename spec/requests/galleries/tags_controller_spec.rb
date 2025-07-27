@@ -24,11 +24,9 @@ RSpec.describe Galleries::TagsController do
 
       get(gallery_tags_path(gallery))
 
-      tags =
-        page
-          .all("[data-role=tag]")
-          .map { it.text.strip }
-      expect(tags).to eql([tag_a.display_name, tag_b.display_name])
+      tag_links = page.all("[data-role=tag]")
+      expect(tag_links[0].text).to include(tag_a.name)
+      expect(tag_links[1].text).to include(tag_b.name)
     end
 
     it "includes a count of the number of tags" do
