@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_27_132843) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_27_193420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -60,6 +60,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_27_132843) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "hidden_at"
+    t.integer "images_count", default: 0, null: false
+    t.integer "tags_count", default: 0, null: false
     t.index ["name"], name: "index_galleries_on_name", unique: true
     t.index ["user_id"], name: "index_galleries_on_user_id"
   end
