@@ -14,7 +14,9 @@ module Galleries
 
     def show
       @gallery = find_gallery
-      @tag = find_tag
+      @tag = find_tag(includes: [
+        auto_add_tag_associations: :auto_add_tag
+      ])
       @images =
         @tag
           .images
@@ -78,8 +80,10 @@ module Galleries
         .find(params[:gallery_id])
     end
 
-    def find_tag
-      @gallery.tags.find(params[:id])
+    def find_tag(includes: nil)
+      query = @gallery.tags
+      query = query.includes(includes) if includes.present?
+      query.find(params[:id])
     end
 
     def tag_params

@@ -25,53 +25,79 @@
   <% end %>
 <% end %>
 
-<% if @images.none? %>
-  <div>This tag has no images.</div>
-<% end %>
+<div class="mb-6">
+  <%= render(PillComponent.new(
+    text: "#{@images.size} images",
+    color: :blue
+  )) %>
+</div>
 
-<div class="mb-5" data-role="auto-add-tags">
-  <h3 class="text-xl mb-4">Auto-add tags</h3>
-  <div class="mb-5">
-    <%= link_to(
-      "Add auto-add tag",
-      new_gallery_tag_auto_add_tag_path(@gallery, @tag),
-      class: "button"
-    ) %>
-  </div>
 
-  <% @tag.auto_add_tag_associations.each do |auto_add_tag_association| %>
-    <div data-role="auto-add-tag" class="flex gap-4 mb-4">
-      <div class="flex items-center">
-        <%= link_to(
-          auto_add_tag_association.auto_add_tag.name,
-          gallery_tag_path(@gallery, auto_add_tag_association.auto_add_tag)
-        ) %>
-      </div>
-      <div class="flex items-center gap-4">
-        <%= button_to(
-          "Remove",
-          gallery_tag_auto_add_tag_path(@gallery, @tag, auto_add_tag_association),
-          method: "delete",
-          data: {turbo_confirm: "Are you sure?"},
-          class: "button button--danger"
-        ) %>
-      </div>
-    </div>
+<div class="mb-6" data-role="auto-add-tags">
+  <%= render(CardComponent.new(title: "Auto-add tags")) do |c| %>
+    <%= c.with_action do %>
+      <%= link_to(
+        "Add auto-add tag",
+        new_gallery_tag_auto_add_tag_path(@gallery, @tag),
+        class: "button"
+      ) %>
+    <% end %>
+
+    <%= c.with_body do %>
+      <% if @tag.auto_add_tag_associations.any? %>
+        <div class="space-y-3">
+          <% @tag.auto_add_tag_associations.each do |auto_add_tag_association| %>
+            <div data-role="auto-add-tag" class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+              <div class="flex items-center">
+                <%= link_to(
+                  auto_add_tag_association.auto_add_tag.name,
+                  gallery_tag_path(@gallery, auto_add_tag_association.auto_add_tag),
+                  class: "text-blue-600 hover:text-blue-800 font-medium"
+                ) %>
+              </div>
+              <div class="flex items-center">
+                <%= button_to(
+                  "Remove",
+                  gallery_tag_auto_add_tag_path(@gallery, @tag, auto_add_tag_association),
+                  method: "delete",
+                  data: {turbo_confirm: "Are you sure?"},
+                  class: "button button--danger button--small"
+                ) %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 text-sm">
+          Tags you configure as auto-add tags will automatically be applied to
+          images when this one is added.
+        </p>
+      <% end %>
+    <% end %>
   <% end %>
 </div>
 
-<div class="mb-5">
-  <h3 class="text-xl mb-4">Social media links</h3>
-  <div class="mb-5">
-    <%= link_to(
-      "Add social media link",
-      new_gallery_tag_social_media_link_path(@gallery, @tag),
-      class: "button"
-    ) %>
-  </div>
+<div class="mb-6">
+  <%= render(CardComponent.new(title: "Social media links")) do |c| %>
+    <%= c.with_action do %>
+      <%= link_to(
+        "Add social media link",
+        new_gallery_tag_social_media_link_path(@gallery, @tag),
+        class: "button"
+      ) %>
+    <% end %>
 
-  <% @tag.social_media_links.each do |link| %>
-    <%= render(Galleries::SocialMediaLinkComponent.new(link:)) %>
+    <%= c.with_body do %>
+      <% if @tag.social_media_links.any? %>
+        <div class="space-y-3">
+          <% @tag.social_media_links.each do |link| %>
+            <%= render(Galleries::SocialMediaLinkComponent.new(link:)) %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 text-sm">No social media links added.</p>
+      <% end %>
+    <% end %>
   <% end %>
 </div>
 
