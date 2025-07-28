@@ -15,7 +15,7 @@ gem "neighbor"
 gem "opentelemetry-exporter-otlp"
 gem "opentelemetry-instrumentation-all"
 gem "opentelemetry-sdk"
-gem "pg", "~> 1.5"
+gem "pg", "~> 1.6"
 gem "prometheus_exporter", require: false
 gem "puma", ">= 5.0"
 gem "rails", "~> 8.0.2"
