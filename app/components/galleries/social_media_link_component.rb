@@ -10,11 +10,18 @@ module Galleries
             <%= @link.username %>
           <% end %>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
           <%= link_to(
             "Edit",
             edit_gallery_tag_social_media_link_path(@gallery, @tag, @link),
             class: "button button--small"
+          ) %>
+          <%= button_to(
+            "Delete",
+            gallery_tag_social_media_link_path(@gallery, @tag, @link),
+            method: "delete",
+            data: {turbo_confirm: "Are you sure?"},
+            class: "button button--danger button--small"
           ) %>
         </div>
       </div>
