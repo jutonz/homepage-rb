@@ -4,8 +4,8 @@ RSpec.describe CardComponent, type: :component do
   it "renders a card with title only" do
     component = described_class.new(title: "Test Card")
 
-    render_inline(component) do
-      "Card content"
+    render_inline(component) do |c|
+      c.with_body { "Card content" }
     end
 
     expect(page).to have_text("Test Card")
@@ -17,7 +17,7 @@ RSpec.describe CardComponent, type: :component do
 
     render_inline(component) do |c|
       c.with_action { "Action Button" }
-      "Card content"
+      c.with_body { "Card content" }
     end
 
     expect(page).to have_text("Test Card")
@@ -31,7 +31,7 @@ RSpec.describe CardComponent, type: :component do
     render_inline(component) do |c|
       c.with_action { "First Action" }
       c.with_action { "Second Action" }
-      "Card content"
+      c.with_body { "Card content" }
     end
 
     expect(page).to have_text("Test Card")
@@ -43,8 +43,8 @@ RSpec.describe CardComponent, type: :component do
   it "renders card without actions when none provided" do
     component = described_class.new(title: "Simple Card")
 
-    render_inline(component) do
-      "Just content"
+    render_inline(component) do |c|
+      c.with_body { "Just content" }
     end
 
     expect(page).to have_text("Simple Card")

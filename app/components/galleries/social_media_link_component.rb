@@ -1,19 +1,20 @@
 module Galleries
   class SocialMediaLinkComponent < ApplicationComponent
     erb_template <<~ERB
-      <div data-role="social-link" class="flex gap-4 mb-4">
-        <%= link_to(@link.href, class:"flex p-2 border-2 border-black rounded-sm border-slate-300") do %>
-          <% if icon_path %>
-            <%= image_tag(icon_path, alt: "\#{@link.platform} icon", class: "h-[30px] w-[30px] mr-3") %>
-          <% end %>
-          <div class="flex items-center">
+      <div data-role="social-link" class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+        <div class="flex items-center">
+          <%= link_to(@link.href, class: "flex items-center text-blue-600 hover:text-blue-800 font-medium") do %>
+            <% if icon_path %>
+              <%= image_tag(icon_path, alt: "\#{@link.platform} icon", class: "h-[20px] w-[20px] mr-2") %>
+            <% end %>
             <%= @link.username %>
-          </div>
-        <% end %>
-        <div class="flex items-center gap-4">
+          <% end %>
+        </div>
+        <div class="flex items-center">
           <%= link_to(
             "Edit",
-            edit_gallery_tag_social_media_link_path(@gallery, @tag, @link)
+            edit_gallery_tag_social_media_link_path(@gallery, @tag, @link),
+            class: "button button--small"
           ) %>
         </div>
       </div>

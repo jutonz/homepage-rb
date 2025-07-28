@@ -11,12 +11,13 @@ class CardComponent < ApplicationComponent
           </div>
         <% end %>
       </div>
-
-      <%= content %>
+      
+      <%= body if body %>
     </div>
   ERB
 
   renders_many :actions
+  renders_one :body
 
   def initialize(title:)
     @title = title
