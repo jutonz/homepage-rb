@@ -39,6 +39,13 @@
   <% end %>
 <% end %>
 
+<div class="mb-6">
+  <%= render(PillComponent.new(
+    text: "#{@gallery.images.size} images",
+    color: :blue
+  )) %>
+</div>
+
 <div class="grid gap-5 grid-cols-1 lg:grid-cols-4">
   <%= turbo_frame_tag("gallery-filters") do %>
     <%= render(

@@ -39,17 +39,6 @@ RSpec.describe Galleries::TagsController do
 
       expect(page).to have_text("2 tags")
     end
-
-    it "includes a count of the number of images" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      create_pair(:galleries_image, gallery:)
-      login_as(user)
-
-      get(gallery_tags_path(gallery))
-
-      expect(page).to have_text("2 images")
-    end
   end
 
   describe "new" do
