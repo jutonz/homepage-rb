@@ -19,6 +19,7 @@ module Galleries
         @tag
           .images
           .includes(:file_attachment)
+          .includes(:gallery)
           .order(created_at: :desc)
           .page(params[:page])
     end
