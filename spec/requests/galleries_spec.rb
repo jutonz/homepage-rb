@@ -49,6 +49,17 @@ RSpec.describe GalleriesController do
       expect(page).to have_link("Galleries", href: galleries_path)
     end
 
+    it "includes a count of the number of images" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create_pair(:galleries_image, gallery:)
+      login_as(user)
+
+      get(gallery_path(gallery))
+
+      expect(page).to have_text("2 images")
+    end
+
     it "doesn't raise an InvariantError if the image is not variable" do
       gallery = create(:gallery)
       create(
