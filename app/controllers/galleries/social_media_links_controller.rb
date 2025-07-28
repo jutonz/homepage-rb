@@ -46,6 +46,18 @@ module Galleries
       end
     end
 
+    def destroy
+      @gallery = find_gallery
+      @tag = find_tag(@gallery)
+      @social_media_link = find_link(@tag)
+
+      @social_media_link.destroy!
+      redirect_to(
+        gallery_tag_path(@gallery, @tag),
+        notice: "Social media link was successfully deleted."
+      )
+    end
+
     private
 
     def find_gallery
