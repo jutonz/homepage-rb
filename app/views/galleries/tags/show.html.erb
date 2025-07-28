@@ -34,15 +34,14 @@
 
 
 <div class="mb-6" data-role="auto-add-tags">
-  <div class="bg-white rounded-lg border border-gray-200 p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-semibold text-gray-900">Auto-add tags</h3>
+  <%= render(CardComponent.new(title: "Auto-add tags")) do |c| %>
+    <%= c.with_action do %>
       <%= link_to(
         "Add auto-add tag",
         new_gallery_tag_auto_add_tag_path(@gallery, @tag),
         class: "button"
       ) %>
-    </div>
+    <% end %>
 
     <% if @tag.auto_add_tag_associations.any? %>
       <div class="space-y-3">
@@ -73,19 +72,18 @@
         images when this one is added.
       </p>
     <% end %>
-  </div>
+  <% end %>
 </div>
 
 <div class="mb-6">
-  <div class="bg-white rounded-lg border border-gray-200 p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-semibold text-gray-900">Social media links</h3>
+  <%= render(CardComponent.new(title: "Social media links")) do |c| %>
+    <%= c.with_action do %>
       <%= link_to(
         "Add social media link",
         new_gallery_tag_social_media_link_path(@gallery, @tag),
         class: "button"
       ) %>
-    </div>
+    <% end %>
 
     <% if @tag.social_media_links.any? %>
       <div class="space-y-3">
@@ -96,7 +94,7 @@
     <% else %>
       <p class="text-gray-500 text-sm">No social media links added.</p>
     <% end %>
-  </div>
+  <% end %>
 </div>
 
 <%= render(
