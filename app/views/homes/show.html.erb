@@ -1,19 +1,82 @@
-<div>
-  Hi <%= current_user.email %>
+<%= render(HeaderComponent.new(title: "Dashboard")) do |header| %>
+  <% header.with_action do %>
+    <%= button_to(
+      "Logout",
+      session_path,
+      method: :delete,
+      class: "button button--danger"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="mb-6">
+  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg
+              p-6 border border-blue-200">
+    <div class="flex items-center space-x-3">
+      <div class="flex-shrink-0">
+        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center
+                    justify-center">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
+               viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+            </path>
+          </svg>
+        </div>
+      </div>
+      <div>
+        <h2 class="text-lg font-medium text-gray-900">
+          Welcome back!
+        </h2>
+        <p class="text-sm text-gray-600">
+          Signed in as <%= current_user.email %>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div>
-  <%= button_to("Logout", session_path, method: :delete) %>
-</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <%= render(CardComponent.new(title: "Photo Galleries")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Manage and organize your photo collections with tags and
+        social media integration.
+      </p>
+      <%= link_to(
+        "Browse Galleries",
+        galleries_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
 
-<div class="mt-5 space-y-4">
-  <div>
-    <%= link_to("Galleries", galleries_path) %>
-  </div>
-  <div>
-    <%= link_to("Todo", todo_path) %>
-  </div>
-  <div>
-    <%= link_to("API Tokens", settings_api_tokens_path) %>
-  </div>
+  <%= render(CardComponent.new(title: "Todo Management")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Track your tasks and organize them into rooms for better
+        project management.
+      </p>
+      <%= link_to(
+        "View Tasks",
+        todo_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
+
+  <%= render(CardComponent.new(title: "API Access")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Manage your API tokens for programmatic access to your data
+        and integrations.
+      </p>
+      <%= link_to(
+        "Manage Tokens",
+        settings_api_tokens_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
 </div>
