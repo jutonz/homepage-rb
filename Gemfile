@@ -74,3 +74,5 @@ group :test do
   gem "super_diff"
   gem "webmock"
 end
+
+gem "solid_cable", "~> 3.0"
