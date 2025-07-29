@@ -1,11 +1,10 @@
-<%= render(HeaderComponent.new(
-  title: @room.name
-)) do |c| %>
-  <%= c.with_crumb("Home", home_path) %>
-  <%= c.with_crumb("Todo", todo_path) %>
-  <%= c.with_crumb("Rooms", todo_rooms_path) %>
+<!-- Combined tablet and web interface -->
+<%= render(HeaderComponent.new(title: @room.name)) do |header| %>
+  <% header.with_crumb("Home", home_path) %>
+  <% header.with_crumb("Todo", todo_path) %>
+  <% header.with_crumb("Rooms", todo_rooms_path) %>
 
-  <%= c.with_action do %>
+  <% header.with_action do %>
     <%= link_to(
       "Edit room",
       edit_todo_room_path(@room),
@@ -13,7 +12,7 @@
     ) %>
   <% end %>
 
-  <%= c.with_action do %>
+  <% header.with_action do %>
     <%= button_to(
       "Delete",
       todo_room_path(@room),
@@ -24,23 +23,59 @@
   <% end %>
 <% end %>
 
-<h2 class="text-lg mb-3">Tasks</h2>
-<div class="flex gap-4">
-  <% @room.tasks.each do |task| %>
-    <%= button_to(
-      todo_task_occurrence_path(task, room_id: @room.id),
-      class: "border-2 border-fuchsia-500 rounded-md p-4 min-w-32 max-w-32 text-center",
-      data: {role: "room", turbo_confirm: "Schedule this task?"}
-    ) do %>
-      <%= tag.div(task.name) %>
-    <% end %>
+<%= turbo_stream_from "room_#{@room.id}" %>
+<div class="bg-gray-50 min-h-screen p-6" data-turbo-stream-target="room_<%= @room.id %>">
+
+  <!-- Task Grid -->
+  <% if @room.tasks.any? %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <% @room.tasks.each do |task| %>
+        <%= render(Todo::TaskCardComponent.new(task: task, room: @room)) %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center mt-20">
+      <div class="bg-white rounded-lg p-12 shadow-sm max-w-md mx-auto">
+        <h3 class="text-2xl font-medium text-gray-700 mb-4">
+          No tasks yet
+        </h3>
+        <p class="text-gray-600 mb-6">
+          This room doesn't have any tasks yet.
+        </p>
+        <%= link_to(
+          "Add one",
+          new_todo_task_path(todo_task: {room_ids: [@room.id]}),
+          class: "button"
+        ) %>
+      </div>
+    </div>
   <% end %>
-  <span class="hidden only:block">
-    This room doesn't have any tasks yet.
-    <br />
-    <%= link_to(
-      "Add one",
-      new_todo_task_path(todo_task: {room_ids: [@room.id]})
-    ) %>
-  </span>
+
+  <!-- Room Management (Hidden by default, show on long press or admin mode) -->
+  <div class="fixed bottom-4 right-4">
+    <details class="relative">
+      <summary class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white cursor-pointer">
+        ⚙️
+      </summary>
+      <div class="absolute bottom-16 right-0 bg-white rounded-lg shadow-xl p-4 space-y-2 min-w-[200px]">
+        <%= link_to(
+          "Edit room",
+          edit_todo_room_path(@room),
+          class: "button button--small block w-full text-center"
+        ) %>
+        <%= button_to(
+          "Delete room",
+          todo_room_path(@room),
+          method: "delete",
+          data: {turbo_confirm: "Are you sure?"},
+          class: "button button--danger button--small block w-full text-center"
+        ) %>
+        <%= link_to(
+          "Add task",
+          new_todo_task_path(todo_task: {room_ids: [@room.id]}),
+          class: "button button--secondary button--small block w-full text-center"
+        ) %>
+      </div>
+    </details>
+  </div>
 </div>

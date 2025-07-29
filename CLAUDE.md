@@ -57,12 +57,14 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 
 ### Style rules
 * You must limit line length to 80 characters.
+* Do not use callbacks in controllers or models
 
 ### Testing rules
-* Do not use `let` or `before`
+* Do not use `let`, `let!`, `before`, or `context`
 * Break complex setup into methods
 * Organize tests into distinct act/arrange/assert blocks
 * Always add tests for new code
+* Always run tests after creating or modifying them
 
 ## git commits
 * Briefly explain the purpose of the change in 1-2 sentences.

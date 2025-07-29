@@ -13,6 +13,8 @@ Rails.application.routes.draw do
         resources :images, only: %w[create]
       end
     end
+
+    post "webhooks/todoist", to: "webhooks/todoist#create"
   end
 
   resource :session, only: %i[new destroy] do
