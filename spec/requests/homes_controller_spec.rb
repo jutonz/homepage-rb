@@ -14,7 +14,7 @@ RSpec.describe HomesController do
 
       get(home_path)
 
-      expect(response.body).to include("Hi #{user.email}")
+      expect(response.body).to include("Signed in as #{user.email}")
     end
   end
 end
