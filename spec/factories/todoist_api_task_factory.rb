@@ -3,16 +3,14 @@ FactoryBot.define do
     skip_create
     initialize_with { Todoist::Api::Tasks::Task.new(**attributes) }
 
-    assignee_id { "123" }
-    assigner_id { "123" }
-    content { "Do something" }
-    creator_id { "123" }
-    description { "Please?" }
-    sequence(:id) { it.to_s }
-    is_completed { false }
-    priority { 1 }
-    project_id { "123" }
+    sequence(:id) { "6cVrPg9WXPhx4X#{it}" }
+    project_id { "6JRjhMXMmhwq3WVX" }
     labels { ["rollable"] }
+    added_at { Time.parse("2025-07-30T12:06:03.257775Z") }
+    completed_at { nil }
+    content { "Do something" }
+    description { "Please?" }
+
     due do
       association(
         :todoist_api_task_due,
@@ -23,7 +21,7 @@ FactoryBot.define do
     end
 
     transient do
-      due_date { Date.current }
+      due_date { Time.current }
       due_string { "today" }
       due_is_recurring { false }
     end
@@ -38,7 +36,7 @@ FactoryBot.define do
     skip_create
     initialize_with { Todoist::Api::Tasks::Due.new(**attributes) }
 
-    date { Date.current }
+    date { Time.current }
     string { "today" }
     is_recurring { false }
   end

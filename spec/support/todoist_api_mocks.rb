@@ -1,40 +1,40 @@
 module TodoistApiMocks
   def self.mock_tasks_get(task)
-    WebMock::API.stub_request(
-      :get,
-      "https://api.todoist.com/rest/v2/tasks/#{task.id}"
-    ).to_return(
-      status: 200,
-      body: task.to_json,
-      headers: {"content-type" => "application/json"}
-    )
+    FakeTodoist
+      .stub(:get, "/api/v1/tasks/#{task.id}")
+      .to_return(
+        status: 200,
+        body: task.to_json,
+        headers: {"content-type" => "application/json"}
+      )
   end
 
   def self.mock_tasks_create(task)
-    WebMock::API.stub_request(
-      :post,
-      "https://api.todoist.com/rest/v2/tasks"
-    ).to_return(
-      status: 200,
-      body: task.to_json,
-      headers: {"content-type" => "application/json"}
-    )
+    FakeTodoist
+      .stub(:post, "/api/v1/tasks")
+      .to_return(
+        status: 200,
+        body: task.to_json,
+        headers: {"content-type" => "application/json"}
+      )
   end
 
   def self.mock_tasks_rollable(tasks)
-    WebMock::API.stub_request(
-      :get,
-      "https://api.todoist.com/rest/v2/tasks?filter=@rollable,overdue"
-    ).to_return(
-      status: 200,
-      body: Array(tasks).to_json,
-      headers: {"content-type" => "application/json"}
-    )
+    FakeTodoist
+      .stub(:get, "/api/v1/tasks/filter?query=@rollable,overdue")
+      .to_return(
+        status: 200,
+        body: {
+          results: Array(tasks),
+          next_cursor: nil
+        }.to_json,
+        headers: {"content-type" => "application/json"}
+      )
   end
 
   def self.mock_task_update(task, result:)
-    WebMock::API
-      .stub_request(:post, "https://api.todoist.com/rest/v2/tasks/#{task.id}")
+    FakeTodoist
+      .stub(:post, "/api/v1/tasks/#{task.id}")
       .to_return(
         status: 200,
         body: result.to_json,

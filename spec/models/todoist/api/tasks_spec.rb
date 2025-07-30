@@ -4,38 +4,50 @@ RSpec.describe Todoist::Api::Tasks do
   describe ".from_json" do
     it "converts json into an object" do
       json = {
-        "assignee_id" => "123",
-        "assigner_id" => "123",
-        "content" => "123",
-        "creator_id" => "123",
-        "description" => "123",
-        "id" => "123",
-        "is_completed" => "123",
-        "labels" => ["rollable"],
-        "priority" => "123",
-        "project_id" => "123",
+        "user_id" => "40386552",
+        "id" => "6cVrPg9WXPhx4XjX",
+        "project_id" => "6JRjhMXMmhwq3WVX",
+        "section_id" => nil,
+        "parent_id" => nil,
+        "added_by_uid" => "40386552",
+        "assigned_by_uid" => nil,
+        "responsible_uid" => nil,
+        "labels" => ["blah"],
+        "deadline" => nil,
+        "duration" => nil,
+        "checked" => false,
+        "is_deleted" => false,
+        "added_at" => "2025-07-30T11:40:04.230814Z",
+        "completed_at" => nil,
+        "updated_at" => "2025-07-30T11:40:04.230831Z",
         "due" => {
-          "date" => "2024-08-26",
-          "is_recurring" => false,
-          "string" => "tomorrow"
-        }
+          "date" => "2025-07-31T11:40:04Z",
+          "timezone" => "America/New_York",
+          "string" => "tomorrow",
+          "lang" => "en",
+          "is_recurring" => false
+        },
+        "priority" => 1,
+        "child_order" => 379,
+        "content" => "hi",
+        "description" => "desc",
+        "note_count" => 0,
+        "day_order" => -1,
+        "is_collapsed" => false
       }
 
       result = described_class.from_json(json)
 
       expect(result).to eql(described_class::Task.new(
-        assignee_id: "123",
-        assigner_id: "123",
-        content: "123",
-        creator_id: "123",
-        description: "123",
-        id: "123",
-        is_completed: "123",
-        labels: ["rollable"],
-        priority: "123",
-        project_id: "123",
+        id: "6cVrPg9WXPhx4XjX",
+        project_id: "6JRjhMXMmhwq3WVX",
+        labels: ["blah"],
+        added_at: Time.parse("2025-07-30T11:40:04.230814Z"),
+        completed_at: nil,
+        content: "hi",
+        description: "desc",
         due: described_class::Due.new(
-          date: Date.parse("2024-08-26"),
+          date: Time.parse("2025-07-31T11:40:04Z"),
           is_recurring: false,
           string: "tomorrow"
         )
@@ -44,33 +56,35 @@ RSpec.describe Todoist::Api::Tasks do
 
     it "handles due being blank" do
       json = {
-        "assignee_id" => "123",
-        "assigner_id" => "123",
-        "content" => "123",
-        "creator_id" => "123",
-        "description" => "123",
-        "id" => "123",
-        "is_completed" => "123",
-        "priority" => "123",
-        "project_id" => "123",
-        "due" => nil
+        "user_id" => "40386552",
+        "id" => "6cVrPg9WXPhx4XjX",
+        "project_id" => "6JRjhMXMmhwq3WVX",
+        "section_id" => nil,
+        "parent_id" => nil,
+        "added_by_uid" => "40386552",
+        "assigned_by_uid" => nil,
+        "responsible_uid" => nil,
+        "labels" => ["blah"],
+        "deadline" => nil,
+        "duration" => nil,
+        "checked" => false,
+        "is_deleted" => false,
+        "added_at" => "2025-07-30T11:40:04.230814Z",
+        "completed_at" => nil,
+        "updated_at" => "2025-07-30T11:40:04.230831Z",
+        "due" => nil,
+        "priority" => 1,
+        "child_order" => 379,
+        "content" => "hi",
+        "description" => "desc",
+        "note_count" => 0,
+        "day_order" => -1,
+        "is_collapsed" => false
       }
 
       result = described_class.from_json(json)
 
-      expect(result).to eql(described_class::Task.new(
-        assignee_id: "123",
-        assigner_id: "123",
-        content: "123",
-        creator_id: "123",
-        description: "123",
-        id: "123",
-        is_completed: "123",
-        priority: "123",
-        project_id: "123",
-        due: nil,
-        labels: []
-      ))
+      expect(result.due).to be_nil
     end
   end
 
@@ -100,27 +114,70 @@ RSpec.describe Todoist::Api::Tasks do
 
   describe ".rollable" do
     it "returns rollable tasks due today" do
-      task = build(:todoist_api_task)
-      mock = TodoistApiMocks.mock_tasks_rollable(task)
+      body = {
+        "results" => [
+          {
+            "user_id" => "40386552",
+            "id" => "6cVrX2hg4JcG9GpG",
+            "project_id" => "6JQqFRch3rm96F7G",
+            "section_id" => nil,
+            "parent_id" => nil,
+            "added_by_uid" => "40386552",
+            "assigned_by_uid" => nil,
+            "responsible_uid" => nil,
+            "labels" => ["rollable"],
+            "deadline" => nil,
+            "duration" => nil,
+            "checked" => false,
+            "is_deleted" => false,
+            "added_at" => "2025-07-30T12:06:03.257775Z",
+            "completed_at" => nil,
+            "updated_at" => "2025-07-30T12:06:03.257792Z",
+            "due" => {
+              "date" => "2025-07-29",
+              "timezone" => nil,
+              "string" => "Jul 29",
+              "lang" => "en",
+              "is_recurring" => false
+            },
+            "priority" => 1,
+            "child_order" => 55,
+            "content" => "test overdue?",
+            "description" => "",
+            "note_count" => 0,
+            "day_order" => -1,
+            "is_collapsed" => false
+          }
+        ],
+        "next_cursor" => nil
+      }
+      stub = FakeTodoist.stub(
+        :get,
+        "/api/v1/tasks/filter?query=@rollable,overdue"
+      ).to_return(
+        status: 200,
+        headers: {"content-type" => "application/json"},
+        body: body.to_json
+      )
 
       result = described_class.rollable
 
-      expect(mock).to have_been_requested
-      expect(result).to eql([task])
+      expect(stub).to have_been_requested
+      expect(result.first.id).to eql("6cVrX2hg4JcG9GpG")
     end
   end
 
   describe ".update" do
     it "updates a task" do
-      task = build(:todoist_api_task, priority: 4)
+      task = build(:todoist_api_task, content: "hi")
       TodoistApiMocks.mock_task_update(
         task,
-        result: build(:todoist_api_task, id: task.id, priority: 1)
+        result: build(:todoist_api_task, id: task.id, content: "hi2")
       )
 
-      result = described_class.update(task.id, {"priority" => 1})
+      result = described_class.update(task.id, {"content" => "hi2"})
 
-      expect(result.priority).to eql(1)
+      expect(result.content).to eql("hi2")
     end
   end
 end
