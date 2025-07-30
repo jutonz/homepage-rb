@@ -4,16 +4,13 @@ module Todoist
   module Api
     class Tasks
       Task = Data.define(
-        :assignee_id,
-        :assigner_id,
+        :added_at,
+        :completed_at,
         :content,
-        :creator_id,
         :description,
         :due,
         :id,
-        :is_completed,
         :labels,
-        :priority,
         :project_id
       ) do
         def update(...) = Todoist::Api::Tasks.update(id, ...)
@@ -27,12 +24,12 @@ module Todoist
 
       def self.get(id)
         Todoist::Api::Client
-          .get("/rest/v2/tasks/#{id}")
+          .get("/api/v1/tasks/#{id}")
           .body
           .then { from_json(it) }
       end
 
-      # https://developer.todoist.com/rest/v2/#create-a-new-task
+      # https://developer.todoist.com/api/v1#tag/Tasks/operation/create_task_api_v1_tasks_post
       def self.create(
         content:,
         description: nil,
@@ -41,33 +38,36 @@ module Todoist
         due_string: nil,
         due_date: nil
       )
-        params = {"content" => content}
-        params["description"] = description if description
-        params["project_id"] = project_id if project_id
-        params["labels"] = labels if labels
-        params["due_string"] = due_string if due_string
-        params["due_date"] = due_date if due_date
+        params = {
+          "content" => content,
+          "description" => description,
+          "project_id" => project_id,
+          "labels" => labels,
+          "due_string" => due_string,
+          "due_date" => due_date
+        }
 
         Todoist::Api::Client
-          .post("/rest/v2/tasks", params)
+          .post("/api/v1/tasks", params)
           .body
           .then { from_json(it) }
       end
 
-      # https://developer.todoist.com/rest/v2/#get-active-tasks
+      # https://developer.todoist.com/api/v1/#tag/Tasks/operation/get_tasks_by_filter_api_v1_tasks_filter_get
       def self.rollable
-        params = {"filter" => "@rollable,overdue"}
+        params = {"query" => "@rollable,overdue"}
 
         Todoist::Api::Client
-          .get("/rest/v2/tasks", params)
+          .get("/api/v1/tasks/filter", params)
           .body
+          .fetch("results", [])
           .map { from_json(it) }
       end
 
-      # https://developer.todoist.com/rest/v2/#update-a-task
+      # https://developer.todoist.com/api/v1/#tag/Tasks/operation/update_task_api_v1_tasks__task_id__post
       def self.update(id, params)
         Todoist::Api::Client
-          .post("/rest/v2/tasks/#{id}", params)
+          .post("/api/v1/tasks/#{id}", params)
           .body
           .then { from_json(it) }
       end
@@ -76,24 +76,21 @@ module Todoist
         due =
           if json["due"].present?
             Due.new(
-              date: Date.parse(json.dig("due", "date")),
+              date: Time.parse(json.dig("due", "date")),
               string: json.dig("due", "string"),
               is_recurring: json.dig("due", "is_recurring")
             )
           end
 
         Task.new(
-          assignee_id: json["assignee_id"],
-          assigner_id: json["assigner_id"],
-          content: json["content"],
-          creator_id: json["creator_id"],
-          description: json["description"],
           due:,
           id: json["id"],
-          is_completed: json["is_completed"],
+          content: json["content"],
+          description: json["description"],
           labels: json["labels"] || [],
-          priority: json["priority"],
-          project_id: json["project_id"]
+          project_id: json["project_id"],
+          added_at: json["added_at"] ? Time.parse(json["added_at"]) : nil,
+          completed_at: json["completed_at"] ? Time.parse(json["completed_at"]) : nil
         )
       end
     end

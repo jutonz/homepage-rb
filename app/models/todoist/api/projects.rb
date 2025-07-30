@@ -3,7 +3,7 @@
 module Todoist
   module Api
     class Projects
-      CJ_PROJECT_ID = "2295573986"
+      CJ_PROJECT_ID = "6JRjhMXMmhwq3WVX"
     end
   end
 end
