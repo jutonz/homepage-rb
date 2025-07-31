@@ -14,6 +14,8 @@ module Todoist
         :project_id
       ) do
         def update(...) = Todoist::Api::Tasks.update(id, ...)
+
+        def completed? = completed_at.present?
       end
 
       Due = Data.define(

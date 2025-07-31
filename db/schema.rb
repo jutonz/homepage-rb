@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_27_193420) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_29_023157) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -237,6 +237,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_27_193420) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "task_occurrences", force: :cascade do |t|
+    t.bigint "todo_task_id", null: false
+    t.string "todoist_task_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "status"
+    t.index ["todo_task_id"], name: "index_task_occurrences_on_todo_task_id"
+    t.index ["todoist_task_id"], name: "index_task_occurrences_on_todoist_task_id", unique: true
+  end
+
   create_table "task_records", id: false, force: :cascade do |t|
     t.string "version", null: false
   end
@@ -256,6 +268,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_27_193420) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_todo_rooms_on_user_id"
+  end
+
+  create_table "todo_task_occurrences", force: :cascade do |t|
+    t.bigint "todo_task_id", null: false
+    t.string "todoist_task_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["todo_task_id"], name: "index_todo_task_occurrences_on_todo_task_id"
+    t.index ["todoist_task_id"], name: "index_todo_task_occurrences_on_todoist_task_id", unique: true
   end
 
   create_table "todo_tasks", force: :cascade do |t|
@@ -294,7 +317,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_27_193420) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "task_occurrences", "todo_tasks"
   add_foreign_key "todo_room_tasks", "todo_rooms", column: "room_id"
   add_foreign_key "todo_room_tasks", "todo_tasks", column: "task_id"
+  add_foreign_key "todo_task_occurrences", "todo_tasks"
   add_foreign_key "todo_tasks", "users"
 end

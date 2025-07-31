@@ -21,7 +21,7 @@ module Todo
     end
 
     def show
-      @room = find_room
+      @room = find_room(includes: [tasks: :task_occurrences])
     end
 
     def edit
@@ -49,8 +49,10 @@ module Todo
       params.require(:todo_room).permit(:name)
     end
 
-    def find_room
-      current_user.todo_rooms.find(params[:id])
+    def find_room(includes: [])
+      query = current_user.todo_rooms
+      query.includes(includes) if includes.present?
+      query.find(params[:id])
     end
   end
 end

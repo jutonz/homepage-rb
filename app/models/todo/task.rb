@@ -23,7 +23,32 @@ module Todo
     belongs_to :user
     has_many :room_tasks
     has_many :rooms, through: :room_tasks
+    has_many :task_occurrences, foreign_key: :todo_task_id, dependent: :destroy
 
     validates :name, presence: true
+
+    def available_for_scheduling?
+      !has_active_occurrence?
+    end
+
+    def has_active_occurrence?
+      task_occurrences.scheduled.exists?
+    end
+
+    def current_occurrence
+      task_occurrences.scheduled.first
+    end
+
+    def last_completed_occurrence
+      task_occurrences.completed.order(completed_at: :desc).first
+    end
+
+    def status
+      if has_active_occurrence?
+        "scheduled"
+      else
+        "available"
+      end
+    end
   end
 end
