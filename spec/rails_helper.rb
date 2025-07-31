@@ -73,12 +73,17 @@ RSpec.configure do |config|
     driven_by :selenium, using: :chrome, screen_size: [1400, 900]
   end
 
-  config.before(:each) do
-    Bullet.start_request
-  end
-  config.after(:each) do
-    Bullet.perform_out_of_channel_notifications if Bullet.notification?
-    Bullet.end_request
+  config.around(:each) do |example|
+    if example.metadata[:type] == :system
+      Bullet.start_request
+      example.run
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+    else
+      Bullet.enable = false
+      example.run
+      Bullet.enable = true
+    end
   end
 end
 
