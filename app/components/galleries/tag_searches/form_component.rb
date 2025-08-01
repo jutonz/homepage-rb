@@ -3,7 +3,7 @@ module Galleries
     class FormComponent < ApplicationComponent
       erb_template <<~ERB
         <%= turbo_frame_tag("tag-search-form") do %>
-          <%= simple_form_for(
+          <%= helpers.simple_form_for(
             @tag_search,
             url: gallery_image_tag_search_path(@gallery, @image),
             method: :get,
