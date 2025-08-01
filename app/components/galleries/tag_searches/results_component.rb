@@ -4,7 +4,7 @@ module Galleries
       erb_template <<~ERB
         <%= turbo_frame_tag("tag-search-results") do %>
           <% if @tag_search.query.present? %>
-            <%= simple_form_for(
+            <%= helpers.simple_form_for(
               [@gallery, Galleries::Tag.new(name: @tag_search.query)],
               html: {
                 data: {turbo: false}

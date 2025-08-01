@@ -6,7 +6,7 @@ module Galleries
 
         <div class="flex gap-3 overflow-x-auto">
           <div class="flex items-center px-4">
-            <%= link_to_prev_page(
+            <%= helpers.link_to_prev_page(
               @similar_images,
               "Previous",
               param_name: :similar_images_page,
@@ -20,7 +20,7 @@ module Galleries
           <% end %>
 
           <div class="flex items-center px-4">
-            <%= link_to_next_page(
+            <%= helpers.link_to_next_page(
               @similar_images,
               "Next",
               param_name: :similar_images_page,
