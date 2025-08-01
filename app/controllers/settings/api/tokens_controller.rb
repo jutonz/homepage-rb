@@ -15,7 +15,7 @@ module Settings
         if @token.save
           redirect_to settings_api_token_path(@token), notice: "Created token"
         else
-          render :new, status: :unprocessable_entity
+          render :new, status: :unprocessable_content
         end
       end
 
@@ -33,7 +33,7 @@ module Settings
         if @token.update(token_params)
           redirect_to settings_api_token_path(@token), notice: "Updated token"
         else
-          render :new, status: :unprocessable_entity
+          render :new, status: :unprocessable_content
         end
       end
 

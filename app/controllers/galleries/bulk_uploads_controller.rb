@@ -18,7 +18,7 @@ module Galleries
       if @bulk_upload.save
         redirect_to @gallery, notice: "Bulk upload successful"
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 

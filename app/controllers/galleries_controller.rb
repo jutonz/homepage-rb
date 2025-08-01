@@ -37,7 +37,7 @@ class GalleriesController < ApplicationController
     if @gallery.save
       redirect_to @gallery, notice: "Gallery was successfully created."
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -47,7 +47,7 @@ class GalleriesController < ApplicationController
     if @gallery.update(gallery_params)
       redirect_to @gallery, notice: "Gallery was successfully updated."
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

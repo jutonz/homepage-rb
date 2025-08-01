@@ -16,7 +16,7 @@ module Todo
       if @room.save
         redirect_to(todo_rooms_path, notice: "Created room")
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
@@ -34,7 +34,7 @@ module Todo
       if @room.update(room_params)
         redirect_to(todo_room_path(@room), notice: "Updated room")
       else
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 

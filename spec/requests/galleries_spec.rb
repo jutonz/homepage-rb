@@ -34,7 +34,7 @@ RSpec.describe GalleriesController do
 
       post(galleries_path, params:)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
   end
@@ -126,7 +126,7 @@ RSpec.describe GalleriesController do
 
       post(galleries_path, params:)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
   end

@@ -20,7 +20,7 @@ module Galleries
           notice: "Created social media link!"
         )
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
@@ -42,7 +42,7 @@ module Galleries
           notice: "Updated social media link!"
         )
       else
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 

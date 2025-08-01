@@ -28,7 +28,7 @@ module Galleries
       if @image.update(image_params)
         redirect_to [@gallery, @image], notice: "Image was successfully updated."
       else
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 

@@ -20,7 +20,7 @@ module Galleries
           notice: "Auto add tag was successfully created"
         )
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
