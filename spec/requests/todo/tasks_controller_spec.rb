@@ -58,7 +58,7 @@ RSpec.describe Todo::TasksController do
 
       post(todo_tasks_path, params:)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
 
@@ -122,7 +122,7 @@ RSpec.describe Todo::TasksController do
 
       post(todo_tasks_path, params:)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
   end

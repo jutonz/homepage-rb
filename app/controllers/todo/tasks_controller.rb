@@ -16,7 +16,7 @@ module Todo
       if @task.save
         redirect_to(todo_tasks_path, notice: "Created task")
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
 
@@ -34,7 +34,7 @@ module Todo
       if @task.update(task_params)
         redirect_to(todo_task_path(@task), notice: "Updated task")
       else
-        render :edit, status: :unprocessable_entity
+        render :edit, status: :unprocessable_content
       end
     end
 
