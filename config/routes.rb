@@ -47,8 +47,8 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :recipes do
-    scope module: :recipes do
+  scope module: :recipes do
+    resources :recipes do
       resources :ingredients
     end
   end

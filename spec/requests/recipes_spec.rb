@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe RecipesController, type: :request do
+RSpec.describe Recipes::RecipesController, type: :request do
   describe "GET /recipes" do
     it "shows recipes index" do
       user = create(:user)

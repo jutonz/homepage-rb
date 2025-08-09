@@ -1,13 +1,13 @@
 ---
 id: task-6
 title: Move recipes controller under Recipes module
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-09'
+updated_date: '2025-08-09'
 labels: []
 dependencies: []
 ordinal: 4000
-updated_date: '2025-08-09'
 ---
 
 ## Description
