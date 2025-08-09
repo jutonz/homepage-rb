@@ -19,7 +19,7 @@
 #
 FactoryBot.define do
   factory :recipes_ingredient, class: "Recipes::Ingredient" do
-    name { "Flour" }
+    sequence(:name) { "Ingredient #{it}" }
     user
   end
 end
