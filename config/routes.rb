@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   end
 
   resources :recipes
+  resources :ingredients
 
   namespace :settings do
     namespace :api do

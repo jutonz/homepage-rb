@@ -1,0 +1,63 @@
+<%= render(HeaderComponent.new(
+  title: @ingredient.name
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Ingredients", ingredients_path) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Edit",
+      edit_ingredient_path(@ingredient),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      ingredient_path(@ingredient),
+      method: "delete",
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="max-w-4xl">
+  <% if @ingredient.category.present? %>
+    <div class="mb-6">
+      <%= render(PillComponent.new(
+        text: @ingredient.category,
+        color: :blue
+      )) %>
+    </div>
+  <% end %>
+
+  <% if @ingredient.recipes.any? %>
+    <div class="mb-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Used in Recipes</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <% @ingredient.recipes.each do |recipe| %>
+          <%= link_to(
+            recipe_path(recipe),
+            class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
+          ) do %>
+            <div class="font-medium text-gray-900"><%= recipe.name %></div>
+            <% if recipe.description.present? %>
+              <div class="text-sm text-gray-600 mt-1 line-clamp-2">
+                <%= recipe.description %>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="mb-6">
+      <div class="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+        <div class="text-lg font-medium mb-2">Not used in any recipes yet</div>
+        <div class="text-sm">This ingredient will appear here when you add it to recipes.</div>
+      </div>
+    </div>
+  <% end %>
+</div>

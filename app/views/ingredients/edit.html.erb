@@ -1,0 +1,11 @@
+<%= render(HeaderComponent.new(
+  title: "Edit Ingredient"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Ingredients", ingredients_path) %>
+  <%= c.with_crumb(@ingredient.name, ingredient_path(@ingredient)) %>
+<% end %>
+
+<div class="max-w-lg">
+  <%= render("form") %>
+</div>
