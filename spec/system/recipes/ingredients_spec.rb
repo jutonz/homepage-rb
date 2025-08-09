@@ -48,7 +48,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
     within "[data-ingredient='Sugar']", match: :first do
       accept_confirm do
-        click_button "Remove"
+        click_on "Remove"
       end
     end
 
