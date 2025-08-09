@@ -4,7 +4,7 @@ module Recipes
 
     def index
       @recipe = find_recipe
-      @recipe_ingredients = @recipe.recipe_ingredients.includes(:ingredient)
+      @recipe_ingredients = @recipe.recipe_ingredients.includes(:ingredient, :unit)
       @available_ingredients = find_available_ingredients
     end
 
@@ -12,6 +12,7 @@ module Recipes
       @recipe = find_recipe
       @recipe_ingredient = @recipe.recipe_ingredients.build
       @available_ingredients = find_available_ingredients
+      @available_units = find_available_units
     end
 
     def create
@@ -22,6 +23,7 @@ module Recipes
         redirect_to recipe_ingredients_path(@recipe), notice: "Ingredient was successfully added to recipe."
       else
         @available_ingredients = find_available_ingredients
+        @available_units = find_available_units
         render :new, status: :unprocessable_content
       end
     end
@@ -30,6 +32,7 @@ module Recipes
       @recipe = find_recipe
       @recipe_ingredient = find_recipe_ingredient
       @available_ingredients = find_available_ingredients
+      @available_units = find_available_units
     end
 
     def update
@@ -40,6 +43,7 @@ module Recipes
         redirect_to recipe_ingredients_path(@recipe), notice: "Recipe ingredient was successfully updated."
       else
         @available_ingredients = find_available_ingredients
+        @available_units = find_available_units
         render :edit, status: :unprocessable_content
       end
     end
@@ -65,8 +69,12 @@ module Recipes
       current_user.recipes_ingredients.order(:name)
     end
 
+    def find_available_units
+      Recipes::Unit.order(:name)
+    end
+
     def recipe_ingredient_params
-      params.require(:recipes_recipe_ingredient).permit(:ingredient_id, :quantity, :unit)
+      params.require(:recipes_recipe_ingredient).permit(:ingredient_id, :quantity, :unit, :unit_id)
     end
   end
 end

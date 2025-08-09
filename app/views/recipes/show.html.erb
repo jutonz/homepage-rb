@@ -44,11 +44,13 @@
     <% if @recipe.recipe_ingredients.any? %>
       <div class="bg-gray-50 p-4 rounded-lg">
         <ul class="space-y-2">
-          <% @recipe.recipe_ingredients.includes(:ingredient).each do |recipe_ingredient| %>
+          <% @recipe.recipe_ingredients.includes(:ingredient, :unit).each do |recipe_ingredient| %>
             <li class="text-gray-900">
               <%= recipe_ingredient.quantity %>
               <% if recipe_ingredient.unit.present? %>
-                <%= recipe_ingredient.unit %>
+                <%= recipe_ingredient.unit.name %>
+              <% elsif recipe_ingredient.read_attribute(:unit).present? %>
+                <%= recipe_ingredient.read_attribute(:unit) %>
               <% end %>
               <%= recipe_ingredient.ingredient.name %>
             </li>

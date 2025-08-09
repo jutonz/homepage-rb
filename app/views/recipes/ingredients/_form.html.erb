@@ -14,7 +14,14 @@
   
   <%= form.input(:quantity, placeholder: "e.g., 2, 1/2, 1.5") %>
   
-  <%= form.input(:unit, placeholder: "e.g., cups, tbsp, lbs") %>
+  <%= form.association(
+    :unit,
+    collection: @available_units,
+    label_method: :name,
+    value_method: :id,
+    prompt: "Choose a unit",
+    include_blank: true
+  ) %>
   
   <div class="flex gap-2">
     <%= form.button(:submit, class: "button") %>
