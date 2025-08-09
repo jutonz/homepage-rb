@@ -58,6 +58,8 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 ### Style rules
 * YOU MUST limit line length to 80 characters.
 * Do not use callbacks in controllers or models
+* Omit the value in hashes when possilble, e.g. rather than `{user: user}`, say just `{user:}`
+* Use parenthesis for all method calls
 
 ### Testing rules
 * Do not use `let`, `let!`, `before`, or `context`

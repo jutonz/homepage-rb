@@ -3,7 +3,6 @@
 # Table name: recipes_ingredients
 #
 #  id         :bigint           not null, primary key
-#  category   :string
 #  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -21,7 +20,6 @@
 FactoryBot.define do
   factory :recipes_ingredient, class: "Recipes::Ingredient" do
     name { "Flour" }
-    category { "Baking" }
     user
   end
 end

@@ -58,11 +58,18 @@
         Store and organize your favorite recipes with ingredients 
         and easy scaling capabilities.
       </p>
-      <%= link_to(
-        "Browse Recipes",
-        recipes_path,
-        class: "button"
-      ) %>
+      <div class="flex gap-2 flex-col sm:flex-row">
+        <%= link_to(
+          "Browse Recipes",
+          recipes_path,
+          class: "button"
+        ) %>
+        <%= link_to(
+          "Manage Ingredients",
+          ingredients_path,
+          class: "button button--secondary"
+        ) %>
+      </div>
     <% end %>
   <% end %>
 

@@ -6,6 +6,14 @@
 
   <%= c.with_action do %>
     <%= link_to(
+      "Ingredients",
+      ingredients_path,
+      class: "button button--secondary"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= link_to(
       "Edit",
       edit_recipe_path(@recipe),
       class: "button"
