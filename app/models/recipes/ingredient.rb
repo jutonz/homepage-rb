@@ -20,8 +20,12 @@
 module Recipes
   class Ingredient < ApplicationRecord
     belongs_to :user
-    has_many :recipe_ingredients, class_name: "Recipes::RecipeIngredient", dependent: :destroy
-    has_many :recipes, through: :recipe_ingredients, class_name: "Recipes::Recipe"
+    has_many :recipe_ingredients,
+      class_name: "Recipes::RecipeIngredient",
+      dependent: :destroy
+    has_many :recipes,
+      through: :recipe_ingredients,
+      class_name: "Recipes::Recipe"
 
     validates :name, presence: true, uniqueness: {scope: :user_id}
   end
