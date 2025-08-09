@@ -47,7 +47,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :recipes
+  resources :recipes do
+    scope module: :recipes do
+      resources :ingredients, only: %i[index new create edit update destroy]
+    end
+  end
   resources :ingredients
 
   namespace :settings do

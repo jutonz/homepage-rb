@@ -1,0 +1,41 @@
+<%= simple_form_for(
+  [@recipe, @recipe_ingredient],
+  url: @recipe_ingredient.persisted? ? recipe_ingredient_path(@recipe, @recipe_ingredient) : recipe_ingredients_path(@recipe)
+) do |form| %>
+  <%= form.association(
+    :ingredient,
+    collection: @available_ingredients,
+    label_method: :name,
+    value_method: :id,
+    prompt: "Choose an ingredient",
+    include_blank: false,
+    autofocus: true
+  ) %>
+  
+  <%= form.input(:quantity, placeholder: "e.g., 2, 1/2, 1.5") %>
+  
+  <%= form.input(:unit, placeholder: "e.g., cups, tbsp, lbs") %>
+  
+  <div class="flex gap-2">
+    <%= form.button(:submit, class: "button") %>
+    <%= link_to(
+      "Cancel",
+      recipe_ingredients_path(@recipe),
+      class: "button button--secondary"
+    ) %>
+  </div>
+<% end %>
+
+<% if @available_ingredients.empty? %>
+  <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+    <div class="text-yellow-800 font-medium mb-2">No ingredients available</div>
+    <div class="text-yellow-700 text-sm mb-3">
+      You need to create some ingredients first before you can add them to recipes.
+    </div>
+    <%= link_to(
+      "Create New Ingredient",
+      new_ingredient_path,
+      class: "button button--small"
+    ) %>
+  </div>
+<% end %>
