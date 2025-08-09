@@ -52,6 +52,20 @@
     <% end %>
   <% end %>
 
+  <%= render(CardComponent.new(title: "Recipe Management")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Store and organize your favorite recipes with ingredients 
+        and easy scaling capabilities.
+      </p>
+      <%= link_to(
+        "Browse Recipes",
+        recipes_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
+
   <%= render(CardComponent.new(title: "Todo Management")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
