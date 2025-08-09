@@ -50,7 +50,8 @@ RSpec.describe "Recipe management", type: :system do
     login_as(user)
     recipe = create(:recipes_recipe, name: "Test Recipe", user: user)
     ingredient = create(:recipes_ingredient, name: "Flour", user: user)
-    create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient, quantity: 2, unit: "cups")
+    unit = create(:recipes_unit, name: "cup", abbreviation: "c")
+    create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient, quantity: 2, unit: unit)
 
     visit recipe_path(recipe)
 
@@ -58,6 +59,6 @@ RSpec.describe "Recipe management", type: :system do
     expect(page).to have_content("Ingredients")
     expect(page).to have_content("Flour")
     expect(page).to have_content("2")
-    expect(page).to have_content("cups")
+    expect(page).to have_content("cup")
   end
 end

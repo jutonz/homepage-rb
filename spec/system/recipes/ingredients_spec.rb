@@ -7,6 +7,8 @@ RSpec.describe "Recipe ingredient management", type: :system do
     recipe = create(:recipes_recipe, name: "Chocolate Cake", user: user)
     create(:recipes_ingredient, name: "Flour", user: user)
     create(:recipes_ingredient, name: "Sugar", user: user)
+    create(:recipes_unit, name: "cup", abbreviation: "c")
+    create(:recipes_unit, name: "tablespoon", abbreviation: "tbsp")
 
     visit recipe_path(recipe)
     click_link "Add First Ingredient"
@@ -15,26 +17,26 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
     select "Flour", from: "Ingredient"
     fill_in "Quantity", with: "2"
-    fill_in "Unit", with: "cups"
+    select "cup", from: "Unit"
 
     click_on "Create Recipe ingredient"
 
     expect(page).to have_content("Ingredient was successfully added to recipe")
     expect(page).to have_content("Chocolate Cake Ingredients")
     expect(page).to have_content("Flour")
-    expect(page).to have_content("2.0 cups")
+    expect(page).to have_content("2.0 cup")
 
     click_link "Add Ingredient"
 
     select "Sugar", from: "Ingredient"
     fill_in "Quantity", with: "1.5"
-    fill_in "Unit", with: "cups"
+    select "tablespoon", from: "Unit"
 
     click_on "Create Recipe ingredient"
 
     expect(page).to have_content("Ingredient was successfully added to recipe")
     expect(page).to have_content("Sugar")
-    expect(page).to have_content("1.5 cups")
+    expect(page).to have_content("1.5 tablespoon")
 
     within "[data-ingredient='Flour']" do
       click_on "Edit"
@@ -44,7 +46,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
     click_on "Update Recipe ingredient"
 
     expect(page).to have_content("Recipe ingredient was successfully updated")
-    expect(page).to have_content("2.5 cups")
+    expect(page).to have_content("2.5 cup")
 
     within "[data-ingredient='Sugar']" do
       click_on "Remove"
@@ -60,7 +62,8 @@ RSpec.describe "Recipe ingredient management", type: :system do
     login_as(user)
     recipe = create(:recipes_recipe, name: "Pancakes", user:)
     flour = create(:recipes_ingredient, name: "Flour", user:)
-    create(:recipes_recipe_ingredient, recipe:, ingredient: flour, quantity: "1", unit: "cup")
+    unit = create(:recipes_unit, name: "cup", abbreviation: "c")
+    create(:recipes_recipe_ingredient, recipe:, ingredient: flour, quantity: "1", unit: unit)
 
     visit recipe_path(recipe)
 

@@ -41,14 +41,15 @@ RSpec.describe "Recipes", type: :request do
       login_as(user)
       recipe = create(:recipes_recipe, user: user)
       ingredient = create(:recipes_ingredient, user: user)
-      create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient, quantity: 2, unit: "cups")
+      unit = create(:recipes_unit, name: "cup", abbreviation: "c")
+      create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient, quantity: 2, unit: unit)
 
       get recipe_path(recipe)
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include(ingredient.name)
       expect(response.body).to include("2")
-      expect(response.body).to include("cups")
+      expect(response.body).to include("cup")
     end
   end
 

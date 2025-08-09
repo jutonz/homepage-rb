@@ -60,13 +60,14 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       login_as(user)
       recipe = create(:recipes_recipe, user: user)
       ingredient = create(:recipes_ingredient, user: user)
+      unit = create(:recipes_unit, name: "cup", abbreviation: "c")
 
       expect {
         post recipe_ingredients_path(recipe), params: {
           recipes_recipe_ingredient: {
             ingredient_id: ingredient.id,
             quantity: "2",
-            unit: "cups"
+            unit_id: unit.id
           }
         }
       }.to change(Recipes::RecipeIngredient, :count).by(1)
@@ -76,7 +77,7 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       expect(recipe_ingredient.recipe).to eq(recipe)
       expect(recipe_ingredient.ingredient).to eq(ingredient)
       expect(recipe_ingredient.quantity).to eq(2.0)
-      expect(recipe_ingredient.unit).to eq("cups")
+      expect(recipe_ingredient.unit).to eq(unit)
     end
 
     it "shows errors with invalid attributes" do
@@ -119,12 +120,13 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       ingredient = create(:recipes_ingredient, user:)
       recipe_ingredient = create(:recipes_recipe_ingredient, recipe:, ingredient:)
       new_ingredient = create(:recipes_ingredient, name: "Updated Ingredient", user:)
+      new_unit = create(:recipes_unit, name: "tablespoon", abbreviation: "tbsp")
 
       put recipe_ingredient_path(recipe, recipe_ingredient), params: {
         recipes_recipe_ingredient: {
           ingredient_id: new_ingredient.id,
           quantity: "3",
-          unit: "tbsp"
+          unit_id: new_unit.id
         }
       }
 
@@ -132,7 +134,7 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       recipe_ingredient.reload
       expect(recipe_ingredient.ingredient).to eq(new_ingredient)
       expect(recipe_ingredient.quantity).to eq(3.0)
-      expect(recipe_ingredient.unit).to eq("tbsp")
+      expect(recipe_ingredient.unit).to eq(new_unit)
     end
 
     it "shows errors with invalid attributes" do
