@@ -24,13 +24,15 @@
 #
 module Recipes
   class RecipeIngredient < ApplicationRecord
-    self.table_name = "recipes_recipe_ingredients"
-
     belongs_to :recipe, class_name: "Recipes::Recipe"
     belongs_to :ingredient, class_name: "Recipes::Ingredient"
 
-    validates :recipe_id, presence: true, uniqueness: {scope: :ingredient_id}
+    validates :recipe_id,
+      presence: true,
+      uniqueness: {scope: :ingredient_id}
     validates :ingredient_id, presence: true
-    validates :quantity, presence: true, numericality: {greater_than: 0}
+    validates :quantity,
+      presence: true,
+      numericality: {greater_than: 0}
   end
 end

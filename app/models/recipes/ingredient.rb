@@ -20,8 +20,6 @@
 #
 module Recipes
   class Ingredient < ApplicationRecord
-    self.table_name = "recipes_ingredients"
-
     belongs_to :user
     has_many :recipe_ingredients, class_name: "Recipes::RecipeIngredient", dependent: :destroy
     has_many :recipes, through: :recipe_ingredients, class_name: "Recipes::Recipe"
