@@ -6,14 +6,6 @@
 
   <%= c.with_action do %>
     <%= link_to(
-      "Ingredients",
-      ingredients_path,
-      class: "button button--secondary"
-    ) %>
-  <% end %>
-
-  <%= c.with_action do %>
-    <%= link_to(
       "Edit",
       edit_recipe_path(@recipe),
       class: "button"
@@ -48,19 +40,17 @@
         class: "text-sm text-blue-600 hover:text-blue-800"
       ) %>
     </div>
-    
+
     <% if @recipe.recipe_ingredients.any? %>
       <div class="bg-gray-50 p-4 rounded-lg">
         <ul class="space-y-2">
           <% @recipe.recipe_ingredients.includes(:ingredient).each do |recipe_ingredient| %>
-            <li class="flex justify-between items-center">
-              <span class="text-gray-900"><%= recipe_ingredient.ingredient.name %></span>
-              <span class="text-gray-600">
-                <%= recipe_ingredient.quantity %>
-                <% if recipe_ingredient.unit.present? %>
-                  <%= recipe_ingredient.unit %>
-                <% end %>
-              </span>
+            <li class="text-gray-900">
+              <%= recipe_ingredient.quantity %>
+              <% if recipe_ingredient.unit.present? %>
+                <%= recipe_ingredient.unit %>
+              <% end %>
+              <%= recipe_ingredient.ingredient.name %>
             </li>
           <% end %>
         </ul>
