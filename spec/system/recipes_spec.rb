@@ -48,16 +48,22 @@ RSpec.describe "Recipe management", type: :system do
   it "displays recipe with ingredients" do
     user = create(:user)
     login_as(user)
-    recipe = create(:recipes_recipe, name: "Test Recipe", user: user)
-    ingredient = create(:recipes_ingredient, name: "Flour", user: user)
-    create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient, quantity: 2, unit: "cups")
+    recipe = create(:recipes_recipe, user:)
+    ingredient = create(:recipes_ingredient, user:)
+    unit = create(:recipes_unit)
+    recipe_ingredient = create(
+      :recipes_recipe_ingredient,
+      recipe:,
+      ingredient:,
+      unit:
+    )
 
     visit recipe_path(recipe)
 
-    expect(page).to have_content("Test Recipe")
+    expect(page).to have_content(recipe.name)
     expect(page).to have_content("Ingredients")
-    expect(page).to have_content("Flour")
-    expect(page).to have_content("2")
-    expect(page).to have_content("cups")
+    expect(page).to have_content(ingredient.name)
+    expect(page).to have_content(recipe_ingredient.quantity)
+    expect(page).to have_content(unit.name)
   end
 end

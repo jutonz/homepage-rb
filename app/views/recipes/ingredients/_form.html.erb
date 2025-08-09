@@ -11,11 +11,18 @@
     include_blank: false,
     autofocus: true
   ) %>
-  
+
   <%= form.input(:quantity, placeholder: "e.g., 2, 1/2, 1.5") %>
-  
-  <%= form.input(:unit, placeholder: "e.g., cups, tbsp, lbs") %>
-  
+
+  <%= form.association(
+    :unit,
+    as: :grouped_select,
+    collection: Recipes::Unit.order(:name).group_by(&:unit_type).to_a,
+    group_method: :last,
+    prompt: "Choose a unit",
+    include_blank: false
+  ) %>
+
   <div class="flex gap-2">
     <%= form.button(:submit, class: "button") %>
     <%= link_to(

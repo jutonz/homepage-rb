@@ -1,13 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "Recipes::Ingredients", type: :request do
+RSpec.describe Recipes::IngredientsController, type: :request do
   describe "GET /recipes/:recipe_id/ingredients" do
     it "shows recipe ingredients index" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
-      create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      create(:recipes_recipe_ingredient, recipe:, ingredient:)
 
       get recipe_ingredients_path(recipe)
 
@@ -19,7 +19,7 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "shows empty state when no ingredients" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       get recipe_ingredients_path(recipe)
 
@@ -32,8 +32,8 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "shows new recipe ingredient form" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
 
       get new_recipe_ingredient_path(recipe)
 
@@ -45,7 +45,7 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "shows message when no ingredients available" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       get new_recipe_ingredient_path(recipe)
 
@@ -58,15 +58,16 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "creates recipe ingredient with valid attributes" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      unit = create(:recipes_unit)
 
       expect {
         post recipe_ingredients_path(recipe), params: {
           recipes_recipe_ingredient: {
             ingredient_id: ingredient.id,
             quantity: "2",
-            unit: "cups"
+            unit_id: unit.id
           }
         }
       }.to change(Recipes::RecipeIngredient, :count).by(1)
@@ -76,13 +77,13 @@ RSpec.describe "Recipes::Ingredients", type: :request do
       expect(recipe_ingredient.recipe).to eq(recipe)
       expect(recipe_ingredient.ingredient).to eq(ingredient)
       expect(recipe_ingredient.quantity).to eq(2.0)
-      expect(recipe_ingredient.unit).to eq("cups")
+      expect(recipe_ingredient.unit).to eq(unit)
     end
 
     it "shows errors with invalid attributes" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       post recipe_ingredients_path(recipe), params: {
         recipes_recipe_ingredient: {
@@ -100,14 +101,20 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "shows edit recipe ingredient form" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
-      recipe_ingredient = create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      recipe_ingredient = create(
+        :recipes_recipe_ingredient,
+        recipe:,
+        ingredient:
+      )
 
       get edit_recipe_ingredient_path(recipe, recipe_ingredient)
 
       expect(response).to have_http_status(:success)
-      expect(response.body).to include("Edit #{ingredient.name} in #{recipe.name}")
+      expect(response.body).to include(
+        "Edit #{ingredient.name} in #{recipe.name}"
+      )
     end
   end
 
@@ -115,16 +122,21 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "updates recipe ingredient with valid attributes" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
-      recipe_ingredient = create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
-      new_ingredient = create(:recipes_ingredient, name: "Updated Ingredient", user: user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      recipe_ingredient = create(
+        :recipes_recipe_ingredient,
+        recipe:,
+        ingredient:
+      )
+      new_ingredient = create(:recipes_ingredient, user:)
+      new_unit = create(:recipes_unit)
 
       put recipe_ingredient_path(recipe, recipe_ingredient), params: {
         recipes_recipe_ingredient: {
           ingredient_id: new_ingredient.id,
           quantity: "3",
-          unit: "tbsp"
+          unit_id: new_unit.id
         }
       }
 
@@ -132,14 +144,14 @@ RSpec.describe "Recipes::Ingredients", type: :request do
       recipe_ingredient.reload
       expect(recipe_ingredient.ingredient).to eq(new_ingredient)
       expect(recipe_ingredient.quantity).to eq(3.0)
-      expect(recipe_ingredient.unit).to eq("tbsp")
+      expect(recipe_ingredient.unit).to eq(new_unit)
     end
 
     it "shows errors with invalid attributes" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
       recipe_ingredient = create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
 
       put recipe_ingredient_path(recipe, recipe_ingredient), params: {
@@ -158,8 +170,8 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "deletes recipe ingredient" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
       recipe_ingredient = create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
 
       expect {

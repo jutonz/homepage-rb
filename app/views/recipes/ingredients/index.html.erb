@@ -37,9 +37,7 @@
             </h3>
             <div class="text-sm text-gray-600 mt-1">
               <%= recipe_ingredient.quantity %>
-              <% if recipe_ingredient.unit.present? %>
-                <%= recipe_ingredient.unit %>
-              <% end %>
+              <%= recipe_ingredient.unit.name %>
             </div>
           </div>
 

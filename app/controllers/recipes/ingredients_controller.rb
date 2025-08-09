@@ -4,7 +4,7 @@ module Recipes
 
     def index
       @recipe = find_recipe
-      @recipe_ingredients = @recipe.recipe_ingredients.includes(:ingredient)
+      @recipe_ingredients = @recipe.recipe_ingredients.includes(:ingredient, :unit)
       @available_ingredients = find_available_ingredients
     end
 
@@ -66,7 +66,9 @@ module Recipes
     end
 
     def recipe_ingredient_params
-      params.require(:recipes_recipe_ingredient).permit(:ingredient_id, :quantity, :unit)
+      params.expect(
+        recipes_recipe_ingredient: %i[ingredient_id quantity unit_id]
+      )
     end
   end
 end
