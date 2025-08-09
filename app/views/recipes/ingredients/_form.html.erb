@@ -16,7 +16,7 @@
   
   <%= form.association(
     :unit,
-    collection: @available_units,
+    collection: Recipes::Unit.order(:name),
     label_method: :name,
     value_method: :id,
     prompt: "Choose a unit",
