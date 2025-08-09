@@ -2,14 +2,6 @@ module Recipes
   class RecipesController < ApplicationController
     before_action :ensure_authenticated!
 
-    class << self
-      private
-
-      def controller_path
-        "recipes"
-      end
-    end
-
     def index
       @recipes = current_user.recipes_recipes.order(created_at: :desc)
     end
