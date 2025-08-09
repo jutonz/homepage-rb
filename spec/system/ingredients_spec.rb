@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Ingredient management", type: :system do
-  it "allows creating and managing ingredients", :js do
+  it "allows creating and managing ingredients" do
     user = create(:user)
     login_as(user)
 
@@ -36,9 +36,7 @@ RSpec.describe "Ingredient management", type: :system do
     expect(page).to have_content("0 recipes")
 
     click_link "Pure Vanilla Extract"
-    accept_confirm do
-      click_button "Delete"
-    end
+    click_button "Delete"
 
     expect(page).to have_content("Ingredient was successfully deleted")
     expect(page).to have_content("No ingredients yet")
@@ -47,9 +45,9 @@ RSpec.describe "Ingredient management", type: :system do
   it "shows ingredients used in recipes" do
     user = create(:user)
     login_as(user)
-    ingredient = create(:recipes_ingredient, name: "Flour", category: "Baking", user: user)
-    recipe = create(:recipes_recipe, name: "Bread Recipe", user: user)
-    create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
+    ingredient = create(:recipes_ingredient, name: "Flour", category: "Baking", user:)
+    recipe = create(:recipes_recipe, name: "Bread Recipe", user:)
+    create(:recipes_recipe_ingredient, recipe:, ingredient:)
 
     visit ingredient_path(ingredient)
 
@@ -67,11 +65,10 @@ RSpec.describe "Ingredient management", type: :system do
   it "shows recipe count on ingredients index" do
     user = create(:user)
     login_as(user)
-    ingredient = create(:recipes_ingredient, name: "Salt", user: user)
-    recipe1 = create(:recipes_recipe, name: "Recipe 1", user: user)
-    recipe2 = create(:recipes_recipe, name: "Recipe 2", user: user)
-    create(:recipes_recipe_ingredient, recipe: recipe1, ingredient: ingredient)
-    create(:recipes_recipe_ingredient, recipe: recipe2, ingredient: ingredient)
+    ingredient = create(:recipes_ingredient, name: "Salt", user:)
+    recipe1, recipe2 = create_pair(:recipes_recipe, user:)
+    create(:recipes_recipe_ingredient, recipe: recipe1, ingredient:)
+    create(:recipes_recipe_ingredient, recipe: recipe2, ingredient:)
 
     visit ingredients_path
 
