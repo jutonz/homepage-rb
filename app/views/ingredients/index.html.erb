@@ -4,6 +4,13 @@
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_action do %>
     <%= link_to(
+      "Recipes",
+      recipes_path,
+      class: "button button--secondary"
+    ) %>
+  <% end %>
+  <%= c.with_action do %>
+    <%= link_to(
       "New Ingredient",
       new_ingredient_path,
       class: "button"

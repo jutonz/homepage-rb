@@ -65,8 +65,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
     visit recipe_path(recipe)
 
     expect(page).to have_content("Ingredients")
-    expect(page).to have_content("Flour")
-    expect(page).to have_content("1.0 cup")
+    expect(page).to have_content("1.0 cup Flour")
     expect(page).to have_link("Manage Ingredients")
 
     click_link "Manage Ingredients"

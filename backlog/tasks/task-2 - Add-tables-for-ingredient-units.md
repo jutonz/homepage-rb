@@ -4,8 +4,10 @@ title: Add tables for ingredient units
 status: To Do
 assignee: []
 created_date: '2025-08-09'
+updated_date: '2025-08-09'
 labels: []
 dependencies: []
+ordinal: 750
 ---
 
 ## Description
