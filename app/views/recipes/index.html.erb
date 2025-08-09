@@ -1,0 +1,41 @@
+<%= render(HeaderComponent.new(
+  title: "Recipes"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Recipe",
+      new_recipe_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% @recipes.each do |recipe| %>
+    <%= link_to(
+      recipe_path(recipe),
+      data: {role: "recipe"},
+      class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 group"
+    ) do %>
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-medium text-gray-900 group-hover:text-gray-700"><%= recipe.name %></span>
+      </div>
+      <% if recipe.description.present? %>
+        <div class="text-sm text-gray-600 mb-2 line-clamp-2">
+          <%= recipe.description %>
+        </div>
+      <% end %>
+      <div class="flex gap-2">
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= recipe.recipe_ingredients.size %> ingredients</span>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<% if @recipes.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No recipes yet</div>
+    <div class="text-sm">Create your first recipe to get started cooking.</div>
+  </div>
+<% end %>
