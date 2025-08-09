@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Recipe ingredient management", type: :system do
-  it "allows managing ingredients within a recipe", :js do
+  it "allows managing ingredients within a recipe" do
     user = create(:user)
     login_as(user)
     recipe = create(:recipes_recipe, name: "Chocolate Cake", user: user)
@@ -36,7 +36,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
     expect(page).to have_content("Sugar")
     expect(page).to have_content("1.5 cups")
 
-    within "[data-ingredient='Flour']", match: :first do
+    within "[data-ingredient='Flour']" do
       click_on "Edit"
     end
 
@@ -46,10 +46,8 @@ RSpec.describe "Recipe ingredient management", type: :system do
     expect(page).to have_content("Recipe ingredient was successfully updated")
     expect(page).to have_content("2.5 cups")
 
-    within "[data-ingredient='Sugar']", match: :first do
-      accept_confirm do
-        click_on "Remove"
-      end
+    within "[data-ingredient='Sugar']" do
+      click_on "Remove"
     end
 
     expect(page).to have_content("Ingredient was successfully removed from recipe")
@@ -60,9 +58,9 @@ RSpec.describe "Recipe ingredient management", type: :system do
   it "shows ingredients on recipe show page" do
     user = create(:user)
     login_as(user)
-    recipe = create(:recipes_recipe, name: "Pancakes", user: user)
-    flour = create(:recipes_ingredient, name: "Flour", user: user)
-    create(:recipes_recipe_ingredient, recipe: recipe, ingredient: flour, quantity: "1", unit: "cup")
+    recipe = create(:recipes_recipe, name: "Pancakes", user:)
+    flour = create(:recipes_ingredient, name: "Flour", user:)
+    create(:recipes_recipe_ingredient, recipe:, ingredient: flour, quantity: "1", unit: "cup")
 
     visit recipe_path(recipe)
 
