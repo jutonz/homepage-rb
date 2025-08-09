@@ -26,9 +26,9 @@
 #
 FactoryBot.define do
   factory :recipes_recipe_ingredient, class: "Recipes::RecipeIngredient" do
-    association :recipe, factory: :recipes_recipe
-    association :ingredient, factory: :recipes_ingredient
-    association :unit, factory: :recipes_unit
+    recipe factory: :recipes_recipe
+    ingredient factory: :recipes_ingredient
+    unit factory: :recipes_unit
     quantity { 2.5 }
     notes { "All-purpose flour works best" }
   end

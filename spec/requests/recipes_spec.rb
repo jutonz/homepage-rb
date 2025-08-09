@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "Recipes", type: :request do
+RSpec.describe RecipesController, type: :request do
   describe "GET /recipes" do
     it "shows recipes index" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       get recipes_path
 
@@ -28,7 +28,7 @@ RSpec.describe "Recipes", type: :request do
     it "shows recipe details" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       get recipe_path(recipe)
 
@@ -39,17 +39,22 @@ RSpec.describe "Recipes", type: :request do
     it "shows recipe ingredients" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
-      unit = create(:recipes_unit, name: "cup", abbreviation: "c")
-      create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient, quantity: 2, unit: unit)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      unit = create(:recipes_unit)
+      recipe_ingredient = create(
+        :recipes_recipe_ingredient,
+        recipe:,
+        ingredient:,
+        unit:
+      )
 
       get recipe_path(recipe)
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include(ingredient.name)
-      expect(response.body).to include("2")
-      expect(response.body).to include("cup")
+      expect(response.body).to include(recipe_ingredient.quantity.to_s)
+      expect(response.body).to include(unit.name)
     end
   end
 
@@ -106,7 +111,7 @@ RSpec.describe "Recipes", type: :request do
     it "shows edit recipe form" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       get edit_recipe_path(recipe)
 
@@ -120,7 +125,7 @@ RSpec.describe "Recipes", type: :request do
     it "updates recipe with valid attributes" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       put recipe_path(recipe), params: {
         recipes_recipe: {
@@ -138,7 +143,7 @@ RSpec.describe "Recipes", type: :request do
     it "shows errors with invalid attributes" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       put recipe_path(recipe), params: {
         recipes_recipe: {
@@ -155,7 +160,7 @@ RSpec.describe "Recipes", type: :request do
     it "deletes recipe" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
+      recipe = create(:recipes_recipe, user:)
 
       expect {
         delete recipe_path(recipe)
