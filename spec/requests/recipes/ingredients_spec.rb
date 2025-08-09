@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Recipes::Ingredients", type: :request do
+RSpec.describe Recipes::IngredientsController, type: :request do
   describe "GET /recipes/:recipe_id/ingredients" do
     it "shows recipe ingredients index" do
       user = create(:user)
@@ -115,10 +115,10 @@ RSpec.describe "Recipes::Ingredients", type: :request do
     it "updates recipe ingredient with valid attributes" do
       user = create(:user)
       login_as(user)
-      recipe = create(:recipes_recipe, user: user)
-      ingredient = create(:recipes_ingredient, user: user)
-      recipe_ingredient = create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
-      new_ingredient = create(:recipes_ingredient, name: "Updated Ingredient", user: user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      recipe_ingredient = create(:recipes_recipe_ingredient, recipe:, ingredient:)
+      new_ingredient = create(:recipes_ingredient, name: "Updated Ingredient", user:)
 
       put recipe_ingredient_path(recipe, recipe_ingredient), params: {
         recipes_recipe_ingredient: {

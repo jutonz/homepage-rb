@@ -74,7 +74,9 @@ module Recipes
     end
 
     def recipe_ingredient_params
-      params.require(:recipes_recipe_ingredient).permit(:ingredient_id, :quantity, :unit, :unit_id)
+      params.expect(
+        recipes_recipe_ingredient: %i[ingredient_id quantity unit unit_id]
+      )
     end
   end
 end

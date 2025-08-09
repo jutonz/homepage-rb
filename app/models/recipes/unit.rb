@@ -26,13 +26,5 @@ module Recipes
     validates :unit_type,
       presence: true,
       inclusion: {in: %w[volume weight count]}
-
-    scope :volume, -> { where(unit_type: "volume") }
-    scope :weight, -> { where(unit_type: "weight") }
-    scope :by_count, -> { where(unit_type: "count") }
-
-    def to_s
-      name
-    end
   end
 end
