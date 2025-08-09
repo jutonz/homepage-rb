@@ -12,6 +12,6 @@ ordinal: 4000
 
 ## Description
 
-e.g. allow user putting in 1/2 cup flour or 1/3 cup sugar. 
+e.g. allow user putting in 1/2 cup flour or 1/3 cup sugar.
 
 can continue to store it as fraction in db, but will want to reconvert it to a fraction when displaying it
