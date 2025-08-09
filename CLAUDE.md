@@ -59,7 +59,7 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 * YOU MUST limit line length to 80 characters.
 * Do not use callbacks in controllers or models
 * Omit the value in hashes when possilble, e.g. rather than `{user: user}`, say just `{user:}`
-* Use parenthesis for all method calls
+* YOU MUST use parenthesis for all method calls
 
 ### Testing rules
 * Do not use `let`, `let!`, `before`, or `context`
@@ -68,6 +68,7 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 * Always add tests for new code
 * Always run tests after creating or modifying them
 * Use shoudla matches to test validations, e.g. `it { is_expected.to validate_presence_of(:email) }`
+* When defining a factory, use a `sequence` for any field with a unique validation
 
 ## git commits
 * Briefly explain the purpose of the change in 1-2 sentences.
