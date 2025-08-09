@@ -23,10 +23,13 @@ module Recipes
     self.table_name = "recipes_recipes"
 
     belongs_to :user
-    has_many :recipe_ingredients, class_name: "Recipes::RecipeIngredient", dependent: :destroy
-    has_many :ingredients, through: :recipe_ingredients, class_name: "Recipes::Ingredient"
+    has_many :recipe_ingredients,
+      class_name: "Recipes::RecipeIngredient",
+      dependent: :destroy
+    has_many :ingredients,
+      through: :recipe_ingredients,
+      class_name: "Recipes::Ingredient"
 
     validates :name, presence: true
-    validates :user_id, presence: true
   end
 end

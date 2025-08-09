@@ -27,6 +27,5 @@ module Recipes
     has_many :recipes, through: :recipe_ingredients, class_name: "Recipes::Recipe"
 
     validates :name, presence: true, uniqueness: {scope: :user_id}
-    validates :user_id, presence: true
   end
 end

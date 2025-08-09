@@ -1,6 +1,6 @@
 class CreateIngredients < ActiveRecord::Migration[8.0]
   def change
-    create_table :ingredients do |t|
+    create_table :recipes_ingredients do |t|
       t.string :name, null: false
       t.string :category
       t.bigint :user_id, null: false
@@ -8,8 +8,8 @@ class CreateIngredients < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :ingredients, :user_id
-    add_index :ingredients, [:user_id, :name], unique: true
-    add_foreign_key :ingredients, :users
+    add_index :recipes_ingredients, :user_id
+    add_index :recipes_ingredients, [:user_id, :name], unique: true
+    add_foreign_key :recipes_ingredients, :users
   end
 end
