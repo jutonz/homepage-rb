@@ -13,7 +13,6 @@ RSpec.describe "Ingredient management", type: :system do
     click_link "New Ingredient"
 
     fill_in "Name", with: "Vanilla Extract"
-    fill_in "Category", with: "Flavoring"
 
     click_button "Create Ingredient"
 
@@ -32,7 +31,6 @@ RSpec.describe "Ingredient management", type: :system do
     click_link "Ingredients"
 
     expect(page).to have_content("Pure Vanilla Extract")
-    expect(page).to have_content("Flavoring")
     expect(page).to have_content("0 recipes")
 
     click_link "Pure Vanilla Extract"
@@ -45,14 +43,13 @@ RSpec.describe "Ingredient management", type: :system do
   it "shows ingredients used in recipes" do
     user = create(:user)
     login_as(user)
-    ingredient = create(:recipes_ingredient, name: "Flour", category: "Baking", user:)
+    ingredient = create(:recipes_ingredient, name: "Flour", user:)
     recipe = create(:recipes_recipe, name: "Bread Recipe", user:)
     create(:recipes_recipe_ingredient, recipe:, ingredient:)
 
     visit ingredient_path(ingredient)
 
     expect(page).to have_content("Flour")
-    expect(page).to have_content("Baking")
     expect(page).to have_content("Used in Recipes")
     expect(page).to have_content("Bread Recipe")
 

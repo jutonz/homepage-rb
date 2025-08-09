@@ -22,18 +22,6 @@ RSpec.describe "Ingredients", type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).to include("No ingredients yet")
     end
-
-    it "shows ingredient categories" do
-      user = create(:user)
-      login_as(user)
-      create(:recipes_ingredient, name: "Salt", category: "Spices", user: user)
-
-      get ingredients_path
-
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include("Salt")
-      expect(response.body).to include("Spices")
-    end
   end
 
   describe "GET /ingredients/:id" do
@@ -94,8 +82,7 @@ RSpec.describe "Ingredients", type: :request do
       expect {
         post ingredients_path, params: {
           recipes_ingredient: {
-            name: "Vanilla Extract",
-            category: "Flavoring"
+            name: "Vanilla Extract"
           }
         }
       }.to change(Recipes::Ingredient, :count).by(1)
@@ -103,7 +90,6 @@ RSpec.describe "Ingredients", type: :request do
       ingredient = Recipes::Ingredient.last
       expect(response).to redirect_to(ingredient_path(ingredient))
       expect(ingredient.name).to eq("Vanilla Extract")
-      expect(ingredient.category).to eq("Flavoring")
       expect(ingredient.user).to eq(user)
     end
 
@@ -113,8 +99,7 @@ RSpec.describe "Ingredients", type: :request do
 
       post ingredients_path, params: {
         recipes_ingredient: {
-          name: "",
-          category: "Test"
+          name: ""
         }
       }
 
@@ -145,15 +130,13 @@ RSpec.describe "Ingredients", type: :request do
 
       put ingredient_path(ingredient), params: {
         recipes_ingredient: {
-          name: "Updated Ingredient",
-          category: "Updated Category"
+          name: "Updated Ingredient"
         }
       }
 
       expect(response).to redirect_to(ingredient_path(ingredient))
       ingredient.reload
       expect(ingredient.name).to eq("Updated Ingredient")
-      expect(ingredient.category).to eq("Updated Category")
     end
 
     it "shows errors with invalid attributes" do

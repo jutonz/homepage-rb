@@ -56,7 +56,7 @@ class IngredientsController < ApplicationController
 
   def ingredient_params
     params.expect(
-      recipes_ingredient: %i[name category]
+      recipes_ingredient: %i[name]
     )
   end
 end
