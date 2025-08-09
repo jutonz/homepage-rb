@@ -47,11 +47,7 @@
           <% @recipe.recipe_ingredients.includes(:ingredient, :unit).each do |recipe_ingredient| %>
             <li class="text-gray-900">
               <%= recipe_ingredient.quantity %>
-              <% if recipe_ingredient.unit.present? %>
-                <%= recipe_ingredient.unit.name %>
-              <% elsif recipe_ingredient.read_attribute(:unit).present? %>
-                <%= recipe_ingredient.read_attribute(:unit) %>
-              <% end %>
+              <%= recipe_ingredient.unit.name %>
               <%= recipe_ingredient.ingredient.name %>
             </li>
           <% end %>

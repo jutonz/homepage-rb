@@ -5,12 +5,11 @@
 #  id            :bigint           not null, primary key
 #  notes         :text
 #  quantity      :decimal(8, 2)
-#  unit          :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  ingredient_id :bigint           not null
 #  recipe_id     :bigint           not null
-#  unit_id       :bigint
+#  unit_id       :bigint           not null
 #
 # Indexes
 #
@@ -29,7 +28,7 @@ module Recipes
   class RecipeIngredient < ApplicationRecord
     belongs_to :recipe, class_name: "Recipes::Recipe"
     belongs_to :ingredient, class_name: "Recipes::Ingredient"
-    belongs_to :unit, class_name: "Recipes::Unit", optional: true
+    belongs_to :unit, class_name: "Recipes::Unit"
 
     validates :recipe_id,
       presence: true,

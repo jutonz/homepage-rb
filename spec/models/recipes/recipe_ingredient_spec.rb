@@ -5,12 +5,11 @@
 #  id            :bigint           not null, primary key
 #  notes         :text
 #  quantity      :decimal(8, 2)
-#  unit          :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  ingredient_id :bigint           not null
 #  recipe_id     :bigint           not null
-#  unit_id       :bigint
+#  unit_id       :bigint           not null
 #
 # Indexes
 #
@@ -32,7 +31,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
 
   it { is_expected.to belong_to(:recipe) }
   it { is_expected.to belong_to(:ingredient) }
-  it { is_expected.to belong_to(:unit).optional }
+  it { is_expected.to belong_to(:unit) }
 
   it { is_expected.to validate_presence_of(:recipe_id) }
   it { is_expected.to validate_presence_of(:ingredient_id) }

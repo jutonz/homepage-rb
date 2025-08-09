@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_09_193026) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_09_212921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -129,11 +129,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_09_193026) do
     t.bigint "recipe_id", null: false
     t.bigint "ingredient_id", null: false
     t.decimal "quantity", precision: 8, scale: 2
-    t.string "unit"
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "unit_id"
+    t.bigint "unit_id", null: false
     t.index ["ingredient_id"], name: "index_recipes_recipe_ingredients_on_ingredient_id"
     t.index ["recipe_id", "ingredient_id"], name: "idx_on_recipe_id_ingredient_id_b1a1ea5019", unique: true
     t.index ["recipe_id"], name: "index_recipes_recipe_ingredients_on_recipe_id"
