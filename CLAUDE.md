@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Testing & Quality
 - `bundle exec rspec` - Run RSpec test suite
-- `bundle exec standardrb` - Ruby linting and code style (Standard gem)
+- `bundle exec standardrb --fix` - Ruby linting and code style (Standard gem)
 
 ### Development Server
 - `bin/dev` - Start development server
@@ -56,7 +56,7 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 ## Rules
 
 ### Style rules
-* You must limit line length to 80 characters.
+* YOU MUST limit line length to 80 characters.
 * Do not use callbacks in controllers or models
 
 ### Testing rules
@@ -65,6 +65,7 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 * Organize tests into distinct act/arrange/assert blocks
 * Always add tests for new code
 * Always run tests after creating or modifying them
+* Use shoudla matches to test validations, e.g. `it { is_expected.to validate_presence_of(:email) }`
 
 ## git commits
 * Briefly explain the purpose of the change in 1-2 sentences.

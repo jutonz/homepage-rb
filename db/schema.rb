@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_29_023157) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_09_153800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -114,6 +114,39 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_023157) do
     t.index ["gallery_id", "name"], name: "index_galleries_tags_on_gallery_id_and_name", unique: true
     t.index ["gallery_id"], name: "index_galleries_tags_on_gallery_id"
     t.index ["user_id"], name: "index_galleries_tags_on_user_id"
+  end
+
+  create_table "recipes_ingredients", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "category"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_recipes_ingredients_on_user_id_and_name", unique: true
+    t.index ["user_id"], name: "index_recipes_ingredients_on_user_id"
+  end
+
+  create_table "recipes_recipe_ingredients", force: :cascade do |t|
+    t.bigint "recipe_id", null: false
+    t.bigint "ingredient_id", null: false
+    t.decimal "quantity", precision: 8, scale: 2
+    t.string "unit"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_recipes_recipe_ingredients_on_ingredient_id"
+    t.index ["recipe_id", "ingredient_id"], name: "idx_on_recipe_id_ingredient_id_b1a1ea5019", unique: true
+    t.index ["recipe_id"], name: "index_recipes_recipe_ingredients_on_recipe_id"
+  end
+
+  create_table "recipes_recipes", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.text "instructions"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_recipes_recipes_on_user_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -311,6 +344,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_023157) do
   add_foreign_key "galleries_social_media_links", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
+  add_foreign_key "recipes_ingredients", "users"
+  add_foreign_key "recipes_recipe_ingredients", "recipes_ingredients", column: "ingredient_id"
+  add_foreign_key "recipes_recipe_ingredients", "recipes_recipes", column: "recipe_id"
+  add_foreign_key "recipes_recipes", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
