@@ -17,7 +17,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
     fill_in "Quantity", with: "2"
     fill_in "Unit", with: "cups"
 
-    click_button "Create Recipe ingredient"
+    click_on "Create Recipe ingredient"
 
     expect(page).to have_content("Ingredient was successfully added to recipe")
     expect(page).to have_content("Chocolate Cake Ingredients")
@@ -30,18 +30,18 @@ RSpec.describe "Recipe ingredient management", type: :system do
     fill_in "Quantity", with: "1.5"
     fill_in "Unit", with: "cups"
 
-    click_button "Create Recipe ingredient"
+    click_on "Create Recipe ingredient"
 
     expect(page).to have_content("Ingredient was successfully added to recipe")
     expect(page).to have_content("Sugar")
     expect(page).to have_content("1.5 cups")
 
     within "[data-ingredient='Flour']", match: :first do
-      click_link "Edit"
+      click_on "Edit"
     end
 
     fill_in "Quantity", with: "2.5"
-    click_button "Update Recipe ingredient"
+    click_on "Update Recipe ingredient"
 
     expect(page).to have_content("Recipe ingredient was successfully updated")
     expect(page).to have_content("2.5 cups")
