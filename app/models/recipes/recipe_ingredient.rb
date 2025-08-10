@@ -26,8 +26,6 @@
 #  fk_rails_...  (recipe_id => recipes_recipes.id)
 #  fk_rails_...  (unit_id => recipes_units.id)
 #
-require Rails.root.join("lib", "fraction_parser")
-require Rails.root.join("lib", "fraction_formatter")
 
 module Recipes
   class RecipeIngredient < ApplicationRecord
@@ -46,7 +44,7 @@ module Recipes
     validate :fraction_is_valid
 
     def quantity_string=(value)
-      num, denom = FractionParser.parse(value)
+      num, denom = Recipes::FractionParser.parse(value)
 
       if num && denom
         self.numerator = num
@@ -65,7 +63,7 @@ module Recipes
 
     def quantity_string
       if numerator.present? && denominator.present?
-        FractionFormatter.format(numerator, denominator)
+        Recipes::FractionFormatter.format(numerator, denominator)
       elsif quantity.present?
         quantity.to_s
       else
@@ -75,7 +73,7 @@ module Recipes
 
     def formatted_quantity(use_unicode: false)
       if numerator.present? && denominator.present?
-        FractionFormatter.format(numerator, denominator, use_unicode:)
+        Recipes::FractionFormatter.format(numerator, denominator, use_unicode:)
       elsif quantity.present?
         quantity.to_s
       else
