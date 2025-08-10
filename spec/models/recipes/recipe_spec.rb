@@ -2,13 +2,12 @@
 #
 # Table name: recipes_recipes
 #
-#  id           :bigint           not null, primary key
-#  description  :text
-#  instructions :text
-#  name         :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  user_id      :bigint           not null
+#  id          :bigint           not null, primary key
+#  description :text
+#  name        :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  user_id     :bigint           not null
 #
 # Indexes
 #
@@ -24,8 +23,9 @@ RSpec.describe Recipes::Recipe, type: :model do
   subject { build(:recipes_recipe) }
 
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to have_many(:recipe_ingredients).dependent(:destroy) }
   it { is_expected.to have_many(:ingredients).through(:recipe_ingredients) }
+  it { is_expected.to have_many(:recipe_ingredients).dependent(:destroy) }
+  it { is_expected.to have_rich_text(:instructions) }
 
   it { is_expected.to validate_presence_of(:name) }
 

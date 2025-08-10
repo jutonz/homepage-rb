@@ -1,6 +1,6 @@
 <%= simple_form_for(@recipe, url: @recipe.persisted? ? recipe_path(@recipe) : recipes_path) do |form| %>
   <%= form.input(:name, autofocus: true) %>
   <%= form.input(:description, as: :text, input_html: {rows: 3}) %>
-  <%= form.input(:instructions, as: :text, input_html: {rows: 8}) %>
+  <%= form.rich_text_area(:instructions) %>
   <%= form.button(:submit) %>
 <% end %>

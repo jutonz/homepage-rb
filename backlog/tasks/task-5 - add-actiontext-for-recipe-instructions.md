@@ -1,10 +1,10 @@
 ---
 id: task-5
 title: add actiontext for recipe instructions
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-09'
-updated_date: '2025-08-09'
+updated_date: '2025-08-10'
 labels: []
 dependencies: []
 ordinal: 2000

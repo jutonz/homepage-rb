@@ -35,6 +35,7 @@ require "view_component/system_test_helpers"
 require "view_component/test_helpers"
 require "webmock/rspec"
 require "super_diff/rspec-rails"
+require "action_text/system_test_helper"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { require it }
 
@@ -60,6 +61,7 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
+  config.include ActionText::SystemTestHelper, type: :system
 
   config.before(:each, type: :system) do
     driven_by :rack_test

@@ -2,13 +2,12 @@
 #
 # Table name: recipes_recipes
 #
-#  id           :bigint           not null, primary key
-#  description  :text
-#  instructions :text
-#  name         :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  user_id      :bigint           not null
+#  id          :bigint           not null, primary key
+#  description :text
+#  name        :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  user_id     :bigint           not null
 #
 # Indexes
 #
@@ -22,7 +21,10 @@ FactoryBot.define do
   factory :recipes_recipe, class: "Recipes::Recipe" do
     sequence(:name) { "Recipe #{it}" }
     description { "Classic homemade cookies" }
-    instructions { "Mix ingredients. Bake at 375°F for 12 minutes." }
     user
+
+    after(:build) do |recipe|
+      recipe.instructions = "Mix ingredients. Bake at 375°F for 12 minutes."
+    end
   end
 end

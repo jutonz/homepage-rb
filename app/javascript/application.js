@@ -20,3 +20,6 @@ document.addEventListener('direct-upload:end', (event) => {
   console.log(`File ${detail.file.name} finished uploading.`);
 });
 
+
+import "trix"
+import "@rails/actiontext"

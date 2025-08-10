@@ -14,7 +14,11 @@ RSpec.describe "Recipe management", type: :system do
 
     fill_in "Name", with: "Chocolate Chip Cookies"
     fill_in "Description", with: "Classic homemade cookies"
-    fill_in "Instructions", with: "Mix ingredients. Bake at 375°F for 12 minutes."
+
+    fill_in_rich_text_area(
+      "recipes_recipe_instructions",
+      with: "Mix ingredients. Bake at 375°F for 12 minutes."
+    )
 
     click_button "Create Recipe"
 
