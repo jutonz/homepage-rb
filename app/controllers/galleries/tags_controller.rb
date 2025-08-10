@@ -1,22 +1,24 @@
 module Galleries
   class TagsController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def index
       @gallery = find_gallery
-      @tags = @gallery.tags.order(:name)
+      authorize Galleries::Tag
+      @tags = policy_scope(Galleries::Tag).where(gallery: @gallery).order(:name)
     end
 
     def new
       @gallery = find_gallery
-      @tag = @gallery.tags.new
+      @tag = authorize(@gallery.tags.new(user: current_user))
     end
 
     def show
       @gallery = find_gallery
-      @tag = find_tag(includes: [
+      @tag = authorize(find_tag(includes: [
         auto_add_tag_associations: :auto_add_tag
-      ])
+      ]))
       @images =
         @tag
           .images
@@ -28,8 +30,7 @@ module Galleries
 
     def create
       @gallery = find_gallery
-      @tag = @gallery.tags.new(tag_params)
-      @tag.user = current_user
+      @tag = authorize(@gallery.tags.new(tag_params.merge(user: current_user)))
 
       if @tag.save
         if params[:add_to_image_id]
@@ -46,12 +47,12 @@ module Galleries
 
     def edit
       @gallery = find_gallery
-      @tag = find_tag
+      @tag = authorize(find_tag)
     end
 
     def update
       @gallery = find_gallery
-      @tag = find_tag
+      @tag = authorize(find_tag)
 
       if @tag.update(tag_params)
         redirect_to [@gallery, @tag], notice: "Tag was successfully updated."
@@ -62,7 +63,7 @@ module Galleries
 
     def destroy
       @gallery = find_gallery
-      @tag = find_tag
+      @tag = authorize(find_tag)
       @tag.destroy!
 
       redirect_to(
@@ -75,13 +76,11 @@ module Galleries
     private
 
     def find_gallery
-      current_user
-        .galleries
-        .find(params[:gallery_id])
+      policy_scope(Gallery).find(params[:gallery_id])
     end
 
     def find_tag(includes: nil)
-      query = @gallery.tags
+      query = policy_scope(Galleries::Tag).where(gallery: @gallery)
       query = query.includes(includes) if includes.present?
       query.find(params[:id])
     end

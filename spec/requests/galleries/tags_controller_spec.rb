@@ -118,6 +118,161 @@ RSpec.describe Galleries::TagsController do
     end
   end
 
+  describe "authorization" do
+    describe "index" do
+      it "returns 404 when accessing tags for gallery not owned by current user" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+        other_user = create(:user)
+        login_as(other_user)
+
+        get(gallery_tags_path(gallery))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        gallery = create(:gallery)
+
+        get(gallery_tags_path(gallery))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "show" do
+      it "returns 404 when viewing tag from gallery not owned by current user" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+        other_user = create(:user)
+        login_as(other_user)
+
+        get(gallery_tag_path(gallery, tag))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+
+        get(gallery_tag_path(gallery, tag))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "create" do
+      it "returns 404 when creating tag in gallery not owned by current user" do
+        gallery = create(:gallery)
+        other_user = create(:user)
+        login_as(other_user)
+        params = {tag: {name: "hello"}}
+
+        post(gallery_tags_path(gallery), params:)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        gallery = create(:gallery)
+        params = {tag: {name: "hello"}}
+
+        post(gallery_tags_path(gallery), params:)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "update" do
+      it "returns 404 when updating tag from gallery not owned by current user" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+        other_user = create(:user)
+        login_as(other_user)
+        params = {tag: {name: "updated"}}
+
+        put(gallery_tag_path(gallery, tag), params:)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+        params = {tag: {name: "updated"}}
+
+        put(gallery_tag_path(gallery, tag), params:)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "destroy" do
+      it "returns 404 when destroying tag from gallery not owned by current user" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+        other_user = create(:user)
+        login_as(other_user)
+
+        delete(gallery_tag_path(gallery, tag))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+
+        delete(gallery_tag_path(gallery, tag))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "edit" do
+      it "returns 404 when editing tag from gallery not owned by current user" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+        other_user = create(:user)
+        login_as(other_user)
+
+        get(edit_gallery_tag_path(gallery, tag))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        gallery = create(:gallery)
+        tag = create(:galleries_tag, gallery:)
+
+        get(edit_gallery_tag_path(gallery, tag))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "new" do
+      it "returns 404 when accessing new tag form for gallery not owned by current user" do
+        gallery = create(:gallery)
+        other_user = create(:user)
+        login_as(other_user)
+
+        get(new_gallery_tag_path(gallery))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        gallery = create(:gallery)
+
+        get(new_gallery_tag_path(gallery))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
   def have_tag(tag)
     have_css("[data-role=tag]", text: tag.name)
   end
