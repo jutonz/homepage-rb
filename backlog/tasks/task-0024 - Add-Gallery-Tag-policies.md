@@ -1,7 +1,7 @@
 ---
 id: task-0024
 title: Add Gallery Tag policies
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-08-10'
 updated_date: '2025-08-10'
