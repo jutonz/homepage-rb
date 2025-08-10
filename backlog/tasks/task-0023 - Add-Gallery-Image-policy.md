@@ -1,10 +1,10 @@
 ---
 id: task-0023
 title: Add Gallery Image policy
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-08-10'
-updated_date: '2025-08-10 14:50'
+updated_date: '2025-08-10'
 labels:
   - authorization
   - gallery
