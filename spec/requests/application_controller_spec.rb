@@ -6,7 +6,7 @@ RSpec.describe ApplicationController do
       get "/test"
     end
 
-    expect(response).to redirect_to("/")
+    expect(response).to redirect_to(root_path)
     expect(flash[:alert]).to eq(
       "You are not authorized to perform this action."
     )
@@ -21,6 +21,7 @@ RSpec.describe ApplicationController do
 
     Rails.application.routes.draw do
       resource :test, only: :show
+      root to: "tests#show"
     end
 
     yield controller
