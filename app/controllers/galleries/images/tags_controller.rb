@@ -2,11 +2,12 @@ module Galleries
   module Images
     class TagsController < ApplicationController
       before_action :ensure_authenticated!
+      after_action :verify_authorized
 
       def create
         @gallery = find_gallery
         @image = find_image
-        @tag = find_tag
+        @tag = authorize(find_tag)
 
         @image.add_tag(@tag)
 
@@ -24,7 +25,7 @@ module Galleries
       def destroy
         @gallery = find_gallery
         @image = find_image
-        @tag = find_tag
+        @tag = authorize(find_tag)
 
         @image.remove_tag(@tag)
 
@@ -42,15 +43,15 @@ module Galleries
       private
 
       def find_gallery
-        current_user.galleries.find(params[:gallery_id])
+        policy_scope(Gallery).find(params[:gallery_id])
       end
 
       def find_image
-        @gallery.images.find(params[:image_id])
+        policy_scope(Galleries::Image).where(gallery: @gallery).find(params[:image_id])
       end
 
       def find_tag
-        @gallery.tags.find(params[:tag_id] || params[:id])
+        policy_scope(Galleries::Tag).where(gallery: @gallery).find(params[:tag_id] || params[:id])
       end
     end
   end
