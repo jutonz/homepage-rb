@@ -1,0 +1,2 @@
+class GalleryPolicy < UserOwnedPolicy
+end
