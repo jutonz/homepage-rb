@@ -140,6 +140,116 @@ RSpec.describe Todo::TasksController do
     end
   end
 
+  describe "authorization" do
+    describe "index" do
+      it "requires authentication" do
+        get(todo_tasks_path)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "show" do
+      it "returns 404 when viewing task not owned by current user" do
+        task = create(:todo_task)
+        other_user = create(:user)
+        login_as(other_user)
+
+        get(todo_task_path(task))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        task = create(:todo_task)
+
+        get(todo_task_path(task))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "create" do
+      it "requires authentication" do
+        params = {todo_task: {name: "hello"}}
+
+        post(todo_tasks_path, params:)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "update" do
+      it "returns 404 when updating task not owned by current user" do
+        task = create(:todo_task)
+        other_user = create(:user)
+        login_as(other_user)
+        params = {todo_task: {name: "updated"}}
+
+        put(todo_task_path(task), params:)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        task = create(:todo_task)
+        params = {todo_task: {name: "updated"}}
+
+        put(todo_task_path(task), params:)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "destroy" do
+      it "returns 404 when destroying task not owned by current user" do
+        task = create(:todo_task)
+        other_user = create(:user)
+        login_as(other_user)
+
+        delete(todo_task_path(task))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        task = create(:todo_task)
+
+        delete(todo_task_path(task))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "edit" do
+      it "returns 404 when editing task not owned by current user" do
+        task = create(:todo_task)
+        other_user = create(:user)
+        login_as(other_user)
+
+        get(edit_todo_task_path(task))
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "requires authentication" do
+        task = create(:todo_task)
+
+        get(edit_todo_task_path(task))
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    describe "new" do
+      it "requires authentication" do
+        get(new_todo_task_path)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
   def have_task(task)
     have_css("[data-role=task]", text: task.name)
   end

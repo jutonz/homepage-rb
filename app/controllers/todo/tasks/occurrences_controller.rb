@@ -2,6 +2,7 @@ module Todo
   module Tasks
     class OccurrencesController < ApplicationController
       before_action :ensure_authenticated!
+      after_action :verify_authorized
 
       def create
         @task = find_task
@@ -21,11 +22,12 @@ module Todo
           project_id: Todoist::Api::Projects::CJ_PROJECT_ID
         )
 
-        @task.task_occurrences.create!(
+        @task_occurrence = authorize(@task.task_occurrences.build(
           todoist_task_id: todoist_task.id,
           scheduled_at: Time.current
-        )
+        ))
 
+        @task_occurrence.save!
         broadcast_task_update(@task)
 
         redirect_to(
@@ -37,7 +39,7 @@ module Todo
       private
 
       def find_task
-        @task = current_user.todo_tasks.find(params[:task_id])
+        @task = policy_scope(Todo::Task).find(params[:task_id])
       end
 
       def room_id(task)

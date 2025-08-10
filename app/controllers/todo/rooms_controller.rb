@@ -1,17 +1,19 @@
 module Todo
   class RoomsController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def index
-      @rooms = current_user.todo_rooms
+      authorize Todo::Room
+      @rooms = policy_scope(Todo::Room)
     end
 
     def new
-      @room = Room.new
+      @room = authorize(current_user.todo_rooms.new)
     end
 
     def create
-      @room = current_user.todo_rooms.new(room_params)
+      @room = authorize(current_user.todo_rooms.new(room_params))
 
       if @room.save
         redirect_to(todo_rooms_path, notice: "Created room")
@@ -21,15 +23,15 @@ module Todo
     end
 
     def show
-      @room = find_room(includes: [tasks: :task_occurrences])
+      @room = authorize(find_room(includes: [tasks: :task_occurrences]))
     end
 
     def edit
-      @room = find_room
+      @room = authorize(find_room)
     end
 
     def update
-      @room = find_room
+      @room = authorize(find_room)
 
       if @room.update(room_params)
         redirect_to(todo_room_path(@room), notice: "Updated room")
@@ -39,7 +41,7 @@ module Todo
     end
 
     def destroy
-      find_room.destroy
+      authorize(find_room).destroy
       redirect_to(todo_rooms_path, notice: "Deleted room")
     end
 
@@ -50,8 +52,8 @@ module Todo
     end
 
     def find_room(includes: [])
-      query = current_user.todo_rooms
-      query.includes(includes) if includes.present?
+      query = policy_scope(Todo::Room)
+      query = query.includes(includes) if includes.present?
       query.find(params[:id])
     end
   end
