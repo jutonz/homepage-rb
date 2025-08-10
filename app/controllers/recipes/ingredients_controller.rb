@@ -4,19 +4,19 @@ module Recipes
     after_action :verify_authorized
 
     def index
-      @recipe = authorize(find_recipe)
+      @recipe = find_recipe
       @recipe_ingredients = @recipe.recipe_ingredients.includes(:ingredient, :unit)
       @available_ingredients = find_available_ingredients
     end
 
     def new
-      @recipe = authorize(find_recipe)
+      @recipe = find_recipe
       @recipe_ingredient = authorize(@recipe.recipe_ingredients.build)
       @available_ingredients = find_available_ingredients
     end
 
     def create
-      @recipe = authorize(find_recipe)
+      @recipe = find_recipe
       @recipe_ingredient = authorize(@recipe.recipe_ingredients.build(recipe_ingredient_params))
 
       if @recipe_ingredient.save
@@ -28,13 +28,13 @@ module Recipes
     end
 
     def edit
-      @recipe = authorize(find_recipe)
+      @recipe = find_recipe
       @recipe_ingredient = authorize(find_recipe_ingredient)
       @available_ingredients = find_available_ingredients
     end
 
     def update
-      @recipe = authorize(find_recipe)
+      @recipe = find_recipe
       @recipe_ingredient = authorize(find_recipe_ingredient)
 
       if @recipe_ingredient.update(recipe_ingredient_params)
@@ -46,7 +46,7 @@ module Recipes
     end
 
     def destroy
-      @recipe = authorize(find_recipe)
+      @recipe = find_recipe
       @recipe_ingredient = authorize(find_recipe_ingredient)
       @recipe_ingredient.destroy
       redirect_to recipe_ingredients_path(@recipe), notice: "Ingredient was successfully removed from recipe."
@@ -56,6 +56,7 @@ module Recipes
 
     def find_recipe
       policy_scope(Recipes::Recipe).find(params[:recipe_id])
+        .then { authorize(it, :show?) }
     end
 
     def find_recipe_ingredient
