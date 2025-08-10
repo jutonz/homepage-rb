@@ -1,172 +1,82 @@
 require "rails_helper"
 
 RSpec.describe Galleries::ImagePolicy do
-  describe "index?" do
-    it "returns true when user owns the gallery" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
+  permissions :index?, :create? do
+    it "grants access when user owns the gallery" do
+      user = build(:user)
+      gallery = build(:gallery, user:)
+      image = build(:galleries_image, gallery:)
 
-      expect(policy.index?).to be(true)
+      expect(described_class).to permit(user, image)
     end
 
-    it "returns false when user does not own the gallery" do
-      user = create(:user)
-      other_user = create(:user)
-      gallery = create(:gallery, user: other_user)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
+    it "denies access when user does not own the gallery" do
+      user = build(:user)
+      other_user = build(:user)
+      gallery = build(:gallery, user: other_user)
+      image = build(:galleries_image, gallery:)
 
-      expect(policy.index?).to be(false)
+      expect(described_class).not_to permit(user, image)
     end
 
-    it "returns false when user is nil" do
-      gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(nil, image)
+    it "denies access when user is nil" do
+      gallery = build(:gallery)
+      image = build(:galleries_image, gallery:)
 
-      expect(policy.index?).to be(false)
+      expect(described_class).not_to permit(nil, image)
     end
   end
 
-  describe "show?" do
-    it "returns true when user owns the gallery" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
+  permissions :show?, :update?, :destroy? do
+    it "grants access when user owns the gallery" do
+      user = build(:user)
+      gallery = build(:gallery, user:)
+      image = build(:galleries_image, gallery:)
 
-      expect(policy.show?).to be(true)
+      expect(described_class).to permit(user, image)
     end
 
-    it "returns false when user does not own the gallery" do
-      user = create(:user)
-      other_user = create(:user)
-      gallery = create(:gallery, user: other_user)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
+    it "denies access when user does not own the gallery" do
+      user = build(:user)
+      other_user = build(:user)
+      gallery = build(:gallery, user: other_user)
+      image = build(:galleries_image, gallery:)
 
-      expect(policy.show?).to be(false)
+      expect(described_class).not_to permit(user, image)
     end
 
-    it "returns false when user is nil" do
-      gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(nil, image)
+    it "denies access when user is nil" do
+      gallery = build(:gallery)
+      image = build(:galleries_image, gallery:)
 
-      expect(policy.show?).to be(false)
+      expect(described_class).not_to permit(nil, image)
     end
   end
 
-  describe "create?" do
-    it "returns true when user owns the gallery" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
-
-      expect(policy.create?).to be(true)
-    end
-
-    it "returns false when user does not own the gallery" do
+  describe described_class::Scope do
+    it "returns only images from galleries belonging to the user" do
       user = create(:user)
       other_user = create(:user)
-      gallery = create(:gallery, user: other_user)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
+      user_gallery1 = create(:gallery, user:)
+      user_gallery2 = create(:gallery, user:)
+      other_gallery = create(:gallery, user: other_user)
+      user_image1 = create(:galleries_image, gallery: user_gallery1)
+      user_image2 = create(:galleries_image, gallery: user_gallery2)
+      create(:galleries_image, gallery: other_gallery)
 
-      expect(policy.create?).to be(false)
+      scope = described_class.new(user, Galleries::Image.all).resolve
+
+      expect(scope).to contain_exactly(user_image1, user_image2)
     end
 
-    it "returns false when user is nil" do
-      gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(nil, image)
-
-      expect(policy.create?).to be(false)
-    end
-  end
-
-  describe "update?" do
-    it "returns true when user owns the gallery" do
+    it "returns empty collection when user is nil" do
       user = create(:user)
       gallery = create(:gallery, user:)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
+      create(:galleries_image, gallery:)
 
-      expect(policy.update?).to be(true)
-    end
+      scope = described_class.new(nil, Galleries::Image.all).resolve
 
-    it "returns false when user does not own the gallery" do
-      user = create(:user)
-      other_user = create(:user)
-      gallery = create(:gallery, user: other_user)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
-
-      expect(policy.update?).to be(false)
-    end
-
-    it "returns false when user is nil" do
-      gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(nil, image)
-
-      expect(policy.update?).to be(false)
-    end
-  end
-
-  describe "destroy?" do
-    it "returns true when user owns the gallery" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
-
-      expect(policy.destroy?).to be(true)
-    end
-
-    it "returns false when user does not own the gallery" do
-      user = create(:user)
-      other_user = create(:user)
-      gallery = create(:gallery, user: other_user)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(user, image)
-
-      expect(policy.destroy?).to be(false)
-    end
-
-    it "returns false when user is nil" do
-      gallery = create(:gallery)
-      image = create(:galleries_image, gallery:)
-      policy = described_class.new(nil, image)
-
-      expect(policy.destroy?).to be(false)
-    end
-  end
-
-  describe "Scope" do
-    describe "#resolve" do
-      it "returns images from galleries owned by user" do
-        user = create(:user)
-        other_user = create(:user)
-        my_gallery = create(:gallery, user:)
-        other_gallery = create(:gallery, user: other_user)
-        my_image = create(:galleries_image, gallery: my_gallery)
-        create(:galleries_image, gallery: other_gallery)
-        scope = described_class::Scope.new(user, Galleries::Image.all).resolve
-
-        expect(scope).to contain_exactly(my_image)
-      end
-
-      it "returns empty scope when user is nil" do
-        gallery = create(:gallery)
-        create(:galleries_image, gallery:)
-        scope = described_class::Scope.new(nil, Galleries::Image.all).resolve
-
-        expect(scope).to be_empty
-      end
+      expect(scope).to be_empty
     end
   end
 end
