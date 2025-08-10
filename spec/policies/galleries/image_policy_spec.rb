@@ -1,33 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Galleries::ImagePolicy do
-  permissions :index?, :create? do
-    it "grants access when user owns the gallery" do
-      user = build(:user)
-      gallery = build(:gallery, user:)
-      image = build(:galleries_image, gallery:)
-
-      expect(described_class).to permit(user, image)
-    end
-
-    it "denies access when user does not own the gallery" do
-      user = build(:user)
-      other_user = build(:user)
-      gallery = build(:gallery, user: other_user)
-      image = build(:galleries_image, gallery:)
-
-      expect(described_class).not_to permit(user, image)
-    end
-
-    it "denies access when user is nil" do
-      gallery = build(:gallery)
-      image = build(:galleries_image, gallery:)
-
-      expect(described_class).not_to permit(nil, image)
-    end
-  end
-
-  permissions :show?, :update?, :destroy? do
+  permissions :index?, :show?, :create?, :update?, :destroy? do
     it "grants access when user owns the gallery" do
       user = build(:user)
       gallery = build(:gallery, user:)
