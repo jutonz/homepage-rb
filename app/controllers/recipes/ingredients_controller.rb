@@ -1,22 +1,23 @@
 module Recipes
   class IngredientsController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def index
-      @recipe = find_recipe
+      @recipe = authorize(find_recipe)
       @recipe_ingredients = @recipe.recipe_ingredients.includes(:ingredient, :unit)
       @available_ingredients = find_available_ingredients
     end
 
     def new
-      @recipe = find_recipe
-      @recipe_ingredient = @recipe.recipe_ingredients.build
+      @recipe = authorize(find_recipe)
+      @recipe_ingredient = authorize(@recipe.recipe_ingredients.build)
       @available_ingredients = find_available_ingredients
     end
 
     def create
-      @recipe = find_recipe
-      @recipe_ingredient = @recipe.recipe_ingredients.build(recipe_ingredient_params)
+      @recipe = authorize(find_recipe)
+      @recipe_ingredient = authorize(@recipe.recipe_ingredients.build(recipe_ingredient_params))
 
       if @recipe_ingredient.save
         redirect_to recipe_ingredients_path(@recipe), notice: "Ingredient was successfully added to recipe."
@@ -27,14 +28,14 @@ module Recipes
     end
 
     def edit
-      @recipe = find_recipe
-      @recipe_ingredient = find_recipe_ingredient
+      @recipe = authorize(find_recipe)
+      @recipe_ingredient = authorize(find_recipe_ingredient)
       @available_ingredients = find_available_ingredients
     end
 
     def update
-      @recipe = find_recipe
-      @recipe_ingredient = find_recipe_ingredient
+      @recipe = authorize(find_recipe)
+      @recipe_ingredient = authorize(find_recipe_ingredient)
 
       if @recipe_ingredient.update(recipe_ingredient_params)
         redirect_to recipe_ingredients_path(@recipe), notice: "Recipe ingredient was successfully updated."
@@ -45,8 +46,8 @@ module Recipes
     end
 
     def destroy
-      @recipe = find_recipe
-      @recipe_ingredient = find_recipe_ingredient
+      @recipe = authorize(find_recipe)
+      @recipe_ingredient = authorize(find_recipe_ingredient)
       @recipe_ingredient.destroy
       redirect_to recipe_ingredients_path(@recipe), notice: "Ingredient was successfully removed from recipe."
     end
@@ -54,7 +55,7 @@ module Recipes
     private
 
     def find_recipe
-      current_user.recipes_recipes.find(params[:recipe_id])
+      policy_scope(Recipes::Recipe).find(params[:recipe_id])
     end
 
     def find_recipe_ingredient
@@ -62,7 +63,7 @@ module Recipes
     end
 
     def find_available_ingredients
-      current_user.recipes_ingredients.order(:name)
+      policy_scope(Recipes::Ingredient).order(:name)
     end
 
     def recipe_ingredient_params

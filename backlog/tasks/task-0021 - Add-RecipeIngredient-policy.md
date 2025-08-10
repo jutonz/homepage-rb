@@ -1,9 +1,10 @@
 ---
 id: task-0021
 title: Add RecipeIngredient policy
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - authorization
   - recipes
