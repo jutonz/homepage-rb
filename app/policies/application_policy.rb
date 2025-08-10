@@ -37,24 +37,17 @@ class ApplicationPolicy
   end
 
   class Scope
-    attr_reader :user, :scope
-
     def initialize(user, scope)
       @user = user
       @scope = scope
     end
 
     def resolve
-      raise NotImplementedError, "You must define #resolve in #{self.class}"
+      raise NoMethodError, "You must define #resolve in #{self.class}"
     end
-  end
 
-  private
+    private
 
-  def user_owns_record?
-    return false unless user
-    return false unless record.respond_to?(:user)
-
-    record.user == user
+    attr_reader :user, :scope
   end
 end
