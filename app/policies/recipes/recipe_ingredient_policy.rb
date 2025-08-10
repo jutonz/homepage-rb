@@ -1,40 +1,36 @@
 module Recipes
   class RecipeIngredientPolicy < ApplicationPolicy
     def index?
-      user.present? && user_owns_recipe?
+      user_owns_recipe?
     end
 
     def show?
-      user.present? && user_owns_recipe?
+      user_owns_recipe?
     end
 
     def create?
-      user.present? && user_owns_recipe?
+      user_owns_recipe?
     end
 
     def update?
-      user.present? && user_owns_recipe?
+      user_owns_recipe?
     end
 
     def destroy?
-      user.present? && user_owns_recipe?
-    end
-
-    class Scope < ApplicationPolicy::Scope
-      def resolve
-        return scope.none unless user
-
-        scope.joins(:recipe).where(recipe: {user:})
-      end
+      user_owns_recipe?
     end
 
     private
 
     def user_owns_recipe?
-      return false unless record.respond_to?(:recipe)
-      return false unless record.recipe
+      user.present? && record.recipe.user == user
+    end
 
-      record.recipe.user == user
+    class Scope < ApplicationPolicy::Scope
+      def resolve
+        return scope.none unless user
+        scope.joins(:recipe).where(recipe: {user:})
+      end
     end
   end
 end

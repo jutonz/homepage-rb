@@ -12,8 +12,7 @@ RSpec.describe Recipes::RecipeIngredientPolicy do
     end
 
     it "denies access when user does not own the recipe" do
-      user = build(:user)
-      other_user = build(:user)
+      user, other_user = build_pair(:user)
       recipe = build(:recipes_recipe, user: other_user)
       ingredient = build(:recipes_ingredient, user: other_user)
       recipe_ingredient = build(:recipes_recipe_ingredient, recipe:, ingredient:)
@@ -33,16 +32,21 @@ RSpec.describe Recipes::RecipeIngredientPolicy do
 
   describe described_class::Scope do
     it "returns only recipe ingredients for recipes owned by the user" do
-      user = create(:user)
-      other_user = create(:user)
-
+      user, other_user = create_pair(:user)
       user_recipe = create(:recipes_recipe, user:)
       user_ingredient = create(:recipes_ingredient, user:)
-      user_recipe_ingredient = create(:recipes_recipe_ingredient, recipe: user_recipe, ingredient: user_ingredient)
-
+      user_recipe_ingredient = create(
+        :recipes_recipe_ingredient,
+        recipe: user_recipe,
+        ingredient: user_ingredient
+      )
       other_recipe = create(:recipes_recipe, user: other_user)
       other_ingredient = create(:recipes_ingredient, user: other_user)
-      create(:recipes_recipe_ingredient, recipe: other_recipe, ingredient: other_ingredient)
+      _other_recipe_ingredient = create(
+        :recipes_recipe_ingredient,
+        recipe: other_recipe,
+        ingredient: other_ingredient
+      )
 
       scope = described_class.new(user, Recipes::RecipeIngredient.all).resolve
 
