@@ -54,6 +54,26 @@ RSpec.describe Api::Galleries::ImagesController do
 
       expect(response).to have_http_status(:created)
     end
+
+    it "returns 404 when creating image in gallery not owned by current user" do
+      gallery = create(:gallery)
+      other_user = create(:user)
+      login_as(other_user)
+      params = {file: audiosurf_jpg}
+
+      post(api_gallery_images_path(gallery), params:)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      params = {file: audiosurf_jpg}
+
+      post(api_gallery_images_path(gallery), params:)
+
+      expect(response).to have_http_status(:unauthorized)
+    end
   end
 
   def audiosurf_jpg = fixture_file_upload("audiosurf.jpg", "image/jpeg")

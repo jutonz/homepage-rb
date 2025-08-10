@@ -1,14 +1,20 @@
 module Galleries
   class ImagesController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def index
-      @gallery = find_gallery.includes(:images)
+      @gallery = find_gallery
+      authorize(Galleries::Image)
+      @images =
+        policy_scope(Galleries::Image)
+          .where(gallery: @gallery)
+          .includes(:file_attachment)
     end
 
     def show
       @gallery = find_gallery
-      @image = find_image
+      @image = authorize(find_image)
       @tag_search = Galleries::TagSearch.new(
         gallery: @gallery,
         image: @image,
@@ -18,12 +24,12 @@ module Galleries
 
     def edit
       @gallery = find_gallery
-      @image = find_image
+      @image = authorize(find_image)
     end
 
     def update
       @gallery = find_gallery
-      @image = find_image
+      @image = authorize(find_image)
 
       if @image.update(image_params)
         redirect_to [@gallery, @image], notice: "Image was successfully updated."
@@ -34,7 +40,7 @@ module Galleries
 
     def destroy
       @gallery = find_gallery
-      @image = find_image
+      @image = authorize(find_image)
       @image.destroy!
 
       redirect_to(
@@ -47,11 +53,11 @@ module Galleries
     private
 
     def find_gallery
-      current_user.galleries.find(params[:gallery_id])
+      policy_scope(Gallery).find(params[:gallery_id])
     end
 
     def find_image
-      @gallery.images.find(params[:id])
+      policy_scope(Galleries::Image).where(gallery: @gallery).find(params[:id])
     end
 
     def image_params

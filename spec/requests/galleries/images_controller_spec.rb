@@ -114,6 +114,94 @@ RSpec.describe Galleries::ImagesController do
 
       expect(response).to redirect_to(gallery_path(gallery))
     end
+
+    it "returns 404 when destroying image from gallery not owned by current user" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      other_user = create(:user)
+      login_as(other_user)
+
+      delete(gallery_image_path(gallery, image))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+
+      delete(gallery_image_path(gallery, image))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "show authorization" do
+    it "returns 404 when viewing image from gallery not owned by current user" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(gallery_image_path(gallery, image))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+
+      get(gallery_image_path(gallery, image))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "edit authorization" do
+    it "returns 404 when editing image from gallery not owned by current user" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(edit_gallery_image_path(gallery, image))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+
+      get(edit_gallery_image_path(gallery, image))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "update authorization" do
+    it "returns 404 when updating image from gallery not owned by current user" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      other_user = create(:user)
+      login_as(other_user)
+      params = {image: {file: fixture_file_upload("audiosurf.jpg", "image/jpeg")}}
+
+      put(gallery_image_path(gallery, image), params:)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication for update" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      params = {image: {file: fixture_file_upload("audiosurf.jpg", "image/jpeg")}}
+
+      put(gallery_image_path(gallery, image), params:)
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   def have_image_thumbnail(image)
