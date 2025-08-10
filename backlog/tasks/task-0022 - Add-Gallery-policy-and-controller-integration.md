@@ -4,6 +4,7 @@ title: Add Gallery policy and controller integration
 status: To Do
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - authorization
   - gallery

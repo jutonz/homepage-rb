@@ -1,13 +1,15 @@
 class GalleriesController < ApplicationController
   before_action :ensure_authenticated!
+  after_action :verify_authorized
 
   def index
-    @galleries = current_user.galleries.visible
+    authorize Gallery
+    @galleries = policy_scope(Gallery).visible
   end
 
   PER_PAGE = 20
   def show
-    @gallery = find_gallery
+    @gallery = authorize(find_gallery)
     @filter_tags = find_filter_tags
     @images =
       @gallery
@@ -24,15 +26,15 @@ class GalleriesController < ApplicationController
   end
 
   def new
-    @gallery = current_user.galleries.new
+    @gallery = authorize(current_user.galleries.new)
   end
 
   def edit
-    @gallery = find_gallery
+    @gallery = authorize(find_gallery)
   end
 
   def create
-    @gallery = current_user.galleries.new(gallery_params)
+    @gallery = authorize(current_user.galleries.new(gallery_params))
 
     if @gallery.save
       redirect_to @gallery, notice: "Gallery was successfully created."
@@ -42,7 +44,7 @@ class GalleriesController < ApplicationController
   end
 
   def update
-    @gallery = find_gallery
+    @gallery = authorize(find_gallery)
 
     if @gallery.update(gallery_params)
       redirect_to @gallery, notice: "Gallery was successfully updated."
@@ -52,7 +54,7 @@ class GalleriesController < ApplicationController
   end
 
   def destroy
-    @gallery = find_gallery
+    @gallery = authorize(find_gallery)
     @gallery.destroy!
 
     redirect_to(
@@ -65,7 +67,7 @@ class GalleriesController < ApplicationController
   private
 
   def find_gallery
-    current_user.galleries.find(params[:id])
+    policy_scope(Gallery).find(params[:id])
   end
 
   def gallery_params

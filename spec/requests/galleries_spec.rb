@@ -13,6 +13,12 @@ RSpec.describe GalleriesController do
       expect(page).to have_gallery(my_gallery)
       expect(page).not_to have_gallery(not_my_gallery)
     end
+
+    it "requires authentication" do
+      get(galleries_path)
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "create" do
@@ -75,6 +81,24 @@ RSpec.describe GalleriesController do
         get(gallery_path(gallery))
       }.not_to raise_error
     end
+
+    it "returns 404 for galleries not owned by current user" do
+      gallery = create(:gallery)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(gallery_path(gallery))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+
+      get(gallery_path(gallery))
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "update" do
@@ -129,6 +153,46 @@ RSpec.describe GalleriesController do
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
+
+    it "returns 404 when updating gallery not owned by current user" do
+      gallery = create(:gallery)
+      other_user = create(:user)
+      login_as(other_user)
+      params = {gallery: {name: "updated"}}
+
+      put(gallery_path(gallery), params:)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication for update" do
+      gallery = create(:gallery)
+      params = {gallery: {name: "updated"}}
+
+      put(gallery_path(gallery), params:)
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "destroy" do
+    it "returns 404 when destroying gallery not owned by current user" do
+      gallery = create(:gallery)
+      other_user = create(:user)
+      login_as(other_user)
+
+      delete(gallery_path(gallery))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication for destroy" do
+      gallery = create(:gallery)
+
+      delete(gallery_path(gallery))
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "edit" do
@@ -140,6 +204,24 @@ RSpec.describe GalleriesController do
 
       expect(page).to have_link("Galleries", href: galleries_path)
       expect(page).to have_link(gallery.name, href: gallery_path(gallery))
+    end
+
+    it "returns 404 when editing gallery not owned by current user" do
+      gallery = create(:gallery)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(edit_gallery_path(gallery))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication for edit" do
+      gallery = create(:gallery)
+
+      get(edit_gallery_path(gallery))
+
+      expect(response).to redirect_to(new_session_path)
     end
   end
 
