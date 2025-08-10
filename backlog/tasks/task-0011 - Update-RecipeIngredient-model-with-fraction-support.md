@@ -1,9 +1,10 @@
 ---
 id: task-0011
 title: Update RecipeIngredient model with fraction support
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - fractions
   - model

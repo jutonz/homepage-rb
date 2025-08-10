@@ -1,9 +1,10 @@
 ---
 id: task-0010
 title: Add fraction display utility class
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - fractions
   - display

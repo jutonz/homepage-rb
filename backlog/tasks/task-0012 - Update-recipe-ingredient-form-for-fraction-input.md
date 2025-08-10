@@ -1,9 +1,10 @@
 ---
 id: task-0012
 title: Update recipe ingredient form for fraction input
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - fractions
   - forms

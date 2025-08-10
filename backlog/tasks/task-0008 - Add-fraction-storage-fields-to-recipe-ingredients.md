@@ -1,9 +1,10 @@
 ---
 id: task-0008
 title: Add fraction storage fields to recipe ingredients
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - fractions
   - database

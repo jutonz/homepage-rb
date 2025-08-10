@@ -1,7 +1,7 @@
 ---
 id: task-4
 title: Allow specifying fractional ingredients
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-09'
 updated_date: '2025-08-10'

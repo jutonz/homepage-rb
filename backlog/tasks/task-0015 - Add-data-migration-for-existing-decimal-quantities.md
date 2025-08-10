@@ -1,9 +1,10 @@
 ---
 id: task-0015
 title: Add data migration for existing decimal quantities
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - fractions
   - migration
