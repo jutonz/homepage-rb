@@ -66,7 +66,7 @@ RSpec.describe Recipes::IngredientsController, type: :request do
         post recipe_ingredients_path(recipe), params: {
           recipes_recipe_ingredient: {
             ingredient_id: ingredient.id,
-            quantity: "2",
+            quantity_string: "2",
             unit_id: unit.id
           }
         }
@@ -78,6 +78,52 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       expect(recipe_ingredient.ingredient).to eq(ingredient)
       expect(recipe_ingredient.quantity).to eq(2.0)
       expect(recipe_ingredient.unit).to eq(unit)
+      expect(recipe_ingredient.numerator).to eq(2)
+      expect(recipe_ingredient.denominator).to eq(1)
+    end
+
+    it "creates recipe ingredient with fraction" do
+      user = create(:user)
+      login_as(user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      unit = create(:recipes_unit)
+
+      expect {
+        post recipe_ingredients_path(recipe), params: {
+          recipes_recipe_ingredient: {
+            ingredient_id: ingredient.id,
+            quantity_string: "1/2",
+            unit_id: unit.id
+          }
+        }
+      }.to change(Recipes::RecipeIngredient, :count).by(1)
+
+      recipe_ingredient = Recipes::RecipeIngredient.last
+      expect(recipe_ingredient.numerator).to eq(1)
+      expect(recipe_ingredient.denominator).to eq(2)
+      expect(recipe_ingredient.quantity).to eq(0.5)
+    end
+
+    it "creates recipe ingredient with mixed number" do
+      user = create(:user)
+      login_as(user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      unit = create(:recipes_unit)
+
+      post recipe_ingredients_path(recipe), params: {
+        recipes_recipe_ingredient: {
+          ingredient_id: ingredient.id,
+          quantity_string: "2 1/3",
+          unit_id: unit.id
+        }
+      }
+
+      recipe_ingredient = Recipes::RecipeIngredient.last
+      expect(recipe_ingredient.numerator).to eq(7)
+      expect(recipe_ingredient.denominator).to eq(3)
+      expect(recipe_ingredient.quantity.to_f).to be_within(0.01).of(2.33)
     end
 
     it "shows errors with invalid attributes" do
@@ -88,7 +134,7 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       post recipe_ingredients_path(recipe), params: {
         recipes_recipe_ingredient: {
           ingredient_id: "",
-          quantity: ""
+          quantity_string: ""
         }
       }
 
@@ -135,7 +181,7 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       put recipe_ingredient_path(recipe, recipe_ingredient), params: {
         recipes_recipe_ingredient: {
           ingredient_id: new_ingredient.id,
-          quantity: "3",
+          quantity_string: "3",
           unit_id: new_unit.id
         }
       }
@@ -157,7 +203,7 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       put recipe_ingredient_path(recipe, recipe_ingredient), params: {
         recipes_recipe_ingredient: {
           ingredient_id: "",
-          quantity: ""
+          quantity_string: ""
         }
       }
 

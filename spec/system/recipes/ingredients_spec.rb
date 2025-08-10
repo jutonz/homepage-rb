@@ -22,7 +22,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
     expect(page).to have_content("Ingredient was successfully added to recipe")
     expect(page).to have_content("#{recipe.name} Ingredients")
     expect(page).to have_content(ingredient1.name)
-    expect(page).to have_content("2.0 #{unit1.name}")
+    expect(page).to have_content("2 #{unit1.name}")
 
     click_link "Add Ingredient"
 
@@ -34,7 +34,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
     expect(page).to have_content("Ingredient was successfully added to recipe")
     expect(page).to have_content(ingredient2.name)
-    expect(page).to have_content("1.5 #{unit2.name}")
+    expect(page).to have_content("1 1/2 #{unit2.name}")
 
     within "[data-ingredient='#{ingredient1.name}']" do
       click_on "Edit"
@@ -44,7 +44,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
     click_on "Update Recipe ingredient"
 
     expect(page).to have_content("Recipe ingredient was successfully updated")
-    expect(page).to have_content("2.5 #{unit1.name}")
+    expect(page).to have_content("2 1/2 #{unit1.name}")
 
     within "[data-ingredient='#{ingredient2.name}']" do
       click_on "Remove"

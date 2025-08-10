@@ -3,7 +3,9 @@
 # Table name: recipes_recipe_ingredients
 #
 #  id            :bigint           not null, primary key
+#  denominator   :integer
 #  notes         :text
+#  numerator     :integer
 #  quantity      :decimal(8, 2)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null

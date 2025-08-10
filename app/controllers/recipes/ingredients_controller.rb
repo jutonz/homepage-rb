@@ -67,7 +67,7 @@ module Recipes
 
     def recipe_ingredient_params
       params.expect(
-        recipes_recipe_ingredient: %i[ingredient_id quantity unit_id]
+        recipes_recipe_ingredient: %i[ingredient_id quantity_string unit_id]
       )
     end
   end
