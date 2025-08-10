@@ -26,6 +26,17 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).to include("No ingredients added yet")
     end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+
+      get recipe_ingredients_path(other_recipe)
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe "GET /recipes/:recipe_id/ingredients/new" do
@@ -51,6 +62,17 @@ RSpec.describe Recipes::IngredientsController, type: :request do
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include("No ingredients available")
+    end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+
+      get new_recipe_ingredient_path(other_recipe)
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -141,6 +163,25 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Add Ingredient to #{recipe.name}")
     end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+      ingredient = create(:recipes_ingredient, user:)
+      unit = create(:recipes_unit)
+
+      post recipe_ingredients_path(other_recipe), params: {
+        recipes_recipe_ingredient: {
+          ingredient_id: ingredient.id,
+          quantity_string: "2",
+          unit_id: unit.id
+        }
+      }
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe "GET /recipes/:recipe_id/ingredients/:id/edit" do
@@ -161,6 +202,19 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       expect(response.body).to include(
         "Edit #{ingredient.name} in #{recipe.name}"
       )
+    end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+      other_recipe_ingredient = create(:recipes_recipe_ingredient, recipe: other_recipe, ingredient: other_ingredient)
+
+      get edit_recipe_ingredient_path(other_recipe, other_recipe_ingredient)
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -210,6 +264,21 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Edit Ingredient in #{recipe.name}")
     end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+      other_recipe_ingredient = create(:recipes_recipe_ingredient, recipe: other_recipe, ingredient: other_ingredient)
+
+      put recipe_ingredient_path(other_recipe, other_recipe_ingredient), params: {
+        recipes_recipe_ingredient: {quantity_string: "5"}
+      }
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe "DELETE /recipes/:recipe_id/ingredients/:id" do
@@ -225,6 +294,20 @@ RSpec.describe Recipes::IngredientsController, type: :request do
       }.to change(Recipes::RecipeIngredient, :count).by(-1)
 
       expect(response).to redirect_to(recipe_ingredients_path(recipe))
+    end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+      other_recipe_ingredient = create(:recipes_recipe_ingredient, recipe: other_recipe, ingredient: other_ingredient)
+
+      delete recipe_ingredient_path(other_recipe, other_recipe_ingredient)
+
+      expect(response).to have_http_status(:not_found)
+      expect(Recipes::RecipeIngredient.exists?(other_recipe_ingredient.id)).to be(true)
     end
   end
 end
