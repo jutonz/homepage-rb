@@ -1,7 +1,7 @@
 ---
 id: task-0019
 title: Add Recipe policy and controller integration
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-08-10'
 updated_date: '2025-08-10'
