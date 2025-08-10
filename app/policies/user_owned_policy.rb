@@ -11,6 +11,14 @@ class UserOwnedPolicy < ApplicationPolicy
     user.present?
   end
 
+  def new?
+    user.present?
+  end
+
+  def edit?
+    user_owns_record?
+  end
+
   def update?
     user_owns_record?
   end
@@ -22,10 +30,7 @@ class UserOwnedPolicy < ApplicationPolicy
   private
 
   def user_owns_record?
-    return false unless user
-    return false unless record.respond_to?(:user)
-
-    record.user == user
+    user && record.user == user
   end
 
   class Scope < ApplicationPolicy::Scope
