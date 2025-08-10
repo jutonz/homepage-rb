@@ -19,10 +19,18 @@ class UserOwnedPolicy < ApplicationPolicy
     user_owns_record?
   end
 
+  private
+
+  def user_owns_record?
+    return false unless user
+    return false unless record.respond_to?(:user)
+
+    record.user == user
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
-      return scope.none unless user
-
+      return scope.none if user.blank?
       scope.where(user:)
     end
   end

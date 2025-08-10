@@ -50,13 +50,4 @@ class ApplicationPolicy
 
     attr_reader :user, :scope
   end
-
-  private
-
-  def user_owns_record?
-    return false unless user
-    return false unless record.respond_to?(:user)
-
-    record.user == user
-  end
 end
