@@ -15,12 +15,13 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 
+require "action_text/system_test_helper"
 require "capybara/rspec"
+require "pundit/rspec"
+require "super_diff/rspec-rails"
 require "view_component/system_test_helpers"
 require "view_component/test_helpers"
 require "webmock/rspec"
-require "super_diff/rspec-rails"
-require "action_text/system_test_helper"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { require it }
 
