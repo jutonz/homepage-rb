@@ -1,7 +1,7 @@
 ---
 id: task-0017
 title: Add Pundit gem and basic configuration
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-08-10'
 updated_date: '2025-08-10'
