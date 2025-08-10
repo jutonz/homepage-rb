@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe Recipes::RecipeIngredientPolicy do
   permissions :index?, :show?, :create?, :new?, :edit?, :update?, :destroy? do
     it "grants access when user owns the recipe" do
-      user = build(:user)
-      recipe = build(:recipes_recipe, user:)
-      ingredient = build(:recipes_ingredient, user:)
-      recipe_ingredient = build(:recipes_recipe_ingredient, recipe:, ingredient:)
+      user = create(:user)
+      recipe = create(:recipes_recipe, user:)
+      ingredient = create(:recipes_ingredient, user:)
+      recipe_ingredient = create(:recipes_recipe_ingredient, recipe:, ingredient:)
 
       expect(described_class).to permit(user, recipe_ingredient)
     end
