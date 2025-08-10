@@ -5,8 +5,11 @@ module Galleries
 
     def index
       @gallery = find_gallery
-      authorize Galleries::Image
-      @images = policy_scope(Galleries::Image).where(gallery: @gallery).includes(:file_attachment)
+      authorize(Galleries::Image)
+      @images =
+        policy_scope(Galleries::Image)
+          .where(gallery: @gallery)
+          .includes(:file_attachment)
     end
 
     def show

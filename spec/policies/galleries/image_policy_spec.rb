@@ -11,8 +11,7 @@ RSpec.describe Galleries::ImagePolicy do
     end
 
     it "denies access when user does not own the gallery" do
-      user = build(:user)
-      other_user = build(:user)
+      user, other_user = build_pair(:user)
       gallery = build(:gallery, user: other_user)
       image = build(:galleries_image, gallery:)
 
@@ -29,14 +28,12 @@ RSpec.describe Galleries::ImagePolicy do
 
   describe described_class::Scope do
     it "returns only images from galleries belonging to the user" do
-      user = create(:user)
-      other_user = create(:user)
-      user_gallery1 = create(:gallery, user:)
-      user_gallery2 = create(:gallery, user:)
+      user, other_user = create_pair(:user)
+      user_gallery1, user_gallery2 = create_pair(:gallery, user:)
       other_gallery = create(:gallery, user: other_user)
       user_image1 = create(:galleries_image, gallery: user_gallery1)
       user_image2 = create(:galleries_image, gallery: user_gallery2)
-      create(:galleries_image, gallery: other_gallery)
+      _other_gallery = create(:galleries_image, gallery: other_gallery)
 
       scope = described_class.new(user, Galleries::Image.all).resolve
 
