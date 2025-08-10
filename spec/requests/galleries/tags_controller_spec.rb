@@ -122,7 +122,7 @@ RSpec.describe Galleries::TagsController do
     describe "index" do
       it "returns 404 when accessing tags for gallery not owned by current user" do
         gallery = create(:gallery)
-        tag = create(:galleries_tag, gallery:)
+        create(:galleries_tag, gallery:)
         other_user = create(:user)
         login_as(other_user)
 

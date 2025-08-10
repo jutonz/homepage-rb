@@ -7,8 +7,7 @@ module Galleries
       def create
         @gallery = find_gallery
         @image = find_image
-        @tag = find_tag
-        @image_tag = authorize(Galleries::ImageTag.new(image: @image, tag: @tag))
+        @tag = authorize(find_tag)
 
         @image.add_tag(@tag)
 
@@ -26,8 +25,7 @@ module Galleries
       def destroy
         @gallery = find_gallery
         @image = find_image
-        @tag = find_tag
-        @image_tag = authorize(@image.image_tags.find_by!(tag: @tag))
+        @tag = authorize(find_tag)
 
         @image.remove_tag(@tag)
 
