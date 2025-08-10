@@ -1,9 +1,10 @@
 ---
 id: task-16
-title: Allow creating new ingredients while
+title: Allow creating new ingredients while adding them
 status: To Do
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels: []
 dependencies: []
 ---
