@@ -1,25 +1,27 @@
 module Recipes
   class RecipesController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def index
-      @recipes = current_user.recipes_recipes.order(created_at: :desc)
+      authorize Recipes::Recipe
+      @recipes = policy_scope(Recipes::Recipe).order(created_at: :desc)
     end
 
     def show
-      @recipe = find_recipe
+      @recipe = authorize(find_recipe)
     end
 
     def new
-      @recipe = current_user.recipes_recipes.new
+      @recipe = authorize(current_user.recipes_recipes.new)
     end
 
     def edit
-      @recipe = find_recipe
+      @recipe = authorize(find_recipe)
     end
 
     def create
-      @recipe = current_user.recipes_recipes.new(recipe_params)
+      @recipe = authorize(current_user.recipes_recipes.new(recipe_params))
 
       if @recipe.save
         redirect_to recipe_path(@recipe), notice: "Recipe was successfully created."
@@ -29,7 +31,7 @@ module Recipes
     end
 
     def update
-      @recipe = find_recipe
+      @recipe = authorize(find_recipe)
 
       if @recipe.update(recipe_params)
         redirect_to recipe_path(@recipe), notice: "Recipe was successfully updated."
@@ -39,7 +41,7 @@ module Recipes
     end
 
     def destroy
-      @recipe = find_recipe
+      @recipe = authorize(find_recipe)
       @recipe.destroy!
 
       redirect_to(
@@ -52,7 +54,7 @@ module Recipes
     private
 
     def find_recipe
-      current_user.recipes_recipes.find(params[:id])
+      policy_scope(Recipes::Recipe).find(params[:id])
     end
 
     def recipe_params

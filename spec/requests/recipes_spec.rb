@@ -22,6 +22,20 @@ RSpec.describe Recipes::RecipesController, type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).to include("No recipes yet")
     end
+
+    it "only shows recipes owned by current user" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      user_recipe = create(:recipes_recipe, user:)
+      other_recipe = create(:recipes_recipe, user: other_user)
+
+      get recipes_path
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(user_recipe.name)
+      expect(response.body).not_to include(other_recipe.name)
+    end
   end
 
   describe "GET /recipes/:id" do
@@ -34,6 +48,17 @@ RSpec.describe Recipes::RecipesController, type: :request do
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include(recipe.name)
+    end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+
+      get recipe_path(other_recipe)
+
+      expect(response).to have_http_status(:not_found)
     end
 
     it "shows recipe ingredients" do
@@ -119,6 +144,17 @@ RSpec.describe Recipes::RecipesController, type: :request do
       expect(response.body).to include("Edit Recipe")
       expect(response.body).to include(recipe.name)
     end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+
+      get edit_recipe_path(other_recipe)
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe "PUT /recipes/:id" do
@@ -138,6 +174,19 @@ RSpec.describe Recipes::RecipesController, type: :request do
       recipe.reload
       expect(recipe.name).to eq("Updated Recipe")
       expect(recipe.description).to eq("Updated description")
+    end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+
+      put recipe_path(other_recipe), params: {
+        recipes_recipe: {name: "Hacked Recipe"}
+      }
+
+      expect(response).to have_http_status(:not_found)
     end
 
     it "shows errors with invalid attributes" do
@@ -167,6 +216,18 @@ RSpec.describe Recipes::RecipesController, type: :request do
       }.to change(Recipes::Recipe, :count).by(-1)
 
       expect(response).to redirect_to(recipes_path)
+    end
+
+    it "returns 404 for other user's recipe" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_recipe = create(:recipes_recipe, user: other_user)
+
+      delete recipe_path(other_recipe)
+
+      expect(response).to have_http_status(:not_found)
+      expect(Recipes::Recipe.exists?(other_recipe.id)).to be(true)
     end
   end
 end
