@@ -9,3 +9,5 @@ pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin "@rails/activestorage", to: "@rails--activestorage.js" # @8.0.200
 pin "just-debounce" # @1.1.0
+pin "trix"
+pin "@rails/actiontext", to: "actiontext.esm.js"

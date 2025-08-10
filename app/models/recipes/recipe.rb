@@ -2,13 +2,12 @@
 #
 # Table name: recipes_recipes
 #
-#  id           :bigint           not null, primary key
-#  description  :text
-#  instructions :text
-#  name         :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  user_id      :bigint           not null
+#  id          :bigint           not null, primary key
+#  description :text
+#  name        :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  user_id     :bigint           not null
 #
 # Indexes
 #
@@ -27,6 +26,8 @@ module Recipes
     has_many :ingredients,
       through: :recipe_ingredients,
       class_name: "Recipes::Ingredient"
+
+    has_rich_text :instructions
 
     validates :name, presence: true
   end
