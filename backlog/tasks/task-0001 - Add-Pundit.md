@@ -13,3 +13,5 @@ ordinal: 2000
 ## Description
 
 Add the Pundit gem and add policies and scopes for each model. Start with the Recipes module.
+
+Break this ticket up into smaller tickets before starting.
