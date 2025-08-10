@@ -2,10 +2,11 @@ module Api
   module Galleries
     class ImagesController < BaseController
       before_action :ensure_authenticated!
+      after_action :verify_authorized
 
       def create
         @gallery = find_gallery
-        @image = @gallery.images.build(image_params)
+        @image = authorize(@gallery.images.build(image_params))
 
         if @image.save
           @image.add_tag(tagging_needed)
@@ -22,7 +23,7 @@ module Api
       private
 
       def find_gallery
-        current_user.galleries.find(params[:gallery_id])
+        policy_scope(Gallery).find(params[:gallery_id])
       end
 
       def image_params
