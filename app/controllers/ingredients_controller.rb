@@ -1,24 +1,26 @@
 class IngredientsController < ApplicationController
   before_action :ensure_authenticated!
+  after_action :verify_authorized
 
   def index
-    @ingredients = current_user.recipes_ingredients.order(:name)
+    authorize Recipes::Ingredient
+    @ingredients = policy_scope(Recipes::Ingredient).order(:name)
   end
 
   def show
-    @ingredient = find_ingredient
+    @ingredient = authorize(find_ingredient)
   end
 
   def new
-    @ingredient = current_user.recipes_ingredients.new
+    @ingredient = authorize(current_user.recipes_ingredients.new)
   end
 
   def edit
-    @ingredient = find_ingredient
+    @ingredient = authorize(find_ingredient)
   end
 
   def create
-    @ingredient = current_user.recipes_ingredients.new(ingredient_params)
+    @ingredient = authorize(current_user.recipes_ingredients.new(ingredient_params))
 
     if @ingredient.save
       redirect_to ingredient_path(@ingredient), notice: "Ingredient was successfully created."
@@ -28,7 +30,7 @@ class IngredientsController < ApplicationController
   end
 
   def update
-    @ingredient = find_ingredient
+    @ingredient = authorize(find_ingredient)
 
     if @ingredient.update(ingredient_params)
       redirect_to ingredient_path(@ingredient), notice: "Ingredient was successfully updated."
@@ -38,7 +40,7 @@ class IngredientsController < ApplicationController
   end
 
   def destroy
-    @ingredient = find_ingredient
+    @ingredient = authorize(find_ingredient)
     @ingredient.destroy!
 
     redirect_to(
@@ -51,7 +53,7 @@ class IngredientsController < ApplicationController
   private
 
   def find_ingredient
-    current_user.recipes_ingredients.find(params[:id])
+    policy_scope(Recipes::Ingredient).find(params[:id])
   end
 
   def ingredient_params

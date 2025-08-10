@@ -22,6 +22,20 @@ RSpec.describe "Ingredients", type: :request do
       expect(response).to have_http_status(:success)
       expect(response.body).to include("No ingredients yet")
     end
+
+    it "only shows ingredients owned by current user" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      user_ingredient = create(:recipes_ingredient, user:)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+
+      get ingredients_path
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include(user_ingredient.name)
+      expect(response.body).not_to include(other_ingredient.name)
+    end
   end
 
   describe "GET /ingredients/:id" do
@@ -34,6 +48,17 @@ RSpec.describe "Ingredients", type: :request do
 
       expect(response).to have_http_status(:success)
       expect(response.body).to include(ingredient.name)
+    end
+
+    it "returns 404 for other user's ingredient" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+
+      get ingredient_path(other_ingredient)
+
+      expect(response).to have_http_status(:not_found)
     end
 
     it "shows recipes that use the ingredient" do
@@ -120,6 +145,17 @@ RSpec.describe "Ingredients", type: :request do
       expect(response.body).to include("Edit Ingredient")
       expect(response.body).to include(ingredient.name)
     end
+
+    it "returns 404 for other user's ingredient" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+
+      get edit_ingredient_path(other_ingredient)
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe "PUT /ingredients/:id" do
@@ -137,6 +173,19 @@ RSpec.describe "Ingredients", type: :request do
       expect(response).to redirect_to(ingredient_path(ingredient))
       ingredient.reload
       expect(ingredient.name).to eq("Updated Ingredient")
+    end
+
+    it "returns 404 for other user's ingredient" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+
+      put ingredient_path(other_ingredient), params: {
+        recipes_ingredient: {name: "Hacked Ingredient"}
+      }
+
+      expect(response).to have_http_status(:not_found)
     end
 
     it "shows errors with invalid attributes" do
@@ -166,6 +215,18 @@ RSpec.describe "Ingredients", type: :request do
       }.to change(Recipes::Ingredient, :count).by(-1)
 
       expect(response).to redirect_to(ingredients_path)
+    end
+
+    it "returns 404 for other user's ingredient" do
+      user = create(:user)
+      other_user = create(:user)
+      login_as(user)
+      other_ingredient = create(:recipes_ingredient, user: other_user)
+
+      delete ingredient_path(other_ingredient)
+
+      expect(response).to have_http_status(:not_found)
+      expect(Recipes::Ingredient.exists?(other_ingredient.id)).to be(true)
     end
 
     it "deletes ingredient and removes it from recipes" do
