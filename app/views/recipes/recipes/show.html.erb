@@ -46,7 +46,7 @@
         <ul class="space-y-2">
           <% @recipe.recipe_ingredients.includes(:ingredient, :unit).each do |recipe_ingredient| %>
             <li class="text-gray-900">
-              <%= recipe_ingredient.quantity %>
+              <%= recipe_ingredient.formatted_quantity(use_unicode: true) %>
               <%= recipe_ingredient.unit.name %>
               <%= recipe_ingredient.ingredient.name %>
             </li>

@@ -1,13 +1,13 @@
 ---
 id: task-7
 title: Omit decimals for whole numbers
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-09'
-updated_date: '2025-08-09'
+updated_date: '2025-08-10'
 labels: []
 dependencies: []
-ordinal: 2000
+ordinal: 1000
 ---
 
 ## Description
