@@ -1,9 +1,10 @@
 ---
 id: task-0020
 title: Add Ingredient policy and controller integration
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-10'
 labels:
   - authorization
   - recipes
