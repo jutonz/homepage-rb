@@ -2,10 +2,12 @@ module Galleries
   module Images
     class TagSearchesController < ApplicationController
       before_action :ensure_authenticated!
+      after_action :verify_authorized
 
       def show
         @gallery = find_gallery
         @image = find_image
+        authorize(@gallery, :show?)
         @tag_search = TagSearch.new(
           gallery: @gallery,
           image: @image,
@@ -21,11 +23,11 @@ module Galleries
       private
 
       def find_gallery
-        current_user.galleries.find(params[:gallery_id])
+        policy_scope(Gallery).find(params[:gallery_id])
       end
 
       def find_image
-        @gallery.images.find(params[:image_id])
+        policy_scope(Galleries::Image).where(gallery: @gallery).find(params[:image_id])
       end
 
       def tag_search_params
