@@ -1,10 +1,10 @@
 ---
 id: task-0036
 title: Add skip_authorization to public controllers
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-11 01:03'
-updated_date: '2025-08-11 02:08'
+updated_date: '2025-08-11 02:29'
 labels:
   - authorization
   - public
