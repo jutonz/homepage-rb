@@ -12,8 +12,7 @@ RSpec.describe Galleries::SocialMediaLinkPolicy do
     end
 
     it "denies access when user does not own the tag" do
-      user = build(:user)
-      other_user = build(:user)
+      user, other_user = build_pair(:user)
       gallery = build(:gallery, user: other_user)
       tag = build(:galleries_tag, user: other_user, gallery:)
       social_media_link = build(:galleries_social_media_link, tag:)
@@ -32,8 +31,7 @@ RSpec.describe Galleries::SocialMediaLinkPolicy do
 
   describe described_class::Scope do
     it "returns only social media links from tags belonging to the user" do
-      user = create(:user)
-      other_user = create(:user)
+      user, other_user = create_pair(:user)
       user_gallery = create(:gallery, user:)
       other_gallery = create(:gallery, user: other_user)
       user_tag = create(:galleries_tag, user:, gallery: user_gallery)
