@@ -35,8 +35,7 @@ RSpec.describe Galleries::AutoAddTagPolicy do
 
   describe described_class::Scope do
     it "returns only auto add tags from tags belonging to the user" do
-      user = create(:user)
-      other_user = create(:user)
+      user, other_user = create_pair(:user)
       user_gallery = create(:gallery, user:)
       other_gallery = create(:gallery, user: other_user)
       user_tag = create(:galleries_tag, user:, gallery: user_gallery)
