@@ -14,6 +14,7 @@ RSpec.describe Api::BaseController, type: :request do
   describe "#api_authenticate" do
     def setup_controller
       klass = Class.new(described_class) do
+        skip_after_action :verify_authorized
         def show = render(json: current_user)
       end
       stub_const("CurrentUsersController", klass)
@@ -81,6 +82,7 @@ RSpec.describe Api::BaseController, type: :request do
     it "does nothing if current_user is present" do
       klass = Class.new(described_class) do
         before_action :ensure_authenticated!
+        skip_after_action :verify_authorized
 
         def show = head(:ok)
       end
