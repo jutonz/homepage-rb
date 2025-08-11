@@ -1,16 +1,19 @@
 module Settings
   module Api
     class TokensController < ApplicationController
+      before_action :ensure_authenticated!
+      after_action :verify_authorized
       def index
-        @tokens = current_user.api_tokens
+        authorize ::Api::Token
+        @tokens = policy_scope(::Api::Token)
       end
 
       def new
-        @token = current_user.api_tokens.new
+        @token = authorize(current_user.api_tokens.new)
       end
 
       def create
-        @token = current_user.api_tokens.new(token_params)
+        @token = authorize(current_user.api_tokens.new(token_params))
 
         if @token.save
           redirect_to settings_api_token_path(@token), notice: "Created token"
@@ -20,15 +23,15 @@ module Settings
       end
 
       def show
-        @token = find_token
+        @token = authorize(find_token)
       end
 
       def edit
-        @token = find_token
+        @token = authorize(find_token)
       end
 
       def update
-        @token = find_token
+        @token = authorize(find_token)
 
         if @token.update(token_params)
           redirect_to settings_api_token_path(@token), notice: "Updated token"
@@ -40,7 +43,7 @@ module Settings
       private
 
       def find_token
-        current_user.api_tokens.find(params[:id])
+        policy_scope(::Api::Token).find(params[:id])
       end
 
       def token_params
