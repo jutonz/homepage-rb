@@ -13,7 +13,7 @@ module Galleries
     def user_owns_gallery?
       return false unless record.gallery
 
-      record.gallery.user == user
+      user && record.gallery.user == user
     end
   end
 end
