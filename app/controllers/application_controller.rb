@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   include WardenHelper
   include Pundit::Authorization
 
+  after_action :verify_authorized
+
   rescue_from WardenHelper::UnauthenticatedError do
     session[:return_to] = request.fullpath
     redirect_to new_session_path

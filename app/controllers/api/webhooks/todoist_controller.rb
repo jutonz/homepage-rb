@@ -2,6 +2,7 @@ module Api
   module Webhooks
     class TodoistController < ApplicationController
       skip_before_action :verify_authenticity_token
+      skip_after_action :verify_authorized
       before_action :verify_webhook_signature
 
       def create

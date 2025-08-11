@@ -4,10 +4,12 @@ title: Add authorization to API controllers
 status: To Do
 assignee: []
 created_date: '2025-08-11 01:03'
+updated_date: '2025-08-11 02:08'
 labels:
   - authorization
   - api
 dependencies: []
+ordinal: 1000
 ---
 
 ## Description

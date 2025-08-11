@@ -4,6 +4,7 @@ title: Add comprehensive authorization integration tests
 status: To Do
 assignee: []
 created_date: '2025-08-11 01:04'
+updated_date: '2025-08-11 02:08'
 labels:
   - authorization
   - testing
@@ -16,6 +17,7 @@ dependencies:
   - task-0034
   - task-0035
   - task-0036
+ordinal: 8000
 ---
 
 ## Description

@@ -4,10 +4,12 @@ title: Add skip_authorization to public controllers
 status: To Do
 assignee: []
 created_date: '2025-08-11 01:03'
+updated_date: '2025-08-11 02:08'
 labels:
   - authorization
   - public
 dependencies: []
+ordinal: 7000
 ---
 
 ## Description
