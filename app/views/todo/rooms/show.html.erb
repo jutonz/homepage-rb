@@ -1,4 +1,3 @@
-<!-- Combined tablet and web interface -->
 <%= render(HeaderComponent.new(title: @room.name)) do |header| %>
   <% header.with_crumb("Home", home_path) %>
   <% header.with_crumb("Todo", todo_path) %>
@@ -26,7 +25,6 @@
 <%= turbo_stream_from "room_#{@room.id}" %>
 <div class="bg-gray-50 min-h-screen p-6" data-turbo-stream-target="room_<%= @room.id %>">
 
-  <!-- Task Grid -->
   <% if @room.tasks.any? %>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
       <% @room.tasks.each do |task| %>

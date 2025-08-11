@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Todo::TaskOccurrencePolicy do
-  permissions :create?, :update?, :destroy? do
+  permissions :create? do
     it "grants access when user owns the todo task" do
       user = build(:user)
       task = build(:todo_task, user:)

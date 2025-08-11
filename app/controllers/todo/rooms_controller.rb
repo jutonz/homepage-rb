@@ -23,7 +23,7 @@ module Todo
     end
 
     def show
-      @room = authorize(find_room(includes: [tasks: :task_occurrences]))
+      @room = authorize(find_room)
     end
 
     def edit

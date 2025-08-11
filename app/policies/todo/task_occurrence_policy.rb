@@ -4,14 +4,6 @@ module Todo
       user_owns_task?
     end
 
-    # def update?
-    #   user_owns_task?
-    # end
-    #
-    # def destroy?
-    #   user_owns_task?
-    # end
-
     private
 
     def user_owns_task?
