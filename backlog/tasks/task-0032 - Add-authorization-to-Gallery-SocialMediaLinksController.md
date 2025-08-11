@@ -1,9 +1,10 @@
 ---
 id: task-0032
 title: Add authorization to Gallery SocialMediaLinksController
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-11 01:02'
+updated_date: '2025-08-11 02:12'
 labels:
   - authorization
   - galleries

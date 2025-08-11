@@ -1,9 +1,10 @@
 ---
 id: task-0034
 title: Create missing Pundit policies for Gallery models
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-11 01:03'
+updated_date: '2025-08-11 02:12'
 labels:
   - authorization
   - policies
