@@ -1,17 +1,19 @@
 module Todo
   class TasksController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def index
-      @tasks = current_user.todo_tasks
+      authorize Todo::Task
+      @tasks = policy_scope(Todo::Task)
     end
 
     def new
-      @task = Task.new(task_params)
+      @task = authorize(current_user.todo_tasks.build(task_params))
     end
 
     def create
-      @task = current_user.todo_tasks.new(task_params)
+      @task = authorize(current_user.todo_tasks.new(task_params))
 
       if @task.save
         redirect_to(todo_tasks_path, notice: "Created task")
@@ -21,15 +23,15 @@ module Todo
     end
 
     def show
-      @task = find_task
+      @task = authorize(find_task)
     end
 
     def edit
-      @task = find_task
+      @task = authorize(find_task)
     end
 
     def update
-      @task = find_task
+      @task = authorize(find_task)
 
       if @task.update(task_params)
         redirect_to(todo_task_path(@task), notice: "Updated task")
@@ -39,7 +41,7 @@ module Todo
     end
 
     def destroy
-      find_task.destroy
+      authorize(find_task).destroy
       redirect_to(todo_tasks_path, notice: "Deleted task")
     end
 
@@ -58,7 +60,7 @@ module Todo
     end
 
     def find_task
-      current_user.todo_tasks.find(params[:id])
+      policy_scope(Todo::Task).find(params[:id])
     end
   end
 end

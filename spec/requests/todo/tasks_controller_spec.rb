@@ -13,6 +13,12 @@ RSpec.describe Todo::TasksController do
       expect(page).to have_task(my_task)
       expect(page).not_to have_task(not_my_task)
     end
+
+    it "requires authentication" do
+      get(todo_tasks_path)
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "new" do
@@ -77,6 +83,14 @@ RSpec.describe Todo::TasksController do
       expect(response).to redirect_to(todo_tasks_path)
       expect(Todo::Task.last.room_ids).to eql([my_room_id])
     end
+
+    it "requires authentication" do
+      params = {todo_task: {name: "hello"}}
+
+      post(todo_tasks_path, params:)
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "show" do
@@ -99,6 +113,24 @@ RSpec.describe Todo::TasksController do
 
       expect(response).to have_http_status(:ok)
       expect(page).to have_link(room.name, href: todo_room_path(room))
+    end
+
+    it "returns 404 when viewing task not owned by current user" do
+      task = create(:todo_task)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(todo_task_path(task))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      task = create(:todo_task)
+
+      get(todo_task_path(task))
+
+      expect(response).to redirect_to(new_session_path)
     end
   end
 
@@ -125,6 +157,26 @@ RSpec.describe Todo::TasksController do
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
+
+    it "returns 404 when updating task not owned by current user" do
+      task = create(:todo_task)
+      other_user = create(:user)
+      login_as(other_user)
+      params = {todo_task: {name: "updated"}}
+
+      put(todo_task_path(task), params:)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      task = create(:todo_task)
+      params = {todo_task: {name: "updated"}}
+
+      put(todo_task_path(task), params:)
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "edit" do
@@ -137,6 +189,52 @@ RSpec.describe Todo::TasksController do
       expect(page).to have_link("Todo", href: todo_path)
       expect(page).to have_link("Tasks", href: todo_tasks_path)
       expect(page).to have_link(task.name, href: todo_task_path(task))
+    end
+
+    it "returns 404 when editing task not owned by current user" do
+      task = create(:todo_task)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(edit_todo_task_path(task))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      task = create(:todo_task)
+
+      get(edit_todo_task_path(task))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "new" do
+    it "requires authentication" do
+      get(new_todo_task_path)
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "destroy" do
+    it "returns 404 when destroying task not owned by current user" do
+      task = create(:todo_task)
+      other_user = create(:user)
+      login_as(other_user)
+
+      delete(todo_task_path(task))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      task = create(:todo_task)
+
+      delete(todo_task_path(task))
+
+      expect(response).to redirect_to(new_session_path)
     end
   end
 
