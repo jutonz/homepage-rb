@@ -1,5 +1,6 @@
 module Session
   class CallbackController < ApplicationController
+    skip_after_action :verify_authorized
     def show
       # establish session with same TTL as access_token JWT
       # store access and refresh tokens in session

@@ -9,6 +9,7 @@ labels:
   - authorization
   - galleries
 dependencies: []
+ordinal: 6000
 ---
 
 ## Description

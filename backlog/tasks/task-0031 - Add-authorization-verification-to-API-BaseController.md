@@ -1,14 +1,16 @@
 ---
 id: task-0031
 title: 'Add authorization verification to API::BaseController'
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-11 01:02'
+updated_date: '2025-08-11 02:29'
 labels:
   - authorization
   - api
 dependencies:
   - task-0030
+ordinal: 5000
 ---
 
 ## Description
