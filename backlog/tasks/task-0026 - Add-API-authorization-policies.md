@@ -1,9 +1,10 @@
 ---
 id: task-0026
 title: Add API authorization policies
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-10'
+updated_date: '2025-08-11'
 labels:
   - authorization
   - api
