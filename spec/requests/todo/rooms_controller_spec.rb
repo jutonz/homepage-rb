@@ -13,6 +13,12 @@ RSpec.describe Todo::RoomsController do
       expect(page).to have_room(my_room)
       expect(page).not_to have_room(not_my_room)
     end
+
+    it "requires authentication" do
+      get(todo_rooms_path)
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "create" do
@@ -35,6 +41,14 @@ RSpec.describe Todo::RoomsController do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
+    end
+
+    it "requires authentication" do
+      params = {todo_room: {name: "hello"}}
+
+      post(todo_rooms_path, params:)
+
+      expect(response).to redirect_to(new_session_path)
     end
   end
 
@@ -61,6 +75,24 @@ RSpec.describe Todo::RoomsController do
         href: new_todo_task_path(todo_task: {room_ids: [room.id]})
       )
     end
+
+    it "returns 404 when viewing room not owned by current user" do
+      room = create(:todo_room)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(todo_room_path(room))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      room = create(:todo_room)
+
+      get(todo_room_path(room))
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "update" do
@@ -86,6 +118,26 @@ RSpec.describe Todo::RoomsController do
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
+
+    it "returns 404 when updating room not owned by current user" do
+      room = create(:todo_room)
+      other_user = create(:user)
+      login_as(other_user)
+      params = {todo_room: {name: "updated"}}
+
+      put(todo_room_path(room), params:)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      room = create(:todo_room)
+      params = {todo_room: {name: "updated"}}
+
+      put(todo_room_path(room), params:)
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
   describe "edit" do
@@ -99,115 +151,51 @@ RSpec.describe Todo::RoomsController do
       expect(page).to have_link("Rooms", href: todo_rooms_path)
       expect(page).to have_link(room.name, href: todo_room_path(room))
     end
+
+    it "returns 404 when editing room not owned by current user" do
+      room = create(:todo_room)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(edit_todo_room_path(room))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      room = create(:todo_room)
+
+      get(edit_todo_room_path(room))
+
+      expect(response).to redirect_to(new_session_path)
+    end
   end
 
-  describe "authorization" do
-    describe "index" do
-      it "requires authentication" do
-        get(todo_rooms_path)
+  describe "new" do
+    it "requires authentication" do
+      get(new_todo_room_path)
 
-        expect(response).to redirect_to(new_session_path)
-      end
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  describe "destroy" do
+    it "returns 404 when destroying room not owned by current user" do
+      room = create(:todo_room)
+      other_user = create(:user)
+      login_as(other_user)
+
+      delete(todo_room_path(room))
+
+      expect(response).to have_http_status(:not_found)
     end
 
-    describe "show" do
-      it "returns 404 when viewing room not owned by current user" do
-        room = create(:todo_room)
-        other_user = create(:user)
-        login_as(other_user)
+    it "requires authentication" do
+      room = create(:todo_room)
 
-        get(todo_room_path(room))
+      delete(todo_room_path(room))
 
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it "requires authentication" do
-        room = create(:todo_room)
-
-        get(todo_room_path(room))
-
-        expect(response).to redirect_to(new_session_path)
-      end
-    end
-
-    describe "create" do
-      it "requires authentication" do
-        params = {todo_room: {name: "hello"}}
-
-        post(todo_rooms_path, params:)
-
-        expect(response).to redirect_to(new_session_path)
-      end
-    end
-
-    describe "update" do
-      it "returns 404 when updating room not owned by current user" do
-        room = create(:todo_room)
-        other_user = create(:user)
-        login_as(other_user)
-        params = {todo_room: {name: "updated"}}
-
-        put(todo_room_path(room), params:)
-
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it "requires authentication" do
-        room = create(:todo_room)
-        params = {todo_room: {name: "updated"}}
-
-        put(todo_room_path(room), params:)
-
-        expect(response).to redirect_to(new_session_path)
-      end
-    end
-
-    describe "destroy" do
-      it "returns 404 when destroying room not owned by current user" do
-        room = create(:todo_room)
-        other_user = create(:user)
-        login_as(other_user)
-
-        delete(todo_room_path(room))
-
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it "requires authentication" do
-        room = create(:todo_room)
-
-        delete(todo_room_path(room))
-
-        expect(response).to redirect_to(new_session_path)
-      end
-    end
-
-    describe "edit" do
-      it "returns 404 when editing room not owned by current user" do
-        room = create(:todo_room)
-        other_user = create(:user)
-        login_as(other_user)
-
-        get(edit_todo_room_path(room))
-
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it "requires authentication" do
-        room = create(:todo_room)
-
-        get(edit_todo_room_path(room))
-
-        expect(response).to redirect_to(new_session_path)
-      end
-    end
-
-    describe "new" do
-      it "requires authentication" do
-        get(new_todo_room_path)
-
-        expect(response).to redirect_to(new_session_path)
-      end
+      expect(response).to redirect_to(new_session_path)
     end
   end
 

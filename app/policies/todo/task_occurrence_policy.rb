@@ -1,15 +1,21 @@
 module Todo
   class TaskOccurrencePolicy < ApplicationPolicy
     def create?
-      user.present? && user_owns_task?
+      user_owns_task?
     end
 
-    def update?
-      user.present? && user_owns_task?
-    end
+    # def update?
+    #   user_owns_task?
+    # end
+    #
+    # def destroy?
+    #   user_owns_task?
+    # end
 
-    def destroy?
-      user.present? && user_owns_task?
+    private
+
+    def user_owns_task?
+      user && record.todo_task.user == user
     end
 
     class Scope < ApplicationPolicy::Scope
@@ -18,15 +24,6 @@ module Todo
 
         scope.joins(:todo_task).where(todo_tasks: {user:})
       end
-    end
-
-    private
-
-    def user_owns_task?
-      return false unless record.respond_to?(:todo_task)
-      return false unless record.todo_task
-
-      record.todo_task.user == user
     end
   end
 end
