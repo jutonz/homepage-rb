@@ -1,17 +1,18 @@
 module Galleries
   class AutoAddTagsController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def new
       @gallery = find_gallery
       @tag = find_tag(@gallery)
-      @auto_add_tag = @tag.auto_add_tag_associations.build
+      @auto_add_tag = authorize(@tag.auto_add_tag_associations.build)
     end
 
     def create
       @gallery = find_gallery
       @tag = find_tag(@gallery)
-      @auto_add_tag = @tag.auto_add_tag_associations.build(auto_add_tag_params)
+      @auto_add_tag = authorize(@tag.auto_add_tag_associations.build(auto_add_tag_params))
 
       if @auto_add_tag.save
         BackfillAutoTagsJob.perform_later(@auto_add_tag)
@@ -27,7 +28,7 @@ module Galleries
     def destroy
       @gallery = find_gallery
       @tag = find_tag(@gallery)
-      auto_add_tag = find_auto_add_tag(@tag)
+      auto_add_tag = authorize(find_auto_add_tag(@tag))
       auto_add_tag.destroy!
 
       redirect_to(
@@ -39,15 +40,15 @@ module Galleries
     private
 
     def find_gallery
-      current_user.galleries.find(params[:gallery_id])
+      policy_scope(Gallery).find(params[:gallery_id])
     end
 
     def find_tag(gallery)
-      gallery.tags.find(params[:tag_id])
+      policy_scope(Galleries::Tag).where(gallery:).find(params[:tag_id])
     end
 
     def find_auto_add_tag(tag)
-      tag.auto_add_tag_associations.find(params[:id])
+      policy_scope(Galleries::AutoAddTag).where(tag:).find(params[:id])
     end
 
     def auto_add_tag_params
