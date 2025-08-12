@@ -10,7 +10,11 @@ module Recipes
 
     def show
       @recipe_group = authorize(find_recipe_group)
-      @recipes = @recipe_group.recipes.order(:name)
+      @recipes =
+        @recipe_group
+          .recipes
+          .includes(:recipe_ingredients)
+          .order(:name)
     end
 
     def new

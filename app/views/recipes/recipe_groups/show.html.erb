@@ -3,12 +3,14 @@
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Recipe Groups", recipe_groups_path) %>
-  <%= c.with_action do %>
-    <%= link_to(
-      "Edit Group",
-      edit_recipe_group_path(@recipe_group),
-      class: "button button--secondary"
-    ) %>
+  <% if policy(@recipe_group).edit? %>
+    <%= c.with_action do %>
+      <%= link_to(
+        "Edit Group",
+        edit_recipe_group_path(@recipe_group),
+        class: "button button--secondary"
+      ) %>
+    <% end %>
   <% end %>
   <%= c.with_action do %>
     <%= link_to(
