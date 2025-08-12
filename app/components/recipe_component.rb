@@ -13,9 +13,6 @@ class RecipeComponent < ApplicationComponent
           <%= @recipe.description %>
         </div>
       <% end %>
-      <div class="flex gap-2">
-        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= @recipe.recipe_ingredients.size %> ingredients</span>
-      </div>
     <% end %>
   ERB
 

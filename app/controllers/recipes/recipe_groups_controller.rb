@@ -13,7 +13,6 @@ module Recipes
       @recipes =
         @recipe_group
           .recipes
-          .includes(:recipe_ingredients)
           .order(:name)
     end
 
