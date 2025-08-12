@@ -22,5 +22,4 @@ class UserGroup < ActiveRecord::Base
   has_many(:users, through: :user_group_memberships)
 
   validates(:name, presence: true)
-  validates(:owner_id, presence: true)
 end
