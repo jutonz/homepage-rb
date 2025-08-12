@@ -24,8 +24,8 @@ FactoryBot.define do
   factory :recipes_recipe, class: "Recipes::Recipe" do
     sequence(:name) { "Recipe #{it}" }
     description { "Classic homemade cookies" }
-    user { create(:user) }
-    recipe_group { create(:recipe_group) }
+    user
+    recipe_group
 
     after(:build) do |recipe|
       recipe.instructions = "Mix ingredients. Bake at 375°F for 12 minutes."

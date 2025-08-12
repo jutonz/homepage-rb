@@ -24,5 +24,4 @@ class RecipeGroup < ActiveRecord::Base
   has_many(:user_groups, through: :recipe_group_user_groups)
 
   validates(:name, presence: true)
-  validates(:owner_id, presence: true)
 end

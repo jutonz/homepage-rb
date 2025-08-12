@@ -32,7 +32,6 @@ RSpec.describe Recipes::Recipe, type: :model do
   it { is_expected.to have_rich_text(:instructions) }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_presence_of(:recipe_group_id) }
 
   it "has a valid factory" do
     expect(subject).to be_valid

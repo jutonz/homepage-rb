@@ -34,6 +34,5 @@ module Recipes
     has_rich_text :instructions
 
     validates :name, presence: true
-    validates :recipe_group_id, presence: true
   end
 end

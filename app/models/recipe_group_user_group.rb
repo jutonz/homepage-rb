@@ -25,8 +25,6 @@ class RecipeGroupUserGroup < ActiveRecord::Base
 
   validates(
     :recipe_group_id,
-    presence: true,
     uniqueness: {scope: :user_group_id}
   )
-  validates(:user_group_id, presence: true)
 end
