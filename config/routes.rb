@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   end
 
   resources :ingredients
+  resources :user_groups
 
   namespace :settings do
     namespace :api do

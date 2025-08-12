@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_024730) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_132519) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -381,6 +381,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_024730) do
     t.bigint "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "users_count", default: 0, null: false
     t.index ["owner_id"], name: "index_user_groups_on_owner_id"
   end
 

@@ -30,7 +30,11 @@ class UserOwnedPolicy < ApplicationPolicy
   private
 
   def user_owns_record?
-    user && record.user == user
+    user.present? && owner == user
+  end
+
+  def owner
+    record.user
   end
 
   class Scope < ApplicationPolicy::Scope

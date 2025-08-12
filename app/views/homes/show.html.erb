@@ -73,6 +73,20 @@
     <% end %>
   <% end %>
 
+  <%= render(CardComponent.new(title: "User Groups")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Create and manage user groups to organize and control access
+        to your resources.
+      </p>
+      <%= link_to(
+        "Manage User Groups",
+        user_groups_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
+
   <%= render(CardComponent.new(title: "Todo Management")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">

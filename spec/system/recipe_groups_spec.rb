@@ -56,7 +56,6 @@ RSpec.describe "Recipe group management", type: :system do
   it "allows managing recipe groups with user group sharing" do
     user = create(:user)
     user_group = create(:user_group, name: "Food Lovers", owner: user)
-    create(:user_group_membership, user: user, user_group: user_group)
 
     login_as(user)
 
@@ -147,7 +146,6 @@ RSpec.describe "Recipe group management", type: :system do
 
     user_group = create(:user_group, name: "Recipe Club", owner: other_user)
     create(:user_group_membership, user: user, user_group: user_group)
-    create(:user_group_membership, user: other_user, user_group: user_group)
 
     create(:recipe_group, name: "Club Favorites", owner: other_user, user_groups: [user_group])
 

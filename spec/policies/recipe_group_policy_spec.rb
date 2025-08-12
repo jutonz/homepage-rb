@@ -24,7 +24,6 @@ RSpec.describe RecipeGroupPolicy do
       owner = create(:user)
       user = create(:user)
       user_group = create(:user_group, owner: user)
-      create(:user_group_membership, user: user, user_group: user_group)
       recipe_group = create(:recipe_group, owner: owner, user_groups: [user_group])
 
       expect(described_class).to permit(user, recipe_group)
@@ -56,7 +55,6 @@ RSpec.describe RecipeGroupPolicy do
       owner = create(:user)
       user = create(:user)
       user_group = create(:user_group, owner: user)
-      create(:user_group_membership, user: user, user_group: user_group)
       recipe_group = create(:recipe_group, owner: owner, user_groups: [user_group])
 
       expect(described_class).not_to permit(user, recipe_group)
@@ -87,7 +85,6 @@ RSpec.describe RecipeGroupPolicy do
 
       # Recipe group shared with user via user group
       user_group = create(:user_group, owner: user)
-      create(:user_group_membership, user: user, user_group: user_group)
       shared_group = create(:recipe_group, owner: other_user, user_groups: [user_group])
 
       # Recipe group not accessible to user
