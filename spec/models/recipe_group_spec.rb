@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: recipe_groups
+#
+#  id            :bigint           not null, primary key
+#  description   :text
+#  name          :string           not null
+#  recipes_count :integer          default(0), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  owner_id      :bigint           not null
+#
+# Indexes
+#
+#  index_recipe_groups_on_owner_id  (owner_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (owner_id => users.id)
+#
 require "rails_helper"
 
 RSpec.describe RecipeGroup do

@@ -23,7 +23,7 @@
 module Recipes
   class Recipe < ApplicationRecord
     belongs_to :user
-    belongs_to :recipe_group
+    belongs_to :recipe_group, counter_cache: :recipes_count
     has_many :recipe_ingredients,
       class_name: "Recipes::RecipeIngredient",
       dependent: :destroy
