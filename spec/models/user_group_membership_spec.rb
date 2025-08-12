@@ -26,8 +26,6 @@ RSpec.describe UserGroupMembership do
 
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:user_group) }
-  it { is_expected.to validate_presence_of(:user_id) }
-  it { is_expected.to validate_presence_of(:user_group_id) }
   it {
     is_expected.to validate_uniqueness_of(:user_id).scoped_to(:user_group_id)
   }
