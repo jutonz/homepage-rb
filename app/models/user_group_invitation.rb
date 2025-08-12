@@ -31,18 +31,34 @@ class UserGroupInvitation < ActiveRecord::Base
   belongs_to(:user_group)
   belongs_to(:invited_by, class_name: "User")
 
-  validates(:email, presence: true, format: {with: URI::MailTo::EMAIL_REGEXP})
-  validates(:email, uniqueness: {scope: :user_group_id, case_sensitive: false})
-  validates(:token, presence: true, uniqueness: true)
+  validates(
+    :email,
+    presence: true,
+    format: {with: URI::MailTo::EMAIL_REGEXP}
+  )
+  validates(
+    :email,
+    uniqueness: {scope: :user_group_id}
+  )
+  validates(
+    :token,
+    presence: true,
+    uniqueness: true
+  )
   validates(:expires_at, presence: true)
 
   before_validation :generate_token, on: :create
   before_validation :set_expiration, on: :create
 
-  scope :expired, -> { where("expires_at < ?", Time.current) }
-  scope :accepted, -> { where.not(accepted_at: nil) }
-  scope :pending, -> { where(accepted_at: nil) }
-  scope :active, -> { pending.where("expires_at >= ?", Time.current) }
+  normalizes :email, with: -> { it.strip.downcase }
+
+  def self.expired = where("expires_at < ?", Time.current)
+
+  def self.accepted = where.not(accepted_at: nil)
+
+  def self.pending = where(accepted_at: nil)
+
+  def self.active = pending.where("expires_at >= ?", Time.current)
 
   def expired?
     expires_at < Time.current

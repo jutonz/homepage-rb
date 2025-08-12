@@ -37,6 +37,7 @@ RSpec.describe UserGroupInvitation, type: :model do
   it { is_expected.to validate_presence_of(:email) }
   it { is_expected.to validate_uniqueness_of(:email).scoped_to(:user_group_id).case_insensitive }
   it { is_expected.to validate_uniqueness_of(:token) }
+  it { is_expected.to normalize(:email).from("HI@T.CO").to("hi@t.co") }
 
   it "validates email format" do
     invitation = build(:user_group_invitation, email: "invalid-email")
@@ -54,115 +55,137 @@ RSpec.describe UserGroupInvitation, type: :model do
     expect(invitation.token.length).to eq(43)
   end
 
-  it "sets expiration on create" do
+  it "sets expiration on create", :freeze_time do
     invitation = build(:user_group_invitation, expires_at: nil)
 
     invitation.save
 
-    expect(invitation.expires_at).to be_within(1.minute).of(7.days.from_now)
+    expect(invitation.expires_at.to_i).to eql(7.days.from_now.to_i)
   end
 
-  it "returns expired invitations in expired scope" do
-    create(:user_group_invitation)
-    expired_invitation = create(:user_group_invitation, expires_at: 1.day.ago)
+  describe ".expired" do
+    it "is expired invitations" do
+      create(:user_group_invitation)
+      expired_invitation = create(:user_group_invitation, :expired)
 
-    expect(UserGroupInvitation.expired).to contain_exactly(expired_invitation)
+      expect(described_class.expired)
+        .to contain_exactly(expired_invitation)
+    end
   end
 
-  it "returns accepted invitations in accepted scope" do
-    create(:user_group_invitation)
-    accepted_invitation = create(:user_group_invitation, :accepted)
+  describe ".accepted" do
+    it "is accepted invitations" do
+      create(:user_group_invitation)
+      accepted_invitation = create(:user_group_invitation, :accepted)
 
-    expect(UserGroupInvitation.accepted).to contain_exactly(accepted_invitation)
+      expect(described_class.accepted)
+        .to contain_exactly(accepted_invitation)
+    end
   end
 
-  it "returns pending invitations in pending scope" do
-    pending_invitation = create(:user_group_invitation)
-    create(:user_group_invitation, :accepted)
+  describe ".pending" do
+    it "is pending invitations" do
+      pending_invitation = create(:user_group_invitation)
+      create(:user_group_invitation, :accepted)
 
-    expect(UserGroupInvitation.pending).to contain_exactly(pending_invitation)
+      expect(described_class.pending)
+        .to contain_exactly(pending_invitation)
+    end
   end
 
-  it "returns active invitations in active scope" do
-    active_invitation = create(:user_group_invitation)
-    create(:user_group_invitation, expires_at: 1.day.ago)
-    create(:user_group_invitation, :accepted)
+  describe ".active" do
+    it "is active invitations" do
+      active_invitation = create(:user_group_invitation)
+      create(:user_group_invitation, expires_at: 1.day.ago)
+      create(:user_group_invitation, :accepted)
 
-    expect(UserGroupInvitation.active).to contain_exactly(active_invitation)
+      expect(described_class.active)
+        .to contain_exactly(active_invitation)
+    end
   end
 
-  it "returns true for expired? when expires_at is in the past" do
-    invitation = build(:user_group_invitation, expires_at: 1.day.ago)
+  describe "#expired?" do
+    it "is true when expires_at is in the past" do
+      invitation = build(
+        :user_group_invitation,
+        expires_at: 1.day.ago
+      )
 
-    expect(invitation).to be_expired
+      expect(invitation).to be_expired
+    end
+
+    it "is false when expires_at is in the future" do
+      invitation = build(
+        :user_group_invitation,
+        expires_at: 1.day.from_now
+      )
+
+      expect(invitation).not_to be_expired
+    end
   end
 
-  it "returns false for expired? when expires_at is in the future" do
-    invitation = build(:user_group_invitation, expires_at: 1.day.from_now)
+  describe "#accepted?" do
+    it "is true when accepted_at is present" do
+      invitation = build(:user_group_invitation, accepted_at: 1.day.ago)
+      expect(invitation).to be_accepted
+    end
 
-    expect(invitation).not_to be_expired
+    it "is false when accepted_at is nil" do
+      invitation = build(:user_group_invitation, accepted_at: nil)
+      expect(invitation).not_to be_accepted
+    end
   end
 
-  it "returns true for accepted? when accepted_at is present" do
-    invitation = build(:user_group_invitation, accepted_at: 1.day.ago)
+  describe "#pending?" do
+    it "is true when accepted_at is nil" do
+      invitation = build(:user_group_invitation, accepted_at: nil)
+      expect(invitation).to be_pending
+    end
 
-    expect(invitation).to be_accepted
+    it "is false when accepted_at is present" do
+      invitation = build(:user_group_invitation, accepted_at: 1.day.ago)
+      expect(invitation).not_to be_pending
+    end
   end
 
-  it "returns false for accepted? when accepted_at is nil" do
-    invitation = build(:user_group_invitation, accepted_at: nil)
+  describe "#accept!" do
+    it "is false when user does not exist" do
+      invitation = create(:user_group_invitation)
 
-    expect(invitation).not_to be_accepted
-  end
+      result = invitation.accept!
 
-  it "returns true for pending? when accepted_at is nil" do
-    invitation = build(:user_group_invitation, accepted_at: nil)
+      expect(result).to be false
+      expect(invitation.reload.accepted_at).to be_nil
+    end
 
-    expect(invitation).to be_pending
-  end
+    it "is false when invitation is expired" do
+      invitation = create(:user_group_invitation, expires_at: 1.day.ago)
 
-  it "returns false for pending? when accepted_at is present" do
-    invitation = build(:user_group_invitation, accepted_at: 1.day.ago)
+      result = invitation.accept!
 
-    expect(invitation).not_to be_pending
-  end
+      expect(result).to be false
+      expect(invitation.reload.accepted_at).to be_nil
+    end
 
-  it "returns false from accept! when user does not exist" do
-    invitation = create(:user_group_invitation)
+    it "is false when invitation is already accepted" do
+      invitation = create(:user_group_invitation, :accepted)
+      create(:user, email: invitation.email)
 
-    result = invitation.accept!
+      result = invitation.accept!
 
-    expect(result).to be false
-    expect(invitation.reload.accepted_at).to be_nil
-  end
+      expect(result).to be false
+    end
 
-  it "returns false from accept! when invitation is expired" do
-    invitation = create(:user_group_invitation, expires_at: 1.day.ago)
+    it "accepts invitation when user exists" do
+      invitation = create(:user_group_invitation)
+      user = create(:user, email: invitation.email)
 
-    result = invitation.accept!
+      result = invitation.accept!
 
-    expect(result).to be false
-    expect(invitation.reload.accepted_at).to be_nil
-  end
-
-  it "returns false from accept! when invitation is already accepted" do
-    invitation = create(:user_group_invitation, :accepted)
-    create(:user, email: invitation.email)
-
-    result = invitation.accept!
-
-    expect(result).to be false
-  end
-
-  it "accepts invitation when user exists" do
-    invitation = create(:user_group_invitation)
-    user = create(:user, email: invitation.email)
-
-    result = invitation.accept!
-
-    expect(result).to be_truthy
-    expect(invitation.reload.accepted_at).to be_present
-    membership = invitation.user_group.user_group_memberships.last
-    expect(membership.user).to eq(user)
+      expect(result).to be_truthy
+      expect(invitation.reload.accepted_at).to be_present
+      membership = invitation.user_group.user_group_memberships.last
+      expect(membership.user).to eq(user)
+    end
   end
 end
