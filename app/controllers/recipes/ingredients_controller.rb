@@ -1,6 +1,7 @@
 module Recipes
   class IngredientsController < ApplicationController
     before_action :ensure_authenticated!
+    before_action :find_recipe_group
     after_action :verify_authorized
 
     def index
@@ -20,7 +21,7 @@ module Recipes
       @recipe_ingredient = authorize(@recipe.recipe_ingredients.build(recipe_ingredient_params))
 
       if @recipe_ingredient.save
-        redirect_to recipe_ingredients_path(@recipe), notice: "Ingredient was successfully added to recipe."
+        redirect_to recipe_group_recipe_ingredients_path(@recipe_group, @recipe), notice: "Ingredient was successfully added to recipe."
       else
         @available_ingredients = find_available_ingredients
         render :new, status: :unprocessable_content
@@ -38,7 +39,7 @@ module Recipes
       @recipe_ingredient = authorize(find_recipe_ingredient)
 
       if @recipe_ingredient.update(recipe_ingredient_params)
-        redirect_to recipe_ingredients_path(@recipe), notice: "Recipe ingredient was successfully updated."
+        redirect_to recipe_group_recipe_ingredients_path(@recipe_group, @recipe), notice: "Recipe ingredient was successfully updated."
       else
         @available_ingredients = find_available_ingredients
         render :edit, status: :unprocessable_content
@@ -49,13 +50,17 @@ module Recipes
       @recipe = find_recipe
       @recipe_ingredient = authorize(find_recipe_ingredient)
       @recipe_ingredient.destroy
-      redirect_to recipe_ingredients_path(@recipe), notice: "Ingredient was successfully removed from recipe."
+      redirect_to recipe_group_recipe_ingredients_path(@recipe_group, @recipe), notice: "Ingredient was successfully removed from recipe."
     end
 
     private
 
+    def find_recipe_group
+      @recipe_group = policy_scope(RecipeGroup).find(params[:recipe_group_id])
+    end
+
     def find_recipe
-      policy_scope(Recipes::Recipe).find(params[:recipe_id])
+      @recipe_group.recipes.find(params[:recipe_id])
         .then { authorize(it, :show?) }
     end
 

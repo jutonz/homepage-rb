@@ -47,15 +47,13 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :recipe_groups do
-    scope module: :recipes do
+  scope module: :recipes do
+    resources :recipe_groups do
       resources :recipes do
         resources :ingredients
       end
     end
-  end
 
-  scope module: :recipes do
     resources :ingredients
   end
 

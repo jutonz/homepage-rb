@@ -2,13 +2,14 @@
   title: "#{@recipe.name} Ingredients"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
-  <%= c.with_crumb("Recipes", recipes_path) %>
-  <%= c.with_crumb(@recipe.name, recipe_path(@recipe)) %>
+  <%= c.with_crumb("Recipe Groups", recipe_groups_path) %>
+  <%= c.with_crumb(@recipe.recipe_group.name, recipe_group_path(@recipe.recipe_group)) %>
+  <%= c.with_crumb(@recipe.name, recipe_group_recipe_path(@recipe.recipe_group, @recipe)) %>
 
   <%= c.with_action do %>
     <%= link_to(
       "Add Ingredient",
-      new_recipe_ingredient_path(@recipe),
+      new_recipe_group_recipe_ingredient_path(@recipe.recipe_group, @recipe),
       class: "button"
     ) %>
   <% end %>
@@ -21,7 +22,7 @@
       <div class="text-sm mb-4">Add ingredients to build your recipe.</div>
       <%= link_to(
         "Add First Ingredient",
-        new_recipe_ingredient_path(@recipe),
+        new_recipe_group_recipe_ingredient_path(@recipe.recipe_group, @recipe),
         class: "button"
       ) %>
     </div>
@@ -44,12 +45,12 @@
           <div class="flex gap-2 items-center">
             <%= link_to(
               "Edit",
-              edit_recipe_ingredient_path(@recipe, recipe_ingredient),
+              edit_recipe_group_recipe_ingredient_path(@recipe.recipe_group, @recipe, recipe_ingredient),
               class: "text-sm text-blue-600 hover:text-blue-800"
             ) %>
             <%= link_to(
               "Remove",
-              recipe_ingredient_path(@recipe, recipe_ingredient),
+              recipe_group_recipe_ingredient_path(@recipe.recipe_group, @recipe, recipe_ingredient),
               method: :delete,
               data: {turbo_method: :delete, turbo_confirm: "Are you sure?"},
               class: "text-sm text-red-600 hover:text-red-800"

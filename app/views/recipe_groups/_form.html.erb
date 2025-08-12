@@ -35,11 +35,11 @@
     ) %>
   </div>
 
-  <% if defined?(@available_user_groups) && @available_user_groups.any? %>
+  <% if current_user.user_groups.any? %>
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-2">Share with User Groups</label>
       <div class="space-y-2">
-        <% @available_user_groups.each do |user_group| %>
+        <% current_user.user_groups.each do |user_group| %>
           <label class="flex items-center">
             <%= check_box_tag(
               "recipe_group[user_group_ids][]",
