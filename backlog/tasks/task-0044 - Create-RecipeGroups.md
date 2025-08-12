@@ -1,10 +1,10 @@
 ---
 id: task-0044
 title: Create RecipeGroups
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-08-12 01:19'
-updated_date: '2025-08-12 01:24'
+updated_date: '2025-08-12 12:17'
 labels: []
 dependencies: []
 ---
