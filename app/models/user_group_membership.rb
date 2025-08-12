@@ -23,6 +23,10 @@ class UserGroupMembership < ActiveRecord::Base
   belongs_to(:user)
   belongs_to(:user_group)
 
-  validates(:user_id, presence: true, uniqueness: {scope: :user_group_id})
+  validates(
+    :user_id,
+    presence: true,
+    uniqueness: {scope: :user_group_id}
+  )
   validates(:user_group_id, presence: true)
 end

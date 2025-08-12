@@ -19,6 +19,6 @@
 FactoryBot.define do
   factory(:user_group) do
     sequence(:name) { "Group #{it}" }
-    owner { create(:user) }
+    owner(factory: :user)
   end
 end

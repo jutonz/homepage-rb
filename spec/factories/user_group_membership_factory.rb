@@ -21,7 +21,7 @@
 #
 FactoryBot.define do
   factory(:user_group_membership) do
-    user { create(:user) }
-    user_group { create(:user_group) }
+    user
+    user_group
   end
 end
