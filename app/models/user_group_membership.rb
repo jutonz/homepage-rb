@@ -21,7 +21,7 @@
 #
 class UserGroupMembership < ActiveRecord::Base
   belongs_to(:user)
-  belongs_to(:user_group)
+  belongs_to(:user_group, counter_cache: :users_count)
 
   validates(:user_id, uniqueness: {scope: :user_group_id})
 end
