@@ -1,11 +1,8 @@
 <%= render(HeaderComponent.new(
-  title: "New Recipe"
+  title: "New Recipe Group"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Recipe Groups", recipe_groups_path) %>
-  <%= c.with_crumb(@recipe_group.name, recipe_group_path(@recipe_group)) %>
 <% end %>
 
-<div class="max-w-lg">
-  <%= render("form") %>
-</div>
+<%= render "form", recipe_group: @recipe_group %>

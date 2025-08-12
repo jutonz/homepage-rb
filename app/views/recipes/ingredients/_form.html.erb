@@ -1,6 +1,6 @@
 <%= simple_form_for(
-  [@recipe, @recipe_ingredient],
-  url: @recipe_ingredient.persisted? ? recipe_ingredient_path(@recipe, @recipe_ingredient) : recipe_ingredients_path(@recipe)
+  [@recipe_group, @recipe, @recipe_ingredient],
+  url: @recipe_ingredient.persisted? ? recipe_group_recipe_ingredient_path(@recipe_group, @recipe, @recipe_ingredient) : recipe_group_recipe_ingredients_path(@recipe_group, @recipe)
 ) do |form| %>
   <%= form.association(
     :ingredient,
@@ -27,7 +27,7 @@
     <%= form.button(:submit, class: "button") %>
     <%= link_to(
       "Cancel",
-      recipe_ingredients_path(@recipe),
+      recipe_group_recipe_ingredients_path(@recipe_group, @recipe),
       class: "button button--secondary"
     ) %>
   </div>

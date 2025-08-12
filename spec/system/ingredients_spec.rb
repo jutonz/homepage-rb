@@ -43,9 +43,11 @@ RSpec.describe "Ingredient management", type: :system do
   it "shows ingredients used in recipes" do
     user = create(:user)
     login_as(user)
-    ingredient = create(:recipes_ingredient, name: "Flour", user:)
-    recipe = create(:recipes_recipe, name: "Bread Recipe", user:)
-    create(:recipes_recipe_ingredient, recipe:, ingredient:)
+    ingredient = create(:recipes_ingredient, name: "Flour", user: user)
+    recipe_group = create(:recipe_group, owner: user)
+    recipe = create(:recipes_recipe, name: "Bread Recipe", user: user,
+      recipe_group: recipe_group)
+    create(:recipes_recipe_ingredient, recipe: recipe, ingredient: ingredient)
 
     visit ingredient_path(ingredient)
 
@@ -62,10 +64,12 @@ RSpec.describe "Ingredient management", type: :system do
   it "shows recipe count on ingredients index" do
     user = create(:user)
     login_as(user)
-    ingredient = create(:recipes_ingredient, name: "Salt", user:)
-    recipe1, recipe2 = create_pair(:recipes_recipe, user:)
-    create(:recipes_recipe_ingredient, recipe: recipe1, ingredient:)
-    create(:recipes_recipe_ingredient, recipe: recipe2, ingredient:)
+    ingredient = create(:recipes_ingredient, name: "Salt", user: user)
+    recipe_group = create(:recipe_group, owner: user)
+    recipe1 = create(:recipes_recipe, user: user, recipe_group: recipe_group)
+    recipe2 = create(:recipes_recipe, user: user, recipe_group: recipe_group)
+    create(:recipes_recipe_ingredient, recipe: recipe1, ingredient: ingredient)
+    create(:recipes_recipe_ingredient, recipe: recipe2, ingredient: ingredient)
 
     visit ingredients_path
 

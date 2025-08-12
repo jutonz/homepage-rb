@@ -30,7 +30,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <% @ingredient.recipes.each do |recipe| %>
           <%= link_to(
-            recipe_path(recipe),
+            recipe_group_recipe_path(recipe.recipe_group, recipe),
             class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
           ) do %>
             <div class="font-medium text-gray-900"><%= recipe.name %></div>

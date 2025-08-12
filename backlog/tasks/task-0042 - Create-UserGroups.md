@@ -1,9 +1,10 @@
 ---
 id: task-0042
 title: Create UserGroups
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 00:33'
+updated_date: '2025-08-12 01:12'
 labels: []
 dependencies: []
 ---

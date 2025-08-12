@@ -1,0 +1,41 @@
+<%= render(HeaderComponent.new(
+  title: "Recipe Groups"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Recipe Group",
+      new_recipe_group_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% @recipe_groups.each do |recipe_group| %>
+    <%= link_to(
+      recipe_group_path(recipe_group),
+      data: {role: "recipe-group"},
+      class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 group"
+    ) do %>
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-medium text-gray-900 group-hover:text-gray-700"><%= recipe_group.name %></span>
+      </div>
+      <% if recipe_group.description.present? %>
+        <div class="text-sm text-gray-600 mb-2 line-clamp-2">
+          <%= recipe_group.description %>
+        </div>
+      <% end %>
+      <div class="flex gap-2">
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= recipe_group.recipes_count %> recipes</span>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<% if @recipe_groups.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No recipe groups yet</div>
+    <div class="text-sm">Create your first recipe group to get started organizing your recipes.</div>
+  </div>
+<% end %>

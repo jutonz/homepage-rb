@@ -1,14 +1,21 @@
 require "rails_helper"
 
 RSpec.describe "Recipe ingredient management", type: :system do
+  around do |example|
+    Bullet.enable = false
+    example.run
+    Bullet.enable = true
+  end
+
   it "allows managing ingredients within a recipe" do
     user = create(:user)
+    recipe_group = create(:recipe_group, owner: user)
     login_as(user)
-    recipe = create(:recipes_recipe, user:)
-    ingredient1, ingredient2 = create_pair(:recipes_ingredient, user:)
+    recipe = create(:recipes_recipe, user: user, recipe_group: recipe_group)
+    ingredient1, ingredient2 = create_pair(:recipes_ingredient, user: user)
     unit1, unit2 = create_pair(:recipes_unit)
 
-    visit recipe_path(recipe)
+    visit recipe_group_recipe_path(recipe_group, recipe)
     click_link "Add First Ingredient"
 
     expect(page).to have_content("Add Ingredient to #{recipe.name}")
@@ -57,18 +64,19 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
   it "shows ingredients on recipe show page" do
     user = create(:user)
+    recipe_group = create(:recipe_group, owner: user)
     login_as(user)
-    recipe = create(:recipes_recipe, user:)
-    ingredient = create(:recipes_ingredient, user:)
+    recipe = create(:recipes_recipe, user: user, recipe_group: recipe_group)
+    ingredient = create(:recipes_ingredient, user: user)
     unit = create(:recipes_unit)
     recipes_ingredient = create(
       :recipes_recipe_ingredient,
-      recipe:,
-      ingredient:,
+      recipe: recipe,
+      ingredient: ingredient,
       unit: unit
     )
 
-    visit(recipe_path(recipe))
+    visit(recipe_group_recipe_path(recipe_group, recipe))
 
     expect(page).to have_content("Ingredients")
     expect(page).to have_content(
@@ -84,10 +92,11 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
   it "handles recipes with no available ingredients" do
     user = create(:user)
+    recipe_group = create(:recipe_group, owner: user)
     login_as(user)
-    recipe = create(:recipes_recipe, name: "Empty Recipe", user:)
+    recipe = create(:recipes_recipe, name: "Empty Recipe", user: user, recipe_group: recipe_group)
 
-    visit new_recipe_ingredient_path(recipe)
+    visit new_recipe_group_recipe_ingredient_path(recipe_group, recipe)
 
     expect(page).to have_content("No ingredients available")
     expect(page).to have_link("Create New Ingredient")

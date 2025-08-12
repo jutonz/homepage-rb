@@ -1,0 +1,38 @@
+<%= simple_form_for(recipe_group) do |form| %>
+  <%= form.input(:name) %>
+  <%= form.input(:description, as: :text, input_html: {rows: 4}) %>
+
+  <% if current_user.user_groups.any? %>
+    <%= form.association(
+      :user_groups,
+      collection: current_user.user_groups,
+      as: :check_boxes,
+      label: "Share with User Groups"
+    ) %>
+  <% end %>
+
+  <div class="flex justify-between">
+    <%= link_to(
+      "Cancel",
+      recipe_group.persisted? ? recipe_group_path(recipe_group) : recipe_groups_path,
+      class: "rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+    ) %>
+
+    <div class="flex gap-2">
+      <%= form.button(:submit) %>
+    </div>
+  </div>
+<% end %>
+
+<% if recipe_group.persisted? %>
+  <%= button_to(
+    "Delete",
+    recipe_group_path(recipe_group),
+    method: :delete,
+    data: {
+      turbo_confirm: "Are you sure? This will delete all recipes in this group."
+    },
+    type: "button",
+    class: "button button--danger"
+  ) %>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_003804) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_024730) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -126,6 +126,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_003804) do
     t.index ["user_id"], name: "index_galleries_tags_on_user_id"
   end
 
+  create_table "recipe_group_user_groups", force: :cascade do |t|
+    t.bigint "recipe_group_id", null: false
+    t.bigint "user_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_group_id", "user_group_id"], name: "idx_on_recipe_group_id_user_group_id_80860d9213", unique: true
+    t.index ["recipe_group_id"], name: "index_recipe_group_user_groups_on_recipe_group_id"
+    t.index ["user_group_id"], name: "index_recipe_group_user_groups_on_user_group_id"
+  end
+
+  create_table "recipe_groups", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.bigint "owner_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "recipes_count", default: 0, null: false
+    t.index ["owner_id"], name: "index_recipe_groups_on_owner_id"
+  end
+
   create_table "recipes_ingredients", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "user_id", null: false
@@ -157,6 +177,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_003804) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "recipe_group_id", null: false
+    t.index ["recipe_group_id"], name: "index_recipes_recipes_on_recipe_group_id"
     t.index ["user_id"], name: "index_recipes_recipes_on_user_id"
   end
 
@@ -384,10 +406,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_003804) do
   add_foreign_key "galleries_social_media_links", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
+  add_foreign_key "recipe_group_user_groups", "recipe_groups"
+  add_foreign_key "recipe_group_user_groups", "user_groups"
+  add_foreign_key "recipe_groups", "users", column: "owner_id"
   add_foreign_key "recipes_ingredients", "users"
   add_foreign_key "recipes_recipe_ingredients", "recipes_ingredients", column: "ingredient_id"
   add_foreign_key "recipes_recipe_ingredients", "recipes_recipes", column: "recipe_id"
   add_foreign_key "recipes_recipe_ingredients", "recipes_units", column: "unit_id"
+  add_foreign_key "recipes_recipes", "recipe_groups"
   add_foreign_key "recipes_recipes", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

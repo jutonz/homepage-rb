@@ -1,0 +1,46 @@
+<%= render(HeaderComponent.new(
+  title: @recipe_group.name
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Recipe Groups", recipe_groups_path) %>
+  <% if policy(@recipe_group).edit? %>
+    <%= c.with_action do %>
+      <%= link_to(
+        "Edit Group",
+        edit_recipe_group_path(@recipe_group),
+        class: "button button--secondary"
+      ) %>
+    <% end %>
+  <% end %>
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Recipe",
+      new_recipe_group_recipe_path(@recipe_group),
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<% if @recipe_group.description.present? %>
+  <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+    <div class="text-sm text-gray-700">
+      <%= @recipe_group.description %>
+    </div>
+  </div>
+<% end %>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% @recipes.each do |recipe| %>
+    <%= render(RecipeComponent.new(
+      recipe:,
+      recipe_group: @recipe_group
+    ))%>
+  <% end %>
+</div>
+
+<% if @recipes.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No recipes yet</div>
+    <div class="text-sm">Add your first recipe to this group to get started cooking.</div>
+  </div>
+<% end %>

@@ -2,9 +2,10 @@
   title: "Add Ingredient to #{@recipe.name}"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
-  <%= c.with_crumb("Recipes", recipes_path) %>
-  <%= c.with_crumb(@recipe.name, recipe_path(@recipe)) %>
-  <%= c.with_crumb("Ingredients", recipe_ingredients_path(@recipe)) %>
+  <%= c.with_crumb("Recipe Groups", recipe_groups_path) %>
+  <%= c.with_crumb(@recipe.recipe_group.name, recipe_group_path(@recipe.recipe_group)) %>
+  <%= c.with_crumb(@recipe.name, recipe_group_recipe_path(@recipe.recipe_group, @recipe)) %>
+  <%= c.with_crumb("Ingredients", recipe_group_recipe_ingredients_path(@recipe.recipe_group, @recipe)) %>
 <% end %>
 
 <div class="max-w-2xl">
