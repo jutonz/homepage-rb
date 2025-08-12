@@ -1,9 +1,10 @@
 ---
 id: task-0045
 title: UserGroups CRUD
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 12:18'
+updated_date: '2025-08-12 21:25'
 labels: []
 dependencies: []
 ---
