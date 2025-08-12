@@ -46,23 +46,6 @@ RSpec.describe UserGroupInvitation, type: :model do
     expect(invitation.errors[:email]).to include("is invalid")
   end
 
-  it "generates token on create" do
-    invitation = build(:user_group_invitation, token: nil)
-
-    invitation.save
-
-    expect(invitation.token).to be_present
-    expect(invitation.token.length).to eq(43)
-  end
-
-  it "sets expiration on create", :freeze_time do
-    invitation = build(:user_group_invitation, expires_at: nil)
-
-    invitation.save
-
-    expect(invitation.expires_at.to_i).to eql(7.days.from_now.to_i)
-  end
-
   describe ".expired" do
     it "is expired invitations" do
       create(:user_group_invitation)

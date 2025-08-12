@@ -34,6 +34,7 @@ FactoryBot.define do
     association(:invited_by, factory: :user)
     expires_at { 7.days.from_now }
     accepted_at { nil }
+    token { SecureRandom.urlsafe_base64(32) }
 
     trait :expired do
       expires_at { 1.day.ago }

@@ -47,9 +47,6 @@ class UserGroupInvitation < ActiveRecord::Base
   )
   validates(:expires_at, presence: true)
 
-  before_validation :generate_token, on: :create
-  before_validation :set_expiration, on: :create
-
   normalizes :email, with: -> { it.strip.downcase }
 
   def self.expired = where("expires_at < ?", Time.current)
@@ -82,15 +79,5 @@ class UserGroupInvitation < ActiveRecord::Base
       update!(accepted_at: Time.current)
       user_group.user_group_memberships.create!(user:)
     end
-  end
-
-  private
-
-  def generate_token
-    self.token ||= SecureRandom.urlsafe_base64(32)
-  end
-
-  def set_expiration
-    self.expires_at ||= 7.days.from_now
   end
 end
