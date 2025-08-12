@@ -1,9 +1,5 @@
 class UserGroupCreator
-  attr_reader :owner, :params, :user_group
-
-  def self.call(owner:, **params)
-    new(owner:, params:).call
-  end
+  def self.call(...) = new(...).call
 
   def initialize(owner:, params:)
     @owner = owner
@@ -11,26 +7,18 @@ class UserGroupCreator
   end
 
   def call
+    user_group = owner.owned_user_groups.build(params)
     UserGroup.transaction do
-      create_user_group
-      create_owner_membership
+      user_group.save!
+      user_group.user_group_memberships.create!(user: owner)
+      user_group
     end
-    self
-  end
-
-  def success?
-    user_group&.persisted? && user_group.errors.empty?
+  rescue ActiveRecord::RecordInvalid
+    user_group
   end
 
   private
 
-  def create_user_group
-    @user_group = owner.owned_user_groups.create(params)
-  end
-
-  def create_owner_membership
-    return unless user_group.persisted?
-
-    user_group.user_group_memberships.create!(user: owner)
-  end
+  attr_reader :owner
+  attr_reader :params
 end

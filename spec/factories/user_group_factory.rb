@@ -20,14 +20,10 @@
 FactoryBot.define do
   factory(:user_group) do
     sequence(:name) { "Group #{it}" }
+    owner(factory: :user)
 
-    transient do
-      owner { create(:user) }
-    end
-
-    initialize_with do
-      creator = UserGroupCreator.call(owner:, name:)
-      creator.user_group
+    after(:build) do |user_group, evaluator|
+      user_group.users << evaluator.owner
     end
   end
 end

@@ -20,10 +20,12 @@ class UserGroupsController < ApplicationController
   end
 
   def create
-    creator = UserGroupCreator.call(owner: current_user, **user_group_params)
-    @user_group = authorize(creator.user_group)
+    @user_group =
+      UserGroupCreator
+        .call(owner: current_user, params: user_group_params)
+        .then { authorize(it) }
 
-    if creator.success?
+    if @user_group.persisted?
       redirect_to @user_group, notice: "User group was successfully created."
     else
       render :new, status: :unprocessable_content
