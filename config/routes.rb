@@ -47,12 +47,17 @@ Rails.application.routes.draw do
     end
   end
 
-  scope module: :recipes do
-    resources :recipes do
-      resources :ingredients
+  resources :recipe_groups do
+    scope module: :recipes do
+      resources :recipes do
+        resources :ingredients
+      end
     end
   end
-  resources :ingredients
+
+  scope module: :recipes do
+    resources :ingredients
+  end
 
   namespace :settings do
     namespace :api do

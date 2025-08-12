@@ -2,19 +2,22 @@
 #
 # Table name: recipes_recipes
 #
-#  id          :bigint           not null, primary key
-#  description :text
-#  name        :string           not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  user_id     :bigint           not null
+#  id              :bigint           not null, primary key
+#  description     :text
+#  name            :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  recipe_group_id :bigint           not null
+#  user_id         :bigint           not null
 #
 # Indexes
 #
-#  index_recipes_recipes_on_user_id  (user_id)
+#  index_recipes_recipes_on_recipe_group_id  (recipe_group_id)
+#  index_recipes_recipes_on_user_id          (user_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (recipe_group_id => recipe_groups.id)
 #  fk_rails_...  (user_id => users.id)
 #
 require "rails_helper"
@@ -23,11 +26,13 @@ RSpec.describe Recipes::Recipe, type: :model do
   subject { build(:recipes_recipe) }
 
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:recipe_group) }
   it { is_expected.to have_many(:ingredients).through(:recipe_ingredients) }
   it { is_expected.to have_many(:recipe_ingredients).dependent(:destroy) }
   it { is_expected.to have_rich_text(:instructions) }
 
   it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:recipe_group_id) }
 
   it "has a valid factory" do
     expect(subject).to be_valid

@@ -2,12 +2,13 @@
   title: @recipe.name
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
-  <%= c.with_crumb("Recipes", recipes_path) %>
+  <%= c.with_crumb("Recipe Groups", recipe_groups_path) %>
+  <%= c.with_crumb(@recipe_group.name, recipe_group_path(@recipe_group)) %>
 
   <%= c.with_action do %>
     <%= link_to(
       "Edit",
-      edit_recipe_path(@recipe),
+      edit_recipe_group_recipe_path(@recipe_group, @recipe),
       class: "button"
     ) %>
   <% end %>
@@ -15,7 +16,7 @@
   <%= c.with_action do %>
     <%= button_to(
       "Delete",
-      recipe_path(@recipe),
+      recipe_group_recipe_path(@recipe_group, @recipe),
       method: "delete",
       data: {turbo_confirm: "Are you sure?"},
       class: "button button--danger"
@@ -36,7 +37,7 @@
       <h3 class="text-lg font-medium text-gray-900">Ingredients</h3>
       <%= link_to(
         "Manage Ingredients",
-        recipe_ingredients_path(@recipe),
+        recipe_group_recipe_ingredients_path(@recipe_group, @recipe),
         class: "text-sm text-blue-600 hover:text-blue-800"
       ) %>
     </div>
@@ -58,7 +59,7 @@
         <div class="text-gray-500 mb-2">No ingredients yet</div>
         <%= link_to(
           "Add First Ingredient",
-          new_recipe_ingredient_path(@recipe),
+          new_recipe_group_recipe_ingredient_path(@recipe_group, @recipe),
           class: "text-sm text-blue-600 hover:text-blue-800"
         ) %>
       </div>

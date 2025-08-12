@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   has_one_attached :avatar
   has_many :api_tokens, class_name: "Api::Token"
   has_many :galleries
+  has_many :owned_recipe_groups, class_name: "RecipeGroup", foreign_key: "owner_id"
   has_many :owned_user_groups, class_name: "UserGroup", foreign_key: "owner_id"
   has_many :recipes_ingredients, class_name: "Recipes::Ingredient"
   has_many :recipes_recipes, class_name: "Recipes::Recipe"

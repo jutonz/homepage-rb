@@ -1,19 +1,17 @@
 module Recipes
   class RecipesController < ApplicationController
     before_action :ensure_authenticated!
+    before_action :find_recipe_group
     after_action :verify_authorized
-
-    def index
-      authorize Recipes::Recipe
-      @recipes = policy_scope(Recipes::Recipe).order(created_at: :desc)
-    end
 
     def show
       @recipe = authorize(find_recipe)
     end
 
     def new
-      @recipe = authorize(current_user.recipes_recipes.new)
+      @recipe = authorize(
+        current_user.recipes_recipes.new(recipe_group: @recipe_group)
+      )
     end
 
     def edit
@@ -21,10 +19,17 @@ module Recipes
     end
 
     def create
-      @recipe = authorize(current_user.recipes_recipes.new(recipe_params))
+      @recipe = authorize(
+        current_user.recipes_recipes.new(
+          recipe_params.merge(recipe_group: @recipe_group)
+        )
+      )
 
       if @recipe.save
-        redirect_to recipe_path(@recipe), notice: "Recipe was successfully created."
+        redirect_to(
+          recipe_group_recipe_path(@recipe_group, @recipe),
+          notice: "Recipe was successfully created."
+        )
       else
         render :new, status: :unprocessable_content
       end
@@ -34,7 +39,10 @@ module Recipes
       @recipe = authorize(find_recipe)
 
       if @recipe.update(recipe_params)
-        redirect_to recipe_path(@recipe), notice: "Recipe was successfully updated."
+        redirect_to(
+          recipe_group_recipe_path(@recipe_group, @recipe),
+          notice: "Recipe was successfully updated."
+        )
       else
         render :edit, status: :unprocessable_content
       end
@@ -45,7 +53,7 @@ module Recipes
       @recipe.destroy!
 
       redirect_to(
-        recipes_path,
+        recipe_group_path(@recipe_group),
         status: :see_other,
         notice: "Recipe was successfully deleted."
       )
@@ -53,8 +61,12 @@ module Recipes
 
     private
 
+    def find_recipe_group
+      @recipe_group = policy_scope(RecipeGroup).find(params[:recipe_group_id])
+    end
+
     def find_recipe
-      policy_scope(Recipes::Recipe).find(params[:id])
+      @recipe_group.recipes.find(params[:id])
     end
 
     def recipe_params
