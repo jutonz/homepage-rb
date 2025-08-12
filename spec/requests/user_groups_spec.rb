@@ -72,7 +72,7 @@ RSpec.describe UserGroupsController do
 
       expect(page).to have_text("My Group")
       expect(page).to have_text(user.email)
-      expect(page).to have_text("0 members")
+      expect(page).to have_text("1 member")
     end
 
     it "returns 404 for groups not owned by current user" do
