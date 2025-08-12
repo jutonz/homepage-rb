@@ -1,4 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "from@example.com"
-  layout "mailer"
+  default(
+    from: Rails.application.config.action_mailer.smtp_settings[:user_name]
+  )
+  layout("mailer")
 end
