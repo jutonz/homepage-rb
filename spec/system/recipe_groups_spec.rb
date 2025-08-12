@@ -131,8 +131,8 @@ RSpec.describe "Recipe group management", type: :system do
   it "shows only user's own recipe groups in index" do
     user = create(:user)
     other_user = create(:user)
-    user_recipe_group = create(:recipe_group, name: "My Recipes", owner: user)
-    other_user_recipe_group = create(:recipe_group, name: "Other's Recipes", owner: other_user)
+    create(:recipe_group, name: "My Recipes", owner: user)
+    create(:recipe_group, name: "Other's Recipes", owner: other_user)
 
     login_as(user)
 
@@ -152,7 +152,7 @@ RSpec.describe "Recipe group management", type: :system do
     create(:user_group_membership, user: other_user, user_group: user_group)
 
     # Create a recipe group owned by other_user and shared with the user group
-    shared_recipe_group = create(:recipe_group, name: "Club Favorites", owner: other_user, user_groups: [user_group])
+    create(:recipe_group, name: "Club Favorites", owner: other_user, user_groups: [user_group])
 
     login_as(user)
 
