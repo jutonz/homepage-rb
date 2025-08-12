@@ -1,0 +1,9 @@
+<%= render(HeaderComponent.new(
+  title: "Edit User Group"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("User Groups", user_groups_path) %>
+  <%= c.with_crumb(@user_group.name, user_group_path(@user_group)) %>
+<% end %>
+
+<%= render("form") %>
