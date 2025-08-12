@@ -1,36 +1,8 @@
-class UserGroupPolicy < ApplicationPolicy
-  def index?
-    user.present?
-  end
-
-  def show?
-    user_owns_record?
-  end
-
-  def create?
-    user.present?
-  end
-
-  def new?
-    user.present?
-  end
-
-  def edit?
-    user_owns_record?
-  end
-
-  def update?
-    user_owns_record?
-  end
-
-  def destroy?
-    user_owns_record?
-  end
-
+class UserGroupPolicy < UserOwnedPolicy
   private
 
-  def user_owns_record?
-    user.present? && record.owner == user
+  def owner
+    record.owner
   end
 
   class Scope < ApplicationPolicy::Scope

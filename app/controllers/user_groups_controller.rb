@@ -57,8 +57,6 @@ class UserGroupsController < ApplicationController
   end
 
   def user_group_params
-    params
-      .require(:user_group)
-      .permit(:name)
+    params.expect(user_group: [:name])
   end
 end
