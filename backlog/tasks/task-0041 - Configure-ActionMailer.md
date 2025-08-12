@@ -1,9 +1,10 @@
 ---
 id: task-0041
 title: Configure ActionMailer
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 00:29'
+updated_date: '2025-08-12 21:24'
 labels: []
 dependencies: []
 ---
