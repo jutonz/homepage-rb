@@ -370,11 +370,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_214037) do
     t.string "email", null: false
     t.bigint "user_group_id", null: false
     t.string "token", null: false
-    t.integer "status", default: 0, null: false
     t.datetime "expires_at", null: false
+    t.datetime "accepted_at"
     t.bigint "invited_by_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["accepted_at"], name: "index_user_group_invitations_on_accepted_at"
     t.index ["email", "user_group_id"], name: "index_user_group_invitations_on_email_and_user_group_id", unique: true
     t.index ["email"], name: "index_user_group_invitations_on_email"
     t.index ["expires_at"], name: "index_user_group_invitations_on_expires_at"
