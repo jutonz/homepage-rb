@@ -1,17 +1,11 @@
 class UserGroupInvitationMailer < ApplicationMailer
   def invitation(user_group_invitation)
     @invitation = user_group_invitation
-    @accept_url = invitation_accept_url(token: user_group_invitation.token)
+    @accept_url = invitation_url(token: @invitation.token)
 
     mail(
-      to: user_group_invitation.email,
-      subject: "You're invited to join #{user_group_invitation.user_group.name}"
+      to: @invitation.email,
+      subject: "You're invited to join #{@invitation.user_group.name}"
     )
-  end
-
-  private
-
-  def invitation_accept_url(token:)
-    invitation_url(token:)
   end
 end
