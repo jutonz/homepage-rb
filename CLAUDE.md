@@ -68,6 +68,8 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 * Always add tests for new code
 * Always run tests after creating or modifying them
 * Use shoudla matches to test validations, e.g. `it { is_expected.to validate_presence_of(:email) }`
+* Always prefer using factories to building an object manually (e.g. `MyRecord.new)
+* Always prefer using `build` or `build_stubbed` over `create` in tests when possible
 * When defining a factory, use a `sequence` for any field with a unique validation
 
 ## git commits
