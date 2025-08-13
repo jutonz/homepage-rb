@@ -40,14 +40,14 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
   config.after(:each) { Warden.test_reset! }
 
-  config.include FactoryBot::Syntax::Methods
-  config.include ActiveSupport::Testing::TimeHelpers
-  config.include JsonResponse, type: :request
-  config.include CapybaraPage, type: :request
-  config.include ViewComponent::TestHelpers, type: :component
-  config.include ViewComponent::SystemTestHelpers, type: :component
-  config.include Capybara::RSpecMatchers, type: :component
   config.include ActionText::SystemTestHelper, type: :system
+  config.include ActiveSupport::Testing::TimeHelpers
+  config.include Capybara::RSpecMatchers, type: :component
+  config.include CapybaraPage, type: :request
+  config.include FactoryBot::Syntax::Methods
+  config.include JsonResponse, type: :request
+  config.include ViewComponent::SystemTestHelpers, type: :component
+  config.include ViewComponent::TestHelpers, type: :component
 
   config.before(:each, type: :system) do
     driven_by :rack_test
