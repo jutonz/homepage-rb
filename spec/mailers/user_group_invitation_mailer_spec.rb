@@ -23,7 +23,9 @@ RSpec.describe UserGroupInvitationMailer, type: :mailer do
       expect(page.text).to include(group.name)
       expect(page.text).to include(invitation.invited_by.email)
       expect(page.text).to include("Accept Invitation")
-      expect(page.text).to include("/invitations/#{invitation.token}")
+      expect(page.text).to include(
+        invitation_url(token: invitation.token)
+      )
     end
 
     it "includes invitation details in text body" do
@@ -35,8 +37,10 @@ RSpec.describe UserGroupInvitationMailer, type: :mailer do
 
       expect(text_part).to include("You're Invited to Join #{group.name}!")
       expect(text_part).to include(invitation.invited_by.email)
-      expect(text_part).to include("/invitations/#{invitation.token}")
       expect(text_part).to include(invitation.expires_at.strftime("%B %d, %Y"))
+      expect(text_part).to include(
+        invitation_url(token: invitation.token)
+      )
     end
   end
 end

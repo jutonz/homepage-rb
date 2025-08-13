@@ -1,15 +1,7 @@
 class InvitationsController < ApplicationController
   def show
     @invitation = UserGroupInvitation.find_by!(token: params[:token])
-
-    if @invitation.expired?
-      render :expired and return
-    end
-
-    if @invitation.accepted?
-      render :already_accepted and return
-    end
-
+    # in thie show view, handle the otken being expired or already accepted
     # Show the invitation details for acceptance
   end
 end
