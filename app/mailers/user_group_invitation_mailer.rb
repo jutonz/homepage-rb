@@ -12,8 +12,6 @@ class UserGroupInvitationMailer < ApplicationMailer
   private
 
   def invitation_accept_url(token:)
-    # This will be implemented when we add the routes in task-0048
-    # For now, use a placeholder URL structure
-    "#{Rails.application.routes.default_url_options[:host]}/invitations/#{token}/accept"
+    invitation_url(token:)
   end
 end
