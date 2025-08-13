@@ -3,11 +3,11 @@
     <h1 style="color: #333; margin-bottom: 20px;">You're Invited!</h1>
 
     <p style="font-size: 16px; color: #666; margin-bottom: 30px;">
-      <strong><%= @invited_by.email %></strong> has invited you to join the user group:
+      <strong><%= @invitation.invited_by.email %></strong> has invited you to join the user group:
     </p>
 
     <h2 style="color: #2563eb; margin-bottom: 30px; padding: 15px; background-color: white; border-radius: 6px;">
-      <%= @user_group.name %>
+      <%= @invitation.user_group.name %>
     </h2>
 
     <p style="font-size: 14px; color: #666; margin-bottom: 30px;">
