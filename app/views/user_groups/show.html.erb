@@ -55,3 +55,70 @@
     </div>
   </div>
 </div>
+
+<% if policy(@user_group).update? %>
+  <div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">
+    <h3 class="text-lg font-semibold mb-4">Manage Invitations</h3>
+    
+    <!-- Send New Invitation Form -->
+    <div class="mb-6">
+      <h4 class="text-md font-medium mb-3">Send Invitation</h4>
+      <%= form_with(
+        model: [@user_group, @new_invitation],
+        url: user_group_invitations_path(@user_group),
+        local: true,
+        class: "flex space-x-2"
+      ) do |form| %>
+        <%= form.email_field(
+          :email,
+          placeholder: "Enter email address",
+          required: true,
+          class: "flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+        ) %>
+        <%= form.submit(
+          "Send Invitation",
+          class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ) %>
+      <% end %>
+    </div>
+
+    <!-- Pending Invitations List -->
+    <div>
+      <h4 class="text-md font-medium mb-3">Pending Invitations</h4>
+      <% if @pending_invitations.any? %>
+        <div class="space-y-2">
+          <% @pending_invitations.each do |invitation| %>
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+              <div class="flex-1">
+                <div class="font-medium text-gray-900"><%= invitation.email %></div>
+                <div class="text-sm text-gray-500">
+                  Sent <%= time_ago_in_words(invitation.created_at) %> ago
+                  <% if invitation.expired? %>
+                    • <span class="text-red-600 font-medium">Expired</span>
+                  <% else %>
+                    • Expires <%= time_ago_in_words(invitation.expires_at) %>
+                  <% end %>
+                </div>
+              </div>
+              <div class="flex space-x-2">
+                <% unless invitation.expired? %>
+                  <%= render(PillComponent.new(
+                    text: "Pending",
+                    color: :yellow
+                  )) %>
+                <% else %>
+                  <%= render(PillComponent.new(
+                    text: "Expired",
+                    color: :red
+                  )) %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 italic">No pending invitations.</p>
+      <% end %>
+    </div>
+  </div>
+<% end %>
