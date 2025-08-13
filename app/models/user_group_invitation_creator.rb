@@ -1,7 +1,5 @@
 class UserGroupInvitationCreator
-  def self.call(user_group:, email:, invited_by:)
-    new(user_group:, email:, invited_by:).call
-  end
+  def self.call(...) = new(...).call
 
   def initialize(user_group:, email:, invited_by:)
     @user_group = user_group

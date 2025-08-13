@@ -4,7 +4,7 @@ title: Add UserGroupInvitation model
 status: Done
 assignee: []
 created_date: '2025-08-12 21:38'
-updated_date: '2025-08-12 21:43'
+updated_date: '2025-08-13 00:33'
 labels:
   - database
   - model

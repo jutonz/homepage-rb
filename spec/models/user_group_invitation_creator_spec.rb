@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe UserGroupInvitationCreator, type: :model do
   describe ".call" do
-    it "creates a UserGroupInvitation with required attributes" do
+    it "creates a UserGroupInvitation", :freeze_time do
       user_group = create(:user_group)
       invited_by = create(:user)
       email = "test@example.com"
@@ -19,7 +19,7 @@ RSpec.describe UserGroupInvitationCreator, type: :model do
       expect(invitation.invited_by).to eq(invited_by)
       expect(invitation.token).to be_present
       expect(invitation.token.length).to eq(43)
-      expect(invitation.expires_at).to be_within(1.minute).of(7.days.from_now)
+      expect(invitation.expires_at.to_i).to eql(7.days.from_now.to_i)
       expect(invitation.accepted_at).to be_nil
     end
 
