@@ -61,7 +61,7 @@ Rails.application.routes.draw do
   end
 
   resources :invitations, only: [:show], param: :token do
-    resource :acceptance, only: [:create]
+    resource :acceptance, only: [:create], module: :invitations
   end
 
   namespace :settings do

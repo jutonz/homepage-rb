@@ -63,7 +63,7 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 
 ### Testing rules
 * Do not use `let`, `let!`, `before`, or `context`
-* Break complex setup into methods
+* Use request specs instead of controller specs.
 * Organize tests into distinct act/arrange/assert blocks
 * Always add tests for new code
 * Always run tests after creating or modifying them

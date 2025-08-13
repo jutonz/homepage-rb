@@ -1,9 +1,11 @@
 module Invitations
   class AcceptancesController < ApplicationController
     before_action :ensure_authenticated!
+    after_action :verify_authorized
 
     def create
       @invitation = UserGroupInvitation.find_by!(token: params[:invitation_token])
+      authorize(@invitation, :show?)
 
       if @invitation.accept!
         redirect_to @invitation.user_group, notice: "Welcome to #{@invitation.user_group.name}!"
