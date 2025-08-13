@@ -3,6 +3,10 @@ class UserGroupInvitationPolicy < ApplicationPolicy
     user.present? && user == record.user_group.owner
   end
 
+  def destroy?
+    user.present? && user == record.user_group.owner
+  end
+
   def show?
     # Anyone can view an invitation (public link with token)
     true

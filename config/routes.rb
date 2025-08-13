@@ -57,7 +57,7 @@ Rails.application.routes.draw do
 
   resources :ingredients
   resources :user_groups do
-    resources :invitations, only: [:create], module: :user_groups
+    resources :invitations, only: [:create, :destroy], module: :user_groups
   end
 
   resources :invitations, only: [:show], param: :token do
