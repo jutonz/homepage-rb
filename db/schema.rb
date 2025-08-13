@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_132519) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_214037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -366,6 +366,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_132519) do
     t.index ["user_id"], name: "index_todo_tasks_on_user_id"
   end
 
+  create_table "user_group_invitations", force: :cascade do |t|
+    t.string "email", null: false
+    t.bigint "user_group_id", null: false
+    t.string "token", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "accepted_at"
+    t.bigint "invited_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["accepted_at"], name: "index_user_group_invitations_on_accepted_at"
+    t.index ["email", "user_group_id"], name: "index_user_group_invitations_on_email_and_user_group_id", unique: true
+    t.index ["email"], name: "index_user_group_invitations_on_email"
+    t.index ["expires_at"], name: "index_user_group_invitations_on_expires_at"
+    t.index ["invited_by_id"], name: "index_user_group_invitations_on_invited_by_id"
+    t.index ["token"], name: "index_user_group_invitations_on_token", unique: true
+    t.index ["user_group_id"], name: "index_user_group_invitations_on_user_group_id"
+  end
+
   create_table "user_group_memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "user_group_id", null: false
@@ -427,6 +445,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_132519) do
   add_foreign_key "todo_room_tasks", "todo_tasks", column: "task_id"
   add_foreign_key "todo_task_occurrences", "todo_tasks"
   add_foreign_key "todo_tasks", "users"
+  add_foreign_key "user_group_invitations", "user_groups"
+  add_foreign_key "user_group_invitations", "users", column: "invited_by_id"
   add_foreign_key "user_group_memberships", "user_groups"
   add_foreign_key "user_group_memberships", "users"
   add_foreign_key "user_groups", "users", column: "owner_id"

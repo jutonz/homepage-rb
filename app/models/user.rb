@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   has_many :owned_user_groups, class_name: "UserGroup", foreign_key: "owner_id"
   has_many :recipes_ingredients, class_name: "Recipes::Ingredient"
   has_many :recipes_recipes, class_name: "Recipes::Recipe"
+  has_many :sent_user_group_invitations, class_name: "UserGroupInvitation", foreign_key: "invited_by_id"
   has_many :todo_rooms, class_name: "Todo::Room"
   has_many :todo_tasks, class_name: "Todo::Task"
   has_many :user_group_memberships
