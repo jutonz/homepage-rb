@@ -1,9 +1,10 @@
 ---
 id: task-0047
 title: Add UserGroup invitation mailer
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 21:38'
+updated_date: '2025-08-13 01:52'
 labels:
   - mailer
   - email

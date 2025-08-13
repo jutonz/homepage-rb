@@ -1,0 +1,14 @@
+You're Invited to Join <%= @invitation.user_group.name %>!
+
+<%= @invitation.invited_by.email %> has invited you to join the user group "<%= @invitation.user_group.name %>".
+
+To accept this invitation and join the group, visit the following link:
+
+<%= @accept_url %>
+
+This invitation will expire on <%= @invitation.expires_at.strftime("%B %d, %Y at %I:%M %p") %>.
+
+If you didn't expect this invitation, you can safely ignore this email.
+
+---
+This is an automated message. Please do not reply to this email.
