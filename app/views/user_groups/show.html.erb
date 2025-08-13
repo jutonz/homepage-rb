@@ -36,23 +36,24 @@
   <h3 class="text-lg font-semibold mb-4">Manage Invitations</h3>
 
   <div class="mb-6" data-role="invitation-form">
-    <h4 class="text-md font-medium mb-3">Send Invitation</h4>
-    <%= form_with(
-      model: [@user_group, UserGroupInvitation.new],
+    <h4 class="text-md font-medium mb-3">Invite user</h4>
+    <%= simple_form_for(
+      UserGroupInvitation.new,
       url: user_group_invitations_path(@user_group),
-      local: true,
-      class: "flex space-x-2"
+      html: {
+        class: "flex gap-4 items-end"
+      }
     ) do |form| %>
-      <%= form.email_field(
+      <%= form.input(
         :email,
-        placeholder: "Email",
         required: true,
-        class: "flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+        wrapper_html: {
+          class: "w-full"
+        }
       ) %>
-      <%= form.submit(
-        "Send Invitation",
-        class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      ) %>
+      <div>
+        <%= form.submit("Send Invitation", class: "button") %>
+      </div>
     <% end %>
   </div>
 
