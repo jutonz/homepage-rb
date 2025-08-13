@@ -32,23 +32,23 @@
 
 <div class="bg-white rounded-lg border border-gray-200 p-6">
   <h3 class="text-lg font-semibold mb-4">Group Details</h3>
-  
+
   <div class="space-y-3">
     <div>
       <span class="font-medium text-gray-700">Name:</span>
       <span class="ml-2"><%= @user_group.name %></span>
     </div>
-    
+
     <div>
       <span class="font-medium text-gray-700">Owner:</span>
       <span class="ml-2"><%= @user_group.owner.email %></span>
     </div>
-    
+
     <div>
       <span class="font-medium text-gray-700">Created:</span>
       <span class="ml-2"><%= @user_group.created_at.strftime("%B %d, %Y") %></span>
     </div>
-    
+
     <div>
       <span class="font-medium text-gray-700">Members:</span>
       <span class="ml-2"><%= @user_group.users_count %></span>
@@ -59,12 +59,12 @@
 <% if policy(@user_group).update? %>
   <div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">
     <h3 class="text-lg font-semibold mb-4">Manage Invitations</h3>
-    
+
     <!-- Send New Invitation Form -->
     <div class="mb-6">
       <h4 class="text-md font-medium mb-3">Send Invitation</h4>
       <%= form_with(
-        model: [@user_group, @new_invitation],
+        model: [@user_group, UserGroupInvitation.new],
         url: user_group_invitations_path(@user_group),
         local: true,
         class: "flex space-x-2"
@@ -82,7 +82,6 @@
       <% end %>
     </div>
 
-    <!-- Pending Invitations List -->
     <div>
       <h4 class="text-md font-medium mb-3">Pending Invitations</h4>
       <% if @pending_invitations.any? %>

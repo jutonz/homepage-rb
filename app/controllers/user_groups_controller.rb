@@ -10,7 +10,6 @@ class UserGroupsController < ApplicationController
   def show
     @user_group = authorize(find_user_group)
     @pending_invitations = @user_group.user_group_invitations.pending.order(created_at: :desc)
-    @new_invitation = UserGroupInvitation.new
   end
 
   def new
