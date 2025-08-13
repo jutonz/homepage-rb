@@ -8,7 +8,7 @@ class UserGroupInvitationCreator
   end
 
   def call
-    user_group.user_group_invitations.create!(
+    user_group.user_group_invitations.create(
       email:,
       invited_by:,
       token: generate_token,

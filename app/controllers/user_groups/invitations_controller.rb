@@ -13,11 +13,13 @@ module UserGroups
         invited_by: current_user
       )
 
-      UserGroupInvitationMailer.invitation(@invitation).deliver_later
+      if @invitation.persisted?
+        UserGroupInvitationMailer.invitation(@invitation).deliver_later
 
-      redirect_to @user_group, notice: "Invitation sent to #{@invitation.email}."
-    rescue ActiveRecord::RecordInvalid => e
-      redirect_to @user_group, alert: "Failed to send invitation: #{e.record.errors.full_messages.join(", ")}"
+        redirect_to @user_group, notice: "Invitation sent to #{@invitation.email}."
+      else
+        redirect_to @user_group, alert: "Failed to send invitation: #{e.record.errors.full_messages.join(", ")}"
+      end
     end
 
     private

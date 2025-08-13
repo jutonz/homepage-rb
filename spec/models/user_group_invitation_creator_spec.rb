@@ -42,17 +42,17 @@ RSpec.describe UserGroupInvitationCreator, type: :model do
       expect(invitation1.token).not_to eq(invitation2.token)
     end
 
-    it "raises error when validation fails" do
+    it "returns the invalid object if creation fails" do
       user_group = create(:user_group)
       invited_by = create(:user)
 
-      expect {
-        UserGroupInvitationCreator.call(
-          user_group:,
-          email: "invalid-email",
-          invited_by:
-        )
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      invitation = UserGroupInvitationCreator.call(
+        user_group:,
+        email: "invalid-email",
+        invited_by:
+      )
+
+      expect(invitation).to be_invalid
     end
   end
 end
