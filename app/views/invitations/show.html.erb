@@ -1,15 +1,5 @@
-<% if @invitation.expired? %>
-  <%= render(HeaderComponent.new(title: "Invitation Expired")) do |c| %>
-    <%= c.with_crumb("Home", home_path) %>
-  <% end %>
-<% elsif @invitation.accepted? %>
-  <%= render(HeaderComponent.new(title: "Already a Member")) do |c| %>
-    <%= c.with_crumb("Home", home_path) %>
-  <% end %>
-<% else %>
-  <%= render(HeaderComponent.new(title: "Group Invitation")) do |c| %>
-    <%= c.with_crumb("Home", home_path) %>
-  <% end %>
+<%= render(HeaderComponent.new(title: "Group Invitation")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
 <% end %>
 
 <div class="max-w-2xl mx-auto">
