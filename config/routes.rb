@@ -56,7 +56,13 @@ Rails.application.routes.draw do
   end
 
   resources :ingredients
-  resources :user_groups
+  resources :user_groups do
+    resources :invitations, only: [:create], module: :user_groups
+  end
+
+  resources :invitations, only: [:show], param: :token do
+    resource :acceptance, only: [:create], module: :invitations
+  end
 
   namespace :settings do
     namespace :api do

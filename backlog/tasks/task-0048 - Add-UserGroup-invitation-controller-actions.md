@@ -1,9 +1,10 @@
 ---
 id: task-0048
 title: Add UserGroup invitation controller actions
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 21:38'
+updated_date: '2025-08-13 14:40'
 labels:
   - controller
   - api
