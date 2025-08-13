@@ -1,17 +1,15 @@
 require "rails_helper"
 
-RSpec.describe UserGroups::InvitationsController, type: :controller do
-  describe "#create" do
+RSpec.describe UserGroups::InvitationsController, type: :request do
+  describe "create" do
     it "creates invitation when user owns the group" do
       owner = create(:user)
       user_group = create(:user_group, owner:)
       email = "invitee@example.com"
-
-      allow(controller).to receive(:current_user).and_return(owner)
+      login_as(owner)
 
       expect {
-        post :create, params: {
-          user_group_id: user_group.id,
+        post user_group_invitations_path(user_group), params: {
           user_group_invitation: {email:}
         }
       }.to change { UserGroupInvitation.count }.by(1)
@@ -21,6 +19,7 @@ RSpec.describe UserGroups::InvitationsController, type: :controller do
       expect(invitation.email).to eq(email)
       expect(invitation.invited_by).to eq(owner)
       expect(response).to redirect_to(user_group)
+      expect(flash[:notice]).to include("Invitation sent to #{email}")
     end
 
     it "sends invitation email after creation" do
@@ -28,11 +27,10 @@ RSpec.describe UserGroups::InvitationsController, type: :controller do
       user_group = create(:user_group, owner:)
       email = "invitee@example.com"
 
-      allow(controller).to receive(:current_user).and_return(owner)
+      login_as(owner)
 
       expect {
-        post :create, params: {
-          user_group_id: user_group.id,
+        post user_group_invitations_path(user_group), params: {
           user_group_invitation: {email:}
         }
       }.to have_enqueued_mail(UserGroupInvitationMailer, :invitation)
@@ -45,24 +43,22 @@ RSpec.describe UserGroups::InvitationsController, type: :controller do
       non_owner = create(:user)
       user_group = create(:user_group, owner:)
 
-      allow(controller).to receive(:current_user).and_return(non_owner)
+      login_as(non_owner)
 
-      expect {
-        post :create, params: {
-          user_group_id: user_group.id,
-          user_group_invitation: {email: "test@example.com"}
-        }
-      }.to raise_error(Pundit::NotAuthorizedError)
+      post user_group_invitations_path(user_group), params: {
+        user_group_invitation: {email: "test@example.com"}
+      }
+
+      expect(response).to have_http_status(:not_found)
     end
 
     it "handles validation errors gracefully" do
       owner = create(:user)
       user_group = create(:user_group, owner:)
 
-      allow(controller).to receive(:current_user).and_return(owner)
+      login_as(owner)
 
-      post :create, params: {
-        user_group_id: user_group.id,
+      post user_group_invitations_path(user_group), params: {
         user_group_invitation: {email: "invalid-email"}
       }
 
@@ -77,10 +73,9 @@ RSpec.describe UserGroups::InvitationsController, type: :controller do
 
       create(:user_group_invitation, user_group:, email:, invited_by: owner)
 
-      allow(controller).to receive(:current_user).and_return(owner)
+      login_as(owner)
 
-      post :create, params: {
-        user_group_id: user_group.id,
+      post user_group_invitations_path(user_group), params: {
         user_group_invitation: {email:}
       }
 
@@ -91,8 +86,7 @@ RSpec.describe UserGroups::InvitationsController, type: :controller do
     it "requires authentication" do
       user_group = create(:user_group)
 
-      post :create, params: {
-        user_group_id: user_group.id,
+      post user_group_invitations_path(user_group), params: {
         user_group_invitation: {email: "test@example.com"}
       }
 

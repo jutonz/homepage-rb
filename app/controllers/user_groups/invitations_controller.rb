@@ -18,7 +18,7 @@ module UserGroups
 
         redirect_to @user_group, notice: "Invitation sent to #{@invitation.email}."
       else
-        redirect_to @user_group, alert: "Failed to send invitation: #{e.record.errors.full_messages.join(", ")}"
+        redirect_to @user_group, alert: "Failed to send invitation: #{@invitation.errors.full_messages.join(", ")}"
       end
     end
 
