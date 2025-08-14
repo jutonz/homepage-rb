@@ -1,66 +1,63 @@
 require "rails_helper"
 
-RSpec.describe "Invitations", type: :system do
-  describe "sending invitations" do
-    it "allows group owner to send invitations" do
-      owner = create(:user)
-      user_group = create(:user_group, owner:, name: "Test Group")
-      login_as(owner)
+RSpec.describe "User group invitations", type: :system do
+  it "allows group owner to send invitations" do
+    owner = create(:user)
+    user_group = create(:user_group, owner:)
+    login_as(owner)
 
-      visit(user_group_path(user_group))
+    visit(user_group_path(user_group))
 
-      expect(page).to have_content("Manage Invitations")
+    expect(page).to have_content("Manage Invitations")
 
-      within("[data-role=invitation-form]") do
-        fill_in("Email", with: "invited@example.com")
-        click_on("Send Invitation")
-      end
+    within("[data-role=invitation-form]") do
+      fill_in("Email", with: "invited@example.com")
+      click_on("Send Invitation")
+    end
 
-      expect(page).to have_content("Invitation sent to invited@example.com")
-      expect(page).to have_content("invited@example.com")
+    expect(page).to have_content("Invitation sent to invited@example.com")
+    expect(page).to have_content("Pending")
+  end
+
+  it "shows validation errors for invalid email" do
+    owner = create(:user)
+    user_group = create(:user_group, owner:)
+    login_as(owner)
+
+    visit(user_group_path(user_group))
+
+    within("[data-role=invitation-form]") do
+      fill_in "user_group_invitation[email]", with: "invalid-email"
+      click_on "Send Invitation"
+    end
+
+    expect(page).to have_content("Failed to send invitation")
+  end
+
+  it "allows cancelling pending invitations" do
+    owner = create(:user)
+    user_group = create(:user_group, owner:)
+    invitation = create(
+      :user_group_invitation,
+      user_group:,
+      invited_by: owner
+    )
+    login_as(owner)
+
+    visit(user_group_path(user_group))
+
+    within(
+      "[data-role=pending-invitation]",
+      text: invitation.email
+    ) do
       expect(page).to have_content("Pending")
+      click_on("Cancel")
     end
 
-    it "shows validation errors for invalid email" do
-      owner = create(:user)
-      user_group = create(:user_group, owner:)
-      login_as(owner)
-
-      visit(user_group_path(user_group))
-
-      within("[data-role=invitation-form]") do
-        fill_in "user_group_invitation[email]", with: "invalid-email"
-        click_on "Send Invitation"
-      end
-
-      expect(page).to have_content("Failed to send invitation")
-    end
-
-    it "allows cancelling pending invitations" do
-      owner = create(:user)
-      user_group = create(:user_group, owner:)
-      invitation = create(
-        :user_group_invitation,
-        user_group:,
-        invited_by: owner
-      )
-      login_as(owner)
-
-      visit(user_group_path(user_group))
-
-      within(
-        "[data-role=pending-invitation]",
-        text: invitation.email
-      ) do
-        expect(page).to have_content("Pending")
-        click_on("Cancel")
-      end
-
-      expect(page).not_to have_css(
-        "[data-role=pending-invitation]",
-        text: invitation.email
-      )
-    end
+    expect(page).not_to have_css(
+      "[data-role=pending-invitation]",
+      text: invitation.email
+    )
   end
 
   it "displays active invitation details" do
