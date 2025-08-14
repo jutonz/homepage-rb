@@ -27,7 +27,7 @@ RSpec.describe "User group invitations", type: :system do
     visit(user_group_path(user_group))
 
     within("[data-role=invitation-form]") do
-      fill_in "user_group_invitation[email]", with: "invalid-email"
+      fill_in "Email", with: "invalid-email"
       click_on "Send Invitation"
     end
 
