@@ -8,7 +8,7 @@ class PendingInvitationComponent < ApplicationComponent
           <% if @invitation.expired? %>
             • <span class="text-red-600 font-medium">Expired</span>
           <% else %>
-            • Expires <%= time_ago_in_words(@invitation.expires_at) %>
+            • Expires in <%= time_ago_in_words(@invitation.expires_at) %>
           <% end %>
         </div>
       </div>
