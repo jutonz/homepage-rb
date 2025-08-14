@@ -16,12 +16,12 @@ class PendingInvitationComponent < ApplicationComponent
         <% unless @invitation.expired? %>
           <%= render(PillComponent.new(
             text: "Pending",
-            color: :yellow
+            color: :blue
           )) %>
         <% else %>
           <%= render(PillComponent.new(
             text: "Expired",
-            color: :red
+            color: :green
           )) %>
         <% end %>
         <%= button_to(

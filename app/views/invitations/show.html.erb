@@ -81,7 +81,7 @@
 
     <div class="space-y-3">
       <% if @invitation.expired? %>
-        <%= render(PillComponent.new(text: "Expired", color: :red)) %>
+        <%= render(PillComponent.new(text: "Expired", color: :gray)) %>
         <p class="text-sm text-gray-500">
           Please contact <strong><%= @invitation.invited_by.email %></strong> to request a new invitation.
         </p>
