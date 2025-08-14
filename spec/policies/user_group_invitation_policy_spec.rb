@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe UserGroupInvitationPolicy, type: :policy do
-  permissions :create? do
+  permissions :create?, :destroy? do
     it "allows group owners to create invitations" do
       owner = build(:user)
       user_group = build(:user_group, owner:)

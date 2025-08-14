@@ -22,10 +22,27 @@ module UserGroups
       end
     end
 
+    def destroy
+      @user_group = find_user_group
+      @invitation = authorize(find_invitation)
+
+      @invitation.destroy!
+
+      redirect_to(
+        @user_group,
+        status: :see_other,
+        notice: "Invitation to #{@invitation.email} has been cancelled."
+      )
+    end
+
     private
 
     def find_user_group
       policy_scope(UserGroup).find(params[:user_group_id])
+    end
+
+    def find_invitation
+      @user_group.user_group_invitations.find(params[:id])
     end
 
     def invitation_params

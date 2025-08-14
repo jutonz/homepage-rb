@@ -1,9 +1,10 @@
 ---
 id: task-0050
 title: Add UserGroup invitation UI
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 21:38'
+updated_date: '2025-08-13 16:39'
 labels:
   - ui
   - frontend

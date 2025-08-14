@@ -30,28 +30,43 @@
   )) %>
 </div>
 
-<div class="bg-white rounded-lg border border-gray-200 p-6">
-  <h3 class="text-lg font-semibold mb-4">Group Details</h3>
-  
-  <div class="space-y-3">
-    <div>
-      <span class="font-medium text-gray-700">Name:</span>
-      <span class="ml-2"><%= @user_group.name %></span>
-    </div>
-    
-    <div>
-      <span class="font-medium text-gray-700">Owner:</span>
-      <span class="ml-2"><%= @user_group.owner.email %></span>
-    </div>
-    
-    <div>
-      <span class="font-medium text-gray-700">Created:</span>
-      <span class="ml-2"><%= @user_group.created_at.strftime("%B %d, %Y") %></span>
-    </div>
-    
-    <div>
-      <span class="font-medium text-gray-700">Members:</span>
-      <span class="ml-2"><%= @user_group.users_count %></span>
-    </div>
+<%= render(UserGroupDetailsComponent.new(user_group: @user_group)) %>
+
+<div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">
+  <h3 class="text-lg font-semibold mb-4">Manage Invitations</h3>
+
+  <div class="mb-6" data-role="invitation-form">
+    <h4 class="text-md font-medium mb-3">Invite user</h4>
+    <%= simple_form_for(
+      UserGroupInvitation.new,
+      url: user_group_invitations_path(@user_group),
+      html: {
+        class: "flex gap-4 items-end"
+      }
+    ) do |form| %>
+      <%= form.input(
+        :email,
+        required: true,
+        wrapper_html: {
+          class: "w-full"
+        }
+      ) %>
+      <div>
+        <%= form.submit("Send Invitation", class: "button") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <h4 class="text-md font-medium mb-3">Pending Invitations</h4>
+    <% if @pending_invitations.any? %>
+      <div class="space-y-2">
+        <% @pending_invitations.each do |invitation| %>
+          <%= render(PendingInvitationComponent.new(invitation:)) %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-gray-500 italic">No pending invitations.</p>
+    <% end %>
   </div>
 </div>

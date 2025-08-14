@@ -1,7 +1,13 @@
 class InvitationsController < ApplicationController
+  after_action :verify_authorized
+
   def show
-    @invitation = UserGroupInvitation.find_by!(token: params[:token])
-    # in thie show view, handle the otken being expired or already accepted
-    # Show the invitation details for acceptance
+    @invitation = authorize(find_invitation)
+  end
+
+  private
+
+  def find_invitation
+    UserGroupInvitation.find_by!(token: params[:token])
   end
 end

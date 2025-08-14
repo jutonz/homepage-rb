@@ -93,4 +93,53 @@ RSpec.describe UserGroups::InvitationsController, type: :request do
       expect(response).to redirect_to(new_session_path)
     end
   end
+
+  describe "delete" do
+    it "deletes invitation when user owns the group" do
+      owner = create(:user)
+      user_group = create(:user_group, owner:)
+      invitation = create(:user_group_invitation, user_group:, invited_by: owner)
+      login_as(owner)
+
+      expect {
+        delete user_group_invitation_path(user_group, invitation)
+      }.to change { UserGroupInvitation.count }.by(-1)
+
+      expect(response).to redirect_to(user_group)
+      expect(flash[:notice]).to include("cancelled")
+    end
+
+    it "prevents non-owners from deleting invitations" do
+      owner = create(:user)
+      non_owner = create(:user)
+      user_group = create(:user_group, owner:)
+      invitation = create(:user_group_invitation, user_group:, invited_by: owner)
+
+      login_as(non_owner)
+
+      delete user_group_invitation_path(user_group, invitation)
+
+      expect(response).to have_http_status(:not_found)
+      expect(UserGroupInvitation.exists?(invitation.id)).to be_truthy
+    end
+
+    it "requires authentication" do
+      user_group = create(:user_group)
+      invitation = create(:user_group_invitation, user_group:)
+
+      delete user_group_invitation_path(user_group, invitation)
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 for non-existent invitation" do
+      owner = create(:user)
+      user_group = create(:user_group, owner:)
+      login_as(owner)
+
+      delete user_group_invitation_path(user_group, 99999)
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 end
