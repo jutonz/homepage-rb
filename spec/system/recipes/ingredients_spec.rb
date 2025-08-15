@@ -20,7 +20,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
     expect(page).to have_content("Add Ingredient to #{recipe.name}")
 
-    select ingredient1.name, from: "Ingredient"
+    fill_in "Ingredient", with: ingredient1.name
     fill_in "Quantity", with: "2"
     select unit1.name, from: "Unit"
 
@@ -33,7 +33,7 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
     click_link "Add Ingredient"
 
-    select ingredient2.name, from: "Ingredient"
+    fill_in "Ingredient", with: ingredient2.name
     fill_in "Quantity", with: "1.5"
     select unit2.name, from: "Unit"
 
@@ -90,7 +90,60 @@ RSpec.describe "Recipe ingredient management", type: :system do
     expect(page).to have_content(ingredient.name)
   end
 
-  it "handles recipes with no available ingredients" do
+  it "allows creating new ingredients while adding them to recipes" do
+    user = create(:user)
+    recipe_group = create(:recipe_group, owner: user)
+    login_as(user)
+    recipe = create(:recipes_recipe, name: "Test Recipe", user: user, recipe_group: recipe_group)
+    unit = create(:recipes_unit)
+
+    visit new_recipe_group_recipe_ingredient_path(recipe_group, recipe)
+
+    expect(page).to have_content("Add Ingredient to #{recipe.name}")
+
+    # Test creating a new ingredient
+    new_ingredient_name = "Brand New Ingredient"
+    fill_in "Ingredient", with: new_ingredient_name
+    fill_in "Quantity", with: "1"
+    select unit.name, from: "Unit"
+
+    expect {
+      click_on "Create Recipe ingredient"
+    }.to change { Recipes::Ingredient.count }.by(1)
+
+    expect(page).to have_content("Ingredient was successfully added to recipe")
+    expect(page).to have_content(new_ingredient_name)
+
+    # Verify the ingredient was created and belongs to the user
+    new_ingredient = Recipes::Ingredient.find_by(name: new_ingredient_name)
+    expect(new_ingredient).to be_present
+    expect(new_ingredient.user).to eq(user)
+  end
+
+  it "finds existing ingredients case-insensitively" do
+    user = create(:user)
+    recipe_group = create(:recipe_group, owner: user)
+    login_as(user)
+    recipe = create(:recipes_recipe, user: user, recipe_group: recipe_group)
+    create(:recipes_ingredient, user: user, name: "Salt")
+    unit = create(:recipes_unit)
+
+    visit new_recipe_group_recipe_ingredient_path(recipe_group, recipe)
+
+    # Try to add "SALT" (different case) - should find existing "Salt"
+    fill_in "Ingredient", with: "SALT"
+    fill_in "Quantity", with: "1"
+    select unit.name, from: "Unit"
+
+    expect {
+      click_on "Create Recipe ingredient"
+    }.not_to change { Recipes::Ingredient.count }
+
+    expect(page).to have_content("Ingredient was successfully added to recipe")
+    expect(page).to have_content("Salt")
+  end
+
+  it "shows helpful tip about creating ingredients" do
     user = create(:user)
     recipe_group = create(:recipe_group, owner: user)
     login_as(user)
@@ -98,11 +151,8 @@ RSpec.describe "Recipe ingredient management", type: :system do
 
     visit new_recipe_group_recipe_ingredient_path(recipe_group, recipe)
 
-    expect(page).to have_content("No ingredients available")
-    expect(page).to have_link("Create New Ingredient")
-
-    click_link "Create New Ingredient"
-
-    expect(page).to have_content("New Ingredient")
+    expect(page).to have_content("💡 Tip")
+    expect(page).to have_content("Start typing an ingredient name above")
+    expect(page).to have_content("new ingredient will be created automatically")
   end
 end

@@ -1,0 +1,40 @@
+/* Autocomplete dropdown styles */
+.autocomplete-dropdown {
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: none;
+}
+
+.autocomplete-dropdown .suggestion-item {
+  transition: background-color 0.15s ease-in-out;
+}
+
+.autocomplete-dropdown .suggestion-item:focus {
+  outline: none;
+  background-color: rgb(239 246 255); /* bg-blue-50 */
+  color: rgb(29 78 216); /* text-blue-700 */
+}
+
+/* Ensure proper z-index stacking */
+.autocomplete-dropdown {
+  z-index: 1000;
+}
+
+/* Scrollbar styling for webkit browsers */
+.autocomplete-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

@@ -1,10 +1,10 @@
 ---
 id: task-0043
 title: UserGroup invitations
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-08-12 00:33'
-updated_date: '2025-08-12 21:39'
+updated_date: '2025-08-15 13:04'
 labels: []
 dependencies:
   - task-0042

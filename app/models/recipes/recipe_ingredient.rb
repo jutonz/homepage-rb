@@ -33,6 +33,9 @@ module Recipes
     belongs_to :ingredient, class_name: "Recipes::Ingredient"
     belongs_to :unit, class_name: "Recipes::Unit"
 
+    # Virtual attribute for ingredient name used in forms
+    attr_accessor :ingredient_name
+
     validates :recipe_id,
       presence: true,
       uniqueness: {scope: :ingredient_id}

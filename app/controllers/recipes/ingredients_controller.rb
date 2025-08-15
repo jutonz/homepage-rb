@@ -18,7 +18,17 @@ module Recipes
 
     def create
       @recipe = find_recipe
-      @recipe_ingredient = authorize(@recipe.recipe_ingredients.build(recipe_ingredient_params))
+
+      # Find or create the ingredient
+      ingredient = find_or_create_ingredient
+      return render_with_errors unless ingredient.persisted?
+
+      # Build the recipe ingredient
+      @recipe_ingredient = authorize(@recipe.recipe_ingredients.build(
+        ingredient: ingredient,
+        quantity_string: recipe_ingredient_params[:quantity_string],
+        unit_id: recipe_ingredient_params[:unit_id]
+      ))
 
       if @recipe_ingredient.save
         redirect_to recipe_group_recipe_ingredients_path(@recipe_group, @recipe), notice: "Ingredient was successfully added to recipe."
@@ -74,8 +84,36 @@ module Recipes
 
     def recipe_ingredient_params
       params.expect(
-        recipes_recipe_ingredient: %i[ingredient_id quantity_string unit_id]
+        recipes_recipe_ingredient: %i[ingredient_name quantity_string unit_id]
       )
+    end
+
+    def find_or_create_ingredient
+      ingredient_name = recipe_ingredient_params[:ingredient_name]&.strip
+      return nil if ingredient_name.blank?
+
+      # Normalize the name to lowercase for case-insensitive matching
+      normalized_name = ingredient_name.downcase
+
+      # Find existing ingredient (case-insensitive) or create new one
+      ingredient = current_user.recipes_ingredients.find_by(
+        "LOWER(name) = ?", normalized_name
+      )
+
+      unless ingredient
+        # Create new ingredient with proper capitalization
+        ingredient = current_user.recipes_ingredients.build(name: ingredient_name)
+        ingredient.save
+      end
+
+      ingredient
+    end
+
+    def render_with_errors
+      @ingredient = find_or_create_ingredient
+      @recipe_ingredient = @recipe.recipe_ingredients.build
+      @available_ingredients = find_available_ingredients
+      render :new, status: :unprocessable_content
     end
   end
 end
