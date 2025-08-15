@@ -1,9 +1,10 @@
 ---
 id: task-0051
 title: Add UserGroupInvitation authorization policies
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 21:38'
+updated_date: '2025-08-15 12:51'
 labels:
   - authorization
   - security

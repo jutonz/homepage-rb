@@ -1,9 +1,10 @@
 ---
 id: task-0049
 title: Add invitation acceptance flow
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-12 21:38'
+updated_date: '2025-08-15 12:48'
 labels:
   - controller
   - authentication
