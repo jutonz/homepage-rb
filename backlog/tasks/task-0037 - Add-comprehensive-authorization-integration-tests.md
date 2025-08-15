@@ -1,10 +1,10 @@
 ---
 id: task-0037
 title: Add comprehensive authorization integration tests
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-08-11 01:04'
-updated_date: '2025-08-11 02:08'
+updated_date: '2025-08-15 12:56'
 labels:
   - authorization
   - testing
