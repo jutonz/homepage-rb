@@ -96,7 +96,7 @@ export default class extends Controller {
   renderSuggestions() {
     if (this.filteredSuggestions.length === 0) {
       this.dropdownTarget.innerHTML = `
-        <div class="p-3 text-sm text-gray-500 italic">
+        <div class="px-4 py-3 text-sm text-gray-500 italic">
           No existing ingredients found. Type to create a new one.
         </div>
       `
@@ -106,7 +106,7 @@ export default class extends Controller {
     this.dropdownTarget.innerHTML = this.filteredSuggestions
       .map((suggestion, index) => `
         <div 
-          class="suggestion-item p-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+          class="suggestion-item px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 text-sm"
           data-suggestion='${JSON.stringify(suggestion)}'
           data-action="click->ingredient-autocomplete#clickSuggestion"
           data-index="${index}"
