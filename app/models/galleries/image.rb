@@ -59,14 +59,20 @@ module Galleries
       tags_relation = Tag.where(id: tags.map(&:id)).includes(:auto_add_tags)
       tags_to_add = Set.new(tags_relation + tags_relation.flat_map(&:auto_add_tags))
 
+      # Process social links and potentially get different tags back
+      final_tags_to_add = Set.new
       tags_to_add.each do |tag|
+        resolved_tag = SocialLinksCreator.call(tag)
+        final_tags_to_add << resolved_tag if resolved_tag
+      end
+
+      final_tags_to_add.each do |tag|
         unless self.tags.include?(tag)
           self.tags << tag
         end
       end
 
       save!
-      tags_to_add.each { SocialLinksCreator.call(it) }
     end
 
     def remove_tag(tag)

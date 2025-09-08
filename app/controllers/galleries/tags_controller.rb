@@ -33,13 +33,26 @@ module Galleries
       @tag = authorize(@gallery.tags.new(tag_params.merge(user: current_user)))
 
       if @tag.save
+        # Check if this is a social tag that resolves to an existing tag
+        resolved_tag = SocialLinksCreator.call(@tag)
+
+        if resolved_tag != @tag
+          # This was a duplicate social tag, redirect to existing tag
+          # and clean up the tag we just created since it's not needed
+          @tag.destroy!
+          @tag = resolved_tag
+          notice_message = "Tag already exists with that social media link."
+        else
+          notice_message = "Tag was successfully created."
+        end
+
         if params[:add_to_image_id]
           image = @gallery.images.find_by(id: params[:add_to_image_id])
           image.add_tag(@tag)
-          redirect_to([@gallery, image]) and return
+          redirect_to([@gallery, image], notice: notice_message) and return
         end
 
-        redirect_to [@gallery, @tag], notice: "Tag was successfully created."
+        redirect_to [@gallery, @tag], notice: notice_message
       else
         render :new, status: :unprocessable_content
       end
