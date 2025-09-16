@@ -81,12 +81,12 @@ module Recipes
       end
 
       # Fallback for common decimals
-      case decimal
-      when 0.25 then [1, 4]
-      when 0.5 then [1, 2]
-      when 0.75 then [3, 4]
-      when 0.33, 0.333, 0.3333 then [1, 3]
-      when 0.67, 0.667, 0.6667 then [2, 3]
+      case decimal.to_d
+      when BigDecimal("0.25") then [1, 4]
+      when BigDecimal("0.5") then [1, 2]
+      when BigDecimal("0.75") then [3, 4]
+      when BigDecimal("0.33"), BigDecimal("0.333"), BigDecimal("0.3333") then [1, 3]
+      when BigDecimal("0.67"), BigDecimal("0.667"), BigDecimal("0.6667") then [2, 3]
       else
         # Default approximation
         denominator = 100
