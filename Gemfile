@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.4.5"
+ruby "3.4.7"
 
 gem "after_party"
 gem "aws-sdk-s3"
