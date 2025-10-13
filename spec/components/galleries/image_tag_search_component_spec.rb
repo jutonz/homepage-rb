@@ -22,4 +22,22 @@ RSpec.describe Galleries::ImageTagSearchComponent, type: :component do
     expect(page).to have_text(tag.reload.display_name)
     expect(page).to have_button("Add tag")
   end
+
+  it "groups tags by image with separators" do
+    tag_search = create(:galleries_tag_search, :with_image)
+    gallery = tag_search.gallery
+    image1, image2 = create_pair(:galleries_image, gallery:)
+    tag1, tag2 = create_pair(:galleries_tag, gallery:)
+    tag3 = create(:galleries_tag, gallery:)
+    image1.add_tag(tag1)
+    image1.add_tag(tag2)
+    image2.add_tag(tag3)
+    component = described_class.new(tag_search:)
+    render_inline(component)
+
+    expect(page).to have_css("[data-testid='tag-group-separator']", count: 1)
+    expect(page).to have_text(tag1.reload.display_name)
+    expect(page).to have_text(tag2.reload.display_name)
+    expect(page).to have_text(tag3.reload.display_name)
+  end
 end

@@ -12,7 +12,7 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
       gallery:,
       excluded_image_ids: nil,
       image_limit: 10
-    ).pluck(:id)
+    ).map { it.tag.id }
 
     expect(result).to match_array([tag1.id, tag2.id])
   end
@@ -28,7 +28,7 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
       gallery:,
       excluded_image_ids: nil,
       image_limit: 1
-    ).pluck(:id)
+    ).map { it.tag.id }
 
     expect(result).to eql([tag2.id])
   end
@@ -44,7 +44,7 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
       gallery:,
       excluded_image_ids: [image2.id],
       image_limit: 10
-    ).pluck(:id)
+    ).map { it.tag.id }
 
     expect(result).to eql([tag1.id])
   end
@@ -60,7 +60,7 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
       gallery:,
       excluded_image_ids: nil,
       image_limit: 10
-    ).pluck(:id)
+    ).map { it.tag.id }
 
     expect(result).to eql([tag.id])
   end
@@ -77,8 +77,26 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
       gallery:,
       excluded_image_ids: nil,
       image_limit: 10
-    ).pluck(:id)
+    ).map { it.tag.id }
 
     expect(result).to eql([tag_a.id, tag_b.id])
+  end
+
+  it "includes the most recent image_id for each tag" do
+    gallery = create(:gallery)
+    image1, image2 = create_pair(:galleries_image, gallery:)
+    tag = create(:galleries_tag, gallery:)
+    image1.add_tag(tag)
+    image2.add_tag(tag)
+
+    result = described_class.call(
+      gallery:,
+      excluded_image_ids: nil,
+      image_limit: 10
+    )
+
+    expect(result.length).to eql(1)
+    expect(result.first.tag.id).to eql(tag.id)
+    expect(result.first.most_recent_image_id).to eql(image2.id)
   end
 end

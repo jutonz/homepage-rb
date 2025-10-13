@@ -10,9 +10,10 @@
 #
 # Indexes
 #
-#  index_galleries_image_tags_on_image_id             (image_id)
-#  index_galleries_image_tags_on_tag_id               (tag_id)
-#  index_galleries_image_tags_on_tag_id_and_image_id  (tag_id,image_id) UNIQUE
+#  index_galleries_image_tags_on_image_id                 (image_id)
+#  index_galleries_image_tags_on_image_id_and_created_at  (image_id,created_at)
+#  index_galleries_image_tags_on_tag_id                   (tag_id)
+#  index_galleries_image_tags_on_tag_id_and_image_id      (tag_id,image_id) UNIQUE
 #
 # Foreign Keys
 #
