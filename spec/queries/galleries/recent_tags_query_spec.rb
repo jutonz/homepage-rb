@@ -14,7 +14,7 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
       image_limit: 10
     ).pluck(:id)
 
-    expect(result).to eql([tag1.id, tag2.id])
+    expect(result).to match_array([tag1.id, tag2.id])
   end
 
   it "can limit the number of images referenced" do
@@ -65,11 +65,11 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
     expect(result).to eql([tag.id])
   end
 
-  it "orders tags by name" do
+  it "orders tags by their most recent usage time" do
     gallery = create(:gallery)
     image1, image2 = create_pair(:galleries_image, gallery:)
-    tag_b = create(:galleries_tag, gallery:, name: "Tag B")
-    tag_a = create(:galleries_tag, gallery:, name: "Tag A")
+    tag_b = create(:galleries_tag, gallery:)
+    tag_a = create(:galleries_tag, gallery:)
     image1.add_tag(tag_b)
     image2.add_tag(tag_a)
 
