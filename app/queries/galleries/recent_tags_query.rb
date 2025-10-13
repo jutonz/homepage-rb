@@ -22,7 +22,8 @@ module Galleries
         SELECT DISTINCT ON (galleries_tags.id)
           galleries_tags.id AS tag_id,
           galleries_image_tags.created_at AS max_tag_created_at,
-          galleries_image_tags.image_id AS most_recent_image_id
+          galleries_image_tags.image_id AS most_recent_image_id,
+          recent_images.max_created_at AS image_max_created_at
         FROM galleries_tags
         JOIN galleries_image_tags
           ON galleries_image_tags.tag_id = galleries_tags.id
@@ -36,7 +37,7 @@ module Galleries
         tmt.most_recent_image_id
       FROM galleries_tags
       JOIN tag_max_times tmt ON tmt.tag_id = galleries_tags.id
-      ORDER BY tmt.max_tag_created_at DESC
+      ORDER BY tmt.image_max_created_at DESC, galleries_tags.name ASC
       ;
     SQL
 

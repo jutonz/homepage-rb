@@ -99,4 +99,22 @@ RSpec.describe Galleries::RecentTagsQuery, ".call" do
     expect(result.first.tag.id).to eql(tag.id)
     expect(result.first.most_recent_image_id).to eql(image2.id)
   end
+
+  it "orders tags alphabetically within the same image group" do
+    gallery = create(:gallery)
+    image1, image2 = create_pair(:galleries_image, gallery:)
+    tag_a = create(:galleries_tag, gallery:, name: "Tag A")
+    tag_b = create(:galleries_tag, gallery:, name: "Tag B")
+    tag_c = create(:galleries_tag, gallery:, name: "Tag C")
+    [tag_a, tag_b].each { image1.add_tag(it) }
+    [tag_b, tag_c].each { image2.add_tag(it) }
+
+    tag_names = described_class.call(
+      gallery:,
+      excluded_image_ids: nil,
+      image_limit: 10
+    ).map { it.tag.name }
+
+    expect(tag_names).to eql(["Tag B", "Tag C", "Tag A"])
+  end
 end
