@@ -19,27 +19,21 @@ module Galleries
         LIMIT ?
       ),
       tag_max_times AS (
-        SELECT
+        SELECT DISTINCT ON (galleries_tags.id)
           galleries_tags.id AS tag_id,
-          MAX(galleries_image_tags.created_at) AS max_tag_created_at
+          galleries_image_tags.created_at AS max_tag_created_at,
+          galleries_image_tags.image_id AS most_recent_image_id
         FROM galleries_tags
         JOIN galleries_image_tags
           ON galleries_image_tags.tag_id = galleries_tags.id
         JOIN recent_images
           ON recent_images.id = galleries_image_tags.image_id
-        GROUP BY galleries_tags.id
+        ORDER BY galleries_tags.id, galleries_image_tags.created_at DESC
       )
       SELECT
         galleries_tags.*,
         tmt.max_tag_created_at,
-        (
-          SELECT git.image_id
-          FROM galleries_image_tags git
-          JOIN recent_images ri ON ri.id = git.image_id
-          WHERE git.tag_id = galleries_tags.id
-            AND git.created_at = tmt.max_tag_created_at
-          LIMIT 1
-        ) AS most_recent_image_id
+        tmt.most_recent_image_id
       FROM galleries_tags
       JOIN tag_max_times tmt ON tmt.tag_id = galleries_tags.id
       ORDER BY tmt.max_tag_created_at DESC
