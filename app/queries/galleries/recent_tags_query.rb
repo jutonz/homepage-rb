@@ -1,9 +1,9 @@
 module Galleries
   class RecentTagsQuery
     SQL = <<~SQL
-      SELECT DISTINCT
+      SELECT
         galleries_tags.*,
-        galleries_tags.name
+        MAX(galleries_image_tags.created_at) AS max_tag_created_at
       FROM galleries_tags
       JOIN galleries_image_tags
         ON galleries_image_tags.tag_id = galleries_tags.id
@@ -23,7 +23,8 @@ module Galleries
         LIMIT ?
       ) images
         ON images.id = galleries_image_tags.image_id
-      ORDER BY galleries_tags.name
+      GROUP BY galleries_tags.id
+      ORDER BY max_tag_created_at DESC
       ;
     SQL
 
