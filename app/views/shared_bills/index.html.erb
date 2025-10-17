@@ -1,0 +1,53 @@
+<%= render(HeaderComponent.new(
+  title: "Shared Bills"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Shared Bill",
+      new_shared_bill_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% @shared_bills.each do |shared_bill| %>
+    <%= link_to(
+      shared_bill_path(shared_bill),
+      data: {role: "shared-bill"},
+      class: "block p-4 border border-gray-200 rounded-lg
+             hover:bg-gray-50 hover:border-gray-300
+             transition-colors duration-200 group"
+    ) do %>
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-medium text-gray-900
+                     group-hover:text-gray-700">
+          <%= shared_bill.name %>
+        </span>
+      </div>
+      <div class="flex gap-2">
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1
+                     rounded-full">
+          <%= shared_bill.bills.count %> bills
+        </span>
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1
+                     rounded-full">
+          <%= shared_bill.payees.count %> payees
+        </span>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<% if @shared_bills.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">
+      No shared bills yet
+    </div>
+    <div class="text-sm">
+      Create your first shared bill to start tracking shared
+      expenses.
+    </div>
+  </div>
+<% end %>
