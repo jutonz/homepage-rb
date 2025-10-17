@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   has_many :sent_user_group_invitations,
     class_name: "UserGroupInvitation",
     foreign_key: "invited_by_id"
-  has_many :shared_bills_shared_bills,
+  has_many :shared_bills,
     class_name: "SharedBills::SharedBill"
   has_many :todo_rooms, class_name: "Todo::Room"
   has_many :todo_tasks, class_name: "Todo::Task"

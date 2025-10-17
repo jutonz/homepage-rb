@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   end
 
   resources :ingredients
+  resources :shared_bills
   resources :user_groups do
     resources :invitations, only: [:create, :destroy], module: :user_groups
   end

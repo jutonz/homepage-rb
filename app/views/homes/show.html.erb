@@ -101,6 +101,20 @@
     <% end %>
   <% end %>
 
+  <%= render(CardComponent.new(title: "Shared Bills")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Track and manage shared expenses with bills, payees,
+        and payment tracking.
+      </p>
+      <%= link_to(
+        "Manage Shared Bills",
+        shared_bills_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
+
   <%= render(CardComponent.new(title: "API Access")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
