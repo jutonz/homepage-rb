@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_13_180852) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_17_194530) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -192,6 +192,42 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_180852) do
     t.index ["abbreviation"], name: "index_recipes_units_on_abbreviation", unique: true
     t.index ["name"], name: "index_recipes_units_on_name", unique: true
     t.index ["unit_type"], name: "index_recipes_units_on_unit_type"
+  end
+
+  create_table "shared_bills_bills", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "shared_bill_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shared_bill_id"], name: "index_shared_bills_bills_on_shared_bill_id"
+  end
+
+  create_table "shared_bills_payee_bills", force: :cascade do |t|
+    t.bigint "bill_id", null: false
+    t.bigint "payee_id", null: false
+    t.integer "amount", null: false
+    t.boolean "paid", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bill_id", "payee_id"], name: "index_shared_bills_payee_bills_on_bill_id_and_payee_id", unique: true
+    t.index ["bill_id"], name: "index_shared_bills_payee_bills_on_bill_id"
+    t.index ["payee_id"], name: "index_shared_bills_payee_bills_on_payee_id"
+  end
+
+  create_table "shared_bills_payees", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "shared_bill_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shared_bill_id"], name: "index_shared_bills_payees_on_shared_bill_id"
+  end
+
+  create_table "shared_bills_shared_bills", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_shared_bills_shared_bills_on_user_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -435,6 +471,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_180852) do
   add_foreign_key "recipes_recipe_ingredients", "recipes_units", column: "unit_id"
   add_foreign_key "recipes_recipes", "recipe_groups"
   add_foreign_key "recipes_recipes", "users"
+  add_foreign_key "shared_bills_bills", "shared_bills_shared_bills", column: "shared_bill_id"
+  add_foreign_key "shared_bills_payee_bills", "shared_bills_bills", column: "bill_id"
+  add_foreign_key "shared_bills_payee_bills", "shared_bills_payees", column: "payee_id"
+  add_foreign_key "shared_bills_payees", "shared_bills_shared_bills", column: "shared_bill_id"
+  add_foreign_key "shared_bills_shared_bills", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
