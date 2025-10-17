@@ -67,4 +67,49 @@ RSpec.describe "Shared Bills page" do
     expect(current_path).to eq(shared_bills_path)
     expect(page).not_to have_content("Mobile Phone Bill")
   end
+
+  it "manages payees" do
+    user = create(:user)
+    shared_bill = create(:shared_bill, user:)
+    login_as(user)
+
+    visit(shared_bill_path(shared_bill))
+
+    expect(page).to have_content("No payees yet")
+    click_on("New Payee")
+
+    fill_in("Name", with: "Payee1")
+    click_on("Create Payee")
+
+    expect(page).to have_content("Payee Payee1 was added")
+    expect(page).to have_css("[data-role='payee']", text: "Payee1")
+
+    click_on("New Payee")
+    fill_in("Name", with: "Payee2")
+    click_on("Create Payee")
+
+    expect(page).to have_content("Payee Payee2 was added")
+    expect(page).to have_css("[data-role='payee']", count: 2)
+
+    within("[data-role='payee']", text: "Payee1") do
+      click_on("Edit")
+    end
+
+    fill_in("Name", with: "PayeeOne")
+    click_on("Update Payee")
+
+    expect(page).to have_content("Payee PayeeOne was updated")
+    expect(page).to have_css("[data-role='payee']", text: "PayeeOne")
+
+    within("[data-role='payee']", text: "Payee2") do
+      click_on("Remove")
+    end
+
+    expect(page).to have_content("Payee Payee2 has been removed")
+    expect(page).to have_css("[data-role='payee']", count: 1)
+    expect(page).not_to have_css(
+      "[data-role='payee']",
+      text: "Payee2"
+    )
+  end
 end
