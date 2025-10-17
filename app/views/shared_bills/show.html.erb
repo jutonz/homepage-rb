@@ -24,8 +24,42 @@
 <% end %>
 
 <div class="bg-white rounded-lg border border-gray-200 p-6">
-  <h3 class="text-lg font-semibold mb-4">Bills</h3>
-  <p class="text-gray-500 italic">No bills yet</p>
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-lg font-semibold">Bills</h3>
+    <%= link_to(
+      "New Bill",
+      new_shared_bill_bill_path(@shared_bill),
+      class: "button"
+    ) %>
+  </div>
+
+  <% if @bills.any? %>
+    <div class="space-y-2">
+      <% @bills.each do |bill| %>
+        <div class="flex items-center justify-between p-3
+                    bg-gray-50 rounded-lg"
+             data-role="bill">
+          <span class="font-medium"><%= bill.name %></span>
+          <div class="flex gap-2">
+            <%= link_to(
+              "Edit",
+              edit_shared_bill_bill_path(@shared_bill, bill),
+              class: "button button--secondary button--small"
+            ) %>
+            <%= button_to(
+              "Remove",
+              shared_bill_bill_path(@shared_bill, bill),
+              method: :delete,
+              data: {turbo_confirm: "Remove #{bill.name}?"},
+              class: "button button--danger button--small"
+            ) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-gray-500 italic">No bills yet.</p>
+  <% end %>
 </div>
 
 <div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">
