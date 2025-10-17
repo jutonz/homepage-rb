@@ -116,6 +116,8 @@ RSpec.describe "Shared Bills page" do
   it "manages bills" do
     user = create(:user)
     shared_bill = create(:shared_bill, user:)
+    payee1 = create(:shared_bills_payee, shared_bill:, name: "Payee1")
+    payee2 = create(:shared_bills_payee, shared_bill:, name: "Payee2")
     login_as(user)
 
     visit(shared_bill_path(shared_bill))
@@ -124,27 +126,62 @@ RSpec.describe "Shared Bills page" do
     click_on("New Bill")
 
     fill_in("Name", with: "January Bill")
+    fill_in(
+      "bill_form_payee_amounts_#{payee1.id}_amount",
+      with: "1000"
+    )
+    fill_in(
+      "bill_form_payee_amounts_#{payee2.id}_amount",
+      with: "1500"
+    )
     click_on("Create Bill")
 
     expect(page).to have_content("Bill January Bill was added")
     expect(page).to have_css("[data-role='bill']", text: "January Bill")
 
+    january_bill = SharedBills::Bill.find_by(name: "January Bill")
+    expect(january_bill.payee_bills.count).to eql(2)
+    expect(january_bill.payee_bills.find_by(payee: payee1).amount).to eql(
+      1000
+    )
+    expect(january_bill.payee_bills.find_by(payee: payee2).amount).to eql(
+      1500
+    )
+
     click_on("New Bill")
     fill_in("Name", with: "February Bill")
+    uncheck("bill_form_payee_amounts_#{payee2.id}_selected")
+    fill_in(
+      "bill_form_payee_amounts_#{payee1.id}_amount",
+      with: "2000"
+    )
     click_on("Create Bill")
 
     expect(page).to have_content("Bill February Bill was added")
     expect(page).to have_css("[data-role='bill']", count: 2)
+
+    february_bill = SharedBills::Bill.find_by(name: "February Bill")
+    expect(february_bill.payee_bills.count).to eql(1)
+    expect(february_bill.payee_bills.first.payee).to eql(payee1)
 
     within("[data-role='bill']", text: "January Bill") do
       click_on("Edit")
     end
 
     fill_in("Name", with: "Jan 2025")
+    fill_in(
+      "bill_form_payee_amounts_#{payee1.id}_amount",
+      with: "1200"
+    )
     click_on("Update Bill")
 
     expect(page).to have_content("Bill Jan 2025 was updated")
     expect(page).to have_css("[data-role='bill']", text: "Jan 2025")
+
+    january_bill.reload
+    expect(january_bill.payee_bills.find_by(payee: payee1).amount).to eql(
+      1200
+    )
 
     within("[data-role='bill']", text: "February Bill") do
       click_on("Remove")
