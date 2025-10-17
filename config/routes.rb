@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   resources :shared_bills do
     scope module: :shared_bills do
       resources :payees, except: :index
+      resources :bills, except: :index
     end
   end
   resources :user_groups do

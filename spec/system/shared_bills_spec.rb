@@ -112,4 +112,49 @@ RSpec.describe "Shared Bills page" do
       text: "Payee2"
     )
   end
+
+  it "manages bills" do
+    user = create(:user)
+    shared_bill = create(:shared_bill, user:)
+    login_as(user)
+
+    visit(shared_bill_path(shared_bill))
+
+    expect(page).to have_content("No bills yet")
+    click_on("New Bill")
+
+    fill_in("Name", with: "January Bill")
+    click_on("Create Bill")
+
+    expect(page).to have_content("Bill January Bill was added")
+    expect(page).to have_css("[data-role='bill']", text: "January Bill")
+
+    click_on("New Bill")
+    fill_in("Name", with: "February Bill")
+    click_on("Create Bill")
+
+    expect(page).to have_content("Bill February Bill was added")
+    expect(page).to have_css("[data-role='bill']", count: 2)
+
+    within("[data-role='bill']", text: "January Bill") do
+      click_on("Edit")
+    end
+
+    fill_in("Name", with: "Jan 2025")
+    click_on("Update Bill")
+
+    expect(page).to have_content("Bill Jan 2025 was updated")
+    expect(page).to have_css("[data-role='bill']", text: "Jan 2025")
+
+    within("[data-role='bill']", text: "February Bill") do
+      click_on("Remove")
+    end
+
+    expect(page).to have_content("Bill February Bill has been removed")
+    expect(page).to have_css("[data-role='bill']", count: 1)
+    expect(page).not_to have_css(
+      "[data-role='bill']",
+      text: "February Bill"
+    )
+  end
 end

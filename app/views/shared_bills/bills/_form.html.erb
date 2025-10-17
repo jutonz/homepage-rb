@@ -1,0 +1,12 @@
+<%= simple_form_for(
+  @bill,
+  as: :bill,
+  url: (
+    @bill.persisted? ?
+    shared_bill_bill_path(@shared_bill, @bill) :
+    shared_bill_bills_path(@shared_bill)
+  )
+) do |form| %>
+  <%= form.input(:name, autofocus: true) %>
+  <%= form.button(:submit) %>
+<% end %>
