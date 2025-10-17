@@ -11,6 +11,7 @@ class SharedBillsController < ApplicationController
 
   def show
     @shared_bill = authorize(find_shared_bill)
+    @payees = @shared_bill.payees.order(:name)
   end
 
   def new

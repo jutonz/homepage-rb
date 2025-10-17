@@ -56,7 +56,11 @@ Rails.application.routes.draw do
   end
 
   resources :ingredients
-  resources :shared_bills
+  resources :shared_bills do
+    scope module: :shared_bills do
+      resources :payees, except: :index
+    end
+  end
   resources :user_groups do
     resources :invitations, only: [:create, :destroy], module: :user_groups
   end
