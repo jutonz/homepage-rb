@@ -18,8 +18,6 @@
 #
 module SharedBills
   class Bill < ActiveRecord::Base
-    self.table_name = "shared_bills_bills"
-
     belongs_to :shared_bill,
       class_name: "SharedBills::SharedBill"
     has_many :payee_bills,
