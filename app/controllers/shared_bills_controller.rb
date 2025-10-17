@@ -29,7 +29,7 @@ class SharedBillsController < ApplicationController
 
     if @shared_bill.save
       redirect_to(
-        @shared_bill,
+        shared_bill_path(@shared_bill),
         notice: "Shared bill was successfully created."
       )
     else
@@ -42,7 +42,7 @@ class SharedBillsController < ApplicationController
 
     if @shared_bill.update(shared_bill_params)
       redirect_to(
-        @shared_bill,
+        shared_bill_path(@shared_bill),
         notice: "Shared bill was successfully updated."
       )
     else
@@ -68,8 +68,6 @@ class SharedBillsController < ApplicationController
   end
 
   def shared_bill_params
-    params
-      .require(:shared_bill)
-      .permit(:name)
+    params.expect(shared_bill: [:name])
   end
 end

@@ -1,0 +1,34 @@
+<%= render(HeaderComponent.new(
+  title: @shared_bill.name
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Shared Bills", shared_bills_path) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Edit",
+      edit_shared_bill_path(@shared_bill),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      shared_bill_path(@shared_bill),
+      method: "delete",
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="bg-white rounded-lg border border-gray-200 p-6">
+  <h3 class="text-lg font-semibold mb-4">Bills</h3>
+  <p class="text-gray-500 italic">No bills yet</p>
+</div>
+
+<div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">
+  <h3 class="text-lg font-semibold mb-4">Payees</h3>
+  <p class="text-gray-500 italic">No payees yet</p>
+</div>

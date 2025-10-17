@@ -1,0 +1,12 @@
+<%= render(HeaderComponent.new(
+  title: "Edit Shared Bill"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Shared Bills", shared_bills_path) %>
+  <%= c.with_crumb(
+    @shared_bill.name,
+    shared_bill_path(@shared_bill)
+  ) %>
+<% end %>
+
+<%= render("form") %>
