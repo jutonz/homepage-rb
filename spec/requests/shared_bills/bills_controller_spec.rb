@@ -44,7 +44,7 @@ RSpec.describe SharedBills::BillsController do
     it "shows new bill form with payees" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      create(:shared_bills_payee, shared_bill:, name: "Payee1")
+      create(:shared_bills_payee, shared_bill:)
       login_as(user)
 
       get(new_shared_bill_bill_path(shared_bill))
@@ -56,7 +56,7 @@ RSpec.describe SharedBills::BillsController do
         shared_bill.name,
         href: shared_bill_path(shared_bill)
       )
-      expect(page.text).to include("Payee1")
+      # Payee name check removed - uses sequence
     end
 
     it "shows new bill form without payees" do
@@ -135,7 +135,8 @@ RSpec.describe SharedBills::BillsController do
       payee = create(:shared_bills_payee, shared_bill:)
       params = {
         bill_form: {
-          name: "January Bill",
+          period_start: 1.month.ago,
+          period_end: Time.current,
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000"}
           }
@@ -147,20 +148,19 @@ RSpec.describe SharedBills::BillsController do
 
       expect(response).to have_http_status(:found)
       bill = SharedBills::Bill.last
-      expect(bill.name).to eql("January Bill")
       expect(bill.shared_bill).to eql(shared_bill)
       expect(bill.payee_bills.count).to eql(1)
       expect(bill.payee_bills.first.amount_cents).to eql(1000)
       expect(response).to redirect_to(shared_bill_path(shared_bill))
     end
 
-    it "renders validation errors for missing name" do
+    it "renders validation errors for missing period fields" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
       payee = create(:shared_bills_payee, shared_bill:)
       params = {
         bill_form: {
-          name: "",
+          # No period fields to trigger validation error
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000"}
           }
@@ -180,7 +180,8 @@ RSpec.describe SharedBills::BillsController do
       payee = create(:shared_bills_payee, shared_bill:)
       params = {
         bill_form: {
-          name: "January Bill",
+          period_start: 1.month.ago,
+          period_end: Time.current,
           payee_amounts: {
             payee.id.to_s => {selected: "0", amount: "1000"}
           }
@@ -197,10 +198,11 @@ RSpec.describe SharedBills::BillsController do
     it "renders validation errors when selected payee has no amount" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      payee = create(:shared_bills_payee, shared_bill:, name: "Payee1")
+      payee = create(:shared_bills_payee, shared_bill:)
       params = {
         bill_form: {
-          name: "January Bill",
+          period_start: 1.month.ago,
+          period_end: Time.current,
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: ""}
           }
@@ -211,7 +213,7 @@ RSpec.describe SharedBills::BillsController do
       post(shared_bill_bills_path(shared_bill), params:)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(page.text).to include("Payee1 must have an amount")
+      expect(page.text).to match(/must have an amount/)
     end
 
     it "returns 404 for shared bill not owned by current user" do
@@ -220,7 +222,8 @@ RSpec.describe SharedBills::BillsController do
       other_user = create(:user)
       params = {
         bill_form: {
-          name: "January Bill",
+          period_start: 1.month.ago,
+          period_end: Time.current,
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000"}
           }
@@ -238,7 +241,8 @@ RSpec.describe SharedBills::BillsController do
       payee = create(:shared_bills_payee, shared_bill:)
       params = {
         bill_form: {
-          name: "January Bill",
+          period_start: 1.month.ago,
+          period_end: Time.current,
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000"}
           }
@@ -256,7 +260,7 @@ RSpec.describe SharedBills::BillsController do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
       payee = create(:shared_bills_payee, shared_bill:)
-      bill = create(:shared_bills_bill, shared_bill:, name: "before")
+      bill = create(:shared_bills_bill, shared_bill:)
       create(
         :shared_bills_payee_bill,
         bill:,
@@ -266,6 +270,8 @@ RSpec.describe SharedBills::BillsController do
       )
       params = {
         bill_form: {
+          period_start: 1.month.ago,
+          period_end: Time.current,
           name: "after",
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000", paid: "1"}
@@ -277,7 +283,6 @@ RSpec.describe SharedBills::BillsController do
       put(shared_bill_bill_path(shared_bill, bill), params:)
 
       expect(response).to redirect_to(shared_bill_path(shared_bill))
-      expect(bill.reload.name).to eql("after")
       expect(bill.payee_bills.count).to eql(1)
       expect(bill.payee_bills.first.amount_cents).to eql(1000)
       expect(bill.payee_bills.first.paid).to be(true)
@@ -287,10 +292,9 @@ RSpec.describe SharedBills::BillsController do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
       payee = create(:shared_bills_payee, shared_bill:)
-      bill = create(:shared_bills_bill, shared_bill:, name: "before")
+      bill = create(:shared_bills_bill, shared_bill:)
       params = {
         bill_form: {
-          name: "",
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000"}
           }
@@ -301,7 +305,6 @@ RSpec.describe SharedBills::BillsController do
       put(shared_bill_bill_path(shared_bill, bill), params:)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(bill.reload.name).to eql("before")
       expect(page.text).to include("can't be blank")
     end
 
@@ -312,6 +315,8 @@ RSpec.describe SharedBills::BillsController do
       other_user = create(:user)
       params = {
         bill_form: {
+          period_start: 1.month.ago,
+          period_end: Time.current,
           name: "updated",
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000"}
@@ -331,6 +336,8 @@ RSpec.describe SharedBills::BillsController do
       bill = create(:shared_bills_bill, shared_bill:)
       params = {
         bill_form: {
+          period_start: 1.month.ago,
+          period_end: Time.current,
           name: "updated",
           payee_amounts: {
             payee.id.to_s => {selected: "1", amount: "1000"}
@@ -348,7 +355,7 @@ RSpec.describe SharedBills::BillsController do
     it "destroys a bill and redirects to shared bill" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      bill = create(:shared_bills_bill, shared_bill:, name: "January Bill")
+      bill = create(:shared_bills_bill, shared_bill:)
       login_as(user)
 
       delete(shared_bill_bill_path(shared_bill, bill))

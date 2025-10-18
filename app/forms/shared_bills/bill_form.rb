@@ -2,13 +2,14 @@ module SharedBills
   class BillForm
     include ActiveModel::Model
 
-    attr_accessor :name, :payee_amounts
+    attr_accessor :period_start, :period_end, :payee_amounts
     attr_reader :bill, :shared_bill
 
     def initialize(bill:, shared_bill:)
       @bill = bill
       @shared_bill = shared_bill
-      @name = bill.name
+      @period_start = bill.period_start
+      @period_end = bill.period_end
 
       # payee_amounts is a hash:
       # { payee_id => { selected: true/false, amount: int, paid: bool } }
@@ -33,19 +34,22 @@ module SharedBills
       end
     end
 
-    validates :name, presence: true
+    validates :period_start, presence: true
+    validates :period_end, presence: true
     validate :at_least_one_payee_selected
     validate :selected_payees_have_amounts
 
     def assign(params)
-      @name = params[:name]
+      @period_start = parse_datetime(params[:period_start])
+      @period_end = parse_datetime(params[:period_end])
       @payee_amounts = params[:payee_amounts] || {}
     end
 
     def save
       return false if invalid?
 
-      bill.name = name
+      bill.period_start = period_start
+      bill.period_end = period_end
       return false unless bill.save
 
       begin
@@ -127,6 +131,15 @@ module SharedBills
       return false if selected_value == "0"
 
       true
+    end
+
+    def parse_datetime(value)
+      return nil if value.blank?
+      return value if value.is_a?(Time) || value.is_a?(DateTime)
+
+      Time.zone.parse(value.to_s)
+    rescue ArgumentError
+      nil
     end
   end
 end

@@ -14,7 +14,8 @@
     ) %>
   <% end %>
 
-  <%= form.input(:name, autofocus: true) %>
+  <%= form.input(:period_start, as: :datetime, autofocus: true) %>
+  <%= form.input(:period_end, as: :datetime) %>
 
   <% if @shared_bill.payees.any? %>
     <div class="mb-4">

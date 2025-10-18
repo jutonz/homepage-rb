@@ -31,9 +31,10 @@ module SharedBills
       @bill_form.assign(bill_form_params)
 
       if @bill_form.save
+        period = "#{@bill_form.period_start.to_date} - #{@bill_form.period_end.to_date}"
         redirect_to(
           shared_bill_path(@shared_bill),
-          notice: "Bill #{@bill_form.name} was added."
+          notice: "Bill for #{period} was added."
         )
       else
         render(:new, status: :unprocessable_content)
@@ -51,9 +52,10 @@ module SharedBills
       @bill_form.assign(bill_form_params)
 
       if @bill_form.save
+        period = "#{@bill_form.period_start.to_date} - #{@bill_form.period_end.to_date}"
         redirect_to(
           shared_bill_path(@shared_bill),
-          notice: "Bill #{@bill_form.name} was updated."
+          notice: "Bill for #{period} was updated."
         )
       else
         render(:edit, status: :unprocessable_content)
@@ -66,10 +68,11 @@ module SharedBills
 
       @bill.destroy!
 
+      period = "#{@bill.period_start.to_date} - #{@bill.period_end.to_date}"
       redirect_to(
         shared_bill_path(@shared_bill),
         status: :see_other,
-        notice: "Bill #{@bill.name} has been removed."
+        notice: "Bill for #{period} has been removed."
       )
     end
 
@@ -85,7 +88,7 @@ module SharedBills
     end
 
     def bill_form_params
-      params.expect(bill_form: [:name, payee_amounts: {}])
+      params.expect(bill_form: [:period_start, :period_end, payee_amounts: {}])
     end
   end
 end
