@@ -27,6 +27,8 @@ module SharedBills
     belongs_to :payee, class_name: "SharedBills::Payee"
 
     validates :amount_cents, presence: true
+    validates :amount_cents,
+      numericality: {only_integer: true, greater_than_or_equal_to: 0}
     validates :paid, inclusion: {in: [true, false]}
     validates :payee_id,
       uniqueness: {scope: :bill_id}

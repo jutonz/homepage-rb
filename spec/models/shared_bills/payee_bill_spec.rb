@@ -29,11 +29,15 @@ RSpec.describe SharedBills::PayeeBill do
   it { is_expected.to belong_to(:bill) }
   it { is_expected.to belong_to(:payee) }
   it { is_expected.to validate_presence_of(:amount_cents) }
-  it {
+  it do
+    is_expected.to validate_numericality_of(:amount_cents)
+      .is_greater_than_or_equal_to(0)
+  end
+  it do
     is_expected.to(
       validate_uniqueness_of(:payee_id).scoped_to(:bill_id)
     )
-  }
+  end
 
   it "has a valid factory" do
     expect(subject).to be_valid
