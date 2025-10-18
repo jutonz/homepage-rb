@@ -31,8 +31,8 @@ RSpec.describe SharedBills::Bill do
   describe ".with_total_amount" do
     it "calculates total_amount as sum of payee_bills" do
       bill = create(:shared_bills_bill)
-      create(:shared_bills_payee_bill, bill:, amount: 1)
-      create(:shared_bills_payee_bill, bill:, amount: 2)
+      create(:shared_bills_payee_bill, bill:, amount_cents: 1)
+      create(:shared_bills_payee_bill, bill:, amount_cents: 2)
 
       result = described_class.with_total_amount.find(bill.id)
 
@@ -49,12 +49,12 @@ RSpec.describe SharedBills::Bill do
 
     it "updates total_amount when payee_bills change" do
       bill = create(:shared_bills_bill)
-      payee_bill = create(:shared_bills_payee_bill, bill:, amount: 1)
+      payee_bill = create(:shared_bills_payee_bill, bill:, amount_cents: 1)
 
       result = described_class.with_total_amount.find(bill.id)
       expect(result.total_amount).to eql(1)
 
-      payee_bill.update!(amount: 2)
+      payee_bill.update!(amount_cents: 2)
 
       result = described_class.with_total_amount.find(bill.id)
       expect(result.total_amount).to eql(2)

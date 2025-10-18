@@ -141,12 +141,12 @@ RSpec.describe "Shared Bills page" do
 
     january_bill = SharedBills::Bill.find_by(name: "January Bill")
     expect(january_bill.payee_bills.count).to eql(2)
-    expect(january_bill.payee_bills.find_by(payee: payee1).amount).to eql(
-      1000
-    )
-    expect(january_bill.payee_bills.find_by(payee: payee2).amount).to eql(
-      1500
-    )
+    expect(
+      january_bill.payee_bills.find_by(payee: payee1).amount_cents
+    ).to eql(1000)
+    expect(
+      january_bill.payee_bills.find_by(payee: payee2).amount_cents
+    ).to eql(1500)
 
     click_on("New Bill")
     fill_in("Name", with: "February Bill")
@@ -180,12 +180,12 @@ RSpec.describe "Shared Bills page" do
     expect(page).to have_css("[data-role='bill']", text: "Jan 2025")
 
     january_bill.reload
-    expect(january_bill.payee_bills.find_by(payee: payee1).amount).to eql(
-      1200
-    )
-    expect(january_bill.payee_bills.find_by(payee: payee1).paid).to be(
-      true
-    )
+    expect(
+      january_bill.payee_bills.find_by(payee: payee1).amount_cents
+    ).to eql(1200)
+    expect(
+      january_bill.payee_bills.find_by(payee: payee1).paid
+    ).to be(true)
 
     within("[data-role='bill']", text: "February Bill") do
       click_on("Remove")

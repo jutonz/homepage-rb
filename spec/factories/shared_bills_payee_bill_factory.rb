@@ -3,7 +3,7 @@ FactoryBot.define do
     class: "SharedBills::PayeeBill" do
     association :bill, factory: :shared_bills_bill
     association :payee, factory: :shared_bills_payee
-    sequence(:amount) { (it * 100) + 1000 }
+    sequence(:amount_cents) { (it * 100) + 1000 }
     paid { false }
   end
 end
