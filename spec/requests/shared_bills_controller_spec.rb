@@ -32,6 +32,54 @@ RSpec.describe SharedBillsController do
     end
   end
 
+  describe "#show" do
+    it "displays bills with total amounts" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      bill = create(:shared_bills_bill, shared_bill:, name: "January")
+      create(:shared_bills_payee_bill, bill:, amount: 1000)
+      create(:shared_bills_payee_bill, bill:, amount: 500)
+      login_as(user)
+
+      get(shared_bill_path(shared_bill))
+
+      expect(response).to be_successful
+      expect(page.text).to include("January")
+      expect(page.text).to include("$15.00")
+    end
+
+    it "displays $0.00 for bills with no payee_bills" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      create(:shared_bills_bill, shared_bill:, name: "February")
+      login_as(user)
+
+      get(shared_bill_path(shared_bill))
+
+      expect(response).to be_successful
+      expect(page.text).to include("February")
+      expect(page.text).to include("$0.00")
+    end
+
+    it "returns 404 for shared bill not owned by current user" do
+      shared_bill = create(:shared_bill)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(shared_bill_path(shared_bill))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "requires authentication" do
+      shared_bill = create(:shared_bill)
+
+      get(shared_bill_path(shared_bill))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
   describe "#create" do
     it "creates a shared bill" do
       user = create(:user)
