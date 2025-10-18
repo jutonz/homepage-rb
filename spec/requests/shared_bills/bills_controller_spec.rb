@@ -257,11 +257,12 @@ RSpec.describe SharedBills::BillsController do
       shared_bill = create(:shared_bill, user:)
       payee = create(:shared_bills_payee, shared_bill:)
       bill = create(:shared_bills_bill, shared_bill:, name: "before")
+      create(:shared_bills_payee_bill, bill:, payee:, amount: 500, paid: false)
       params = {
         bill_form: {
           name: "after",
           payee_amounts: {
-            payee.id.to_s => {selected: "1", amount: "1000"}
+            payee.id.to_s => {selected: "1", amount: "1000", paid: "1"}
           }
         }
       }
@@ -272,6 +273,8 @@ RSpec.describe SharedBills::BillsController do
       expect(response).to redirect_to(shared_bill_path(shared_bill))
       expect(bill.reload.name).to eql("after")
       expect(bill.payee_bills.count).to eql(1)
+      expect(bill.payee_bills.first.amount).to eql(1000)
+      expect(bill.payee_bills.first.paid).to be(true)
     end
 
     it "renders validation errors" do
