@@ -41,9 +41,10 @@ RSpec.describe SharedBills::BillsController do
   end
 
   describe "#new" do
-    it "shows new bill form" do
+    it "shows new bill form with payees" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
+      create(:shared_bills_payee, shared_bill:, name: "Payee1")
       login_as(user)
 
       get(new_shared_bill_bill_path(shared_bill))
@@ -55,6 +56,18 @@ RSpec.describe SharedBills::BillsController do
         shared_bill.name,
         href: shared_bill_path(shared_bill)
       )
+      expect(page.text).to include("Payee1")
+    end
+
+    it "shows new bill form without payees" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      login_as(user)
+
+      get(new_shared_bill_bill_path(shared_bill))
+
+      expect(response).to be_successful
+      expect(page.text).to include("No payees yet")
     end
 
     it "returns 404 for shared bill not owned by current user" do
@@ -119,7 +132,15 @@ RSpec.describe SharedBills::BillsController do
     it "creates a bill and redirects to shared bill" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      params = {bill: {name: "January Bill"}}
+      payee = create(:shared_bills_payee, shared_bill:)
+      params = {
+        bill_form: {
+          name: "January Bill",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
       login_as(user)
 
       post(shared_bill_bills_path(shared_bill), params:)
@@ -128,13 +149,23 @@ RSpec.describe SharedBills::BillsController do
       bill = SharedBills::Bill.last
       expect(bill.name).to eql("January Bill")
       expect(bill.shared_bill).to eql(shared_bill)
+      expect(bill.payee_bills.count).to eql(1)
+      expect(bill.payee_bills.first.amount).to eql(1000)
       expect(response).to redirect_to(shared_bill_path(shared_bill))
     end
 
-    it "renders validation errors" do
+    it "renders validation errors for missing name" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      params = {bill: {name: ""}}
+      payee = create(:shared_bills_payee, shared_bill:)
+      params = {
+        bill_form: {
+          name: "",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
       login_as(user)
 
       post(shared_bill_bills_path(shared_bill), params:)
@@ -143,10 +174,58 @@ RSpec.describe SharedBills::BillsController do
       expect(page.text).to include("can't be blank")
     end
 
+    it "renders validation errors when no payees selected" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      payee = create(:shared_bills_payee, shared_bill:)
+      params = {
+        bill_form: {
+          name: "January Bill",
+          payee_amounts: {
+            payee.id.to_s => {selected: "0", amount: "1000"}
+          }
+        }
+      }
+      login_as(user)
+
+      post(shared_bill_bills_path(shared_bill), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page.text).to include("must select at least one payee")
+    end
+
+    it "renders validation errors when selected payee has no amount" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      payee = create(:shared_bills_payee, shared_bill:, name: "Payee1")
+      params = {
+        bill_form: {
+          name: "January Bill",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: ""}
+          }
+        }
+      }
+      login_as(user)
+
+      post(shared_bill_bills_path(shared_bill), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page.text).to include("Payee1 must have an amount")
+    end
+
     it "returns 404 for shared bill not owned by current user" do
       shared_bill = create(:shared_bill)
+      payee = create(:shared_bills_payee, shared_bill:)
       other_user = create(:user)
-      params = {bill: {name: "January Bill"}}
+      params = {
+        bill_form: {
+          name: "January Bill",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
       login_as(other_user)
 
       post(shared_bill_bills_path(shared_bill), params:)
@@ -156,7 +235,15 @@ RSpec.describe SharedBills::BillsController do
 
     it "requires authentication" do
       shared_bill = create(:shared_bill)
-      params = {bill: {name: "January Bill"}}
+      payee = create(:shared_bills_payee, shared_bill:)
+      params = {
+        bill_form: {
+          name: "January Bill",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
 
       post(shared_bill_bills_path(shared_bill), params:)
 
@@ -168,21 +255,38 @@ RSpec.describe SharedBills::BillsController do
     it "updates a bill and redirects to shared bill" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
+      payee = create(:shared_bills_payee, shared_bill:)
       bill = create(:shared_bills_bill, shared_bill:, name: "before")
-      params = {bill: {name: "after"}}
+      params = {
+        bill_form: {
+          name: "after",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
       login_as(user)
 
       put(shared_bill_bill_path(shared_bill, bill), params:)
 
       expect(response).to redirect_to(shared_bill_path(shared_bill))
       expect(bill.reload.name).to eql("after")
+      expect(bill.payee_bills.count).to eql(1)
     end
 
     it "renders validation errors" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
+      payee = create(:shared_bills_payee, shared_bill:)
       bill = create(:shared_bills_bill, shared_bill:, name: "before")
-      params = {bill: {name: ""}}
+      params = {
+        bill_form: {
+          name: "",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
       login_as(user)
 
       put(shared_bill_bill_path(shared_bill, bill), params:)
@@ -194,9 +298,17 @@ RSpec.describe SharedBills::BillsController do
 
     it "returns 404 for shared bill not owned by current user" do
       shared_bill = create(:shared_bill)
+      payee = create(:shared_bills_payee, shared_bill:)
       bill = create(:shared_bills_bill, shared_bill:)
       other_user = create(:user)
-      params = {bill: {name: "updated"}}
+      params = {
+        bill_form: {
+          name: "updated",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
       login_as(other_user)
 
       put(shared_bill_bill_path(shared_bill, bill), params:)
@@ -206,8 +318,16 @@ RSpec.describe SharedBills::BillsController do
 
     it "requires authentication" do
       shared_bill = create(:shared_bill)
+      payee = create(:shared_bills_payee, shared_bill:)
       bill = create(:shared_bills_bill, shared_bill:)
-      params = {bill: {name: "updated"}}
+      params = {
+        bill_form: {
+          name: "updated",
+          payee_amounts: {
+            payee.id.to_s => {selected: "1", amount: "1000"}
+          }
+        }
+      }
 
       put(shared_bill_bill_path(shared_bill, bill), params:)
 

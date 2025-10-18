@@ -11,23 +11,29 @@ module SharedBills
     def new
       @shared_bill = find_shared_bill
       @bill = authorize(@shared_bill.bills.new)
+      @bill_form = SharedBills::BillForm.new(bill: @bill, shared_bill: @shared_bill)
     end
 
     def edit
       @shared_bill = find_shared_bill
       @bill = authorize(find_bill)
+      @bill_form = SharedBills::BillForm.new(bill: @bill, shared_bill: @shared_bill)
     end
 
     def create
       @shared_bill = find_shared_bill
-      @bill = @shared_bill.bills
-        .new(bill_params)
-        .then { authorize(it) }
+      @bill = authorize(@shared_bill.bills.new)
+      @bill_form = SharedBills::BillForm.new(
+        bill: @bill,
+        shared_bill: @shared_bill
+      )
 
-      if @bill.save
+      @bill_form.assign(bill_form_params)
+
+      if @bill_form.save
         redirect_to(
           shared_bill_path(@shared_bill),
-          notice: "Bill #{@bill.name} was added."
+          notice: "Bill #{@bill_form.name} was added."
         )
       else
         render(:new, status: :unprocessable_content)
@@ -37,11 +43,17 @@ module SharedBills
     def update
       @shared_bill = find_shared_bill
       @bill = authorize(find_bill)
+      @bill_form = SharedBills::BillForm.new(
+        bill: @bill,
+        shared_bill: @shared_bill
+      )
 
-      if @bill.update(bill_params)
+      @bill_form.assign(bill_form_params)
+
+      if @bill_form.save
         redirect_to(
           shared_bill_path(@shared_bill),
-          notice: "Bill #{@bill.name} was updated."
+          notice: "Bill #{@bill_form.name} was updated."
         )
       else
         render(:edit, status: :unprocessable_content)
@@ -72,8 +84,8 @@ module SharedBills
       @shared_bill.bills.find(params[:id])
     end
 
-    def bill_params
-      params.expect(bill: [:name])
+    def bill_form_params
+      params.expect(bill_form: [:name, payee_amounts: {}])
     end
   end
 end
