@@ -7,6 +7,7 @@ gem "openssl", "3.3.1"
 
 gem "after_party"
 gem "aws-sdk-s3"
+gem "csv"
 gem "faraday"
 gem "image_hash"
 gem "image_processing"

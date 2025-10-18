@@ -12,7 +12,7 @@ class SharedBillsController < ApplicationController
   def show
     @shared_bill = authorize(find_shared_bill)
     @payees = @shared_bill.payees.order(:name)
-    @bills = @shared_bill.bills.with_payee_info.order(:period_start)
+    @bills = @shared_bill.bills.with_payee_info.order(period_start: :desc)
   end
 
   def new
