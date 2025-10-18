@@ -165,7 +165,7 @@ RSpec.describe "Shared Bills page" do
     expect(february_bill.payee_bills.count).to eql(1)
     expect(february_bill.payee_bills.first.payee).to eql(payee1)
 
-    first("[data-role='bill']").click_on("Edit")
+    all("[data-role='bill']").last.click_on("Edit")
 
     fill_in(
       "bill_form_payee_amounts_#{payee1.id}_amount",
@@ -178,12 +178,10 @@ RSpec.describe "Shared Bills page" do
     expect(page).to have_content("was updated")
 
     january_bill.reload
-    expect(
-      january_bill.payee_bills.find_by(payee: payee1).amount_cents
-    ).to eql(1200)
-    expect(
-      january_bill.payee_bills.find_by(payee: payee1).paid
-    ).to be(true)
+    expect(january_bill.payee_bills.find_by(payee: payee1)).to have_attributes({
+      amount_cents: 1200,
+      paid: true
+    })
 
     first("[data-role='bill']").click_on("Remove")
 
