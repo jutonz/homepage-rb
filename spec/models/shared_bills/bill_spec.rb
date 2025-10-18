@@ -28,13 +28,13 @@ RSpec.describe SharedBills::Bill do
     expect(build(:shared_bills_bill)).to be_valid
   end
 
-  describe ".with_total_amount" do
+  describe ".with_payee_info" do
     it "calculates total_amount as sum of payee_bills" do
       bill = create(:shared_bills_bill)
       create(:shared_bills_payee_bill, bill:, amount_cents: 1)
       create(:shared_bills_payee_bill, bill:, amount_cents: 2)
 
-      result = described_class.with_total_amount.find(bill.id)
+      result = described_class.with_payee_info.find(bill.id)
 
       expect(result.total_amount).to eql(3)
     end
@@ -42,7 +42,7 @@ RSpec.describe SharedBills::Bill do
     it "returns 0 when bill has no payee_bills" do
       bill = create(:shared_bills_bill)
 
-      result = described_class.with_total_amount.find(bill.id)
+      result = described_class.with_payee_info.find(bill.id)
 
       expect(result.total_amount).to eql(0)
     end
@@ -51,13 +51,42 @@ RSpec.describe SharedBills::Bill do
       bill = create(:shared_bills_bill)
       payee_bill = create(:shared_bills_payee_bill, bill:, amount_cents: 1)
 
-      result = described_class.with_total_amount.find(bill.id)
+      result = described_class.with_payee_info.find(bill.id)
       expect(result.total_amount).to eql(1)
 
       payee_bill.update!(amount_cents: 2)
 
-      result = described_class.with_total_amount.find(bill.id)
+      result = described_class.with_payee_info.find(bill.id)
       expect(result.total_amount).to eql(2)
+    end
+
+    it "returns true for all_payees_paid when all payees have paid" do
+      bill = create(
+        :shared_bills_bill,
+        payee_bills: build_pair(:shared_bills_payee_bill, :paid)
+      )
+
+      result = described_class.with_payee_info.find(bill.id)
+
+      expect(result.all_payees_paid).to be(true)
+    end
+
+    it "returns false for all_payees_paid when some payees haven't paid" do
+      bill = create(:shared_bills_bill)
+      create(:shared_bills_payee_bill, :paid, bill:)
+      create(:shared_bills_payee_bill, :unpaid, bill:)
+
+      result = described_class.with_payee_info.find(bill.id)
+
+      expect(result.all_payees_paid).to be(false)
+    end
+
+    it "returns false for all_payees_paid when no payees exist" do
+      bill = create(:shared_bills_bill)
+
+      result = described_class.with_payee_info.find(bill.id)
+
+      expect(result.all_payees_paid).to be(false)
     end
   end
 end
