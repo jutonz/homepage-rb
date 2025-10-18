@@ -2,13 +2,14 @@ module SharedBills
   class BillForm
     include ActiveModel::Model
 
-    attr_accessor :name, :payee_amounts
+    attr_accessor :period_start, :period_end, :payee_amounts
     attr_reader :bill, :shared_bill
 
     def initialize(bill:, shared_bill:)
       @bill = bill
       @shared_bill = shared_bill
-      @name = bill.name
+      @period_start = bill.period_start
+      @period_end = bill.period_end
 
       # payee_amounts is a hash:
       # { payee_id => { selected: true/false, amount: int, paid: bool } }
@@ -33,53 +34,59 @@ module SharedBills
       end
     end
 
-    validates :name, presence: true
-    validate :at_least_one_payee_selected
-    validate :selected_payees_have_amounts
+    validate :payees_belong_to_shared_bill
 
     def assign(params)
-      @name = params[:name]
-      @payee_amounts = params[:payee_amounts] || {}
+      @period_start = params[:period_start]
+      @period_end = params[:period_end]
+      @payee_amounts = params.fetch(:payee_amounts, {})
+    end
+
+    def valid?(...)
+      super.tap { merge_errors }
     end
 
     def save
-      return false if invalid?
+      merge_errors and return false if invalid?
 
-      bill.name = name
-      return false unless bill.save
-
-      begin
-        bill.transaction do
-          # Destroy existing PayeeBills and create new ones
-          bill.payee_bills.destroy_all
-          payee_amounts.each do |payee_id, data|
-            next unless is_selected(data)
-
-            paid_value = data[:paid] || data["paid"]
-            paid_value = paid_value == "1" || paid_value == true
-
-            payee_bill = bill.payee_bills.new(
-              payee_id:,
-              amount_cents: data[:amount] || data["amount"],
-              paid: paid_value
-            )
-
-            unless payee_bill.save
-              payee_bill.errors.each do |error|
-                errors.add(
-                  :base,
-                  "#{error.attribute}: #{error.message}"
-                )
-              end
-              raise ActiveRecord::Rollback
-            end
-          end
-        end
-      rescue ActiveRecord::Rollback
-        return false
-      end
+      bill.update!(
+        period_start:,
+        period_end:,
+        payee_bills: build_payee_bills
+      )
 
       true
+    rescue ActiveRecord::RecordInvalid
+      merge_errors
+      false
+    end
+
+    def build_payee_bills
+      @payee_amounts.to_h.filter_map do |payee_id, data|
+        next unless is_selected(data)
+
+        paid = data[:paid] || data["paid"]
+        paid = paid == "1" || paid == true
+
+        SharedBills::PayeeBill.new(
+          bill:,
+          payee_id:,
+          amount_cents: data[:amount] || data["amount"],
+          paid:
+        )
+      end
+    end
+
+    def merge_errors
+      bill.errors.messages.each do |attr, message|
+        errors.add(attr, message.join(", "))
+      end
+
+      bill.payee_bills.each do |payee_bill|
+        payee_bill.errors.messages.each do |attr, message|
+          errors.add(attr, message.join(", "))
+        end
+      end
     end
 
     def persisted? = bill.persisted?
@@ -94,26 +101,11 @@ module SharedBills
 
     private
 
-    def at_least_one_payee_selected
-      selected = payee_amounts.values.any? do |data|
-        is_selected(data)
-      end
-      unless selected
-        errors.add(:base, "must select at least one payee")
-      end
-    end
-
-    def selected_payees_have_amounts
-      payee_amounts.each do |payee_id, data|
-        next unless is_selected(data)
-
-        amount_value = data[:amount] || data["amount"]
-        if amount_value.blank?
-          payee = shared_bill.payees.find(payee_id)
-          errors.add(:base, "#{payee.name} must have an amount")
-        elsif amount_value.to_i <= 0
-          payee = shared_bill.payees.find(payee_id)
-          errors.add(:base, "#{payee.name} amount must be greater than 0")
+    def payees_belong_to_shared_bill
+      allowed_payee_ids = shared_bill.payees.map { it.id.to_s }
+      payee_amounts.keys.each do |payee_id|
+        unless payee_id.in?(allowed_payee_ids)
+          errors.add(:payee_id, "must belong to shared bill")
         end
       end
     end

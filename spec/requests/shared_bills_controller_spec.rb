@@ -36,7 +36,7 @@ RSpec.describe SharedBillsController do
     it "displays bills with total amounts and unpaid status" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      bill = create(:shared_bills_bill, shared_bill:, name: "January")
+      bill = create(:shared_bills_bill, shared_bill:)
       create(:shared_bills_payee_bill, :unpaid, bill:, amount_cents: 1000)
       create(:shared_bills_payee_bill, :unpaid, bill:, amount_cents: 500)
       login_as(user)
@@ -44,7 +44,6 @@ RSpec.describe SharedBillsController do
       get(shared_bill_path(shared_bill))
 
       expect(response).to be_successful
-      expect(page.text).to include("January")
       expect(page.text).to include("$15.00")
       expect(page.text).to include("Unpaid")
     end
@@ -52,7 +51,7 @@ RSpec.describe SharedBillsController do
     it "displays paid status when all payees have paid" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      bill = create(:shared_bills_bill, shared_bill:, name: "February")
+      bill = create(:shared_bills_bill, shared_bill:)
       create(:shared_bills_payee_bill, :paid, bill:)
       create(:shared_bills_payee_bill, :paid, bill:)
       login_as(user)
@@ -60,14 +59,13 @@ RSpec.describe SharedBillsController do
       get(shared_bill_path(shared_bill))
 
       expect(response).to be_successful
-      expect(page.text).to include("February")
       expect(page.text).to include("Paid")
     end
 
     it "displays unpaid status when some payees haven't paid" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      bill = create(:shared_bills_bill, shared_bill:, name: "March")
+      bill = create(:shared_bills_bill, shared_bill:)
       create(:shared_bills_payee_bill, :paid, bill:)
       create(:shared_bills_payee_bill, :unpaid, bill:)
       login_as(user)
@@ -75,20 +73,18 @@ RSpec.describe SharedBillsController do
       get(shared_bill_path(shared_bill))
 
       expect(response).to be_successful
-      expect(page.text).to include("March")
       expect(page.text).to include("Unpaid")
     end
 
     it "displays $0.00 and unpaid for bills with no payee_bills" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
-      create(:shared_bills_bill, shared_bill:, name: "April")
+      create(:shared_bills_bill, shared_bill:)
       login_as(user)
 
       get(shared_bill_path(shared_bill))
 
       expect(response).to be_successful
-      expect(page.text).to include("April")
       expect(page.text).to include("$0.00")
       expect(page.text).to include("Unpaid")
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_18_152929) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_18_160255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -195,10 +195,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_18_152929) do
   end
 
   create_table "shared_bills_bills", force: :cascade do |t|
-    t.string "name", null: false
     t.bigint "shared_bill_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "period_start", null: false
+    t.datetime "period_end", null: false
     t.index ["shared_bill_id"], name: "index_shared_bills_bills_on_shared_bill_id"
   end
 

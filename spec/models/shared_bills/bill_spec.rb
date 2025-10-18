@@ -3,7 +3,8 @@
 # Table name: shared_bills_bills
 #
 #  id             :bigint           not null, primary key
-#  name           :string           not null
+#  period_end     :datetime         not null
+#  period_start   :datetime         not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  shared_bill_id :bigint           not null
@@ -22,7 +23,8 @@ RSpec.describe SharedBills::Bill do
   it { is_expected.to belong_to(:shared_bill) }
   it { is_expected.to have_many(:payee_bills) }
   it { is_expected.to have_many(:payees) }
-  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:period_start) }
+  it { is_expected.to validate_presence_of(:period_end) }
 
   it "has a valid factory" do
     expect(build(:shared_bills_bill)).to be_valid

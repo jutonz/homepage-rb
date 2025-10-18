@@ -8,13 +8,23 @@
   )
 ) do |form| %>
   <%= form.error_notification %>
-  <% if form.object.errors[:base].present? %>
+  <% if form.object.errors.any? %>
     <%= form.error_notification(
-      message: form.object.errors[:base].to_sentence
+      message: form.object.errors.full_messages.to_sentence
     ) %>
   <% end %>
 
-  <%= form.input(:name, autofocus: true) %>
+  <%= form.input(
+    :period_start,
+    as: :date,
+    autofocus: true,
+    html5: true
+  ) %>
+  <%= form.input(
+    :period_end,
+    as: :date,
+    html5: true
+  ) %>
 
   <% if @shared_bill.payees.any? %>
     <div class="mb-4">

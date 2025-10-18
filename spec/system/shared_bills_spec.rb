@@ -125,7 +125,8 @@ RSpec.describe "Shared Bills page" do
     expect(page).to have_content("No bills yet")
     click_on("New Bill")
 
-    fill_in("Name", with: "January Bill")
+    fill_in("Period start", with: "2025-01-01")
+    fill_in("Period end", with: "2025-01-31")
     fill_in(
       "bill_form_payee_amounts_#{payee1.id}_amount",
       with: "1000"
@@ -136,10 +137,9 @@ RSpec.describe "Shared Bills page" do
     )
     click_on("Create Bill")
 
-    expect(page).to have_content("Bill January Bill was added")
-    expect(page).to have_css("[data-role='bill']", text: "January Bill")
+    expect(page).to have_current_path(shared_bill_path(shared_bill))
 
-    january_bill = SharedBills::Bill.find_by(name: "January Bill")
+    january_bill = SharedBills::Bill.first
     expect(january_bill.payee_bills.count).to eql(2)
     expect(
       january_bill.payee_bills.find_by(payee: payee1).amount_cents
@@ -149,7 +149,8 @@ RSpec.describe "Shared Bills page" do
     ).to eql(1500)
 
     click_on("New Bill")
-    fill_in("Name", with: "February Bill")
+    fill_in("Period start", with: "2025-02-01")
+    fill_in("Period end", with: "2025-02-28")
     uncheck("bill_form_payee_amounts_#{payee2.id}_selected")
     fill_in(
       "bill_form_payee_amounts_#{payee1.id}_amount",
@@ -157,18 +158,15 @@ RSpec.describe "Shared Bills page" do
     )
     click_on("Create Bill")
 
-    expect(page).to have_content("Bill February Bill was added")
+    expect(page).to have_current_path(shared_bill_path(shared_bill))
     expect(page).to have_css("[data-role='bill']", count: 2)
 
-    february_bill = SharedBills::Bill.find_by(name: "February Bill")
+    february_bill = SharedBills::Bill.last
     expect(february_bill.payee_bills.count).to eql(1)
     expect(february_bill.payee_bills.first.payee).to eql(payee1)
 
-    within("[data-role='bill']", text: "January Bill") do
-      click_on("Edit")
-    end
+    first("[data-role='bill']").click_on("Edit")
 
-    fill_in("Name", with: "Jan 2025")
     fill_in(
       "bill_form_payee_amounts_#{payee1.id}_amount",
       with: "1200"
@@ -176,8 +174,8 @@ RSpec.describe "Shared Bills page" do
     check("bill_form_payee_amounts_#{payee1.id}_paid")
     click_on("Update Bill")
 
-    expect(page).to have_content("Bill Jan 2025 was updated")
-    expect(page).to have_css("[data-role='bill']", text: "Jan 2025")
+    expect(page).to have_content("Bill for")
+    expect(page).to have_content("was updated")
 
     january_bill.reload
     expect(
@@ -187,15 +185,9 @@ RSpec.describe "Shared Bills page" do
       january_bill.payee_bills.find_by(payee: payee1).paid
     ).to be(true)
 
-    within("[data-role='bill']", text: "February Bill") do
-      click_on("Remove")
-    end
+    first("[data-role='bill']").click_on("Remove")
 
-    expect(page).to have_content("Bill February Bill has been removed")
+    expect(page).to have_content("has been removed")
     expect(page).to have_css("[data-role='bill']", count: 1)
-    expect(page).not_to have_css(
-      "[data-role='bill']",
-      text: "February Bill"
-    )
   end
 end

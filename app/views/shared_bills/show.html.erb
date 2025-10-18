@@ -79,7 +79,9 @@
                     bg-gray-50 rounded-lg"
              data-role="bill">
           <div class="flex items-center gap-3">
-            <span class="font-medium"><%= bill.name %></span>
+            <span class="font-medium">
+              <%= bill.period_start.to_date %> - <%= bill.period_end.to_date %>
+            </span>
             <span class="text-gray-600">
               $<%= sprintf("%.2f", bill.total_amount / 100.0) %>
             </span>
@@ -99,7 +101,9 @@
               "Remove",
               shared_bill_bill_path(@shared_bill, bill),
               method: :delete,
-              data: {turbo_confirm: "Remove #{bill.name}?"},
+              data: {
+                turbo_confirm: "Remove bill for #{bill.period_start.to_date} - #{bill.period_end.to_date}?"
+              },
               class: "button button--danger button--small"
             ) %>
           </div>

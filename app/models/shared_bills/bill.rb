@@ -3,7 +3,8 @@
 # Table name: shared_bills_bills
 #
 #  id             :bigint           not null, primary key
-#  name           :string           not null
+#  period_end     :datetime         not null
+#  period_start   :datetime         not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  shared_bill_id :bigint           not null
@@ -28,7 +29,9 @@ module SharedBills
       through: :payee_bills,
       class_name: "SharedBills::Payee"
 
-    validates :name, presence: true
+    validates :period_start, presence: true
+    validates :period_end, presence: true
+    validate :period_end_after_period_start
 
     def self.with_payee_info
       select(
@@ -40,6 +43,16 @@ module SharedBills
           FROM shared_bills_payee_bills
           WHERE bill_id = #{table_name}.id) AS all_payees_paid"
       )
+    end
+
+    private
+
+    def period_end_after_period_start
+      return if period_end.blank? || period_start.blank?
+
+      if period_end < period_start
+        errors.add(:period_end, "must be after period start")
+      end
     end
   end
 end

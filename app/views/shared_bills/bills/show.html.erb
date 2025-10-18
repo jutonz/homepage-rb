@@ -1,5 +1,5 @@
 <%= render(HeaderComponent.new(
-  title: @bill.name
+  title: "#{@bill.period_start.to_date} - #{@bill.period_end.to_date}"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Shared Bills", shared_bills_path) %>
