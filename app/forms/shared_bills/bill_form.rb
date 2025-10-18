@@ -10,7 +10,8 @@ module SharedBills
       @shared_bill = shared_bill
       @name = bill.name
 
-      # payee_amounts is a hash: { payee_id => { selected: true/false, amount: integer } }
+      # payee_amounts is a hash:
+      # { payee_id => { selected: true/false, amount: integer } }
       @payee_amounts = {}
       if bill.persisted?
         bill.payee_bills.each do |pb|
@@ -31,27 +32,42 @@ module SharedBills
     validate :at_least_one_payee_selected
     validate :selected_payees_have_amounts
 
+    def assign(params)
+      @name = params[:name]
+      @payee_amounts = params[:payee_amounts] || {}
+    end
+
     def save
       return false if invalid?
 
       bill.name = name
+      return false unless bill.save
+
       begin
         bill.transaction do
-          bill.save!
-
           # Destroy existing PayeeBills and create new ones
           bill.payee_bills.destroy_all
           payee_amounts.each do |payee_id, data|
             next unless is_selected(data)
 
-            bill.payee_bills.create!(
+            payee_bill = bill.payee_bills.new(
               payee_id:,
               amount: data[:amount] || data["amount"],
               paid: false
             )
+
+            unless payee_bill.save
+              payee_bill.errors.each do |error|
+                errors.add(
+                  :base,
+                  "#{error.attribute}: #{error.message}"
+                )
+              end
+              raise ActiveRecord::Rollback
+            end
           end
         end
-      rescue ActiveRecord::RecordInvalid
+      rescue ActiveRecord::Rollback
         return false
       end
 

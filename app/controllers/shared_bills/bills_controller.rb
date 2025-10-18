@@ -23,10 +23,12 @@ module SharedBills
     def create
       @shared_bill = find_shared_bill
       @bill = authorize(@shared_bill.bills.new)
-      @bill_form = SharedBills::BillForm.new(bill: @bill, shared_bill: @shared_bill)
+      @bill_form = SharedBills::BillForm.new(
+        bill: @bill,
+        shared_bill: @shared_bill
+      )
 
-      @bill_form.name = bill_form_params[:name]
-      @bill_form.payee_amounts = bill_form_params[:payee_amounts] || {}
+      @bill_form.assign(bill_form_params)
 
       if @bill_form.save
         redirect_to(
@@ -41,10 +43,12 @@ module SharedBills
     def update
       @shared_bill = find_shared_bill
       @bill = authorize(find_bill)
-      @bill_form = SharedBills::BillForm.new(bill: @bill, shared_bill: @shared_bill)
+      @bill_form = SharedBills::BillForm.new(
+        bill: @bill,
+        shared_bill: @shared_bill
+      )
 
-      @bill_form.name = bill_form_params[:name]
-      @bill_form.payee_amounts = bill_form_params[:payee_amounts] || {}
+      @bill_form.assign(bill_form_params)
 
       if @bill_form.save
         redirect_to(
