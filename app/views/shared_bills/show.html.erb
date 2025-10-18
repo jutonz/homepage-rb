@@ -78,7 +78,12 @@
         <div class="flex items-center justify-between p-3
                     bg-gray-50 rounded-lg"
              data-role="bill">
-          <span class="font-medium"><%= bill.name %></span>
+          <div class="flex items-center gap-3">
+            <span class="font-medium"><%= bill.name %></span>
+            <span class="text-gray-600">
+              $<%= sprintf("%.2f", bill.total_amount / 100.0) %>
+            </span>
+          </div>
           <div class="flex gap-2">
             <%= link_to(
               "Edit",

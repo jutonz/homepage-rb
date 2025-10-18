@@ -12,7 +12,7 @@ class SharedBillsController < ApplicationController
   def show
     @shared_bill = authorize(find_shared_bill)
     @payees = @shared_bill.payees.order(:name)
-    @bills = @shared_bill.bills.order(:name)
+    @bills = @shared_bill.bills.with_total_amount.order(:name)
   end
 
   def new

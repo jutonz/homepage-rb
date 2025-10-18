@@ -27,4 +27,37 @@ RSpec.describe SharedBills::Bill do
   it "has a valid factory" do
     expect(build(:shared_bills_bill)).to be_valid
   end
+
+  describe ".with_total_amount" do
+    it "calculates total_amount as sum of payee_bills" do
+      bill = create(:shared_bills_bill)
+      create(:shared_bills_payee_bill, bill:, amount: 1)
+      create(:shared_bills_payee_bill, bill:, amount: 2)
+
+      result = described_class.with_total_amount.find(bill.id)
+
+      expect(result.total_amount).to eql(3)
+    end
+
+    it "returns 0 when bill has no payee_bills" do
+      bill = create(:shared_bills_bill)
+
+      result = described_class.with_total_amount.find(bill.id)
+
+      expect(result.total_amount).to eql(0)
+    end
+
+    it "updates total_amount when payee_bills change" do
+      bill = create(:shared_bills_bill)
+      payee_bill = create(:shared_bills_payee_bill, bill:, amount: 1)
+
+      result = described_class.with_total_amount.find(bill.id)
+      expect(result.total_amount).to eql(1)
+
+      payee_bill.update!(amount: 2)
+
+      result = described_class.with_total_amount.find(bill.id)
+      expect(result.total_amount).to eql(2)
+    end
+  end
 end
