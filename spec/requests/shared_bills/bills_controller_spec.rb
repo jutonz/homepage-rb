@@ -1,45 +1,6 @@
 require "rails_helper"
 
 RSpec.describe SharedBills::BillsController do
-  describe "#show" do
-    it "shows bill details" do
-      user = create(:user)
-      shared_bill = create(:shared_bill, user:)
-      bill = create(:shared_bills_bill, shared_bill:)
-      login_as(user)
-
-      get(shared_bill_bill_path(shared_bill, bill))
-
-      expect(response).to be_successful
-      expect(page).to have_link("Home", href: home_path)
-      expect(page).to have_link("Shared Bills", href: shared_bills_path)
-      expect(page).to have_link(
-        shared_bill.name,
-        href: shared_bill_path(shared_bill)
-      )
-    end
-
-    it "returns 404 for shared bill not owned by current user" do
-      shared_bill = create(:shared_bill)
-      bill = create(:shared_bills_bill, shared_bill:)
-      other_user = create(:user)
-      login_as(other_user)
-
-      get(shared_bill_bill_path(shared_bill, bill))
-
-      expect(response).to have_http_status(:not_found)
-    end
-
-    it "requires authentication" do
-      shared_bill = create(:shared_bill)
-      bill = create(:shared_bills_bill, shared_bill:)
-
-      get(shared_bill_bill_path(shared_bill, bill))
-
-      expect(response).to redirect_to(new_session_path)
-    end
-  end
-
   describe "#new" do
     it "shows new bill form with payees" do
       user = create(:user)

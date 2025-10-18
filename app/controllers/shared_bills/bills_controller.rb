@@ -3,11 +3,6 @@ module SharedBills
     before_action :ensure_authenticated!
     after_action :verify_authorized
 
-    def show
-      @shared_bill = find_shared_bill
-      @bill = authorize(find_bill)
-    end
-
     def new
       @shared_bill = find_shared_bill
       @bill = authorize(@shared_bill.bills.new)
