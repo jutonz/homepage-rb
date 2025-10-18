@@ -4,6 +4,9 @@ FactoryBot.define do
     association :bill, factory: :shared_bills_bill
     association :payee, factory: :shared_bills_payee
     sequence(:amount_cents) { (it * 100) + 1000 }
-    paid { false }
+    paid
+
+    trait(:paid) { paid { true } }
+    trait(:unpaid) { paid { false } }
   end
 end

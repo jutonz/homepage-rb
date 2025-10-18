@@ -83,6 +83,11 @@
             <span class="text-gray-600">
               $<%= sprintf("%.2f", bill.total_amount / 100.0) %>
             </span>
+            <% if bill.all_payees_paid %>
+              <%= render(PillComponent.new(text: "Paid", color: :green)) %>
+            <% else %>
+              <%= render(PillComponent.new(text: "Unpaid", color: :red)) %>
+            <% end %>
           </div>
           <div class="flex gap-2">
             <%= link_to(

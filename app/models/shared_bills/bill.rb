@@ -30,12 +30,15 @@ module SharedBills
 
     validates :name, presence: true
 
-    def self.with_total_amount
+    def self.with_payee_info
       select(
         "#{table_name}.*",
         "(SELECT COALESCE(SUM(amount_cents), 0)
           FROM shared_bills_payee_bills
-          WHERE bill_id = #{table_name}.id) AS total_amount"
+          WHERE bill_id = #{table_name}.id) AS total_amount",
+        "(SELECT COALESCE(BOOL_AND(paid), false)
+          FROM shared_bills_payee_bills
+          WHERE bill_id = #{table_name}.id) AS all_payees_paid"
       )
     end
   end
