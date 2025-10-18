@@ -35,22 +35,24 @@ module SharedBills
       return false if invalid?
 
       bill.name = name
-      bill.transaction do
-        bill.save!
+      begin
+        bill.transaction do
+          bill.save!
 
-        # Destroy existing PayeeBills and create new ones
-        bill.payee_bills.destroy_all
-        payee_amounts.each do |payee_id, data|
-          next unless is_selected(data)
+          # Destroy existing PayeeBills and create new ones
+          bill.payee_bills.destroy_all
+          payee_amounts.each do |payee_id, data|
+            next unless is_selected(data)
 
-          bill.payee_bills.create!(
-            payee_id:,
-            amount: data[:amount] || data["amount"],
-            paid: false
-          )
-        rescue ActiveRecord::RecordInvalid
-          return false
+            bill.payee_bills.create!(
+              payee_id:,
+              amount: data[:amount] || data["amount"],
+              paid: false
+            )
+          end
         end
+      rescue ActiveRecord::RecordInvalid
+        return false
       end
 
       true
