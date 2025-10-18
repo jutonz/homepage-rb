@@ -44,6 +44,22 @@
               class: "w-40 rounded-md border-gray-300 shadow-sm
                       focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             ) %>
+            <% if @bill_form.persisted? %>
+              <div class="flex items-center">
+                <%= check_box_tag(
+                  "bill_form[payee_amounts][#{payee.id}][paid]",
+                  "1",
+                  @bill_form.payee_amounts[payee.id.to_s]&.dig(:paid),
+                  id: "bill_form_payee_amounts_#{payee.id}_paid",
+                  class: "h-4 w-4 text-green-600 border-gray-300
+                          rounded focus:ring-green-500"
+                ) %>
+                <label for="bill_form_payee_amounts_<%= payee.id %>_paid"
+                       class="ml-2 text-sm text-gray-700">
+                  Paid?
+                </label>
+              </div>
+            <% end %>
           </div>
         <% end %>
       </div>

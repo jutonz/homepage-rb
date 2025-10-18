@@ -11,19 +11,24 @@ module SharedBills
       @name = bill.name
 
       # payee_amounts is a hash:
-      # { payee_id => { selected: true/false, amount: integer } }
+      # { payee_id => { selected: true/false, amount: int, paid: bool } }
       @payee_amounts = {}
       if bill.persisted?
         bill.payee_bills.each do |pb|
           @payee_amounts[pb.payee_id.to_s] = {
             selected: true,
-            amount: pb.amount
+            amount: pb.amount,
+            paid: pb.paid
           }
         end
       else
-        # Default: all payees selected with blank amount
+        # Default: all payees selected with blank amount, not paid
         shared_bill.payees.each do |payee|
-          @payee_amounts[payee.id.to_s] = {selected: true, amount: nil}
+          @payee_amounts[payee.id.to_s] = {
+            selected: true,
+            amount: nil,
+            paid: false
+          }
         end
       end
     end
@@ -50,10 +55,13 @@ module SharedBills
           payee_amounts.each do |payee_id, data|
             next unless is_selected(data)
 
+            paid_value = data[:paid] || data["paid"]
+            paid_value = paid_value == "1" || paid_value == true
+
             payee_bill = bill.payee_bills.new(
               payee_id:,
               amount: data[:amount] || data["amount"],
-              paid: false
+              paid: paid_value
             )
 
             unless payee_bill.save
