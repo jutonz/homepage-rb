@@ -31,7 +31,7 @@ RSpec.describe SharedBills::PayeeBill do
   it { is_expected.to validate_presence_of(:amount_cents) }
   it do
     is_expected.to validate_numericality_of(:amount_cents)
-      .is_greater_than_or_equal_to(0)
+      .is_greater_than(0)
   end
   it do
     is_expected.to(

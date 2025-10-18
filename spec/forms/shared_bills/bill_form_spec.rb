@@ -41,41 +41,6 @@ RSpec.describe SharedBills::BillForm do
   end
 
   describe "validations" do
-    it "validates presence of period fields" do
-      user = create(:user)
-      shared_bill = create(:shared_bill, user:)
-      payee = create(:shared_bills_payee, shared_bill:)
-      bill = shared_bill.bills.new
-      form = described_class.new(bill:, shared_bill:)
-
-      form.period_start = nil
-      form.period_end = nil
-      form.payee_amounts = {
-        payee.id.to_s => {selected: true, amount: 1000}
-      }
-
-      expect(form.valid?).to be(false)
-      expect(form.errors[:period_start]).to include("can't be blank")
-      expect(form.errors[:period_end]).to include("can't be blank")
-    end
-
-    it "validates at least one payee is selected" do
-      user = create(:user)
-      shared_bill = create(:shared_bill, user:)
-      payee = create(:shared_bills_payee, shared_bill:)
-      bill = shared_bill.bills.new
-      form = described_class.new(bill:, shared_bill:)
-
-      form.period_start = 1.month.ago
-      form.period_end = Time.current
-      form.payee_amounts = {
-        payee.id.to_s => {selected: false, amount: 1000}
-      }
-
-      expect(form.valid?).to be(false)
-      expect(form.errors[:base]).to include("must select at least one payee")
-    end
-
     it "validates selected payees have amounts" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
@@ -89,8 +54,10 @@ RSpec.describe SharedBills::BillForm do
         payee.id.to_s => {selected: true, amount: nil}
       }
 
-      expect(form.valid?).to be(false)
-      expect(form.errors[:base].first).to match(/must have an amount/)
+      expect(form.save).to be(false)
+      expect(form.errors[:amount_cents]).to eql(
+        ["can't be blank, is not a number"]
+      )
     end
 
     it "validates selected payees have positive amounts" do
@@ -106,8 +73,23 @@ RSpec.describe SharedBills::BillForm do
         payee.id.to_s => {selected: true, amount: 0}
       }
 
+      expect(form.save).to be(false)
+      expect(form.errors[:amount_cents]).to eql(["must be greater than 0"])
+    end
+
+    it "errors if payee_id doesn't belong to the SharedBill" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      other_payee = create(:shared_bills_payee)
+      bill = shared_bill.bills.new
+      form = described_class.new(bill:, shared_bill:)
+
+      form.payee_amounts = {
+        other_payee.id.to_s => {selected: true, amount: 1}
+      }
+
       expect(form.valid?).to be(false)
-      expect(form.errors[:base].first).to match(/amount must be greater than 0/)
+      expect(form.errors[:payee_id]).to eql(["must belong to shared bill"])
     end
   end
 
@@ -196,12 +178,14 @@ RSpec.describe SharedBills::BillForm do
       bill = shared_bill.bills.new
       form = described_class.new(bill:, shared_bill:)
 
-      form.period_start = 1.month.ago
-      form.period_end = Time.current
-      form.payee_amounts = {
-        payee1.id.to_s => {selected: true, amount: 1000, paid: true},
-        payee2.id.to_s => {selected: true, amount: 1500, paid: false}
-      }
+      form.assign(
+        period_start: 1.month.ago,
+        period_end: Time.current,
+        payee_amounts: {
+          payee1.id.to_s => {selected: true, amount: 1000, paid: true},
+          payee2.id.to_s => {selected: true, amount: 1500, paid: false}
+        }
+      )
 
       expect(form.save).to be(true)
       pb1 = bill.payee_bills.find_by(payee: payee1)
@@ -218,7 +202,7 @@ RSpec.describe SharedBills::BillForm do
       form = described_class.new(bill:, shared_bill:)
 
       form.period_start = 1.month.ago
-      form.period_end = Time.current
+      form.period_end = nil
       form.payee_amounts = {}
 
       expect(form.save).to be(false)

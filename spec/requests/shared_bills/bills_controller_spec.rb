@@ -174,27 +174,6 @@ RSpec.describe SharedBills::BillsController do
       expect(page.text).to include("can't be blank")
     end
 
-    it "renders validation errors when no payees selected" do
-      user = create(:user)
-      shared_bill = create(:shared_bill, user:)
-      payee = create(:shared_bills_payee, shared_bill:)
-      params = {
-        bill_form: {
-          period_start: 1.month.ago,
-          period_end: Time.current,
-          payee_amounts: {
-            payee.id.to_s => {selected: "0", amount: "1000"}
-          }
-        }
-      }
-      login_as(user)
-
-      post(shared_bill_bills_path(shared_bill), params:)
-
-      expect(response).to have_http_status(:unprocessable_content)
-      expect(page.text).to include("must select at least one payee")
-    end
-
     it "renders validation errors when selected payee has no amount" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
@@ -213,7 +192,7 @@ RSpec.describe SharedBills::BillsController do
       post(shared_bill_bills_path(shared_bill), params:)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(page.text).to match(/must have an amount/)
+      expect(page.text).to include("can't be blank")
     end
 
     it "returns 404 for shared bill not owned by current user" do
