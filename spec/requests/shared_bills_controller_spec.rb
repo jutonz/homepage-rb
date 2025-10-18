@@ -37,8 +37,8 @@ RSpec.describe SharedBillsController do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)
       bill = create(:shared_bills_bill, shared_bill:, name: "January")
-      create(:shared_bills_payee_bill, bill:, amount: 1000)
-      create(:shared_bills_payee_bill, bill:, amount: 500)
+      create(:shared_bills_payee_bill, bill:, amount_cents: 1000)
+      create(:shared_bills_payee_bill, bill:, amount_cents: 500)
       login_as(user)
 
       get(shared_bill_path(shared_bill))

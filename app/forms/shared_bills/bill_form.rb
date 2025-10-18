@@ -17,7 +17,7 @@ module SharedBills
         bill.payee_bills.each do |pb|
           @payee_amounts[pb.payee_id.to_s] = {
             selected: true,
-            amount: pb.amount,
+            amount: pb.amount_cents,
             paid: pb.paid
           }
         end
@@ -60,7 +60,7 @@ module SharedBills
 
             payee_bill = bill.payee_bills.new(
               payee_id:,
-              amount: data[:amount] || data["amount"],
+              amount_cents: data[:amount] || data["amount"],
               paid: paid_value
             )
 

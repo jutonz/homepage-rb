@@ -26,7 +26,12 @@ RSpec.describe SharedBills::BillForm do
       payee1 = create(:shared_bills_payee, shared_bill:)
       payee2 = create(:shared_bills_payee, shared_bill:)
       bill = create(:shared_bills_bill, shared_bill:, name: "January")
-      create(:shared_bills_payee_bill, bill:, payee: payee1, amount: 1000)
+      create(
+        :shared_bills_payee_bill,
+        bill:,
+        payee: payee1,
+        amount_cents: 1000
+      )
 
       form = described_class.new(bill:, shared_bill:)
 
@@ -126,11 +131,11 @@ RSpec.describe SharedBills::BillForm do
       expect(bill.payee_bills.count).to eql(2)
 
       pb1 = bill.payee_bills.find_by(payee: payee1)
-      expect(pb1.amount).to eql(1000)
+      expect(pb1.amount_cents).to eql(1000)
       expect(pb1.paid).to be(false)
 
       pb2 = bill.payee_bills.find_by(payee: payee2)
-      expect(pb2.amount).to eql(1500)
+      expect(pb2.amount_cents).to eql(1500)
       expect(pb2.paid).to be(false)
     end
 
@@ -163,7 +168,7 @@ RSpec.describe SharedBills::BillForm do
         :shared_bills_payee_bill,
         bill:,
         payee: payee1,
-        amount: 1000
+        amount_cents: 1000
       )
       form = described_class.new(bill:, shared_bill:)
 
@@ -177,7 +182,7 @@ RSpec.describe SharedBills::BillForm do
       expect(bill.payee_bills.count).to eql(1)
       expect(SharedBills::PayeeBill.exists?(old_pb.id)).to be(false)
       expect(bill.payee_bills.first.payee).to eql(payee2)
-      expect(bill.payee_bills.first.amount).to eql(2000)
+      expect(bill.payee_bills.first.amount_cents).to eql(2000)
       expect(bill.payee_bills.first.paid).to be(true)
     end
 

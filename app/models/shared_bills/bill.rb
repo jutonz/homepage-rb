@@ -33,7 +33,7 @@ module SharedBills
     def self.with_total_amount
       select(
         "#{table_name}.*",
-        "(SELECT COALESCE(SUM(amount), 0)
+        "(SELECT COALESCE(SUM(amount_cents), 0)
           FROM shared_bills_payee_bills
           WHERE bill_id = #{table_name}.id) AS total_amount"
       )

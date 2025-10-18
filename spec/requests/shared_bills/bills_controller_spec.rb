@@ -150,7 +150,7 @@ RSpec.describe SharedBills::BillsController do
       expect(bill.name).to eql("January Bill")
       expect(bill.shared_bill).to eql(shared_bill)
       expect(bill.payee_bills.count).to eql(1)
-      expect(bill.payee_bills.first.amount).to eql(1000)
+      expect(bill.payee_bills.first.amount_cents).to eql(1000)
       expect(response).to redirect_to(shared_bill_path(shared_bill))
     end
 
@@ -257,7 +257,13 @@ RSpec.describe SharedBills::BillsController do
       shared_bill = create(:shared_bill, user:)
       payee = create(:shared_bills_payee, shared_bill:)
       bill = create(:shared_bills_bill, shared_bill:, name: "before")
-      create(:shared_bills_payee_bill, bill:, payee:, amount: 500, paid: false)
+      create(
+        :shared_bills_payee_bill,
+        bill:,
+        payee:,
+        amount_cents: 500,
+        paid: false
+      )
       params = {
         bill_form: {
           name: "after",
@@ -273,7 +279,7 @@ RSpec.describe SharedBills::BillsController do
       expect(response).to redirect_to(shared_bill_path(shared_bill))
       expect(bill.reload.name).to eql("after")
       expect(bill.payee_bills.count).to eql(1)
-      expect(bill.payee_bills.first.amount).to eql(1000)
+      expect(bill.payee_bills.first.amount_cents).to eql(1000)
       expect(bill.payee_bills.first.paid).to be(true)
     end
 

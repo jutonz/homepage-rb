@@ -2,13 +2,13 @@
 #
 # Table name: shared_bills_payee_bills
 #
-#  id         :bigint           not null, primary key
-#  amount     :integer          not null
-#  paid       :boolean          default(FALSE), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  bill_id    :bigint           not null
-#  payee_id   :bigint           not null
+#  id           :bigint           not null, primary key
+#  amount_cents :integer          not null
+#  paid         :boolean          default(FALSE), not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  bill_id      :bigint           not null
+#  payee_id     :bigint           not null
 #
 # Indexes
 #
@@ -26,7 +26,7 @@ module SharedBills
     belongs_to :bill, class_name: "SharedBills::Bill"
     belongs_to :payee, class_name: "SharedBills::Payee"
 
-    validates :amount, presence: true
+    validates :amount_cents, presence: true
     validates :paid, inclusion: {in: [true, false]}
     validates :payee_id,
       uniqueness: {scope: :bill_id}
