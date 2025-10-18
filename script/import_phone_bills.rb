@@ -8,7 +8,7 @@ require "csv"
 
 class PhoneBillImporter
   SHARED_BILL_NAME = "Phone Bill"
-  CSV_FILE_PATH = "bills.csv"
+  CSV_FILE_PATH = "/tmp/bills.csv"
   PAYEE_NAMES = ["Carolyn", "Justin"]
 
   def initialize(user_id:)
@@ -62,7 +62,7 @@ class PhoneBillImporter
 
   def import_bills
     @bill_count = 0
-    csv_path = Rails.root.join(CSV_FILE_PATH)
+    csv_path = CSV_FILE_PATH
 
     unless File.exist?(csv_path)
       raise "CSV file not found at #{csv_path}"
