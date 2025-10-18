@@ -173,6 +173,7 @@ RSpec.describe "Shared Bills page" do
       "bill_form_payee_amounts_#{payee1.id}_amount",
       with: "1200"
     )
+    check("bill_form_payee_amounts_#{payee1.id}_paid")
     click_on("Update Bill")
 
     expect(page).to have_content("Bill Jan 2025 was updated")
@@ -181,6 +182,9 @@ RSpec.describe "Shared Bills page" do
     january_bill.reload
     expect(january_bill.payee_bills.find_by(payee: payee1).amount).to eql(
       1200
+    )
+    expect(january_bill.payee_bills.find_by(payee: payee1).paid).to be(
+      true
     )
 
     within("[data-role='bill']", text: "February Bill") do

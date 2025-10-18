@@ -169,7 +169,7 @@ RSpec.describe SharedBills::BillForm do
 
       form.name = "February"
       form.payee_amounts = {
-        payee2.id.to_s => {selected: true, amount: 2000}
+        payee2.id.to_s => {selected: true, amount: 2000, paid: true}
       }
 
       expect(form.save).to be(true)
@@ -178,6 +178,29 @@ RSpec.describe SharedBills::BillForm do
       expect(SharedBills::PayeeBill.exists?(old_pb.id)).to be(false)
       expect(bill.payee_bills.first.payee).to eql(payee2)
       expect(bill.payee_bills.first.amount).to eql(2000)
+      expect(bill.payee_bills.first.paid).to be(true)
+    end
+
+    it "saves paid status for payee bills" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      payee1 = create(:shared_bills_payee, shared_bill:, name: "Payee1")
+      payee2 = create(:shared_bills_payee, shared_bill:, name: "Payee2")
+      bill = shared_bill.bills.new
+      form = described_class.new(bill:, shared_bill:)
+
+      form.name = "January"
+      form.payee_amounts = {
+        payee1.id.to_s => {selected: true, amount: 1000, paid: true},
+        payee2.id.to_s => {selected: true, amount: 1500, paid: false}
+      }
+
+      expect(form.save).to be(true)
+      pb1 = bill.payee_bills.find_by(payee: payee1)
+      expect(pb1.paid).to be(true)
+
+      pb2 = bill.payee_bills.find_by(payee: payee2)
+      expect(pb2.paid).to be(false)
     end
 
     it "returns false when invalid" do
