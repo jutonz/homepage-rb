@@ -36,15 +36,14 @@
   <% if @payees.any? %>
     <div class="space-y-2">
       <% @payees.each do |payee| %>
-        <div class="flex items-center justify-between p-3
-                    bg-gray-50 rounded-lg"
+        <div class="flex flex-col items-center justify-between p-3 bg-gray-50 rounded-lg sm:flex-row"
              data-role="payee">
-          <span class="font-medium"><%= payee.name %></span>
-          <div class="flex gap-2">
+          <span class="font-medium mb-5 sm:mb-0"><%= payee.name %></span>
+          <div class="flex flex-col gap-2 sm:flex-row">
             <%= link_to(
               "Edit",
               edit_shared_bill_payee_path(@shared_bill, payee),
-              class: "button button--secondary button--small"
+              class: "button text-center button--secondary button--small"
             ) %>
             <%= button_to(
               "Remove",
@@ -73,15 +72,31 @@
   </div>
 
   <% if @bills.any? %>
-    <div class="space-y-2">
+    <div class="space-y-4">
       <% @bills.each do |bill| %>
-        <div class="flex items-center justify-between p-3
-                    bg-gray-50 rounded-lg"
-             data-role="bill">
-          <div class="flex items-center gap-3">
-            <span class="font-medium">
+        <div class="flex flex-col items-start justify-between p-3 bg-gray-50 rounded-lg" data-role="bill">
+          <div class="flex flex-col justify-between w-full mb-4 sm:flex-row">
+            <div class="font-medium">
               <%= bill.period_start.to_date %> - <%= bill.period_end.to_date %>
-            </span>
+            </div>
+            <div class="flex flex-row gap-2 mt-4 justify-center sm:mt-0">
+              <%= link_to(
+                "Edit",
+                edit_shared_bill_bill_path(@shared_bill, bill),
+                class: "button button--secondary button--small"
+              ) %>
+              <%= button_to(
+                "Remove",
+                shared_bill_bill_path(@shared_bill, bill),
+                method: :delete,
+                data: {
+                  turbo_confirm: "Remove bill for #{bill.period_start.to_date} - #{bill.period_end.to_date}?"
+                },
+                class: "button button--danger button--small"
+              ) %>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
             <span class="text-gray-600">
               $<%= sprintf("%.2f", bill.total_amount / 100.0) %>
             </span>
@@ -90,22 +105,6 @@
             <% else %>
               <%= render(PillComponent.new(text: "Unpaid", color: :red)) %>
             <% end %>
-          </div>
-          <div class="flex gap-2">
-            <%= link_to(
-              "Edit",
-              edit_shared_bill_bill_path(@shared_bill, bill),
-              class: "button button--secondary button--small"
-            ) %>
-            <%= button_to(
-              "Remove",
-              shared_bill_bill_path(@shared_bill, bill),
-              method: :delete,
-              data: {
-                turbo_confirm: "Remove bill for #{bill.period_start.to_date} - #{bill.period_end.to_date}?"
-              },
-              class: "button button--danger button--small"
-            ) %>
           </div>
         </div>
       <% end %>
