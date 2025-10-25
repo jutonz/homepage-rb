@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: galleries_images
+# Database name: primary
 #
 #  id              :bigint           not null, primary key
 #  perceptual_hash :vector(64)

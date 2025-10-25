@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: recipes_recipes
+# Database name: primary
 #
 #  id              :bigint           not null, primary key
 #  description     :text

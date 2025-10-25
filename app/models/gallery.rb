@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: galleries
+# Database name: primary
 #
 #  id           :bigint           not null, primary key
 #  hidden_at    :datetime

@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: recipes_units
+# Database name: primary
 #
 #  id           :bigint           not null, primary key
 #  abbreviation :string           not null

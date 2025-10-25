@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: todo_task_occurrences
+# Database name: primary
 #
 #  id              :bigint           not null, primary key
 #  completed_at    :datetime
