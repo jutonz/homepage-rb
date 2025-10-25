@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: galleries_social_media_links
+# Database name: primary
 #
 #  id         :bigint           not null, primary key
 #  platform   :string           not null

@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: shared_bills_payee_bills
+# Database name: primary
 #
 #  id           :bigint           not null, primary key
 #  amount_cents :integer          not null

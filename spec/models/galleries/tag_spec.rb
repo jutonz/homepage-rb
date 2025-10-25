@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: galleries_tags
+# Database name: primary
 #
 #  id               :bigint           not null, primary key
 #  image_tags_count :integer          default(0), not null

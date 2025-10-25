@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: shared_bills_bills
+# Database name: primary
 #
 #  id             :bigint           not null, primary key
 #  period_end     :datetime         not null

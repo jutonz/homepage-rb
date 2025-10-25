@@ -1,6 +1,7 @@
 # == Schema Information
 #
 # Table name: todo_tasks
+# Database name: primary
 #
 #  id         :bigint           not null, primary key
 #  name       :string           not null
