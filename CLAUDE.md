@@ -10,11 +10,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `bin/rails db:migrate` - Run database migrations
 
 ### Testing & Quality
-- `bundle exec rspec` - Run RSpec test suite
-- `bundle exec standardrb --fix` - Ruby linting and code style (Standard gem)
-
-### Development Server
-- `bin/dev` - Start development server
+- `bin/rspec` - Run RSpec test suite
+- `bin/standard` - Ruby linting and code style (Standard gem)
 
 ### Assets & Frontend
 - TailwindCSS is used for styling via `tailwindcss-rails` gem
@@ -23,7 +20,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-This is a Ruby on Rails 8.0 application with the following key architectural components:
+This is a Ruby on Rails 8.1 application with the following key architectural components:
 
 ### Core Functionality
 - **Gallery Management**: Photo gallery system with image uploads, tagging, and organization
@@ -60,6 +57,7 @@ This is a Ruby on Rails 8.0 application with the following key architectural com
 * Do not use callbacks in controllers or models
 * Omit the value in hashes when possilble, e.g. rather than `{user: user}`, say just `{user:}`
 * YOU MUST use parenthesis for all method calls
+* Prefer global classes in app/assets/tailwind/application.css if one fits the use case.
 
 ### Testing rules
 * Do not use `let`, `let!`, `before`, or `context`
