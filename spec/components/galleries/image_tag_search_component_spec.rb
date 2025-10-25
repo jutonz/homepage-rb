@@ -19,8 +19,7 @@ RSpec.describe Galleries::ImageTagSearchComponent, type: :component do
     render_inline(component)
 
     expect(page).to have_css("h4", text: "Recently used tags")
-    expect(page).to have_text(tag.reload.display_name)
-    expect(page).to have_button("Add tag")
+    expect(page).to have_button(tag.reload.display_name)
   end
 
   it "groups tags by image with separators" do
