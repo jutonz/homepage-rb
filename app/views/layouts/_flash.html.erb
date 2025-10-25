@@ -1,5 +1,5 @@
 <% flash.each do |flash_type, message| %>
-  <div class="flex gap-y-3 absolute bottom-20 left-10">
+  <div class="flex gap-y-3 absolute bottom-20 left-4 right-4 md:left-10 md:right-10">
     <%= render(FlashComponent.new(
       message:,
       type: flash_type
