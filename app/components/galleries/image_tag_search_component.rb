@@ -22,7 +22,7 @@ module Galleries
               <%= button_to(
                 result.tag.display_name,
                 gallery_image_tags_path(@gallery, @image, tag_id: result.tag.id),
-                class: "button text-base px-4 py-2"
+                class: "button"
               ) %>
             <% end %>
           <% end %>
