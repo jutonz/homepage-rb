@@ -55,7 +55,7 @@ This is a Ruby on Rails 8.1 application with the following key architectural com
 ### Style rules
 * YOU MUST limit line length to 80 characters.
 * Do not use callbacks in controllers or models
-* Omit the value in hashes when possilble, e.g. rather than `{user: user}`, say just `{user:}`
+* Omit the value in hashes when possible, e.g. rather than `{user: user}`, say just `{user:}`
 * YOU MUST use parenthesis for all method calls
 * Prefer global classes in app/assets/tailwind/application.css if one fits the use case.
 
