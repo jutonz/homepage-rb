@@ -16,18 +16,17 @@ module Galleries
         <% if index > 0 %>
           <hr class="my-4 border-gray-300" data-testid="tag-group-separator">
         <% end %>
-        <% results.each do |result| %>
-          <%= turbo_frame_tag("recently-added-tag-\#{result.tag.id}") do %>
-            <div class="flex gap-4 my-2">
-              <%= result.tag.display_name %>
+        <div class="flex flex-wrap gap-2 my-2">
+          <% results.each do |result| %>
+            <%= turbo_frame_tag("recently-added-tag-\#{result.tag.id}") do %>
               <%= button_to(
-                "Add tag",
+                result.tag.display_name,
                 gallery_image_tags_path(@gallery, @image, tag_id: result.tag.id),
-                class: "button"
+                class: "button text-base px-4 py-2"
               ) %>
-            </div>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>
       <% end %>
     ERB
 
