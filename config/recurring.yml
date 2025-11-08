@@ -1,12 +1,13 @@
-reschedule_rollable_tasks:
-  class: "Todoist::RescheduleRollableTasksJob"
-  schedule: "0 * * * *" # hourly at :00
-tagging_needed:
-  class: "Galleries::TaggingNeededJob"
-  schedule: "0 22 * * *" # daily at 10pm
-solid_queue_metrics:
-  class: "Metrics::SolidQueueMetricsJob"
-  schedule: "*/15 * * * * *" # every 15 seconds
-sync_task_occurrences:
-  class: "Todo::SyncTaskOccurrencesJob"
-  schedule: "*/5 * * * *" # every 5 minutes
+production:
+  reschedule_rollable_tasks:
+    class: "Todoist::RescheduleRollableTasksJob"
+    schedule: "0 * * * *" # hourly at :00
+  tagging_needed:
+    class: "Galleries::TaggingNeededJob"
+    schedule: "0 22 * * *" # daily at 10pm
+  solid_queue_metrics:
+    class: "Metrics::SolidQueueMetricsJob"
+    schedule: "*/15 * * * * *" # every 15 seconds
+  sync_task_occurrences:
+    class: "Todo::SyncTaskOccurrencesJob"
+    schedule: "*/5 * * * *" # every 5 minutes
