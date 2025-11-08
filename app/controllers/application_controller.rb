@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized
 
   rescue_from WardenHelper::UnauthenticatedError do
+    reset_session
     session[:return_to] = request.fullpath
     redirect_to new_session_path
   end

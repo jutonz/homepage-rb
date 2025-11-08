@@ -8,6 +8,8 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+puts "Seeding..."
+
 # Recipe Units
 recipe_units = [
   # Volume units
@@ -43,3 +45,5 @@ recipe_units.each do |unit_attrs|
     unit.unit_type = unit_attrs[:unit_type]
   end
 end
+
+puts "Seeding done."

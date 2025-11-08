@@ -108,6 +108,9 @@
           </div>
         </div>
       <% end %>
+      <div class="flex justify-center">
+        <%= paginate(@bills) %>
+      </div>
     </div>
   <% else %>
     <p class="text-gray-500 italic">No bills yet.</p>
