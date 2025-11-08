@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ApplicationController do
   it "rescues Pundit::NotAuthorizedError and redirects" do
     stub_controller do
-      get "/test"
+      get("/pundit_error")
     end
 
     expect(response).to redirect_to(root_path)
@@ -12,16 +12,29 @@ RSpec.describe ApplicationController do
     )
   end
 
+  it "rescues WardenHelper::UnauthenticatedError and redirects" do
+    stub_controller do
+      get("/warden_error")
+    end
+
+    expect(response).to redirect_to(new_session_path)
+    expect(session[:return_to]).to eql("/warden_error")
+  end
+
   def stub_controller(&)
     controller = Class.new(ApplicationController) do
-      def show = raise Pundit::NotAuthorizedError
+      def pundit_error = raise Pundit::NotAuthorizedError
+
+      def warden_error = raise WardenHelper::UnauthenticatedError
     end
 
     stub_const("TestsController", controller)
 
     Rails.application.routes.draw do
-      resource :test, only: :show
-      root to: "tests#show"
+      get("/pundit_error", to: "tests#pundit_error")
+      get("/warden_error", to: "tests#warden_error")
+      resource(:session, only: :new)
+      root(to: "tests#pundit_error")
     end
 
     yield controller

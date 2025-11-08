@@ -19,6 +19,10 @@ module Session
         refresh_token: params[:refresh_token]
       ).find_or_create_by(foreign_id:)
 
+      if user.previously_new_record? && Rails.env.development?
+        UserSeedJob.perform_later(user)
+      end
+
       warden.set_user(user)
 
       if (return_to = session.delete(:return_to))

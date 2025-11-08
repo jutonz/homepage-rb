@@ -89,6 +89,47 @@ RSpec.describe SharedBillsController do
       expect(page.text).to include("Unpaid")
     end
 
+    it "paginates bills" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      bill1 = create(
+        :shared_bills_bill,
+        shared_bill:,
+        period_start: 1.month.ago.beginning_of_month,
+        period_end: 1.month.ago.end_of_month
+      )
+      bill2 = create(
+        :shared_bills_bill,
+        shared_bill:,
+        period_start: 2.months.ago.beginning_of_month,
+        period_end: 2.months.ago.end_of_month
+      )
+      login_as(user)
+      stub_const("SharedBillsController::PER_PAGE", 1)
+
+      get(shared_bill_path(shared_bill))
+      expect(response).to be_successful
+      expect(page).to have_css(
+        "[data-role=bill]",
+        text: bill1.period_start.to_date.to_s
+      )
+      expect(page).not_to have_css(
+        "[data-role=bill]",
+        text: bill2.period_start.to_date.to_s
+      )
+
+      get(shared_bill_path(shared_bill, page: 2))
+      expect(response).to be_successful
+      expect(page).not_to have_css(
+        "[data-role=bill]",
+        text: bill1.period_start.to_date.to_s
+      )
+      expect(page).to have_css(
+        "[data-role=bill]",
+        text: bill2.period_start.to_date.to_s
+      )
+    end
+
     it "returns 404 for shared bill not owned by current user" do
       shared_bill = create(:shared_bill)
       other_user = create(:user)

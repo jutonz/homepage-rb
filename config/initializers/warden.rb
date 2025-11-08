@@ -13,6 +13,6 @@ Rails.application.config.middleware.use Warden::Manager do |warden_config|
   end
 
   warden_config.serialize_from_session do |id|
-    User.find(id)
+    User.find_by(id:)
   end
 end

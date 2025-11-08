@@ -9,10 +9,16 @@ class SharedBillsController < ApplicationController
         .order(created_at: :desc)
   end
 
+  PER_PAGE = 24
   def show
     @shared_bill = authorize(find_shared_bill)
     @payees = @shared_bill.payees.order(:name)
-    @bills = @shared_bill.bills.with_payee_info.order(period_start: :desc)
+    @bills = @shared_bill
+      .bills
+      .with_payee_info
+      .order(period_start: :desc)
+      .page(params[:page])
+      .per(PER_PAGE)
   end
 
   def new
