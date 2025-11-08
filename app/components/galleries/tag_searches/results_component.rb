@@ -12,7 +12,11 @@ module Galleries
               url: gallery_tags_path(@gallery, add_to_image_id: @image.id)
             ) do |f| %>
               <%= f.input(:name, as: :hidden) %>
-              <%= f.button(:submit, "Create tag '\#{@tag_search.query}'") %>
+              <%= f.button(
+                :submit,
+                "Create tag '\#{@tag_search.query}'",
+                class: "mt-3"
+              ) %>
             <% end %>
           <% end %>
 
