@@ -20,18 +20,43 @@
 FactoryBot.define do
   factory :galleries_image, class: "Galleries::Image" do
     gallery
-    image
+
+    after(:build) do |image|
+      unless image.file.attached?
+        image.file.attach(
+          io: StringIO.new("fake"),
+          filename: "test.jpg",
+          content_type: "image/jpeg"
+        )
+      end
+    end
 
     trait :with_perceptual_hash do
       perceptual_hash { Array.new(64, 0) }
     end
 
-    trait :image do
-      file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/audiosurf.jpg"), "image/jpeg") }
+    trait :with_real_file do
+      after(:build) do |image|
+        image.file.attach(
+          io: File.open(
+            Rails.root.join("spec/fixtures/files/audiosurf.jpg")
+          ),
+          filename: "audiosurf.jpg",
+          content_type: "image/jpeg"
+        )
+      end
     end
 
     trait :webm do
-      file { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/files/video.webm"), "video/webm") }
+      after(:build) do |image|
+        image.file.attach(
+          io: File.open(
+            Rails.root.join("spec/fixtures/files/video.webm")
+          ),
+          filename: "video.webm",
+          content_type: "video/webm"
+        )
+      end
     end
   end
 end

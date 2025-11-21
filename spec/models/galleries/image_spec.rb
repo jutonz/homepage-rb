@@ -142,7 +142,7 @@ RSpec.describe Galleries::Image do
 
   describe "#calculate_perceptual_hash!" do
     it "calculates and saves a perceptual_hash" do
-      image = create(:galleries_image, perceptual_hash: nil)
+      image = create(:galleries_image, :with_real_file, perceptual_hash: nil)
 
       image.calculate_perceptual_hash!
 

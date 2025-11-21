@@ -12,7 +12,7 @@ RSpec.describe Galleries::ImageComponent, type: :component do
   end
 
   it "if the image is an image, renders a link to the image" do
-    image = create(:galleries_image, :image)
+    image = create(:galleries_image, :with_real_file)
     component = described_class.new(image:)
     render_inline(component)
 

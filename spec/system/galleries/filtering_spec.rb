@@ -4,7 +4,7 @@ RSpec.describe "Gallery filtering" do
   it "allows filtering and unfiltering by a tag", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
-    image = create(:galleries_image, gallery:)
+    image = create(:galleries_image, :with_real_file, gallery:)
     tag = create(:galleries_tag, gallery:)
     image.add_tag(tag)
     login_as(user)
