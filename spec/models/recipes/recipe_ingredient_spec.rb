@@ -30,7 +30,7 @@
 require "rails_helper"
 
 RSpec.describe Recipes::RecipeIngredient, type: :model do
-  subject { create(:recipes_recipe_ingredient) }
+  subject { build(:recipes_recipe_ingredient) }
 
   it { is_expected.to belong_to(:recipe) }
   it { is_expected.to belong_to(:ingredient) }
@@ -43,13 +43,13 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
   it { is_expected.to validate_uniqueness_of(:recipe_id).scoped_to(:ingredient_id) }
 
   it "has a valid factory" do
-    expect(subject).to be_valid
+    expect(build_stubbed(:recipes_recipe_ingredient)).to be_valid
   end
 
   describe "fraction functionality" do
     describe "#quantity_string=" do
       it "parses and stores simple fractions" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.quantity_string = "1/2"
         expect(recipe_ingredient.numerator).to eq(1)
         expect(recipe_ingredient.denominator).to eq(2)
@@ -57,7 +57,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "parses and stores mixed numbers" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.quantity_string = "2 1/3"
         expect(recipe_ingredient.numerator).to eq(7)
         expect(recipe_ingredient.denominator).to eq(3)
@@ -65,7 +65,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "parses and stores whole numbers" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.quantity_string = "3"
         expect(recipe_ingredient.numerator).to eq(3)
         expect(recipe_ingredient.denominator).to eq(1)
@@ -73,7 +73,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "parses and stores decimals" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.quantity_string = "0.25"
         expect(recipe_ingredient.numerator).to eq(1)
         expect(recipe_ingredient.denominator).to eq(4)
@@ -81,14 +81,14 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "clears fraction fields for invalid input" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.quantity_string = "invalid"
         expect(recipe_ingredient.numerator).to be_nil
         expect(recipe_ingredient.denominator).to be_nil
       end
 
       it "tries decimal parsing for invalid fractions" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.quantity_string = "2.5"
         expect(recipe_ingredient.quantity).to eq(2.5)
       end
@@ -96,21 +96,21 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
 
     describe "#quantity_string" do
       it "returns formatted fraction for stored fractions" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.numerator = 3
         recipe_ingredient.denominator = 4
         expect(recipe_ingredient.quantity_string).to eq("3/4")
       end
 
       it "returns formatted mixed number for improper fractions" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.numerator = 5
         recipe_ingredient.denominator = 2
         expect(recipe_ingredient.quantity_string).to eq("2 1/2")
       end
 
       it "returns decimal value when no fraction is stored" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.numerator = nil
         recipe_ingredient.denominator = nil
         recipe_ingredient.quantity = 1.5
@@ -118,7 +118,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "returns empty string for no value" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.numerator = nil
         recipe_ingredient.denominator = nil
         recipe_ingredient.quantity = nil
@@ -128,14 +128,14 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
 
     describe "#formatted_quantity" do
       it "formats fractions without unicode by default" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.numerator = 1
         recipe_ingredient.denominator = 2
         expect(recipe_ingredient.formatted_quantity).to eq("1/2")
       end
 
       it "formats fractions with unicode when requested" do
-        recipe_ingredient = create(:recipes_recipe_ingredient)
+        recipe_ingredient = build(:recipes_recipe_ingredient)
         recipe_ingredient.numerator = 1
         recipe_ingredient.denominator = 2
         expect(recipe_ingredient.formatted_quantity(use_unicode: true)).to eq("½")
@@ -144,7 +144,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
 
     describe "fraction validation" do
       it "validates numerator presence when denominator is present" do
-        valid_ingredient = create(:recipes_recipe_ingredient)
+        valid_ingredient = build(:recipes_recipe_ingredient)
         valid_ingredient.numerator = nil
         valid_ingredient.denominator = 2
         expect(valid_ingredient).not_to be_valid
@@ -152,7 +152,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "validates denominator presence when numerator is present" do
-        valid_ingredient = create(:recipes_recipe_ingredient)
+        valid_ingredient = build(:recipes_recipe_ingredient)
         valid_ingredient.numerator = 1
         valid_ingredient.denominator = nil
         expect(valid_ingredient).not_to be_valid
@@ -160,7 +160,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "validates denominator is not zero" do
-        valid_ingredient = create(:recipes_recipe_ingredient)
+        valid_ingredient = build(:recipes_recipe_ingredient)
         valid_ingredient.numerator = 1
         valid_ingredient.denominator = 0
         expect(valid_ingredient).not_to be_valid
@@ -168,7 +168,7 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "validates numerator is greater than zero" do
-        valid_ingredient = create(:recipes_recipe_ingredient)
+        valid_ingredient = build(:recipes_recipe_ingredient)
         valid_ingredient.numerator = 0
         valid_ingredient.denominator = 2
         expect(valid_ingredient).not_to be_valid
@@ -176,14 +176,14 @@ RSpec.describe Recipes::RecipeIngredient, type: :model do
       end
 
       it "allows valid fractions" do
-        valid_ingredient = create(:recipes_recipe_ingredient)
+        valid_ingredient = build_stubbed(:recipes_recipe_ingredient)
         valid_ingredient.numerator = 3
         valid_ingredient.denominator = 4
         expect(valid_ingredient).to be_valid
       end
 
       it "allows no fraction fields to be set" do
-        valid_ingredient = create(:recipes_recipe_ingredient)
+        valid_ingredient = build_stubbed(:recipes_recipe_ingredient)
         valid_ingredient.numerator = nil
         valid_ingredient.denominator = nil
         expect(valid_ingredient).to be_valid
