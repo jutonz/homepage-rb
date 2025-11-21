@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Galleries::ImageVariantJob do
   describe "#perform" do
     it "genreates a variant for the image" do
-      image = create(:galleries_image)
+      image = create(:galleries_image, :with_real_file)
       variant = image.file.variant(:thumb)
 
       described_class.new.perform(image)
