@@ -18,9 +18,13 @@
 #
 FactoryBot.define do
   factory(:user) do
-    sequence(:email) { "user#{it}@exmaple.com" }
+    sequence(:email) { "user#{it}@example.com" }
     sequence(:foreign_id) { it.to_s }
-    access_token { build(:access_token, user: instance) }
+    access_token { "fake_token_#{foreign_id}" }
     refresh_token { "refresh_token" }
+
+    trait :with_valid_token do
+      access_token { build(:access_token, user: instance) }
+    end
   end
 end
