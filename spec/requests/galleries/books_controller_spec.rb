@@ -101,7 +101,6 @@ RSpec.describe Galleries::BooksController do
 
       expect(response).to have_http_status(:not_found)
     end
-
   end
 
   describe "show" do
