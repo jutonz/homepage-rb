@@ -20,35 +20,7 @@ RSpec.describe Galleries::BookImagePolicy do
     end
   end
 
-  permissions :create? do
-    it "grants access when user owns the gallery through book" do
-      user = build(:user)
-      gallery = build(:gallery, user:)
-      book = build(:galleries_book, gallery:)
-      book_image = build(:galleries_book_image, book:)
-
-      expect(described_class).to permit(user, book_image)
-    end
-
-    it "denies access when user does not own the gallery" do
-      user, other_user = build_pair(:user)
-      gallery = build(:gallery, user: other_user)
-      book = build(:galleries_book, gallery:)
-      book_image = build(:galleries_book_image, book:)
-
-      expect(described_class).not_to permit(user, book_image)
-    end
-
-    it "denies access when user is nil" do
-      gallery = build(:gallery)
-      book = build(:galleries_book, gallery:)
-      book_image = build(:galleries_book_image, book:)
-
-      expect(described_class).not_to permit(nil, book_image)
-    end
-  end
-
-  permissions :show?, :update?, :destroy? do
+  permissions :show?, :create?, :edit?, :update?, :destroy? do
     it "grants access when user owns the gallery through book" do
       user = build(:user)
       gallery = build(:gallery, user:)

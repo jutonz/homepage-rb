@@ -9,7 +9,7 @@ module Galleries
     end
 
     def create?
-      user.present? && book_owner?
+      gallery_owner?
     end
 
     def new?
@@ -31,10 +31,6 @@ module Galleries
     private
 
     def gallery_owner?
-      user.present? && record.book.gallery.user == user
-    end
-
-    def book_owner?
       user.present? && record.book.gallery.user == user
     end
 

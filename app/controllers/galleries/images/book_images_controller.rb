@@ -29,7 +29,7 @@ module Galleries
           )
         else
           @books = @gallery.books.order(:name)
-          flash[:notice] = @book_image.errors.full_messages.to_sentence
+          flash.now[:alert] = @book_image.errors.full_messages.to_sentence
           render :new, status: :unprocessable_content
         end
       end
