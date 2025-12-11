@@ -26,7 +26,11 @@ module Galleries
     belongs_to :book, class_name: "Galleries::Book"
     belongs_to :image, class_name: "Galleries::Image"
 
-    validates :image, uniqueness: {scope: :book_id}
+    validates :image,
+      uniqueness: {
+        scope: :book_id,
+        message: "is already added to that book"
+      }
     validates :order, presence: true
   end
 end
