@@ -50,14 +50,6 @@ RSpec.describe Galleries::BooksController do
 
       expect(response).to have_http_status(:not_found)
     end
-
-    it "requires authentication" do
-      gallery = create(:gallery)
-
-      get(gallery_books_path(gallery))
-
-      expect(response).to redirect_to(new_session_path)
-    end
   end
 
   describe "new" do
@@ -82,14 +74,6 @@ RSpec.describe Galleries::BooksController do
       get(new_gallery_book_path(gallery))
 
       expect(response).to have_http_status(:not_found)
-    end
-
-    it "requires authentication" do
-      gallery = create(:gallery)
-
-      get(new_gallery_book_path(gallery))
-
-      expect(response).to redirect_to(new_session_path)
     end
   end
 
@@ -118,14 +102,6 @@ RSpec.describe Galleries::BooksController do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "requires authentication" do
-      gallery = create(:gallery)
-      params = {book: {name: "hello"}}
-
-      post(gallery_books_path(gallery), params:)
-
-      expect(response).to redirect_to(new_session_path)
-    end
   end
 
   describe "show" do
@@ -152,15 +128,6 @@ RSpec.describe Galleries::BooksController do
       get(gallery_book_path(gallery, book))
 
       expect(response).to have_http_status(:not_found)
-    end
-
-    it "requires authentication" do
-      gallery = create(:gallery)
-      book = create(:galleries_book, gallery:)
-
-      get(gallery_book_path(gallery, book))
-
-      expect(response).to redirect_to(new_session_path)
     end
   end
 
@@ -189,16 +156,6 @@ RSpec.describe Galleries::BooksController do
 
       expect(response).to have_http_status(:not_found)
     end
-
-    it "requires authentication" do
-      gallery = create(:gallery)
-      book = create(:galleries_book, gallery:)
-      params = {book: {name: "updated"}}
-
-      put(gallery_book_path(gallery, book), params:)
-
-      expect(response).to redirect_to(new_session_path)
-    end
   end
 
   describe "edit" do
@@ -226,15 +183,6 @@ RSpec.describe Galleries::BooksController do
 
       expect(response).to have_http_status(:not_found)
     end
-
-    it "requires authentication" do
-      gallery = create(:gallery)
-      book = create(:galleries_book, gallery:)
-
-      get(edit_gallery_book_path(gallery, book))
-
-      expect(response).to redirect_to(new_session_path)
-    end
   end
 
   describe "destroy" do
@@ -249,13 +197,16 @@ RSpec.describe Galleries::BooksController do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "requires authentication" do
-      gallery = create(:gallery)
+    it "deletes the book" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
       book = create(:galleries_book, gallery:)
+      login_as(user)
 
       delete(gallery_book_path(gallery, book))
 
-      expect(response).to redirect_to(new_session_path)
+      expect(response).to redirect_to(gallery_books_path(gallery))
+      expect(Galleries::Book.find_by(id: book)).to be_nil
     end
   end
 

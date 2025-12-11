@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Galleries::BookPolicy do
-  permissions :index?, :create? do
+  permissions :index?, :create?, :new? do
     it "grants access when user is present" do
       user = build(:user)
       gallery = build(:gallery)

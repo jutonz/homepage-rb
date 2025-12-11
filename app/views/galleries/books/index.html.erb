@@ -9,7 +9,7 @@
   <%= c.with_action do %>
     <%= link_to(
       "New Book",
-      new_gallery_book_path,
+      new_gallery_book_path(@gallery),
       class: "button"
     ) %>
   <% end %>
