@@ -28,6 +28,12 @@ module Galleries
       class_name: "Galleries::ImageTag",
       dependent: :destroy
     has_many :tags, through: :image_tags
+    has_many :book_images,
+      class_name: "Galleries::BookImage",
+      dependent: :destroy
+    has_many :books,
+      through: :book_images,
+      class_name: "Galleries::Book"
 
     validates :file, presence: true
 

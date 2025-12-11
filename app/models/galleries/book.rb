@@ -20,6 +20,12 @@
 module Galleries
   class Book < ActiveRecord::Base
     belongs_to :gallery
+    has_many :book_images,
+      class_name: "Galleries::BookImage",
+      dependent: :destroy
+    has_many :images,
+      through: :book_images,
+      class_name: "Galleries::Image"
 
     validates :name, presence: true
   end

@@ -24,6 +24,8 @@ RSpec.describe Galleries::Image do
   it { is_expected.to validate_presence_of(:file) }
   it { is_expected.to have_many(:image_tags).dependent(:destroy) }
   it { is_expected.to have_many(:tags) }
+  it { is_expected.to have_many(:book_images).dependent(:destroy) }
+  it { is_expected.to have_many(:books).through(:book_images) }
 
   it "has a valid factory" do
     expect(create(:galleries_image)).to be_valid

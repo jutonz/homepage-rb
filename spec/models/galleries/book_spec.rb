@@ -21,5 +21,7 @@ require "rails_helper"
 
 RSpec.describe Galleries::Book do
   it { is_expected.to belong_to(:gallery) }
+  it { is_expected.to have_many(:book_images).dependent(:destroy) }
+  it { is_expected.to have_many(:images).through(:book_images) }
   it { is_expected.to validate_presence_of(:name) }
 end
