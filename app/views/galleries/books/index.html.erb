@@ -1,0 +1,44 @@
+<%= render(HeaderComponent.new(
+  title: "Books"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+  <%= c.with_crumb("Books", gallery_books_path(@gallery)) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "New Book",
+      new_gallery_book_path,
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="mb-6">
+  <%= render(PillComponent.new(
+    text: "#{@books.size} books",
+    color: :green
+  )) %>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% @books.each do |book| %>
+    <%= link_to(
+      gallery_book_path(@gallery, book),
+      data: {role: "book"},
+      class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 group"
+    ) do %>
+      <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-900 group-hover:text-gray-700"><%= book.name %></span>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<% if @books.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No books yet</div>
+    <div class="text-sm">Create your first book to organize your images.</div>
+  </div>
+<% end %>

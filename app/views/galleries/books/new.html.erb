@@ -1,0 +1,10 @@
+<%= render(HeaderComponent.new(
+  title: "New book"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+  <%= c.with_crumb("Books", gallery_books_path(@gallery)) %>
+<% end %>
+
+<%= render partial: "form" %>
