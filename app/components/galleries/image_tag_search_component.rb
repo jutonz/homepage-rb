@@ -11,7 +11,7 @@ module Galleries
         tag_search: @tag_search
       )) %>
 
-      <h4 class="text-md mt-10">Recently used tags</h4>
+      <h4 class="text-xl mt-10">Recently used tags</h4>
       <% grouped_tags.each_with_index do |(image_id, results), index| %>
         <% if index > 0 %>
           <hr class="my-4 border-gray-300" data-testid="tag-group-separator">
