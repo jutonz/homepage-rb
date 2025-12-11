@@ -1,0 +1,45 @@
+<%= render(HeaderComponent.new(
+  title: "Add to Book"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+  <%= c.with_crumb("Image", gallery_image_path(@gallery, @image)) %>
+<% end %>
+
+<% if @books.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No books available</div>
+    <div class="text-sm mb-4">Create a book first to add images to it.</div>
+    <%= link_to(
+      "Create a book",
+      new_gallery_book_path(@gallery),
+      class: "button"
+    ) %>
+  </div>
+<% else %>
+  <p class="mb-6 text-gray-600">
+    Select a book to add this image to:
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% @books.each do |book| %>
+      <%= form_with(
+        url: gallery_image_book_images_path(@gallery, @image),
+        method: :post,
+        data: {role: "book-selection"}
+      ) do |form| %>
+        <%= form.hidden_field(:book_id, value: book.id) %>
+        <%= form.button(
+          type: "submit",
+          class: "w-full p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 text-left"
+        ) do %>
+          <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-900"><%= book.name %></span>
+            <span class="text-sm text-gray-500">→</span>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

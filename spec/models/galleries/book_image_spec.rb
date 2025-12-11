@@ -32,5 +32,6 @@ RSpec.describe Galleries::BookImage do
     expect(build(:galleries_book_image))
       .to validate_uniqueness_of(:image)
       .scoped_to(:book_id)
+      .with_message("is already added to that book")
   end
 end

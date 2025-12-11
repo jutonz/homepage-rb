@@ -63,4 +63,12 @@
   </div>
 <% end %>
 
+<div class="mt-6">
+  <%= link_to(
+    "Add to book",
+    new_gallery_image_book_image_path(@gallery, @image),
+    class: "button"
+  ) %>
+</div>
+
 <div class="pb-32"></div>
