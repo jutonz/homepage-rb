@@ -22,6 +22,14 @@
 
   <%= c.with_action do %>
     <%= link_to(
+      "Books",
+      gallery_books_path(@gallery),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
+    <%= link_to(
       "Edit",
       edit_gallery_path(@gallery),
       class: "button"
