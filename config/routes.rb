@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       resources :images, except: %i[new create] do
         resources :tags, only: %i[create destroy], module: :images
         resource :tag_search, only: %i[show], module: :images
+        resources :book_images, only: %i[new create], module: :images
       end
       resource :bulk_upload, only: %i[new create]
       resources :tags do

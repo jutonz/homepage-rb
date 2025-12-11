@@ -27,6 +27,14 @@
   <%= render(Galleries::ImageComponent.new(image: @image)) %>
 </div>
 
+<div class="mt-6">
+  <%= link_to(
+    "Add to book",
+    new_gallery_image_book_image_path(@gallery, @image),
+    class: "button"
+  ) %>
+</div>
+
 <h2 class="text-xl mt-10 mb-5">Tags</h2>
 
 <div class="flex flex-col">
