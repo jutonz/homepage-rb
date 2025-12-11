@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Testing & Quality
 - `bin/rspec` - Run RSpec test suite
-- `bin/standard` - Ruby linting and code style (Standard gem)
+- `bin/standardrb` - Ruby linting and code style (Standard gem)
 
 ### Assets & Frontend
 - TailwindCSS is used for styling via `tailwindcss-rails` gem

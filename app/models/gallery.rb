@@ -29,6 +29,9 @@ class Gallery < ActiveRecord::Base
   has_many :images,
     class_name: "Galleries::Image",
     dependent: :destroy
+  has_many :books,
+    class_name: "Galleries::Book",
+    dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
 
