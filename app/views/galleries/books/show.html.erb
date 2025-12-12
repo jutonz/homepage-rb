@@ -25,7 +25,14 @@
   <% end %>
 <% end %>
 
-<div class="text-center py-12 text-gray-500">
-  <div class="text-lg font-medium mb-2">No images yet</div>
-  <div class="text-sm">Add images to this book to get started.</div>
+<div class="mb-6">
+  <%= render(PillComponent.new(
+    text: "#{@book.images.size} images",
+    color: :blue
+  )) %>
 </div>
+
+<%= render(
+  partial: "galleries/images",
+  locals: {images: @images}
+) %>
