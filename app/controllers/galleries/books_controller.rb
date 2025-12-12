@@ -3,6 +3,8 @@ module Galleries
     before_action :ensure_authenticated!
     after_action :verify_authorized
 
+    PER_PAGE = 20
+
     def index
       @gallery = find_gallery
       authorize Galleries::Book
@@ -15,6 +17,12 @@ module Galleries
     def show
       @gallery = find_gallery
       @book = authorize(find_book)
+      @images =
+        @book
+          .images
+          .includes(:file_attachment)
+          .page(params[:page])
+          .per(PER_PAGE)
     end
 
     def new
