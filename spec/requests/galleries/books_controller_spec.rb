@@ -101,6 +101,18 @@ RSpec.describe Galleries::BooksController do
 
       expect(response).to have_http_status(:not_found)
     end
+
+    it "renders error if creation fails" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      params = {book: {name: ""}}
+
+      post(gallery_books_path(gallery), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_text("can't be blank")
+    end
   end
 
   describe "show" do
@@ -122,10 +134,9 @@ RSpec.describe Galleries::BooksController do
       user = create(:user)
       gallery = create(:gallery, user:)
       book = create(:galleries_book, gallery:)
-      images = create_pair(:galleries_image, gallery:)
-      images.each do |image|
-        create(:galleries_book_image, book:, image:)
-      end
+      image1, image2 = create_pair(:galleries_image, gallery:)
+      create(:galleries_book_image, book:, image: image1)
+      create(:galleries_book_image, book:, image: image2)
       login_as(user)
 
       get(gallery_book_path(gallery, book))
@@ -134,18 +145,22 @@ RSpec.describe Galleries::BooksController do
     end
 
     it "paginates images" do
+      stub_const("#{described_class}::PER_PAGE", 1)
       user = create(:user)
       gallery = create(:gallery, user:)
       book = create(:galleries_book, gallery:)
-      25.times do |i|
-        image = create(:galleries_image, gallery:)
-        create(:galleries_book_image, book:, image:, order: i + 1)
-      end
+      image1, image2 = create_pair(:galleries_image, gallery:)
+      create(:galleries_book_image, book:, image: image1)
+      create(:galleries_book_image, book:, image: image2)
       login_as(user)
 
       get(gallery_book_path(gallery, book))
+      expect(page).to have_css("[data-image-id='#{image1.id}']")
+      expect(page).not_to have_css("[data-image-id='#{image2.id}']")
 
-      expect(page).to have_css("nav.pagination")
+      get(gallery_book_path(gallery, book, page: 2))
+      expect(page).to have_css("[data-image-id='#{image2.id}']")
+      expect(page).not_to have_css("[data-image-id='#{image1.id}']")
     end
 
     it "returns 404 when viewing book from gallery not owned by current user" do
@@ -184,6 +199,19 @@ RSpec.describe Galleries::BooksController do
       put(gallery_book_path(gallery, book), params:)
 
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "renders error if update fails" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      book = create(:galleries_book, gallery:)
+      login_as(user)
+      params = {book: {name: ""}}
+
+      put(gallery_book_path(gallery, book), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_text("can't be blank")
     end
   end
 
