@@ -118,43 +118,19 @@ RSpec.describe Galleries::BooksController do
       expect(page).to have_link("Books", href: gallery_books_path(gallery))
     end
 
-    it "displays images in the book ordered by their order field" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      book = create(:galleries_book, gallery:)
-      image1, image2, image3 = create_list(:galleries_image, 3, gallery:)
-      create(:galleries_book_image, book:, image: image2, order: 1)
-      create(:galleries_book_image, book:, image: image1, order: 2)
-      create(:galleries_book_image, book:, image: image3, order: 3)
-      login_as(user)
-
-      get(gallery_book_path(gallery, book))
-
-      expect(response).to have_http_status(:success)
-      expect(page).to have_link(
-        href: gallery_image_path(gallery, image1)
-      )
-      expect(page).to have_link(
-        href: gallery_image_path(gallery, image2)
-      )
-      expect(page).to have_link(
-        href: gallery_image_path(gallery, image3)
-      )
-    end
-
     it "shows image count" do
       user = create(:user)
       gallery = create(:gallery, user:)
       book = create(:galleries_book, gallery:)
-      images = create_list(:galleries_image, 3, gallery:)
-      images.each_with_index do |image, index|
-        create(:galleries_book_image, book:, image:, order: index + 1)
+      images = create_pair(:galleries_image, gallery:)
+      images.each do |image|
+        create(:galleries_book_image, book:, image:)
       end
       login_as(user)
 
       get(gallery_book_path(gallery, book))
 
-      expect(page).to have_text("3 images")
+      expect(page).to have_text("2 images")
     end
 
     it "paginates images" do

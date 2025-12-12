@@ -24,6 +24,7 @@ module Galleries
       class_name: "Galleries::BookImage",
       dependent: :destroy
     has_many :images,
+      -> { order("galleries_book_images.order ASC") },
       through: :book_images,
       class_name: "Galleries::Image"
 

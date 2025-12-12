@@ -21,9 +21,6 @@ module Galleries
         @book
           .images
           .includes(:file_attachment)
-          .joins(:book_images)
-          .where(book_images: {book_id: @book.id})
-          .order("galleries_book_images.order ASC")
           .page(params[:page])
           .per(PER_PAGE)
     end
