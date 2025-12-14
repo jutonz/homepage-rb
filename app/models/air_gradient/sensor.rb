@@ -1,3 +1,5 @@
 module AirGradient
-  Sensor = Data.define(:name, :url)
+  class Sensor < Data.define(:name, :url)
+    def current_measures = Measures.current(url:)
+  end
 end
