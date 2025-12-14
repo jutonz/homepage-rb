@@ -1,3 +1,3 @@
 module AirGradient
-  Sensor = Data.define(:name, :serial_no)
+  Sensor = Data.define(:name, :url)
 end

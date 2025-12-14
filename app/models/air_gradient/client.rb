@@ -1,7 +1,6 @@
 module AirGradient
   class Client
-    def initialize(serial_no:)
-      @url = url_from_serial(serial_no)
+    def initialize(url:)
       @conn = Faraday.new(url:) do |builder|
         builder.response(:json)
         builder.response(:raise_error)
@@ -15,10 +14,5 @@ module AirGradient
     private
 
     attr_reader :conn
-    attr_reader :url
-
-    def url_from_serial(serial_no)
-      "http://airgradient_#{serial_no}.local"
-    end
   end
 end

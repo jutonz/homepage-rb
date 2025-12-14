@@ -3,7 +3,7 @@ require "prometheus_exporter/client"
 module AirGradient
   class MeasuresJob < ApplicationJob
     SENSORS = Rails.application.credentials.air_gradient_sensors.map do |sensor|
-      Sensor.new(name: sensor[:name], serial_no: sensor[:serial_no])
+      Sensor.new(name: sensor[:name], url: sensor[:url])
     end
 
     def perform
@@ -16,7 +16,7 @@ module AirGradient
     private
 
     def fetch_and_upload_metrics(sensor:)
-      measures = Measures.current(serial_no: sensor.serial_no)
+      measures = Measures.current(url: sensor.url)
 
       client = PrometheusExporter::Client.default
       client

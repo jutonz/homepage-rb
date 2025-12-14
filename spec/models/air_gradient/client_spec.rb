@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe AirGradient::Client do
   describe "#get" do
     it "makes a get request" do
-      serial_no = "abc123"
+      url = "http://192.168.1.2"
       stub = FakeAirGradient.stub(
-        serial_no:,
+        url:,
         method: :get,
         path: "/hello"
       ).to_return(
@@ -13,16 +13,16 @@ RSpec.describe AirGradient::Client do
         status: 200
       )
 
-      response = described_class.new(serial_no:).get("/hello")
+      response = described_class.new(url:).get("/hello")
 
       expect(stub).to have_been_requested
       expect(response.body).to eql("world")
     end
 
     it "parses response as json" do
-      serial_no = "abc123"
+      url = "http://192.168.1.2"
       stub = FakeAirGradient.stub(
-        serial_no:,
+        url:,
         method: :get,
         path: "/hello"
       ).to_return(
@@ -31,16 +31,16 @@ RSpec.describe AirGradient::Client do
         status: 200
       )
 
-      response = described_class.new(serial_no:).get("/hello")
+      response = described_class.new(url:).get("/hello")
 
       expect(stub).to have_been_requested
       expect(response.body).to eql({"planet" => "world"})
     end
 
     it "raises if request is unsuccessful" do
-      serial_no = "abc123"
+      url = "http://192.168.1.2"
       FakeAirGradient.stub(
-        serial_no:,
+        url:,
         method: :get,
         path: "/hello"
       ).to_return(
@@ -49,7 +49,7 @@ RSpec.describe AirGradient::Client do
       )
 
       expect {
-        described_class.new(serial_no:).get("/hello")
+        described_class.new(url:).get("/hello")
       }.to raise_error(Faraday::ServerError)
     end
   end
