@@ -16,7 +16,7 @@ module AirGradient
     private
 
     def fetch_and_upload_metrics(sensor:)
-      measures = Measures.current(url: sensor.url)
+      measures = sensor.current_measures
 
       client = PrometheusExporter::Client.default
       client
