@@ -9,7 +9,7 @@ module AirGradient
     :temp,
     :tvoc
   ) do
-    PATH = "/measures/current"
+    PATH = "/measures/current" # rubocop:disable Lint/ConstantDefinitionInBlock
 
     def self.current(serial_no:)
       Client
