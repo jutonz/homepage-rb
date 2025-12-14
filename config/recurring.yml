@@ -8,6 +8,9 @@ production:
   solid_queue_metrics:
     class: "Metrics::SolidQueueMetricsJob"
     schedule: "*/15 * * * * *" # every 15 seconds
+  air_gradient_measures:
+    class: "AirGradient::MeasuresJob"
+    schedule: "*/15 * * * * *" # every 15 seconds
   sync_task_occurrences:
     class: "Todo::SyncTaskOccurrencesJob"
     schedule: "*/5 * * * *" # every 5 minutes
