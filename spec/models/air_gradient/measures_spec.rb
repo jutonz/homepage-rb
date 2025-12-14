@@ -14,9 +14,9 @@ RSpec.describe AirGradient::Measures do
         rhumCompensated: 60.59,
         tvocIndex: 153
       }
-      serial_no = "abc123"
+      url = "http://192.168.1.2"
       stub = FakeAirGradient.stub(
-        serial_no:,
+        url:,
         method: :get,
         path: "/measures/current"
       ).to_return(
@@ -25,7 +25,7 @@ RSpec.describe AirGradient::Measures do
         status: 200
       )
 
-      measures = described_class.current(serial_no:)
+      measures = described_class.current(url:)
 
       expect(stub).to have_been_requested
       expect(measures).to eql(described_class.new(

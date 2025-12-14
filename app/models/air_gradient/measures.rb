@@ -1,19 +1,21 @@
 module AirGradient
-  Measures = Data.define(
-    :co2,
-    :humidity,
-    :nox,
-    :pm01,
-    :pm02,
-    :pm10,
-    :temp,
-    :tvoc
-  ) do
-    PATH = "/measures/current" # rubocop:disable Lint/ConstantDefinitionInBlock
+  MEASURES_ATTRS = %i[
+    co2
+    humidity
+    nox
+    pm01
+    pm02
+    pm10
+    temp
+    tvoc
+  ]
 
-    def self.current(serial_no:)
+  class Measures < Data.define(*MEASURES_ATTRS)
+    PATH = "/measures/current"
+
+    def self.current(url:)
       Client
-        .new(serial_no:)
+        .new(url:)
         .get(PATH)
         .then { from_json(it.body) }
     end
