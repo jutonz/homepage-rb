@@ -8,7 +8,7 @@ local:
 
 block_storage:
   service: S3
-  endpoint: https://blockstorage.jutonz.com
+  endpoint: <%= Rails.application.credentials.dig(:block_storage, :endpoint) %>
   access_key_id: <%= Rails.application.credentials.dig(:block_storage, :access_key) %>
   secret_access_key: <%= Rails.application.credentials.dig(:block_storage, :secret_key) %>
   region: us-east-1 # ignored but needed for s3 gem
