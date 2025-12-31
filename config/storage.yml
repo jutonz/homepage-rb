@@ -26,8 +26,8 @@ block:
 
 mirror:
   service: Mirror
-  primary: block_storage
-  mirrors: [ block ]
+  primary: block
+  mirrors: [ block_storage ]
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
