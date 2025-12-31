@@ -28,7 +28,7 @@ module Homepage
     # Let's do that in every env so we can test it.
     config.solid_queue.connects_to = {database: {writing: :queue}}
 
-    config.active_storage.service = :block_storage
+    config.active_storage.service = :mirror
 
     config.x.enable_metrics = false
   end
