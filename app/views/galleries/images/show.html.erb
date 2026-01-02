@@ -63,6 +63,22 @@
   </div>
 <% end %>
 
+<% if @books&.any? %>
+  <div class="mt-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-3">
+      In Books
+    </h3>
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 \
+gap-4"
+    >
+      <% @books.each do |book| %>
+        <%= render(Galleries::BookCardComponent.new(book:)) %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
 <div class="mt-6">
   <%= link_to(
     "Add to book",

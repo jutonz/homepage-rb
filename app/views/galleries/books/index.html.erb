@@ -24,15 +24,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
   <% @books.each do |book| %>
-    <%= link_to(
-      gallery_book_path(@gallery, book),
-      data: {role: "book"},
-      class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 group"
-    ) do %>
-      <div class="flex justify-between items-center">
-        <span class="font-medium text-gray-900 group-hover:text-gray-700"><%= book.name %></span>
-      </div>
-    <% end %>
+    <%= render(Galleries::BookCardComponent.new(book:)) %>
   <% end %>
 </div>
 

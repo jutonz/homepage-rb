@@ -15,6 +15,7 @@ module Galleries
     def show
       @gallery = find_gallery
       @image = authorize(find_image)
+      @books = @image.books.includes(:gallery).order(:name)
       @tag_search = Galleries::TagSearch.new(
         gallery: @gallery,
         image: @image,

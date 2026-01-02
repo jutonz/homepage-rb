@@ -73,6 +73,34 @@ RSpec.describe Galleries::ImagesController do
       expect(response).to have_http_status(:ok)
       expect(page).to have_text("This image doesn't have a perceptual_hash")
     end
+
+    it "loads books for the image" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      book1 = create(:galleries_book, gallery:, name: "Book A")
+      book2 = create(:galleries_book, gallery:, name: "Book B")
+      create(:galleries_book_image, book: book1, image:)
+      create(:galleries_book_image, book: book2, image:)
+      login_as(user)
+
+      get(gallery_image_path(gallery, image))
+
+      expect(page).to have_css('[data-role="book"]', count: 2)
+      expect(page).to have_link("Book A")
+      expect(page).to have_link("Book B")
+    end
+
+    it "does not show book section when image has no books" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      login_as(user)
+
+      get(gallery_image_path(gallery, image))
+
+      expect(page).not_to have_text("In Books")
+    end
   end
 
   describe "update" do
