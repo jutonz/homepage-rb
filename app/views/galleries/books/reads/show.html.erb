@@ -31,8 +31,6 @@
       >
         <% if image.video? %>
           <%= video_tag(image.file, controls: true) %>
-        <% elsif image.file.variable? %>
-          <%= image_tag(image.file) %>
         <% else %>
           <%= image_tag(image.file) %>
         <% end %>
