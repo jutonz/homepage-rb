@@ -20,6 +20,7 @@ module Galleries
       @images =
         @book
           .images
+          .includes(:gallery)
           .includes(:file_attachment)
           .page(params[:page])
           .per(PER_PAGE)

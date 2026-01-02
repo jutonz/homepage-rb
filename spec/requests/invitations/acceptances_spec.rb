@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe Invitations::AcceptancesController, type: :request do
   describe "create" do
     it "accepts valid invitation when user exists" do
-      invitation = create(:user_group_invitation)
-      user = create(:user, email: invitation.email)
+      user = create(:user)
+      invitation = create(:user_group_invitation, email: user.email)
       login_as(user)
 
       post(invitation_acceptance_path(invitation.token))
@@ -19,8 +19,8 @@ RSpec.describe Invitations::AcceptancesController, type: :request do
     end
 
     it "handles expired invitations" do
-      invitation = create(:user_group_invitation, :expired)
-      user = create(:user, email: invitation.email)
+      user = create(:user)
+      invitation = create(:user_group_invitation, :expired, email: user.email)
       login_as(user)
 
       post(invitation_acceptance_path(invitation.token))

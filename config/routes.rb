@@ -45,7 +45,9 @@ Rails.application.routes.draw do
         resources :auto_add_tags, only: %i[new create destroy]
       end
       resource :tag_search, only: %i[show]
-      resources :books
+      resources :books do
+        resource :read, only: :show, module: :books
+      end
     end
   end
 
