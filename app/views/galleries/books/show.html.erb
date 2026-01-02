@@ -15,6 +15,14 @@
   <% end %>
 
   <%= c.with_action do %>
+    <%= link_to(
+      "Read",
+      gallery_book_read_path(@gallery, @book),
+      class: "button"
+    ) %>
+  <% end %>
+
+  <%= c.with_action do %>
     <%= button_to(
       "Delete",
       gallery_book_path(@gallery, @book),
