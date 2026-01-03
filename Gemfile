@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.4.7"
+ruby "4.0.0"
 
 # remove after this is the ruby default version
 gem "openssl", "3.3.2"
