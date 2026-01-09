@@ -3,7 +3,7 @@ source "https://rubygems.org"
 ruby "3.4.7"
 
 # remove after this is the ruby default version
-gem "openssl", "3.3.2"
+gem "openssl", "4.0.0"
 
 gem "after_party"
 gem "aws-sdk-s3"
