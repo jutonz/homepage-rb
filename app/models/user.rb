@@ -24,8 +24,7 @@ class User < ActiveRecord::Base
     class_name: "RecipeGroup",
     foreign_key: "owner_id"
   has_many :owned_user_groups, class_name: "UserGroup", foreign_key: "owner_id"
-  has_many :plants_plants,
-    class_name: "Plants::Plant"
+  has_many :plants, class_name: "Plants::Plant"
   has_many :recipes_ingredients, class_name: "Recipes::Ingredient"
   has_many :recipes_recipes, class_name: "Recipes::Recipe"
   has_many :sent_user_group_invitations,
