@@ -63,11 +63,11 @@ Rails.application.routes.draw do
   resources :shared_bills do
     scope module: :shared_bills do
       resources :payees, except: :index
-      resources :bills, except: [:index, :show]
+      resources :bills, except: %i[index show]
     end
   end
   resources :user_groups do
-    resources :invitations, only: [:create, :destroy], module: :user_groups
+    resources :invitations, only: %i[create destroy], module: :user_groups
   end
 
   resources :invitations, only: [:show], param: :token do
@@ -81,6 +81,10 @@ Rails.application.routes.draw do
   end
 
   resource :home, only: :show
+
+  namespace :plants do
+    resources :plants, only: %i[index new create]
+  end
 
   root to: "homes#show"
 end

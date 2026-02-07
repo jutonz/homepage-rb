@@ -1,0 +1,6 @@
+<%= render(HeaderComponent.new(title: "New Plant")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_plants_path) %>
+<% end %>
+
+<%= render("form") %>
