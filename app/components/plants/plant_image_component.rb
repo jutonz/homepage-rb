@@ -3,7 +3,7 @@ module Plants
     erb_template <<~ERB
       <div class="border border-gray-200 rounded-md p-2">
         <div class="flex justify-center mb-2">
-          <%= image_tag(@plant_image.file) %>
+          <%= image_tag(@plant_image.file, loading: "lazy") %>
         </div>
         <% if @plant_image.taken_at.present? %>
           <div class="text-xs text-gray-600 mb-2">

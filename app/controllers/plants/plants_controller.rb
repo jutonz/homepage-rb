@@ -24,9 +24,11 @@ module Plants
 
     def show
       @plant = authorize(Plants::Plant.find(params[:id]))
-      @plant_images = @plant.plant_images
-        .includes(:file_attachment)
-        .order(taken_at: :desc, created_at: :desc)
+      @plant_images =
+        @plant
+          .plant_images
+          .includes(:file_attachment)
+          .order(taken_at: :desc, created_at: :desc)
     end
 
     def edit

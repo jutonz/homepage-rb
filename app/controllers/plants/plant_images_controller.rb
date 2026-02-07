@@ -1,13 +1,14 @@
 module Plants
   class PlantImagesController < ApplicationController
+    before_action :ensure_authenticated!
+    after_action :verify_authorized
+
     def new
-      ensure_authenticated!
       @plant = find_plant
       @plant_image = authorize(@plant.plant_images.new)
     end
 
     def create
-      ensure_authenticated!
       @plant = find_plant
       @plant_image = authorize(@plant.plant_images.new(plant_image_params))
 
@@ -21,7 +22,6 @@ module Plants
     end
 
     def destroy
-      ensure_authenticated!
       @plant = find_plant
       @plant_image = authorize(find_plant_image)
       @plant_image.destroy!

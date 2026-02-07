@@ -22,7 +22,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
       expect(response).to(have_http_status(:ok))
     end
 
-    it "redirects when accessing another user's plant" do
+    it "errors when accessing another user's plant" do
       user = create(:user)
       plant = create(:plant)
       login_as(user, scope: :user)
