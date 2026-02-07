@@ -32,6 +32,8 @@ module Plants
     )
     has_many(:plant_images, dependent: :destroy)
 
+    has_rich_text :notes
+
     validates(:name, presence: true)
   end
 end

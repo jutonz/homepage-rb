@@ -57,7 +57,11 @@ module Plants
     private
 
     def plant_params
-      params.expect(plants_plant: %i[name purchased_at purchased_from])
+      params.expect(
+        plants_plant: %i[
+          name purchased_at purchased_from notes
+        ]
+      )
     end
   end
 end
