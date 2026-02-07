@@ -1,6 +1,15 @@
 <%= render(HeaderComponent.new(title: @plant.name)) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      plant_path(@plant),
+      method: :delete,
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger"
+    ) %>
+  <% end %>
 <% end %>
 
 <div class="max-w-4xl">

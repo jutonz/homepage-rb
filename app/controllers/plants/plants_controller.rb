@@ -26,6 +26,12 @@ module Plants
       @plant = authorize(Plants::Plant.find(params[:id]))
     end
 
+    def destroy
+      @plant = authorize(Plants::Plant.find(params[:id]))
+      @plant.destroy!
+      redirect_to(plants_path, notice: "Plant was deleted.")
+    end
+
     private
 
     def plant_params
