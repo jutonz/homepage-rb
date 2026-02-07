@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `mise exec -- bundle install` - Install Ruby gems
 - `mise exec -- bin/rails db:prepare` - Set up database
 - `mise exec -- bin/rails db:migrate` - Run database migrations
+- `mise exec -- bin/rails g migration` - Create a new database migration
 
 ### Testing & Quality
 - `mise exec --bin/rspec` - Run RSpec test suite
