@@ -9,7 +9,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       get(new_plant_plant_image_path(plant))
 
-      expect(response()).to(redirect_to(new_session_path()))
+      expect(response).to(redirect_to(new_session_path))
     end
 
     it "renders new page when authenticated" do
@@ -19,7 +19,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       get(new_plant_plant_image_path(plant))
 
-      expect(response()).to(have_http_status(:ok))
+      expect(response).to(have_http_status(:ok))
     end
 
     it "redirects when accessing another user's plant" do
@@ -29,7 +29,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       get(new_plant_plant_image_path(plant))
 
-      expect(response()).to(have_http_status(:not_found))
+      expect(response).to(have_http_status(:not_found))
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       post(plant_plant_images_path(plant), params: params)
 
-      expect(response()).to(redirect_to(new_session_path()))
+      expect(response).to(redirect_to(new_session_path))
     end
 
     it "creates a plant image when authenticated" do
@@ -60,10 +60,10 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       expect do
         post(plant_plant_images_path(plant), params: params)
-      end.to(change { Plants::PlantImage.count() }.by(1))
+      end.to(change { Plants::PlantImage.count }.by(1))
 
-      expect(response()).to(redirect_to(plant_path(plant)))
-      expect(flash()[:notice]).to(eq("Image was added."))
+      expect(response).to(redirect_to(plant_path(plant)))
+      expect(flash[:notice]).to(eq("Image was added."))
     end
 
     it "renders errors when file is missing" do
@@ -74,9 +74,9 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       expect do
         post(plant_plant_images_path(plant), params: params)
-      end.not_to(change { Plants::PlantImage.count() })
+      end.not_to(change { Plants::PlantImage.count })
 
-      expect(response()).to(have_http_status(:unprocessable_content))
+      expect(response).to(have_http_status(:unprocessable_content))
     end
 
     it "redirects when creating for another user's plant" do
@@ -91,7 +91,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       post(plant_plant_images_path(plant), params: params)
 
-      expect(response()).to(have_http_status(:not_found))
+      expect(response).to(have_http_status(:not_found))
     end
   end
 
@@ -99,9 +99,9 @@ RSpec.describe "Plants::PlantImages", type: :request do
     it "redirects to login when not authenticated" do
       plant_image = create(:plants_plant_image)
 
-      delete(plant_plant_image_path(plant_image.plant(), plant_image))
+      delete(plant_plant_image_path(plant_image.plant, plant_image))
 
-      expect(response()).to(redirect_to(new_session_path()))
+      expect(response).to(redirect_to(new_session_path))
     end
 
     it "deletes the plant image when authenticated" do
@@ -112,10 +112,10 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       expect do
         delete(plant_plant_image_path(plant, plant_image))
-      end.to(change { Plants::PlantImage.count() }.by(-1))
+      end.to(change { Plants::PlantImage.count }.by(-1))
 
-      expect(response()).to(redirect_to(plant_path(plant)))
-      expect(flash()[:notice]).to(eq("Image was deleted."))
+      expect(response).to(redirect_to(plant_path(plant)))
+      expect(flash[:notice]).to(eq("Image was deleted."))
     end
 
     it "redirects when deleting another user's plant image" do
@@ -123,9 +123,9 @@ RSpec.describe "Plants::PlantImages", type: :request do
       plant_image = create(:plants_plant_image)
       login_as(user, scope: :user)
 
-      delete(plant_plant_image_path(plant_image.plant(), plant_image))
+      delete(plant_plant_image_path(plant_image.plant, plant_image))
 
-      expect(response()).to(have_http_status(:not_found))
+      expect(response).to(have_http_status(:not_found))
     end
   end
 end

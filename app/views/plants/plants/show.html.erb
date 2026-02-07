@@ -1,17 +1,17 @@
-<%= render(HeaderComponent.new(title: @plant.name())) do |c| %>
-  <%= c.with_crumb("Home", home_path()) %>
-  <%= c.with_crumb("Plants", plants_path()) %>
-  <%= c.with_action() do %>
+<%= render(HeaderComponent.new(title: @plant.name)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_action do %>
     <%= link_to(
       "Add Image",
       new_plant_plant_image_path(@plant),
       class: "button"
     ) %>
   <% end %>
-  <%= c.with_action() do %>
+  <%= c.with_action do %>
     <%= link_to("Edit", edit_plant_path(@plant), class: "button") %>
   <% end %>
-  <%= c.with_action() do %>
+  <%= c.with_action do %>
     <%= button_to(
       "Delete",
       plant_path(@plant),
@@ -23,29 +23,29 @@
 <% end %>
 
 <div class="max-w-4xl">
-  <% if @plant.purchased_from().present?() %>
+  <% if @plant.purchased_from.present? %>
     <div class="mb-2">
       <span class="text-gray-500">From:</span>
-      <%= @plant.purchased_from() %>
+      <%= @plant.purchased_from %>
     </div>
   <% end %>
 
-  <% if @plant.purchased_at().present?() %>
+  <% if @plant.purchased_at.present? %>
     <div class="mb-2">
       <span class="text-gray-500">Purchased:</span>
-      <%= @plant.purchased_at().to_date() %>
+      <%= @plant.purchased_at.to_date %>
     </div>
   <% end %>
 </div>
 
-<% plant_images = @plant.plant_images().with_attached_file()
+<% plant_images = @plant.plant_images.with_attached_file
   .order(taken_at: :desc, created_at: :desc) %>
 
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Images</h2>
-  <% if plant_images.any?() %>
+  <% if plant_images.any? %>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      <% plant_images.each() do |plant_image| %>
+      <% plant_images.each do |plant_image| %>
         <%= render(
           Plants::PlantImageComponent.new(plant_image: plant_image)
         ) %>

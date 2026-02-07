@@ -19,10 +19,10 @@
 #
 FactoryBot.define do
   factory(:plants_plant_image, class: "Plants::PlantImage") do
-    plant()
+    plant
 
     after(:build) do |plant_image|
-      next if plant_image.file.attached?()
+      next if plant_image.file.attached?
 
       plant_image.file.attach(
         io: StringIO.new("fake"),

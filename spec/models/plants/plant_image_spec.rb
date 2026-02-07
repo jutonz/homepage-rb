@@ -20,11 +20,11 @@
 require "rails_helper"
 
 RSpec.describe Plants::PlantImage do
-  it { is_expected().to(belong_to(:plant)) }
+  it { is_expected.to(belong_to(:plant)) }
 
-  it { is_expected().to(validate_presence_of(:file)) }
+  it { is_expected.to(validate_presence_of(:file)) }
 
   it "has a valid factory" do
-    expect(build(:plants_plant_image)).to(be_valid())
+    expect(build(:plants_plant_image)).to(be_valid)
   end
 end

@@ -22,13 +22,13 @@
 require "rails_helper"
 
 RSpec.describe Plants::Plant do
-  it { is_expected().to(belong_to(:user)) }
+  it { is_expected.to(belong_to(:user)) }
 
-  it { is_expected().to(have_many(:plant_images).dependent(:destroy)) }
+  it { is_expected.to(have_many(:plant_images).dependent(:destroy)) }
 
-  it { is_expected().to(validate_presence_of(:name)) }
+  it { is_expected.to(validate_presence_of(:name)) }
 
   it "has a valid factory" do
-    expect(build(:plant)).to(be_valid())
+    expect(build(:plant)).to(be_valid)
   end
 end

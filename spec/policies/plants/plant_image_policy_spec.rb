@@ -7,7 +7,7 @@ RSpec.describe Plants::PlantImagePolicy do
       plant = build(:plant, user:)
       plant_image = build(:plants_plant_image, plant:)
 
-      expect(described_class()).to(permit(user, plant_image))
+      expect(described_class).to(permit(user, plant_image))
     end
 
     it "denies access when user does not own the plant" do
@@ -15,14 +15,14 @@ RSpec.describe Plants::PlantImagePolicy do
       plant = build(:plant, user: other_user)
       plant_image = build(:plants_plant_image, plant:)
 
-      expect(described_class()).not_to(permit(user, plant_image))
+      expect(described_class).not_to(permit(user, plant_image))
     end
 
     it "denies access when user is nil" do
       plant = build(:plant)
       plant_image = build(:plants_plant_image, plant:)
 
-      expect(described_class()).not_to(permit(nil, plant_image))
+      expect(described_class).not_to(permit(nil, plant_image))
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe Plants::PlantImagePolicy do
       plant_image2 = create(:plants_plant_image, plant: plant2)
       _other_image = create(:plants_plant_image, plant: other_plant)
 
-      scope = described_class().new(user, Plants::PlantImage.all()).resolve()
+      scope = described_class.new(user, Plants::PlantImage.all).resolve
 
       expect(scope).to(contain_exactly(plant_image1, plant_image2))
     end
@@ -46,7 +46,7 @@ RSpec.describe Plants::PlantImagePolicy do
       plant = create(:plant, user:)
       create(:plants_plant_image, plant:)
 
-      scope = described_class().new(nil, Plants::PlantImage.all()).resolve()
+      scope = described_class.new(nil, Plants::PlantImage.all).resolve
 
       expect(scope).to(be_empty)
     end

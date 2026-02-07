@@ -3,11 +3,11 @@ module Plants
     erb_template <<~ERB
       <div class="border border-gray-200 rounded-md p-2">
         <div class="flex justify-center mb-2">
-          <%= image_tag(@plant_image.file().variant(:thumb)) %>
+          <%= image_tag(@plant_image.file.variant(:thumb)) %>
         </div>
-        <% if @plant_image.taken_at().present?() %>
+        <% if @plant_image.taken_at.present? %>
           <div class="text-xs text-gray-600 mb-2">
-            Taken: <%= @plant_image.taken_at().to_date() %>
+            Taken: <%= @plant_image.taken_at.to_date %>
           </div>
         <% end %>
         <div>
@@ -24,7 +24,7 @@ module Plants
 
     def initialize(plant_image:)
       @plant_image = plant_image
-      @plant = plant_image.plant()
+      @plant = plant_image.plant
     end
   end
 end
