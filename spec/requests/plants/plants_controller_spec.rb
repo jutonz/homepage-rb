@@ -133,4 +133,40 @@ RSpec.describe "Plants::Plants", type: :request do
       )
     end
   end
+
+  describe "DELETE /destroy" do
+    it "redirects to login when not authenticated" do
+      plant = create(:plant)
+
+      delete(plant_path(plant))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "deletes the plant and redirects when authenticated" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      login_as(user, scope: :user)
+
+      expect do
+        delete(plant_path(plant))
+      end.to(change { Plants::Plant.count }.by(-1))
+
+      expect(response).to redirect_to(plants_path)
+      expect(flash[:notice]).to eq("Plant was deleted.")
+    end
+
+    it "redirects when deleting another user's plant" do
+      user = create(:user)
+      other_plant = create(:plant)
+      login_as(user, scope: :user)
+
+      delete(plant_path(other_plant))
+
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to eq(
+        "You are not authorized to perform this action."
+      )
+    end
+  end
 end

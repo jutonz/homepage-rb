@@ -5,18 +5,30 @@ RSpec.describe "Plant management", type: :system do
     user = create(:user)
     login_as(user)
 
-    visit home_path
-    click_link "View Plants"
+    visit(home_path)
+    click_link("View Plants")
 
     expect(page).to have_content("No plants yet")
 
-    click_link "New Plant"
+    click_link("New Plant")
 
-    fill_in "Name", with: "Snake Plant"
+    fill_in("Name", with: "Snake Plant")
 
-    click_button "Create Plant"
+    click_button("Create Plant")
 
     expect(page).to have_content("Plant was created.")
     expect(page).to have_content("Snake Plant")
+  end
+
+  it "deletes a plant from the show page" do
+    user = create(:user)
+    plant = create(:plant, user:)
+    login_as(user)
+    visit plant_path(plant)
+
+    click_button("Delete")
+
+    expect(page).to have_content("Plant was deleted.")
+    expect(page).not_to have_content(plant.name)
   end
 end
