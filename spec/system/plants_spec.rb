@@ -78,4 +78,20 @@ RSpec.describe "Plant management", type: :system do
     expect(page).to have_content("Taken at: 2024-01-02")
     expect(page).to have_button("Delete")
   end
+
+  it "updates a plant image" do
+    user = create(:user)
+    plant = create(:plant, user:)
+    plant_image = create(:plants_plant_image, plant:)
+    login_as(user)
+    visit plant_plant_image_path(plant, plant_image)
+
+    click_link("Edit")
+
+    fill_in("Taken at", with: "2024-02-03")
+    click_button("Update Image")
+
+    expect(page).to have_content("Image was updated.")
+    expect(page).to have_content("Taken at: 2024-02-03")
+  end
 end

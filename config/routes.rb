@@ -55,7 +55,7 @@ Rails.application.routes.draw do
 
   scope(module: :plants) do
     resources(:plants) do
-      resources(:plant_images, only: %i[new create destroy show])
+      resources(:plant_images, only: %i[new create destroy show edit update])
     end
   end
 

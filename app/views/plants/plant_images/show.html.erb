@@ -3,6 +3,13 @@
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
   <%= c.with_action do %>
+    <%= link_to(
+      "Edit",
+      edit_plant_plant_image_path(@plant, @plant_image),
+      class: "button"
+    ) %>
+  <% end %>
+  <%= c.with_action do %>
     <%= button_to(
       "Delete",
       plant_plant_image_path(@plant, @plant_image),
