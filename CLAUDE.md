@@ -5,14 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ### Setup
-- `bundle install` - Install Ruby gems
-- `bin/rails db:prepare` - Set up database
-- `bin/rails db:migrate` - Run database migrations
+- `mise exec -- bundle install` - Install Ruby gems
+- `mise exec -- bin/rails db:prepare` - Set up database
+- `mise exec -- bin/rails db:migrate` - Run database migrations
 
 ### Testing & Quality
-- `bin/rspec` - Run RSpec test suite
-- `bin/standardrb` - Ruby linting and code style (Standard gem)
-* If these don't work, try prefixing with `mise exec --`, e.g. `mise exec -- bin/rspec`
+- `mise exec --bin/rspec` - Run RSpec test suite
+- `mise exec --bin/standardrb` - Ruby linting and code style (Standard gem)
 
 ### Assets & Frontend
 - TailwindCSS is used for styling via `tailwindcss-rails` gem

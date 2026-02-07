@@ -20,7 +20,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 FactoryBot.define do
-  factory(:plants_plant, class: "Plants::Plant") do
+  factory(:plant, class: "Plants::Plant") do
     sequence(:name) { "Plant #{it}" }
     association(:user)
   end

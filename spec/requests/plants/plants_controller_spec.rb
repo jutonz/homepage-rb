@@ -21,8 +21,8 @@ RSpec.describe "Plants::Plants", type: :request do
 
     it "shows only the current user's plants" do
       user = create(:user)
-      plant = create(:plants_plant, user:)
-      other_plant = create(:plants_plant)
+      plant = create(:plant, user:)
+      other_plant = create(:plant)
       login_as(user, scope: :user)
 
       get(plants_path)
