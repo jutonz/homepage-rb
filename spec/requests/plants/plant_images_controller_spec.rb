@@ -107,13 +107,15 @@ RSpec.describe "Plants::PlantImages", type: :request do
     it "renders show page when authenticated" do
       user = create(:user)
       plant = create(:plant, user:)
-      plant_image = create(:plants_plant_image, :with_taken_at, plant:)
+      plant_image = create(:plants_plant_image, plant:)
       login_as(user, scope: :user)
 
       get(plant_plant_image_path(plant, plant_image))
 
       expect(response).to(have_http_status(:ok))
-      expect(response.body).to(include("Taken at: 2024-01-02"))
+      expect(response.body).to(include(
+        "Taken at: #{plant_image.taken_at.to_date.iso8601}"
+      ))
     end
 
     it "errors when accessing another user's plant image" do

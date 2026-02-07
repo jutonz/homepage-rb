@@ -12,7 +12,7 @@ module Plants
         </div>
         <% if @plant_image.taken_at.present? %>
           <div class="text-xs text-gray-600 mb-2">
-            Taken: <%= @plant_image.taken_at.to_date %>
+            Taken at: <%= @plant_image.taken_at.to_date %>
           </div>
         <% end %>
       </div>
