@@ -53,7 +53,7 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :plants do
+  scope module: :plants do
     resources :plants, only: %i[index new create]
   end
 

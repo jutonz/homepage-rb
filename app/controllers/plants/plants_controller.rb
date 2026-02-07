@@ -16,7 +16,7 @@ module Plants
       @plant = authorize(current_user.plants_plants.new(plant_params))
 
       if @plant.save
-        redirect_to(plants_plants_path, notice: "Plant was created.")
+        redirect_to(plants_path, notice: "Plant was created.")
       else
         render(:new, status: :unprocessable_content)
       end

@@ -1,7 +1,7 @@
 <%= render(HeaderComponent.new(title: "Plants")) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_action do %>
-    <%= link_to("New Plant", new_plants_plant_path, class: "button") %>
+    <%= link_to("New Plant", new_plant_path, class: "button") %>
   <% end %>
 <% end %>
 

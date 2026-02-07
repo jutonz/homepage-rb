@@ -1,6 +1,6 @@
-<%= simple_form_for(@plant, url: plants_plants_path) do |form| %>
+<%= simple_form_for(@plant, url: plants_path) do |form| %>
   <%= form.input(:name, autofocus: true) %>
   <%= form.input(:purchased_from) %>
-  <%= form.input(:purchased_at, as: :datetime) %>
+  <%= form.input(:purchased_at, as: :date, html5: true) %>
   <%= form.button(:submit) %>
 <% end %>

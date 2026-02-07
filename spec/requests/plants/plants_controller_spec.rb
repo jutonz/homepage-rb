@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "Plants::Plants", type: :request do
   describe "GET /index" do
     it "redirects to login when not authenticated" do
-      get(plants_plants_path)
+      get(plants_path)
 
       expect(response).to redirect_to(new_session_path)
     end
@@ -14,15 +14,28 @@ RSpec.describe "Plants::Plants", type: :request do
       user = create(:user)
       login_as(user, scope: :user)
 
-      get(plants_plants_path)
+      get(plants_path)
 
       expect(response).to have_http_status(:ok)
+    end
+
+    it "shows only the current user's plants" do
+      user = create(:user)
+      plant = create(:plants_plant, added_by: user)
+      other_plant = create(:plants_plant)
+      login_as(user, scope: :user)
+
+      get(plants_path)
+
+      expect(response).to have_http_status(:ok)
+      expect(page).to have_content(plant.name)
+      expect(page).not_to have_content(other_plant.name)
     end
   end
 
   describe "GET /new" do
     it "redirects to login when not authenticated" do
-      get(new_plants_plant_path)
+      get(new_plant_path)
       expect(response).to redirect_to(new_session_path)
     end
 
@@ -30,7 +43,7 @@ RSpec.describe "Plants::Plants", type: :request do
       user = create(:user)
       login_as(user, scope: :user)
 
-      get(new_plants_plant_path)
+      get(new_plant_path)
 
       expect(response).to have_http_status(:ok)
     end
@@ -46,7 +59,7 @@ RSpec.describe "Plants::Plants", type: :request do
         }
       }
 
-      post(plants_plants_path, params:)
+      post(plants_path, params: params)
 
       expect(response).to redirect_to(new_session_path)
     end
@@ -63,10 +76,10 @@ RSpec.describe "Plants::Plants", type: :request do
       }
 
       expect do
-        post(plants_plants_path, params:)
+        post(plants_path, params: params)
       end.to(change { user.plants_plants.count }.by(1))
 
-      expect(response).to redirect_to(plants_plants_path)
+      expect(response).to redirect_to(plants_path)
       expect(flash[:notice]).to eq("Plant was created.")
     end
 
@@ -81,7 +94,7 @@ RSpec.describe "Plants::Plants", type: :request do
         }
       }
 
-      post(plants_plants_path, params:)
+      post(plants_path, params: params)
 
       expect(response).to have_http_status(:unprocessable_content)
     end
