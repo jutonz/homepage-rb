@@ -7,9 +7,12 @@
 
 <div class="flex gap-4 flex-wrap">
   <% @plants.each do |plant| %>
-    <div
-      data-role="plant"
-      class="border-2 border-green-500 rounded-md p-4 min-w-32">
+    <%= link_to(
+      plant_path(plant),
+      data: {role: "plant"},
+      class: "border-2 border-green-500 rounded-md p-4 min-w-32 block
+              hover:bg-green-50 transition-colors"
+    ) do %>
       <div class="font-medium"><%= plant.name %></div>
       <% if plant.purchased_from.present? %>
         <div class="text-sm text-gray-500">
@@ -21,7 +24,7 @@
           <%= plant.purchased_at.to_date %>
         </div>
       <% end %>
-    </div>
+    <% end %>
   <% end %>
 
   <span class="hidden only:block text-gray-500">No plants yet</span>

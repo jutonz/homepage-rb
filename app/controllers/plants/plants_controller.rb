@@ -22,6 +22,10 @@ module Plants
       end
     end
 
+    def show
+      @plant = authorize(Plants::Plant.find(params[:id]))
+    end
+
     private
 
     def plant_params
