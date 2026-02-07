@@ -28,6 +28,8 @@ RSpec.describe Plants::Plant do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:key_image).class_name("Plants::PlantImage").optional }
 
+  it { is_expected.to have_rich_text(:notes) }
+
   it { is_expected.to validate_presence_of(:name) }
 
   it "has a valid factory" do

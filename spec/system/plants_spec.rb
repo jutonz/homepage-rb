@@ -37,6 +37,23 @@ RSpec.describe "Plant management", type: :system do
     expect(page).to have_content("New Name")
   end
 
+  it "edits a plant with notes", :js do
+    user = create(:user)
+    plant = create(:plant, user:, name: "Snake Plant")
+    login_as(user)
+    visit edit_plant_path(plant)
+
+    fill_in_rich_text_area(
+      "plants_plant_notes",
+      with: "Water weekly."
+    )
+    click_button("Update Plant")
+
+    expect(page).to have_content("Plant was updated.")
+    expect(page).to have_content("Notes")
+    expect(page).to have_content("Water weekly.")
+  end
+
   it "deletes a plant from the show page" do
     user = create(:user)
     plant = create(:plant, user:)

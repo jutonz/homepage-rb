@@ -29,6 +29,15 @@
   <% end %>
 <% end %>
 
+<% if @plant.notes.present? %>
+  <div class="mt-8">
+    <h2 class="text-lg font-medium mb-2">Notes</h2>
+    <div class="prose prose-gray max-w-none">
+      <%= @plant.notes %>
+    </div>
+  </div>
+<% end %>
+
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Images</h2>
   <% if @plant_images.any? %>

@@ -96,6 +96,24 @@ RSpec.describe "Plants::Plants", type: :request do
       expect(flash[:notice]).to eq("Plant was created.")
     end
 
+    it "creates a plant with notes" do
+      user = create(:user)
+      login_as(user, scope: :user)
+      params = {
+        plants_plant: {
+          name: "Monstera",
+          notes: "Likes indirect light."
+        }
+      }
+
+      post(plants_path, params:)
+
+      plant = user.plants.last
+      expect(plant.notes.to_plain_text).to eq(
+        "Likes indirect light."
+      )
+    end
+
     it "renders new form with errors when validation fails" do
       user = create(:user)
       login_as(user, scope: :user)
@@ -131,6 +149,19 @@ RSpec.describe "Plants::Plants", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(page).to have_content(plant.name)
+    end
+
+    it "renders notes when present" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant.update!(notes: "Water weekly.")
+      login_as(user, scope: :user)
+
+      get(plant_path(plant))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Water weekly.")
+      expect(response.body).to include("Notes")
     end
 
     it "redirects when viewing another user's plant" do
