@@ -94,4 +94,30 @@ RSpec.describe "Plant management", type: :system do
     expect(page).to have_content("Image was updated.")
     expect(page).to have_content("Taken at: 2024-02-03")
   end
+
+  it "sets the key image from the plant show page" do
+    user = create(:user)
+    plant = create(:plant, user:)
+    first_image = create(:plants_plant_image, plant:)
+    second_image = create(:plants_plant_image, plant:)
+    login_as(user)
+    visit plant_path(plant)
+
+    click_link("Edit key image")
+
+    first_image_container = find("[data-image-id='#{first_image.id}']")
+    first_image_container.click_button("Make key")
+
+    expect(page).to have_content("Key image was updated.")
+    expect(plant.reload.key_image).to(eq(first_image))
+    expect(page).to have_current_path(plant_path(plant))
+
+    click_link("Edit key image")
+
+    second_image_container = find("[data-image-id='#{second_image.id}']")
+    second_image_container.click_button("Make key")
+
+    expect(page).to have_content("Key image was updated.")
+    expect(plant.reload.key_image).to(eq(second_image))
+  end
 end

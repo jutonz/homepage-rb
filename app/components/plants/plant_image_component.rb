@@ -15,8 +15,15 @@ module Plants
             Taken at: <%= @plant_image.taken_at.to_date %>
           </div>
         <% end %>
+        <% if action.present? %>
+          <div class="mt-2">
+            <%= action %>
+          </div>
+        <% end %>
       </div>
     ERB
+
+    renders_one :action
 
     def initialize(plant_image:)
       @plant_image = plant_image

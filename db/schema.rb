@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_07_184236) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_07_190039) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -156,11 +156,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_184236) do
 
   create_table "plants_plants", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "key_image_id"
     t.string "name", null: false
     t.datetime "purchased_at"
     t.string "purchased_from"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["key_image_id"], name: "index_plants_plants_on_key_image_id"
     t.index ["user_id"], name: "index_plants_plants_on_user_id"
   end
 
@@ -504,6 +506,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_184236) do
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
   add_foreign_key "plants_plant_images", "plants_plants", column: "plant_id"
+  add_foreign_key "plants_plants", "plants_plant_images", column: "key_image_id"
   add_foreign_key "plants_plants", "users"
   add_foreign_key "recipe_group_user_groups", "recipe_groups"
   add_foreign_key "recipe_group_user_groups", "user_groups"

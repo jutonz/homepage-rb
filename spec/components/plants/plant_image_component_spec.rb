@@ -28,4 +28,16 @@ RSpec.describe Plants::PlantImageComponent, type: :component do
       )
     )
   end
+
+  it "renders the action slot when provided" do
+    plant_image = create(:plants_plant_image)
+    component = described_class.new(plant_image: plant_image)
+    render_inline(component) do |c|
+      c.with_action do
+        "Action content"
+      end
+    end
+
+    expect(page).to(have_content("Action content"))
+  end
 end

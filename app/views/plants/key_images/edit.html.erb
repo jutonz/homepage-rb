@@ -1,0 +1,33 @@
+<%= render(HeaderComponent.new(title: "Edit Key Image")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
+<% end %>
+
+<div class="mt-6">
+  <% if @plant_images.any? %>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <% @plant_images.each do |plant_image| %>
+        <%= render(
+          Plants::PlantImageComponent.new(plant_image: plant_image)
+        ) do |component| %>
+          <% component.with_action do %>
+            <% if @plant.key_image_id == plant_image.id %>
+              <div class="text-xs text-gray-500">Key image</div>
+            <% else %>
+              <%= button_to(
+                "Make key",
+                plant_key_image_path(@plant),
+                method: :patch,
+                params: {key_image_id: plant_image.id},
+                class: "button w-full"
+              ) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-gray-500">No images yet.</div>
+  <% end %>
+</div>
