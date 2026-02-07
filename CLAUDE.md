@@ -56,7 +56,8 @@ This is a Ruby on Rails 8.1 application with the following key architectural com
 * YOU MUST limit line length to 80 characters.
 * Do not use callbacks in controllers or models
 * Omit the value in hashes when possible, e.g. rather than `{user: user}`, say just `{user:}`
-* YOU MUST use parenthesis for all method calls
+* If passing arguments to a method, YOU MUST use parenthesis for all method calls.
+  * If the method call does not take arguments, you may omit parenthesis.
 * Use double quoted strings, e.g. use `"this"`, not `'this'`
 * Prefer global classes in app/assets/tailwind/application.css if one fits the use case.
 

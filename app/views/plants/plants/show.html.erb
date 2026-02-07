@@ -2,6 +2,13 @@
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_action do %>
+    <%= link_to(
+      "Add Image",
+      new_plant_plant_image_path(@plant),
+      class: "button"
+    ) %>
+  <% end %>
+  <%= c.with_action do %>
     <%= link_to("Edit", edit_plant_path(@plant), class: "button") %>
   <% end %>
   <%= c.with_action do %>
@@ -18,7 +25,8 @@
 <div class="max-w-4xl">
   <% if @plant.purchased_from.present? %>
     <div class="mb-2">
-      <span class="text-gray-500">From:</span> <%= @plant.purchased_from %>
+      <span class="text-gray-500">From:</span>
+      <%= @plant.purchased_from %>
     </div>
   <% end %>
 
@@ -27,5 +35,20 @@
       <span class="text-gray-500">Purchased:</span>
       <%= @plant.purchased_at.to_date %>
     </div>
+  <% end %>
+</div>
+
+<div class="mt-8">
+  <h2 class="text-lg font-medium mb-3">Images</h2>
+  <% if @plant_images.any? %>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <% @plant_images.each do |plant_image| %>
+        <%= render(
+          Plants::PlantImageComponent.new(plant_image: plant_image)
+        ) %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-gray-500">No images yet.</div>
   <% end %>
 </div>
