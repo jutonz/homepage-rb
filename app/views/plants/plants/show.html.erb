@@ -1,0 +1,19 @@
+<%= render(HeaderComponent.new(title: @plant.name)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+<% end %>
+
+<div class="max-w-4xl">
+  <% if @plant.purchased_from.present? %>
+    <div class="mb-2">
+      <span class="text-gray-500">From:</span> <%= @plant.purchased_from %>
+    </div>
+  <% end %>
+
+  <% if @plant.purchased_at.present? %>
+    <div class="mb-2">
+      <span class="text-gray-500">Purchased:</span>
+      <%= @plant.purchased_at.to_date %>
+    </div>
+  <% end %>
+</div>

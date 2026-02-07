@@ -99,4 +99,38 @@ RSpec.describe "Plants::Plants", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
     end
   end
+
+  describe "GET /show" do
+    it "redirects to login when not authenticated" do
+      plant = create(:plant)
+
+      get(plant_path(plant))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "renders show page when authenticated and viewing own plant" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      login_as(user, scope: :user)
+
+      get(plant_path(plant))
+
+      expect(response).to have_http_status(:ok)
+      expect(page).to have_content(plant.name)
+    end
+
+    it "redirects when viewing another user's plant" do
+      user = create(:user)
+      other_plant = create(:plant)
+      login_as(user, scope: :user)
+
+      get(plant_path(other_plant))
+
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to eq(
+        "You are not authorized to perform this action."
+      )
+    end
+  end
 end
