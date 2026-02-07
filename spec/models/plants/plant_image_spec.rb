@@ -4,7 +4,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
-#  taken_at   :datetime
+#  taken_at   :datetime         not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  plant_id   :bigint           not null
@@ -23,6 +23,7 @@ RSpec.describe Plants::PlantImage do
   it { is_expected.to(belong_to(:plant)) }
 
   it { is_expected.to(validate_presence_of(:file)) }
+  it { is_expected.to(validate_presence_of(:taken_at)) }
 
   it "has a valid factory" do
     expect(build(:plants_plant_image)).to(be_valid)

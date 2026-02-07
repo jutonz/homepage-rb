@@ -4,7 +4,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
-#  taken_at   :datetime
+#  taken_at   :datetime         not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  plant_id   :bigint           not null
@@ -20,6 +20,7 @@
 FactoryBot.define do
   factory(:plants_plant_image, class: "Plants::PlantImage") do
     plant
+    taken_at { Time.current }
 
     after(:build) do |plant_image|
       next if plant_image.file.attached?
@@ -29,10 +30,6 @@ FactoryBot.define do
         filename: "test.jpg",
         content_type: "image/jpeg"
       )
-    end
-
-    trait :with_taken_at do
-      taken_at { Time.zone.parse("2024-01-02 12:00:00") }
     end
   end
 end

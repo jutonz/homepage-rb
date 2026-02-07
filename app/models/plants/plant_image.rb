@@ -4,7 +4,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
-#  taken_at   :datetime
+#  taken_at   :datetime         not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  plant_id   :bigint           not null
@@ -24,5 +24,6 @@ module Plants
     belongs_to(:plant)
 
     validates(:file, presence: true)
+    validates(:taken_at, presence: true)
   end
 end

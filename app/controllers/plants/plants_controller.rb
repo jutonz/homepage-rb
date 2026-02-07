@@ -28,7 +28,7 @@ module Plants
         @plant
           .plant_images
           .includes(:file_attachment)
-          .order(taken_at: :desc, created_at: :desc)
+          .order(taken_at: :desc)
     end
 
     def edit
