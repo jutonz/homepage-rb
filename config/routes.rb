@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   end
 
   scope module: :plants do
-    resources :plants, only: %i[index new create show destroy]
+    resources :plants
   end
 
   scope module: :recipes do
