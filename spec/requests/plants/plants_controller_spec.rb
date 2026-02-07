@@ -90,7 +90,7 @@ RSpec.describe "Plants::Plants", type: :request do
 
       expect do
         post(plants_path, params:)
-      end.to(change { user.plants_plants.count }.by(1))
+      end.to(change { user.plants.count }.by(1))
 
       expect(response).to redirect_to(plants_path)
       expect(flash[:notice]).to eq("Plant was created.")

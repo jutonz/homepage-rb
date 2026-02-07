@@ -12,11 +12,11 @@ module Plants
     end
 
     def new
-      @plant = authorize(current_user.plants_plants.new)
+      @plant = authorize(current_user.plants.new)
     end
 
     def create
-      @plant = authorize(current_user.plants_plants.new(plant_params))
+      @plant = authorize(current_user.plants.new(plant_params))
 
       if @plant.save
         redirect_to(plants_path, notice: "Plant was created.")
