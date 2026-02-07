@@ -5,7 +5,10 @@ module Plants
 
     def index
       authorize(Plants::Plant)
-      @plants = policy_scope(Plants::Plant).order(created_at: :desc)
+      @plants =
+        policy_scope(Plants::Plant)
+          .includes(key_image: :file_attachment)
+          .order(created_at: :desc)
     end
 
     def new

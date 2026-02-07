@@ -13,6 +13,14 @@
       class: "border-2 border-green-500 rounded-md p-4 min-w-32 block
               hover:bg-green-50 transition-colors"
     ) do %>
+      <% if plant.key_image&.file&.attached? %>
+        <div class="mb-2">
+          <%= image_tag(
+            plant.key_image.file.variant(resize_to_limit: [320, 320]),
+            loading: "lazy"
+          ) %>
+        </div>
+      <% end %>
       <div class="font-medium"><%= plant.name %></div>
       <% if plant.purchased_from.present? %>
         <div class="text-sm text-gray-500">
