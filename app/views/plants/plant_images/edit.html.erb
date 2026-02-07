@@ -1,0 +1,15 @@
+<%= render(HeaderComponent.new(title: "Edit Image")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
+  <%= c.with_crumb("Image", plant_plant_image_path(@plant, @plant_image)) %>
+<% end %>
+
+<%= simple_form_for(
+  @plant_image,
+  url: plant_plant_image_path(@plant, @plant_image),
+  method: :patch
+) do |form| %>
+  <%= form.input(:taken_at, as: :date, html5: true) %>
+  <%= form.button(:submit, "Update Image") %>
+<% end %>

@@ -129,6 +129,93 @@ RSpec.describe "Plants::PlantImages", type: :request do
     end
   end
 
+  describe "GET /edit" do
+    it "redirects to login when not authenticated" do
+      plant_image = create(:plants_plant_image)
+
+      get(edit_plant_plant_image_path(plant_image.plant, plant_image))
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "renders edit page when authenticated" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant_image = create(:plants_plant_image, plant:)
+      login_as(user, scope: :user)
+
+      get(edit_plant_plant_image_path(plant, plant_image))
+
+      expect(response).to(have_http_status(:ok))
+    end
+
+    it "errors when accessing another user's plant image" do
+      user = create(:user)
+      plant_image = create(:plants_plant_image)
+      login_as(user, scope: :user)
+
+      get(edit_plant_plant_image_path(plant_image.plant, plant_image))
+
+      expect(response).to(have_http_status(:not_found))
+    end
+  end
+
+  describe "PATCH /update" do
+    it "redirects to login when not authenticated" do
+      plant_image = create(:plants_plant_image)
+      params = {plants_plant_image: {taken_at: "2024-02-03"}}
+
+      patch(
+        plant_plant_image_path(plant_image.plant, plant_image),
+        params: params
+      )
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "updates the plant image when authenticated" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant_image = create(:plants_plant_image, plant:)
+      login_as(user, scope: :user)
+      params = {plants_plant_image: {taken_at: "2024-02-03"}}
+
+      patch(plant_plant_image_path(plant, plant_image), params: params)
+
+      expect(response).to(
+        redirect_to(plant_plant_image_path(plant, plant_image))
+      )
+      expect(flash[:notice]).to(eq("Image was updated."))
+      expect(plant_image.reload.taken_at.to_date).to(eq(Date.new(2024, 2, 3)))
+    end
+
+    it "renders errors when taken_at is missing" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant_image = create(:plants_plant_image, plant:)
+      login_as(user, scope: :user)
+      params = {plants_plant_image: {taken_at: ""}}
+
+      patch(plant_plant_image_path(plant, plant_image), params: params)
+
+      expect(response).to(have_http_status(:unprocessable_content))
+    end
+
+    it "errors when updating another user's plant image" do
+      user = create(:user)
+      plant_image = create(:plants_plant_image)
+      login_as(user, scope: :user)
+      params = {plants_plant_image: {taken_at: "2024-02-03"}}
+
+      patch(
+        plant_plant_image_path(plant_image.plant, plant_image),
+        params: params
+      )
+
+      expect(response).to(have_http_status(:not_found))
+    end
+  end
+
   describe "DELETE /destroy" do
     it "redirects to login when not authenticated" do
       plant_image = create(:plants_plant_image)

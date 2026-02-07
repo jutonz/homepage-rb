@@ -26,6 +26,27 @@ module Plants
       @plant_image = authorize(find_plant_image)
     end
 
+    def edit
+      @plant = find_plant
+      @plant_image = authorize(find_plant_image)
+    end
+
+    def update
+      @plant = find_plant
+      @plant_image = authorize(find_plant_image)
+
+      if @plant_image.update(plant_image_update_params)
+        redirect_to(
+          plant_plant_image_path(@plant, @plant_image),
+          notice: "Image was updated."
+        )
+      else
+        flash.now[:alert] =
+          @plant_image.errors.full_messages.to_sentence
+        render(:edit, status: :unprocessable_content)
+      end
+    end
+
     def destroy
       @plant = find_plant
       @plant_image = authorize(find_plant_image)
@@ -47,6 +68,10 @@ module Plants
 
     def plant_image_params
       params.expect(plants_plant_image: %i[file taken_at])
+    end
+
+    def plant_image_update_params
+      params.expect(plants_plant_image: [:taken_at])
     end
   end
 end

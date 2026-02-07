@@ -16,6 +16,14 @@ module Plants
       plant_owner?
     end
 
+    def edit?
+      plant_owner?
+    end
+
+    def update?
+      plant_owner?
+    end
+
     private
 
     def plant_owner?
