@@ -27,6 +27,6 @@ RSpec.describe Plants::Plant do
   it { is_expected.to validate_presence_of(:name) }
 
   it "has a valid factory" do
-    expect(build(:plants_plant)).to be_valid
+    expect(build(:plant)).to be_valid
   end
 end
