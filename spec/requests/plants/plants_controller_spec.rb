@@ -31,6 +31,19 @@ RSpec.describe "Plants::Plants", type: :request do
       expect(page).to have_content(plant.name)
       expect(page).not_to have_content(other_plant.name)
     end
+
+    it "renders key image when present" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant_image = create(:plants_plant_image, plant:)
+      plant.update!(key_image: plant_image)
+      login_as(user, scope: :user)
+
+      get(plants_path)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("img")
+    end
   end
 
   describe "GET /new" do
