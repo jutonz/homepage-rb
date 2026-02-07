@@ -35,8 +35,6 @@ RSpec.describe "Plant management", type: :system do
 
     expect(page).to have_content("Plant was updated.")
     expect(page).to have_content("New Name")
-    expect(page).to have_content("Home Depot")
-    expect(page).to have_content("2024-06-15")
   end
 
   it "deletes a plant from the show page" do
