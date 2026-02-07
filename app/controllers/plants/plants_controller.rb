@@ -1,0 +1,31 @@
+module Plants
+  class PlantsController < ApplicationController
+    before_action :ensure_authenticated!
+    after_action :verify_authorized
+
+    def index
+      authorize(Plants::Plant)
+      @plants = policy_scope(Plants::Plant).order(created_at: :desc)
+    end
+
+    def new
+      @plant = authorize(current_user.plants_plants.new)
+    end
+
+    def create
+      @plant = authorize(current_user.plants_plants.new(plant_params))
+
+      if @plant.save
+        redirect_to(plants_path, notice: "Plant was created.")
+      else
+        render(:new, status: :unprocessable_content)
+      end
+    end
+
+    private
+
+    def plant_params
+      params.expect(plants_plant: %i[name purchased_at purchased_from])
+    end
+  end
+end

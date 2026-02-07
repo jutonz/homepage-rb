@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # Define your application routes per the DSL in
+  # https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # Reveal health status on /up that returns 200 if the app boots with no
+  # exceptions, otherwise 500. Can be used by load balancers and uptime
+  # monitors to verify that the app is live.
   get "up" => "rails/health#show", :as => :rails_health_check
 
   namespace :api do
@@ -51,6 +53,10 @@ Rails.application.routes.draw do
     end
   end
 
+  scope module: :plants do
+    resources :plants, only: %i[index new create]
+  end
+
   scope module: :recipes do
     resources :recipe_groups do
       resources :recipes do
@@ -63,11 +69,11 @@ Rails.application.routes.draw do
   resources :shared_bills do
     scope module: :shared_bills do
       resources :payees, except: :index
-      resources :bills, except: [:index, :show]
+      resources :bills, except: %i[index show]
     end
   end
   resources :user_groups do
-    resources :invitations, only: [:create, :destroy], module: :user_groups
+    resources :invitations, only: %i[create destroy], module: :user_groups
   end
 
   resources :invitations, only: [:show], param: :token do
