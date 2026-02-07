@@ -12,6 +12,10 @@ module Plants
       plant_owner?
     end
 
+    def show?
+      plant_owner?
+    end
+
     private
 
     def plant_owner?

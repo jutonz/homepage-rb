@@ -1,0 +1,26 @@
+<%= render(HeaderComponent.new(title: "Image")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      plant_plant_image_path(@plant, @plant_image),
+      method: :delete,
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="max-w-4xl">
+  <div class="flex justify-center mb-4">
+    <%= image_tag(@plant_image.file) %>
+  </div>
+
+  <% if @plant_image.taken_at.present? %>
+    <div class="text-gray-600 text-sm">
+      Taken at: <%= @plant_image.taken_at.to_date %>
+    </div>
+  <% end %>
+</div>

@@ -95,6 +95,38 @@ RSpec.describe "Plants::PlantImages", type: :request do
     end
   end
 
+  describe "GET /show" do
+    it "redirects to login when not authenticated" do
+      plant_image = create(:plants_plant_image)
+
+      get(plant_plant_image_path(plant_image.plant, plant_image))
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "renders show page when authenticated" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant_image = create(:plants_plant_image, :with_taken_at, plant:)
+      login_as(user, scope: :user)
+
+      get(plant_plant_image_path(plant, plant_image))
+
+      expect(response).to(have_http_status(:ok))
+      expect(response.body).to(include("Taken at: 2024-01-02"))
+    end
+
+    it "errors when accessing another user's plant image" do
+      user = create(:user)
+      plant_image = create(:plants_plant_image)
+      login_as(user, scope: :user)
+
+      get(plant_plant_image_path(plant_image.plant, plant_image))
+
+      expect(response).to(have_http_status(:not_found))
+    end
+  end
+
   describe "DELETE /destroy" do
     it "redirects to login when not authenticated" do
       plant_image = create(:plants_plant_image)

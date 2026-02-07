@@ -54,7 +54,7 @@ This is a Ruby on Rails 8.1 application with the following key architectural com
 
 ### Style rules
 * YOU MUST limit line length to 80 characters.
-* Do not use callbacks in controllers or models
+* Do not use callbacks in controllers or models, excepting `before_action :ensure_authenticated!` and `after_action :verify_authorized`, which should be added to controllers.
 * Omit the value in hashes when possible, e.g. rather than `{user: user}`, say just `{user:}`
 * If passing arguments to a method, YOU MUST use parenthesis for all method calls.
   * If the method call does not take arguments, you may omit parenthesis.

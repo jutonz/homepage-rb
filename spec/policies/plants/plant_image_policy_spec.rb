@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Plants::PlantImagePolicy do
-  permissions :new?, :create?, :destroy? do
+  permissions :new?, :create?, :destroy?, :show? do
     it "grants access when user owns the plant" do
       user = build(:user)
       plant = build(:plant, user:)
