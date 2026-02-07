@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_11_174044) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_07_150210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -144,6 +144,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_174044) do
     t.index ["gallery_id", "name"], name: "index_galleries_tags_on_gallery_id_and_name", unique: true
     t.index ["gallery_id"], name: "index_galleries_tags_on_gallery_id"
     t.index ["user_id"], name: "index_galleries_tags_on_user_id"
+  end
+
+  create_table "plants_plants", force: :cascade do |t|
+    t.bigint "added_by_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "purchased_at"
+    t.string "purchased_from"
+    t.datetime "updated_at", null: false
+    t.index ["added_by_id"], name: "index_plants_plants_on_added_by_id"
   end
 
   create_table "recipe_group_user_groups", force: :cascade do |t|
@@ -485,6 +495,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_174044) do
   add_foreign_key "galleries_social_media_links", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
+  add_foreign_key "plants_plants", "users", column: "added_by_id"
   add_foreign_key "recipe_group_user_groups", "recipe_groups"
   add_foreign_key "recipe_group_user_groups", "user_groups"
   add_foreign_key "recipe_groups", "users", column: "owner_id"
