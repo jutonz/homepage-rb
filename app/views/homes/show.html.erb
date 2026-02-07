@@ -101,6 +101,20 @@
     <% end %>
   <% end %>
 
+  <%= render(CardComponent.new(title: "Plants")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Track and manage your plants with details about care,
+        growth, and notes.
+      </p>
+      <%= link_to(
+        "View Plants",
+        plants_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
+
   <%= render(CardComponent.new(title: "Shared Bills")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
