@@ -26,6 +26,20 @@ module Plants
       @plant = authorize(Plants::Plant.find(params[:id]))
     end
 
+    def edit
+      @plant = authorize(Plants::Plant.find(params[:id]))
+    end
+
+    def update
+      @plant = authorize(Plants::Plant.find(params[:id]))
+
+      if @plant.update(plant_params)
+        redirect_to(plant_path(@plant), notice: "Plant was updated.")
+      else
+        render(:edit, status: :unprocessable_content)
+      end
+    end
+
     def destroy
       @plant = authorize(Plants::Plant.find(params[:id]))
       @plant.destroy!

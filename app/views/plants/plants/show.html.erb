@@ -2,6 +2,9 @@
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_action do %>
+    <%= link_to("Edit", edit_plant_path(@plant), class: "button") %>
+  <% end %>
+  <%= c.with_action do %>
     <%= button_to(
       "Delete",
       plant_path(@plant),

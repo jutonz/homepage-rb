@@ -169,4 +169,86 @@ RSpec.describe "Plants::Plants", type: :request do
       )
     end
   end
+
+  describe "GET /edit" do
+    it "redirects to login when not authenticated" do
+      plant = create(:plant)
+
+      get(edit_plant_path(plant))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "renders edit page when authenticated and viewing own plant" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      login_as(user, scope: :user)
+
+      get(edit_plant_path(plant))
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "redirects when editing another user's plant" do
+      user = create(:user)
+      other_plant = create(:plant)
+      login_as(user, scope: :user)
+
+      get(edit_plant_path(other_plant))
+
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to eq(
+        "You are not authorized to perform this action."
+      )
+    end
+  end
+
+  describe "PATCH /update" do
+    it "redirects to login when not authenticated" do
+      plant = create(:plant)
+      params = {plants_plant: {name: "Updated Name"}}
+
+      patch(plant_path(plant), params:)
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "updates the plant and redirects when authenticated" do
+      user = create(:user)
+      plant = create(:plant, user:, name: "Old Name")
+      login_as(user, scope: :user)
+      params = {plants_plant: {name: "New Name"}}
+
+      patch(plant_path(plant), params:)
+
+      expect(response).to redirect_to(plant_path(plant))
+      expect(flash[:notice]).to eq("Plant was updated.")
+      expect(plant.reload.name).to eq("New Name")
+    end
+
+    it "renders edit form with errors when validation fails" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      login_as(user, scope: :user)
+      params = {plants_plant: {name: nil}}
+
+      patch(plant_path(plant), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "redirects when updating another user's plant" do
+      user = create(:user)
+      other_plant = create(:plant)
+      login_as(user, scope: :user)
+      params = {plants_plant: {name: "Hacked Name"}}
+
+      patch(plant_path(other_plant), params:)
+
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to eq(
+        "You are not authorized to perform this action."
+      )
+    end
+  end
 end
