@@ -53,8 +53,10 @@ Rails.application.routes.draw do
     end
   end
 
-  scope module: :plants do
-    resources :plants
+  scope(module: :plants) do
+    resources(:plants) do
+      resources(:plant_images, only: %i[new create destroy])
+    end
   end
 
   scope module: :recipes do

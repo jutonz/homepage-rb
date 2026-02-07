@@ -22,6 +22,7 @@
 module Plants
   class Plant < ApplicationRecord
     belongs_to(:user)
+    has_many(:plant_images, dependent: :destroy)
 
     validates(:name, presence: true)
   end
