@@ -21,7 +21,7 @@ RSpec.describe "Plants::Plants", type: :request do
 
     it "shows only the current user's plants" do
       user = create(:user)
-      plant = create(:plants_plant, added_by: user)
+      plant = create(:plants_plant, user:)
       other_plant = create(:plants_plant)
       login_as(user, scope: :user)
 
@@ -59,7 +59,7 @@ RSpec.describe "Plants::Plants", type: :request do
         }
       }
 
-      post(plants_path, params: params)
+      post(plants_path, params:)
 
       expect(response).to redirect_to(new_session_path)
     end
@@ -76,7 +76,7 @@ RSpec.describe "Plants::Plants", type: :request do
       }
 
       expect do
-        post(plants_path, params: params)
+        post(plants_path, params:)
       end.to(change { user.plants_plants.count }.by(1))
 
       expect(response).to redirect_to(plants_path)
@@ -94,7 +94,7 @@ RSpec.describe "Plants::Plants", type: :request do
         }
       }
 
-      post(plants_path, params: params)
+      post(plants_path, params:)
 
       expect(response).to have_http_status(:unprocessable_content)
     end

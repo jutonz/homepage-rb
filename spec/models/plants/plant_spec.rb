@@ -9,20 +9,20 @@
 #  purchased_from :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  added_by_id    :bigint           not null
+#  user_id        :bigint           not null
 #
 # Indexes
 #
-#  index_plants_plants_on_added_by_id  (added_by_id)
+#  index_plants_plants_on_user_id  (user_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (added_by_id => users.id)
+#  fk_rails_...  (user_id => users.id)
 #
 require "rails_helper"
 
 RSpec.describe Plants::Plant do
-  it { is_expected.to belong_to(:added_by).class_name("User") }
+  it { is_expected.to belong_to(:user) }
 
   it { is_expected.to validate_presence_of(:name) }
 
