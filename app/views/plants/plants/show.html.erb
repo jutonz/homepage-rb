@@ -38,14 +38,11 @@
   <% end %>
 </div>
 
-<% plant_images = @plant.plant_images.with_attached_file
-  .order(taken_at: :desc, created_at: :desc) %>
-
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Images</h2>
-  <% if plant_images.any? %>
+  <% if @plant_images.any? %>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      <% plant_images.each do |plant_image| %>
+      <% @plant_images.each do |plant_image| %>
         <%= render(
           Plants::PlantImageComponent.new(plant_image: plant_image)
         ) %>

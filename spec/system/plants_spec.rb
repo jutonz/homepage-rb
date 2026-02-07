@@ -50,4 +50,24 @@ RSpec.describe "Plant management", type: :system do
     expect(page).to have_content("Plant was deleted.")
     expect(page).not_to have_content(plant.name)
   end
+
+  it "adds an image from the show page" do
+    user = create(:user)
+    plant = create(:plant, user:)
+    login_as(user)
+    visit plant_path(plant)
+
+    click_link("Add Image")
+
+    attach_file(
+      "File",
+      Rails.root.join("spec/fixtures/files/audiosurf.jpg")
+    )
+    fill_in("Taken at", with: "2024-01-02")
+    click_button("Add Image")
+
+    expect(page).to have_content("Image was added.")
+    expect(page).to have_content("Taken: 2024-01-02")
+    expect(page).to have_css("img")
+  end
 end

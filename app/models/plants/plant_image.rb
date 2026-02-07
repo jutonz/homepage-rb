@@ -19,9 +19,7 @@
 #
 module Plants
   class PlantImage < ApplicationRecord
-    has_one_attached(:file) do |file|
-      file.variant(:thumb, resize_to_limit: [200, 200])
-    end
+    has_one_attached(:file)
 
     belongs_to(:plant)
 
