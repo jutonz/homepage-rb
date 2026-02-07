@@ -69,5 +69,13 @@ RSpec.describe "Plant management", type: :system do
     expect(page).to have_content("Image was added.")
     expect(page).to have_content("Taken: 2024-01-02")
     expect(page).to have_css("img")
+
+    plant_image = Plants::PlantImage.order(:id).last
+    find(
+      "[data-image-id='#{plant_image.id}'] a"
+    ).click
+
+    expect(page).to have_content("Taken at: 2024-01-02")
+    expect(page).to have_button("Delete")
   end
 end

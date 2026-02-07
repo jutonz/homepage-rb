@@ -21,6 +21,11 @@ module Plants
       end
     end
 
+    def show
+      @plant = find_plant
+      @plant_image = authorize(find_plant_image)
+    end
+
     def destroy
       @plant = find_plant
       @plant_image = authorize(find_plant_image)
