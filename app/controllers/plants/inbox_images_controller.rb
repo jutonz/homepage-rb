@@ -34,7 +34,15 @@ module Plants
       render(:new, status: :unprocessable_content)
     end
 
+    def show
+      @inbox_image = authorize(find_inbox_image)
+    end
+
     private
+
+    def find_inbox_image
+      policy_scope(Plants::InboxImage).find(params[:id])
+    end
 
     def inbox_image_params
       params.expect(plants_inbox_image: [:taken_at, :file, {file: []}])

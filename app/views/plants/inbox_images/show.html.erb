@@ -1,0 +1,17 @@
+<%= render(HeaderComponent.new(title: "Image")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_crumb("Inbox", inbox_images_path) %>
+<% end %>
+
+<div class="w-full">
+  <div class="text-lg mb-3">
+    Taken <%= @inbox_image.taken_at.to_date %>
+  </div>
+
+  <div class="flex justify-center mb-4">
+    <%= link_to(@inbox_image.file) do %>
+      <%= image_tag(@inbox_image.file, class: "max-w-full h-auto") %>
+    <% end %>
+  </div>
+</div>
