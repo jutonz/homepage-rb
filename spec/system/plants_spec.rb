@@ -82,7 +82,7 @@ RSpec.describe "Plant management", type: :system do
     click_button("Add Image")
 
     expect(page).to have_content("Image was added.")
-    expect(page).to have_content("Taken at: 2024-01-02")
+    expect(page).to have_content("Taken 2024-01-02")
     expect(page).to have_css("img")
 
     plant_image = Plants::PlantImage.order(:id).last
@@ -90,7 +90,7 @@ RSpec.describe "Plant management", type: :system do
       "[data-image-id='#{plant_image.id}'] a"
     ).click
 
-    expect(page).to have_content("Taken at: 2024-01-02")
+    expect(page).to have_content("Taken 2024-01-02")
     expect(page).to have_button("Delete")
   end
 
@@ -107,7 +107,7 @@ RSpec.describe "Plant management", type: :system do
     click_button("Update Image")
 
     expect(page).to have_content("Image was updated.")
-    expect(page).to have_content("Taken at: 2024-02-03")
+    expect(page).to have_content("Taken 2024-02-03")
   end
 
   it "sets the key image from the image show page" do

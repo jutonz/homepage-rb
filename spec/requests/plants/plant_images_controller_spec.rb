@@ -114,7 +114,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
 
       expect(response).to(have_http_status(:ok))
       expect(response.body).to(include(
-        "Taken at: #{plant_image.taken_at.to_date.iso8601}"
+        "Taken #{plant_image.taken_at.to_date.iso8601}"
       ))
     end
 
