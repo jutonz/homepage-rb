@@ -160,4 +160,69 @@ RSpec.describe "Plants::InboxImages", type: :request do
       expect(response).to(have_http_status(:not_found))
     end
   end
+
+  describe "POST /inbox_images/:id/assignments" do
+    it "redirects to login when not authenticated" do
+      inbox_image = create(:plants_inbox_image)
+      plant = create(:plant)
+
+      post(
+        inbox_image_assignments_path(inbox_image),
+        params: {plant_id: plant.id}
+      )
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "creates a plant image and deletes the inbox image" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      inbox_image = create(:plants_inbox_image, user:)
+      login_as(user, scope: :user)
+
+      expect do
+        post(
+          inbox_image_assignments_path(inbox_image),
+          params: {plant_id: plant.id}
+        )
+      end.to change { Plants::PlantImage.count }.by(1)
+
+      expect(response).to(redirect_to(plant_path(plant)))
+      expect(flash[:notice]).to(eq("Image was assigned."))
+      expect(Plants::InboxImage.where(id: inbox_image.id)).to be_empty
+    end
+
+    it "errors when assigning to another user's plant" do
+      user = create(:user)
+      plant = create(:plant)
+      inbox_image = create(:plants_inbox_image, user:)
+      login_as(user, scope: :user)
+
+      expect do
+        post(
+          inbox_image_assignments_path(inbox_image),
+          params: {plant_id: plant.id}
+        )
+      end.not_to(change { Plants::PlantImage.count })
+
+      expect(response).to(have_http_status(:not_found))
+    end
+
+    it "errors when assigning another user's inbox image" do
+      user = create(:user)
+      other_user = create(:user)
+      plant = create(:plant, user:)
+      inbox_image = create(:plants_inbox_image, user: other_user)
+      login_as(user, scope: :user)
+
+      expect do
+        post(
+          inbox_image_assignments_path(inbox_image),
+          params: {plant_id: plant.id}
+        )
+      end.not_to(change { Plants::PlantImage.count })
+
+      expect(response).to(have_http_status(:not_found))
+    end
+  end
 end

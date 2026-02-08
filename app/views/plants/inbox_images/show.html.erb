@@ -24,3 +24,26 @@
     <% end %>
   </div>
 </div>
+
+<div class="mt-8">
+  <h2 class="text-lg font-medium mb-3">Assign to Plant</h2>
+  <% if @plants.any? %>
+    <div class="flex gap-4 flex-wrap justify-center sm:justify-start">
+      <% @plants.each do |plant| %>
+        <%= render(Plants::PlantCardComponent.new(plant:)) do |card| %>
+          <% card.with_action do %>
+          <%= button_to(
+            "Assign",
+            inbox_image_assignments_path(@inbox_image),
+            method: :post,
+            params: {plant_id: plant.id},
+            class: "button"
+          ) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-gray-500">No plants yet.</div>
+  <% end %>
+</div>
