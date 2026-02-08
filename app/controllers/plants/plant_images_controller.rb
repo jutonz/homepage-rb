@@ -10,14 +10,37 @@ module Plants
 
     def create
       @plant = find_plant
-      @plant_image = authorize(@plant.plant_images.new(plant_image_params))
+      @plant_image = authorize(@plant.plant_images.new)
+      files = Array(plant_image_params[:file]).reject(&:blank?)
+      taken_at = plant_image_params[:taken_at]
 
-      if @plant_image.save
-        redirect_to(plant_path(@plant), notice: "Image was added.")
+      if files.empty?
+        @plant_image.assign_attributes(taken_at:)
+        @plant_image.validate
+        render_plant_image_errors
+        return
+      end
+
+      saved = true
+
+      Plants::PlantImage.transaction do
+        files.each do |file|
+          plant_image = @plant.plant_images.new(file:, taken_at:)
+          authorize(plant_image)
+
+          next if plant_image.save
+
+          @plant_image = plant_image
+          saved = false
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if saved
+        notice = files.size > 1 ? "Images were added." : "Image was added."
+        redirect_to(plant_path(@plant), notice:)
       else
-        flash.now[:alert] =
-          @plant_image.errors.full_messages.to_sentence
-        render(:new, status: :unprocessable_content)
+        render_plant_image_errors
       end
     end
 
@@ -67,11 +90,17 @@ module Plants
     end
 
     def plant_image_params
-      params.expect(plants_plant_image: %i[file taken_at])
+      params.expect(plants_plant_image: [:taken_at, :file, {file: []}])
     end
 
     def plant_image_update_params
       params.expect(plants_plant_image: [:taken_at])
+    end
+
+    def render_plant_image_errors
+      flash.now[:alert] =
+        @plant_image.errors.full_messages.to_sentence
+      render(:new, status: :unprocessable_content)
     end
   end
 end
