@@ -67,4 +67,18 @@ RSpec.describe "Plants inbox", type: :system do
       "[data-image-id='#{inbox_image.id}']"
     )
   end
+
+  it "assigns an inbox image to a plant from the show page" do
+    user = create(:user)
+    create(:plant, user:, name: "Pothos")
+    inbox_image = create(:plants_inbox_image, user:)
+    login_as(user)
+    visit(inbox_image_path(inbox_image))
+
+    click_button("Assign")
+
+    expect(page).to have_content("Image was assigned.")
+    expect(page).to have_content("Pothos")
+    expect(page).to have_css("img")
+  end
 end

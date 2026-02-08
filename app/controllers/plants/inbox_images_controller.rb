@@ -36,6 +36,10 @@ module Plants
 
     def show
       @inbox_image = authorize(find_inbox_image)
+      @plants =
+        policy_scope(Plants::Plant)
+          .includes(key_image: :file_attachment)
+          .order(:name)
     end
 
     def destroy

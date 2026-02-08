@@ -10,21 +10,8 @@
 
 <div class="flex gap-4 flex-wrap justify-center sm:justify-start">
   <% @plants.each do |plant| %>
-    <%= link_to(
-      plant_path(plant),
-      data: {role: "plant"},
-      class: "p-4 min-w-32 block bg-white shadow-sm
-              hover:shadow-md transition-shadow"
-    ) do %>
-      <% if plant.key_image&.file&.attached? %>
-        <div class="mb-2">
-          <%= image_tag(
-            plant.key_image.file.variant(resize_to_limit: [320, 320]),
-            loading: "lazy"
-          ) %>
-        </div>
-      <% end %>
-      <div class="font-medium"><%= plant.name %></div>
+    <%= link_to(plant_path(plant), data: {role: "plant"}) do %>
+      <%= render(Plants::PlantCardComponent.new(plant:)) %>
     <% end %>
   <% end %>
 
