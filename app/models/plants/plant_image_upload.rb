@@ -1,0 +1,64 @@
+module Plants
+  class PlantImageUpload
+    Result = Struct.new(
+      :saved,
+      :plant_image,
+      :notice,
+      keyword_init: true
+    ) do
+      def saved?
+        saved
+      end
+    end
+
+    def initialize(plant:, files:, taken_at:, authorizer:)
+      @plant = plant
+      @files = files
+      @taken_at = taken_at
+      @authorizer = authorizer
+    end
+
+    def save
+      files = Array(@files).reject(&:blank?)
+      return missing_file_result if files.empty?
+
+      create_images(files)
+    end
+
+    private
+
+    def missing_file_result
+      plant_image = @plant.plant_images.new(taken_at: @taken_at)
+      @authorizer.call(plant_image)
+      plant_image.validate
+      Result.new(saved: false, plant_image:)
+    end
+
+    def create_images(files)
+      saved = true
+      plant_image = nil
+
+      Plants::PlantImage.transaction do
+        files.each do |file|
+          current = @plant.plant_images.new(file:, taken_at: @taken_at)
+          @authorizer.call(current)
+
+          next if current.save
+
+          plant_image = current
+          saved = false
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      return success_result(files.size) if saved
+
+      Result.new(saved: false, plant_image:)
+    end
+
+    def success_result(count)
+      notice = count > 1 ? "Images were added." : "Image was added."
+      Result.new(saved: true, notice:)
+    end
+  end
+end
