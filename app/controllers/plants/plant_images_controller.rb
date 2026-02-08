@@ -10,15 +10,22 @@ module Plants
 
     def create
       @plant = find_plant
-      @plant_image = authorize(@plant.plant_images.new(plant_image_params))
+      authorize(Plants::PlantImage.new(plant: @plant))
+      result = Plants::PlantImageUpload.new(
+        plant: @plant,
+        files: plant_image_params[:file],
+        taken_at: plant_image_params[:taken_at]
+      ).save
 
-      if @plant_image.save
-        redirect_to(plant_path(@plant), notice: "Image was added.")
-      else
-        flash.now[:alert] =
-          @plant_image.errors.full_messages.to_sentence
-        render(:new, status: :unprocessable_content)
+      if result.saved?
+        redirect_to(plant_path(@plant), notice: "Images were added.")
+        return
       end
+
+      @plant_image = result.plant_image
+      flash.now[:alert] =
+        @plant_image.errors.full_messages.to_sentence
+      render(:new, status: :unprocessable_content)
     end
 
     def show
@@ -67,7 +74,7 @@ module Plants
     end
 
     def plant_image_params
-      params.expect(plants_plant_image: %i[file taken_at])
+      params.expect(plants_plant_image: [:taken_at, :file, {file: []}])
     end
 
     def plant_image_update_params

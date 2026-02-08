@@ -1,4 +1,4 @@
-<%= render(HeaderComponent.new(title: "Add Image")) do |c| %>
+<%= render(HeaderComponent.new(title: "Add Images")) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
@@ -8,7 +8,11 @@
   @plant_image,
   url: plant_plant_images_path(@plant)
 ) do |form| %>
-  <%= form.input(:file, as: :file) %>
+  <%= form.input(
+    :file,
+    as: :file,
+    input_html: {multiple: true}
+  ) %>
   <%= form.input(:taken_at, as: :date, html5: true) %>
-  <%= form.button(:submit, "Add Image") %>
+  <%= form.button(:submit, "Add Images") %>
 <% end %>

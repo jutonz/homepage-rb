@@ -63,7 +63,29 @@ RSpec.describe "Plants::PlantImages", type: :request do
       end.to(change { Plants::PlantImage.count }.by(1))
 
       expect(response).to(redirect_to(plant_path(plant)))
-      expect(flash[:notice]).to(eq("Image was added."))
+      expect(flash[:notice]).to(eq("Images were added."))
+    end
+
+    it "creates multiple plant images when authenticated" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      login_as(user, scope: :user)
+      params = {
+        plants_plant_image: {
+          file: [
+            fixture_file_upload("audiosurf.jpg", "image/jpeg"),
+            fixture_file_upload("audiosurf.jpg", "image/jpeg")
+          ],
+          taken_at: "2024-01-02"
+        }
+      }
+
+      expect do
+        post(plant_plant_images_path(plant), params: params)
+      end.to(change { Plants::PlantImage.count }.by(2))
+
+      expect(response).to(redirect_to(plant_path(plant)))
+      expect(flash[:notice]).to(eq("Images were added."))
     end
 
     it "renders errors when file is missing" do
