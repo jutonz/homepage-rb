@@ -15,6 +15,9 @@ Rails.application.routes.draw do
         resources :images, only: %w[create]
       end
     end
+    scope module: :plants do
+      resources :inbox_images, only: :create
+    end
 
     post "webhooks/todoist", to: "webhooks/todoist#create"
   end
