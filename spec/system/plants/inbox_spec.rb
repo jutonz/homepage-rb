@@ -44,7 +44,7 @@ RSpec.describe "Plants inbox", type: :system do
     expect(page).to have_css("img")
   end
 
-  it "opens the inbox image show page" do
+  it "deletes an image" do
     user = create(:user)
     inbox_image = create(:plants_inbox_image, user:)
     login_as(user)
@@ -58,6 +58,13 @@ RSpec.describe "Plants inbox", type: :system do
     expect(page).to have_content("Image")
     expect(page).to have_content(
       "Taken #{inbox_image.taken_at.to_date}"
+    )
+
+    click_button("Delete")
+
+    expect(page).to have_content("Image was deleted.")
+    expect(page).not_to have_css(
+      "[data-image-id='#{inbox_image.id}']"
     )
   end
 end

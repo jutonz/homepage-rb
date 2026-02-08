@@ -38,6 +38,12 @@ module Plants
       @inbox_image = authorize(find_inbox_image)
     end
 
+    def destroy
+      @inbox_image = authorize(find_inbox_image)
+      @inbox_image.destroy!
+      redirect_to(inbox_images_path, notice: "Image was deleted.")
+    end
+
     private
 
     def find_inbox_image
