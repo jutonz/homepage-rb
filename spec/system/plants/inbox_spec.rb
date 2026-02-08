@@ -43,4 +43,21 @@ RSpec.describe "Plants inbox", type: :system do
     expect(page).to have_content("Taken 2024-01-02")
     expect(page).to have_css("img")
   end
+
+  it "opens the inbox image show page" do
+    user = create(:user)
+    inbox_image = create(:plants_inbox_image, user:)
+    login_as(user)
+
+    visit(inbox_images_path)
+
+    find(
+      "[data-image-id='#{inbox_image.id}'] a"
+    ).click
+
+    expect(page).to have_content("Image")
+    expect(page).to have_content(
+      "Taken #{inbox_image.taken_at.to_date}"
+    )
+  end
 end

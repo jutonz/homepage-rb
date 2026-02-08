@@ -92,4 +92,37 @@ RSpec.describe "Plants::InboxImages", type: :request do
       expect(response).to(have_http_status(:unprocessable_content))
     end
   end
+
+  describe "GET /inbox_images/:id" do
+    it "redirects to login when not authenticated" do
+      inbox_image = create(:plants_inbox_image)
+
+      get(inbox_image_path(inbox_image))
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "renders show page when authenticated" do
+      user = create(:user)
+      inbox_image = create(:plants_inbox_image, user:)
+      login_as(user, scope: :user)
+
+      get(inbox_image_path(inbox_image))
+
+      expect(response).to(have_http_status(:ok))
+      expect(response.body).to(include(
+        "Taken #{inbox_image.taken_at.to_date.iso8601}"
+      ))
+    end
+
+    it "errors when accessing another user's inbox image" do
+      user = create(:user)
+      inbox_image = create(:plants_inbox_image)
+      login_as(user, scope: :user)
+
+      get(inbox_image_path(inbox_image))
+
+      expect(response).to(have_http_status(:not_found))
+    end
+  end
 end

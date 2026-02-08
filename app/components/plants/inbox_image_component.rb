@@ -6,7 +6,9 @@ module Plants
         data-image-id="<%= @inbox_image.id %>"
       >
         <div class="flex justify-center mb-2">
-          <%= image_tag(@inbox_image.file, loading: "lazy") %>
+          <%= link_to(inbox_image_path(@inbox_image)) do %>
+            <%= image_tag(@inbox_image.file, loading: "lazy") %>
+          <% end %>
         </div>
         <div class="text-xs text-gray-600 mb-2">
           Taken <%= @inbox_image.taken_at.to_date %>
