@@ -1,36 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Plants::KeyImages", type: :request do
-  describe "GET /edit" do
-    it "redirects to login when not authenticated" do
-      plant = create(:plant)
-
-      get(edit_plant_key_image_path(plant))
-
-      expect(response).to(redirect_to(new_session_path))
-    end
-
-    it "renders edit page when authenticated" do
-      user = create(:user)
-      plant = create(:plant, user:)
-      login_as(user, scope: :user)
-
-      get(edit_plant_key_image_path(plant))
-
-      expect(response).to(have_http_status(:ok))
-    end
-
-    it "errors when accessing another user's plant" do
-      user = create(:user)
-      plant = create(:plant)
-      login_as(user, scope: :user)
-
-      get(edit_plant_key_image_path(plant))
-
-      expect(response).to(have_http_status(:not_found))
-    end
-  end
-
   describe "PATCH /update" do
     it "redirects to login when not authenticated" do
       plant = create(:plant)
@@ -51,7 +21,9 @@ RSpec.describe "Plants::KeyImages", type: :request do
 
       patch(plant_key_image_path(plant), params: params)
 
-      expect(response).to(redirect_to(plant_path(plant)))
+      expect(response).to(
+        redirect_to(plant_plant_image_path(plant, plant_image))
+      )
       expect(flash[:notice]).to(eq("Key image was updated."))
       expect(plant.reload.key_image).to(eq(plant_image))
     end
