@@ -22,16 +22,6 @@
         </div>
       <% end %>
       <div class="font-medium"><%= plant.name %></div>
-      <% if plant.purchased_from.present? %>
-        <div class="text-sm text-gray-500">
-          From: <%= plant.purchased_from %>
-        </div>
-      <% end %>
-      <% if plant.purchased_at.present? %>
-        <div class="text-sm text-gray-500">
-          <%= plant.purchased_at.to_date %>
-        </div>
-      <% end %>
     <% end %>
   <% end %>
 
