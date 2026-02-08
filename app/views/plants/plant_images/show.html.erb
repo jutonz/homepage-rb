@@ -3,6 +3,19 @@
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
   <%= c.with_action do %>
+    <% if @plant.key_image_id == @plant_image.id %>
+      <div class="text-sm text-gray-600">Key image</div>
+    <% else %>
+      <%= button_to(
+        "Make key image",
+        plant_key_image_path(@plant),
+        method: :patch,
+        params: {key_image_id: @plant_image.id},
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
+  <%= c.with_action do %>
     <%= link_to(
       "Edit",
       edit_plant_plant_image_path(@plant, @plant_image),

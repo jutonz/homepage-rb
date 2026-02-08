@@ -9,13 +9,6 @@
     ) %>
   <% end %>
   <%= c.with_action do %>
-    <%= link_to(
-      "Edit key image",
-      edit_plant_key_image_path(@plant),
-      class: "button"
-    ) %>
-  <% end %>
-  <%= c.with_action do %>
     <%= link_to("Edit", edit_plant_path(@plant), class: "button") %>
   <% end %>
   <%= c.with_action do %>
