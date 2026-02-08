@@ -21,4 +21,26 @@ RSpec.describe "Plants inbox", type: :system do
       "[data-image-id='#{other_image.id}']"
     )
   end
+
+  it "adds inbox images from the index page" do
+    user = create(:user)
+    login_as(user)
+    visit(inbox_images_path)
+
+    click_link("Add Images")
+
+    attach_file(
+      "File",
+      [
+        Rails.root.join("spec/fixtures/files/audiosurf.jpg"),
+        Rails.root.join("spec/fixtures/files/audiosurf.jpg")
+      ]
+    )
+    fill_in("Taken at", with: "2024-01-02")
+    click_button("Add Images")
+
+    expect(page).to have_content("Images were added.")
+    expect(page).to have_content("Taken 2024-01-02")
+    expect(page).to have_css("img")
+  end
 end
