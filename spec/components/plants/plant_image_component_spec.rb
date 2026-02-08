@@ -8,7 +8,7 @@ RSpec.describe Plants::PlantImageComponent, type: :component do
 
     expect(page).to(have_css("img"))
     expect(page).to(have_content(
-      "Taken at: #{plant_image.taken_at.to_date.iso8601}"
+      "Taken #{plant_image.taken_at.to_date.iso8601}"
     ))
   end
 

@@ -7,14 +7,16 @@ class PillComponent < ApplicationComponent
   }.freeze
 
   erb_template <<~ERB
-    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%= @color_classes %>">
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm
+                 font-medium <%= @color_classes %> <%= @class_name %>">
       <%= @text %>
     </span>
   ERB
 
-  def initialize(text:, color: :blue)
+  def initialize(text:, color: :blue, class_name: nil)
     @text = text
     @color_classes = color_classes_for(color)
+    @class_name = class_name
   end
 
   private

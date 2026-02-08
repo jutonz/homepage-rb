@@ -2,7 +2,7 @@ module Plants
   class PlantImageComponent < ApplicationComponent
     erb_template <<~ERB
       <div
-        class="border border-gray-200 rounded-md p-2"
+        class="p-2 bg-white shadow-sm hover:shadow-md transition-shadow"
         data-image-id="<%= @plant_image.id %>"
       >
         <div class="flex justify-center mb-2">
@@ -12,7 +12,7 @@ module Plants
         </div>
         <% if @plant_image.taken_at.present? %>
           <div class="text-xs text-gray-600 mb-2">
-            Taken at: <%= @plant_image.taken_at.to_date %>
+            Taken <%= @plant_image.taken_at.to_date %>
           </div>
         <% end %>
         <% if action.present? %>

@@ -4,7 +4,13 @@
   <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
   <%= c.with_action do %>
     <% if @plant.key_image_id == @plant_image.id %>
-      <div class="text-sm text-gray-600">Key image</div>
+      <%= render(
+        PillComponent.new(
+          text: "Key image",
+          color: :green,
+          class_name: "whitespace-nowrap"
+        )
+      ) %>
     <% else %>
       <%= button_to(
         "Make key image",
@@ -33,14 +39,16 @@
   <% end %>
 <% end %>
 
-<div class="max-w-4xl">
-  <div class="flex justify-center mb-4">
-    <%= image_tag(@plant_image.file) %>
-  </div>
-
+<div class="w-full">
   <% if @plant_image.taken_at.present? %>
-    <div class="text-gray-600 text-sm">
-      Taken at: <%= @plant_image.taken_at.to_date %>
+    <div class="text-lg mb-3">
+      Taken <%= @plant_image.taken_at.to_date %>
     </div>
   <% end %>
+
+  <div class="flex justify-center mb-4">
+    <%= link_to(@plant_image.file) do %>
+      <%= image_tag(@plant_image.file, class: "max-w-full h-auto") %>
+    <% end %>
+  </div>
 </div>

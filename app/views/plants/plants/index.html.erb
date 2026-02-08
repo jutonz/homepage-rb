@@ -5,13 +5,13 @@
   <% end %>
 <% end %>
 
-<div class="flex gap-4 flex-wrap">
+<div class="flex gap-4 flex-wrap justify-center sm:justify-start">
   <% @plants.each do |plant| %>
     <%= link_to(
       plant_path(plant),
       data: {role: "plant"},
-      class: "border-2 border-green-500 rounded-md p-4 min-w-32 block
-              hover:bg-green-50 transition-colors"
+      class: "p-4 min-w-32 block bg-white shadow-sm
+              hover:shadow-md transition-shadow"
     ) do %>
       <% if plant.key_image&.file&.attached? %>
         <div class="mb-2">
