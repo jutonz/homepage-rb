@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe Plants::PlantImageUpload do
   describe "#save" do
-    it "creates multiple images and returns a plural notice" do
+    it "creates multiple images" do
       user = create(:user)
       plant = create(:plant, user:)
       files = [
@@ -25,7 +25,6 @@ RSpec.describe Plants::PlantImageUpload do
       end.to(change { Plants::PlantImage.count }.by(2))
 
       expect(result.saved?).to(eq(true))
-      expect(result.notice).to(eq("Images were added."))
     end
 
     it "returns errors when no files are provided" do

@@ -10,7 +10,7 @@ module Plants
 
     def create
       @plant = find_plant
-      authorize(Plants::PlantImage.new)
+      authorize(Plants::PlantImage.new(plant: @plant))
       result = Plants::PlantImageUpload.new(
         plant: @plant,
         files: plant_image_params[:file],
@@ -18,7 +18,7 @@ module Plants
       ).save
 
       if result.saved?
-        redirect_to(plant_path(@plant), notice: result.notice)
+        redirect_to(plant_path(@plant), notice: "Images were added.")
         return
       end
 

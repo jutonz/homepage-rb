@@ -81,7 +81,7 @@ RSpec.describe "Plant management", type: :system do
     fill_in("Taken at", with: "2024-01-02")
     click_button("Add Image")
 
-    expect(page).to have_content("Image was added.")
+    expect(page).to have_content("Images were added.")
     expect(page).to have_content("Taken 2024-01-02")
     expect(page).to have_css("img")
 

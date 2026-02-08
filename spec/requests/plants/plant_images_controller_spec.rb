@@ -63,7 +63,7 @@ RSpec.describe "Plants::PlantImages", type: :request do
       end.to(change { Plants::PlantImage.count }.by(1))
 
       expect(response).to(redirect_to(plant_path(plant)))
-      expect(flash[:notice]).to(eq("Image was added."))
+      expect(flash[:notice]).to(eq("Images were added."))
     end
 
     it "creates multiple plant images when authenticated" do

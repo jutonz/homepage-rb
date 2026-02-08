@@ -1,11 +1,6 @@
 module Plants
   class PlantImageUpload
-    Result = Struct.new(
-      :saved,
-      :plant_image,
-      :notice,
-      keyword_init: true
-    ) do
+    Result = Struct.new(:saved, :plant_image, keyword_init: true) do
       def saved?
         saved
       end
@@ -47,18 +42,9 @@ module Plants
         end
       end
 
-      return success_result(files.size) if saved
+      return Result.new(saved: true) if saved
 
       Result.new(saved: false, plant_image:)
-    end
-
-    def success_result(count)
-      notice = if count > 1
-        "Images were added."
-      else
-        "Image was added."
-      end
-      Result.new(saved: true, notice:)
     end
   end
 end
