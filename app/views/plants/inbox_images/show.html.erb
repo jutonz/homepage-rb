@@ -2,6 +2,15 @@
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_crumb("Inbox", inbox_images_path) %>
+  <%= c.with_action do %>
+    <%= button_to(
+      "Delete",
+      inbox_image_path(@inbox_image),
+      method: :delete,
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger"
+    ) %>
+  <% end %>
 <% end %>
 
 <div class="w-full">

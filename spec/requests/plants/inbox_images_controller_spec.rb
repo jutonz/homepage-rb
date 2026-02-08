@@ -125,4 +125,39 @@ RSpec.describe "Plants::InboxImages", type: :request do
       expect(response).to(have_http_status(:not_found))
     end
   end
+
+  describe "DELETE /inbox_images/:id" do
+    it "redirects to login when not authenticated" do
+      inbox_image = create(:plants_inbox_image)
+
+      delete(inbox_image_path(inbox_image))
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "deletes the inbox image when authenticated" do
+      user = create(:user)
+      inbox_image = create(:plants_inbox_image, user:)
+      login_as(user, scope: :user)
+
+      expect do
+        delete(inbox_image_path(inbox_image))
+      end.to(change { Plants::InboxImage.count }.by(-1))
+
+      expect(response).to(redirect_to(inbox_images_path))
+      expect(flash[:notice]).to(eq("Image was deleted."))
+    end
+
+    it "errors when deleting another user's inbox image" do
+      user = create(:user)
+      inbox_image = create(:plants_inbox_image)
+      login_as(user, scope: :user)
+
+      expect do
+        delete(inbox_image_path(inbox_image))
+      end.not_to(change { Plants::InboxImage.count })
+
+      expect(response).to(have_http_status(:not_found))
+    end
+  end
 end
