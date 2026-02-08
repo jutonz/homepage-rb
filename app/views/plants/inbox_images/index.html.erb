@@ -1,6 +1,9 @@
 <%= render(HeaderComponent.new(title: "Inbox")) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_action do %>
+    <%= link_to("Add Images", new_inbox_image_path, class: "button") %>
+  <% end %>
 <% end %>
 
 <div class="mt-8">

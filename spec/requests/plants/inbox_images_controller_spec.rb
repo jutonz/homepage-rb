@@ -28,4 +28,68 @@ RSpec.describe "Plants::InboxImages", type: :request do
       ))
     end
   end
+
+  describe "GET /inbox_images/new" do
+    it "redirects to login when not authenticated" do
+      get(new_inbox_image_path)
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "renders new page when authenticated" do
+      user = create(:user)
+      login_as(user, scope: :user)
+
+      get(new_inbox_image_path)
+
+      expect(response).to(have_http_status(:ok))
+    end
+  end
+
+  describe "POST /inbox_images" do
+    it "redirects to login when not authenticated" do
+      params = {
+        plants_inbox_image: {
+          file: fixture_file_upload("audiosurf.jpg", "image/jpeg")
+        }
+      }
+
+      post(inbox_images_path, params: params)
+
+      expect(response).to(redirect_to(new_session_path))
+    end
+
+    it "creates inbox images when authenticated" do
+      user = create(:user)
+      login_as(user, scope: :user)
+      params = {
+        plants_inbox_image: {
+          file: [
+            fixture_file_upload("audiosurf.jpg", "image/jpeg"),
+            fixture_file_upload("audiosurf.jpg", "image/jpeg")
+          ],
+          taken_at: "2024-01-02"
+        }
+      }
+
+      expect do
+        post(inbox_images_path, params: params)
+      end.to(change { Plants::InboxImage.count }.by(2))
+
+      expect(response).to(redirect_to(inbox_images_path))
+      expect(flash[:notice]).to(eq("Images were added."))
+    end
+
+    it "renders errors when file is missing" do
+      user = create(:user)
+      login_as(user, scope: :user)
+      params = {plants_inbox_image: {taken_at: "2024-01-02"}}
+
+      expect do
+        post(inbox_images_path, params: params)
+      end.not_to(change { Plants::InboxImage.count })
+
+      expect(response).to(have_http_status(:unprocessable_content))
+    end
+  end
 end

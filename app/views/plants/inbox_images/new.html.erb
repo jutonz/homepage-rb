@@ -1,0 +1,15 @@
+<%= render(HeaderComponent.new(title: "Add Images")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+  <%= c.with_crumb("Inbox", inbox_images_path) %>
+<% end %>
+
+<%= simple_form_for(@inbox_image, url: inbox_images_path) do |form| %>
+  <%= form.input(
+    :file,
+    as: :file,
+    input_html: {multiple: true}
+  ) %>
+  <%= form.input(:taken_at, as: :date, html5: true) %>
+  <%= form.button(:submit, "Add Images") %>
+<% end %>
