@@ -1,0 +1,19 @@
+<%= render(HeaderComponent.new(title: "Inbox")) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Plants", plants_path) %>
+<% end %>
+
+<div class="mt-8">
+  <h2 class="text-lg font-medium mb-3">Images</h2>
+  <% if @inbox_images.any? %>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <% @inbox_images.each do |inbox_image| %>
+        <%= render(
+          Plants::InboxImageComponent.new(inbox_image: inbox_image)
+        ) %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-gray-500">No images yet.</div>
+  <% end %>
+</div>
