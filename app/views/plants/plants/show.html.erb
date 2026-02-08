@@ -38,6 +38,24 @@
   </div>
 <% end %>
 
+<% if @plant.purchased_at.present? || @plant.purchased_from.present? %>
+  <div class="mt-8">
+    <h2 class="text-lg font-medium mb-2">Purchase</h2>
+    <% if @plant.purchased_at.present? %>
+      <div>
+        <span class="font-medium">Purchased at:</span>
+        <%= l(@plant.purchased_at) %>
+      </div>
+    <% end %>
+    <% if @plant.purchased_from.present? %>
+      <div>
+        <span class="font-medium">Purchased from:</span>
+        <%= @plant.purchased_from %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Images</h2>
   <% if @plant_images.any? %>

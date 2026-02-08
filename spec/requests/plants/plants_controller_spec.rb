@@ -166,6 +166,27 @@ RSpec.describe "Plants::Plants", type: :request do
       expect(response.body).to include("Notes")
     end
 
+    it "renders purchase details when present" do
+      user = create(:user)
+      purchased_at = Time.current
+      plant = create(
+        :plant,
+        user:,
+        purchased_at:,
+        purchased_from: "Home Depot"
+      )
+      login_as(user, scope: :user)
+
+      get(plant_path(plant))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Purchase")
+      expect(response.body).to include("Purchased at:")
+      expect(response.body).to include(I18n.l(purchased_at))
+      expect(response.body).to include("Purchased from:")
+      expect(response.body).to include("Home Depot")
+    end
+
     it "redirects when viewing another user's plant" do
       user = create(:user)
       other_plant = create(:plant)
