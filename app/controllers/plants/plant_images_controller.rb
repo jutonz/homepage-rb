@@ -10,11 +10,11 @@ module Plants
 
     def create
       @plant = find_plant
+      authorize(Plants::PlantImage.new)
       result = Plants::PlantImageUpload.new(
         plant: @plant,
         files: plant_image_params[:file],
-        taken_at: plant_image_params[:taken_at],
-        authorizer: method(:authorize)
+        taken_at: plant_image_params[:taken_at]
       ).save
 
       if result.saved?
@@ -80,6 +80,5 @@ module Plants
     def plant_image_update_params
       params.expect(plants_plant_image: [:taken_at])
     end
-
   end
 end

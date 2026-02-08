@@ -11,11 +11,10 @@ module Plants
       end
     end
 
-    def initialize(plant:, files:, taken_at:, authorizer:)
+    def initialize(plant:, files:, taken_at:)
       @plant = plant
       @files = files
       @taken_at = taken_at
-      @authorizer = authorizer
     end
 
     def save
@@ -29,7 +28,6 @@ module Plants
 
     def missing_file_result
       plant_image = @plant.plant_images.new(taken_at: @taken_at)
-      @authorizer.call(plant_image)
       plant_image.validate
       Result.new(saved: false, plant_image:)
     end
@@ -41,8 +39,6 @@ module Plants
       Plants::PlantImage.transaction do
         files.each do |file|
           current = @plant.plant_images.new(file:, taken_at: @taken_at)
-          @authorizer.call(current)
-
           next if current.save
 
           plant_image = current
@@ -57,7 +53,11 @@ module Plants
     end
 
     def success_result(count)
-      notice = count > 1 ? "Images were added." : "Image was added."
+      notice = if count > 1
+        "Images were added."
+      else
+        "Image was added."
+      end
       Result.new(saved: true, notice:)
     end
   end

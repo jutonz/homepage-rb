@@ -7,7 +7,6 @@ RSpec.describe Plants::PlantImageUpload do
     it "creates multiple images and returns a plural notice" do
       user = create(:user)
       plant = create(:plant, user:)
-      calls = []
       files = [
         fixture_file_upload("audiosurf.jpg", "image/jpeg"),
         fixture_file_upload("audiosurf.jpg", "image/jpeg")
@@ -16,8 +15,7 @@ RSpec.describe Plants::PlantImageUpload do
       service = described_class.new(
         plant:,
         files:,
-        taken_at: "2024-01-02",
-        authorizer: ->(record) { calls << record }
+        taken_at: "2024-01-02"
       )
 
       result = nil
@@ -28,26 +26,22 @@ RSpec.describe Plants::PlantImageUpload do
 
       expect(result.saved?).to(eq(true))
       expect(result.notice).to(eq("Images were added."))
-      expect(calls.length).to(eq(2))
     end
 
     it "returns errors when no files are provided" do
       user = create(:user)
       plant = create(:plant, user:)
-      calls = []
 
       service = described_class.new(
         plant:,
         files: nil,
-        taken_at: "2024-01-02",
-        authorizer: ->(record) { calls << record }
+        taken_at: "2024-01-02"
       )
 
       result = service.save
 
       expect(result.saved?).to(eq(false))
       expect(result.plant_image.errors[:file]).not_to(be_empty)
-      expect(calls.length).to(eq(1))
     end
   end
 end
