@@ -23,11 +23,6 @@ export default class extends Controller {
   }
 
   visit(url) {
-    if (window.Turbo) {
-      window.Turbo.visit(url.toString())
-      return
-    }
-
-    window.location.assign(url.toString())
+    window.Turbo.visit(url.toString())
   }
 }

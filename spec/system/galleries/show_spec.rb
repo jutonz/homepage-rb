@@ -45,10 +45,7 @@ RSpec.describe "Gallery show page" do
     expect(page).to have_button("Select")
     expect(page).to have_link("Edit")
 
-    find(
-      "button[data-controller='select-mode']:not([disabled])",
-      text: "Select"
-    ).click
+    click_button("Select")
 
     expect(page).to have_link("Cancel")
     expect(page).not_to have_link("Edit")
@@ -130,10 +127,8 @@ RSpec.describe "Gallery show page" do
     visit(gallery_path(gallery))
 
     click_on("Next ›")
-    find(
-      "button[data-controller='select-mode']:not([disabled])",
-      text: "Select"
-    ).click
+    sleep 1
+    click_button("Select")
     expect(page).to have_link("Cancel")
 
     expect(page).to have_css("[data-image-id='#{image1.id}']")
