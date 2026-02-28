@@ -38,7 +38,7 @@ RSpec.describe "Gallery show page" do
     expect(URI.parse(current_url).query).to include("select=true")
   end
 
-  it "selects and deselects an image in select mode", js: true do
+  it "selects and deselects an image in select mode", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
     image = create(:galleries_image, :with_real_file, gallery:)
@@ -47,12 +47,12 @@ RSpec.describe "Gallery show page" do
     visit(gallery_path(gallery, select: true))
 
     thumbnail = find("[data-image-id='#{image.id}']")
-    expect(thumbnail).not_to match_css(".ring-4")
+    expect(thumbnail).not_to match_css(".gallery-image--selected")
 
     thumbnail.click
 
     thumbnail = find("[data-image-id='#{image.id}']")
-    expect(thumbnail).to match_css(".ring-4")
+    expect(thumbnail).to match_css(".gallery-image--selected")
     expect(URI.parse(current_url).query).to include(
       "selected_ids%5B%5D=#{image.id}"
     )
@@ -60,13 +60,13 @@ RSpec.describe "Gallery show page" do
     thumbnail.click
 
     thumbnail = find("[data-image-id='#{image.id}']")
-    expect(thumbnail).not_to match_css(".ring-4")
+    expect(thumbnail).not_to match_css(".gallery-image--selected")
     expect(URI.parse(current_url).query.to_s).not_to include(
       "selected_ids%5B%5D=#{image.id}"
     )
   end
 
-  it "preserves tag filter and selection after page refresh", js: true do
+  it "preserves tag filter and selection after page refresh", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
     tag = create(:galleries_tag, gallery:)
@@ -87,7 +87,7 @@ RSpec.describe "Gallery show page" do
     find("[data-image-id='#{tagged_image.id}']").click
 
     expect(find("[data-image-id='#{tagged_image.id}']")).to(
-      match_css(".ring-4")
+      match_css(".gallery-image--selected")
     )
 
     page.refresh
@@ -97,11 +97,11 @@ RSpec.describe "Gallery show page" do
       "[data-image-id='#{untagged_image.id}']"
     )
     expect(find("[data-image-id='#{tagged_image.id}']")).to(
-      match_css(".ring-4")
+      match_css(".gallery-image--selected")
     )
   end
 
-  it "preserves selection when navigating between pages", js: true do
+  it "preserves selection when navigating between pages", :js do
     stub_const("GalleriesController::PER_PAGE", 1)
     user = create(:user)
     gallery = create(:gallery, user:)
@@ -113,7 +113,7 @@ RSpec.describe "Gallery show page" do
 
     expect(page).to have_css("[data-image-id='#{image2.id}']")
     find("[data-image-id='#{image2.id}']").click
-    expect(find("[data-image-id='#{image2.id}']")).to match_css(".ring-4")
+    expect(find("[data-image-id='#{image2.id}']")).to match_css(".gallery-image--selected")
 
     click_on("Next ›")
 
@@ -124,20 +124,21 @@ RSpec.describe "Gallery show page" do
 
     click_on("‹ Prev")
 
-    expect(find("[data-image-id='#{image2.id}']")).to match_css(".ring-4")
+    expect(find("[data-image-id='#{image2.id}']")).to match_css(".gallery-image--selected")
   end
 
-  it "cancels select mode and clears selection" do
+  it "cancels select mode and clears selection", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
-    image = create(:galleries_image, gallery:)
+    image = create(:galleries_image, :with_real_file, gallery:)
     login_as(user)
 
-    visit(
-      gallery_path(gallery, select: true, selected_ids: [image.id])
-    )
+    visit(gallery_path(gallery, select: true))
 
-    expect(page).to have_link("Cancel")
+    find("[data-image-id='#{image.id}']").click
+    expect(find("[data-image-id='#{image.id}']")).to(
+      match_css(".gallery-image--selected")
+    )
 
     click_on("Cancel")
 
@@ -146,5 +147,8 @@ RSpec.describe "Gallery show page" do
     query = URI.parse(current_url).query.to_s
     expect(query).not_to include("select")
     expect(query).not_to include("selected_ids")
+    expect(find("[data-image-id='#{image.id}']")).not_to(
+      match_css(".gallery-image--selected")
+    )
   end
 end

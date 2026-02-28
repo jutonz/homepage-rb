@@ -6,7 +6,6 @@ export default class extends Controller {
 
   connect() {
     this.updateAllLinks()
-    this.applyBordersFromUrl()
   }
 
   imageTargetConnected(target) {
@@ -39,6 +38,7 @@ export default class extends Controller {
 
     history.replaceState(null, "", url.toString())
     this.updateAllLinks()
+    this.syncFormInputs()
   }
 
   handleFrameRender() {
@@ -55,25 +55,32 @@ export default class extends Controller {
     })
   }
 
-  applyBordersFromUrl() {
+  syncFormInputs() {
     const ids = this.selectedIds
-    this.imageTargets.forEach(target => {
-      const id = target.dataset.imageId?.toString()
-      if (id && ids.includes(id)) {
-        this.addRing(target)
-      }
+    this.element.querySelectorAll("form").forEach(form => {
+      form
+        .querySelectorAll("input[name='selected_ids[]']")
+        .forEach(input => input.remove())
+      ids.forEach(id => {
+        const input = document.createElement("input")
+        input.type = "hidden"
+        input.name = "selected_ids[]"
+        input.value = id
+        form.appendChild(input)
+      })
     })
   }
 
   get selectedIds() {
+    if (!this.modeValue) return []
     return new URL(window.location).searchParams.getAll("selected_ids[]")
   }
 
   addRing(el) {
-    el.classList.add("ring-4", "ring-blue-500", "ring-offset-1")
+    el.classList.add("gallery-image--selected")
   }
 
   removeRing(el) {
-    el.classList.remove("ring-4", "ring-blue-500", "ring-offset-1")
+    el.classList.remove("gallery-image--selected")
   }
 }

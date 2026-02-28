@@ -11,8 +11,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `mise exec -- bin/rails g migration AddExampleMigration` - Create a new
   database migration
 ### Testing & Quality
-- `mise exec --bin/rspec` - Run RSpec test suite
-- `mise exec --bin/standardrb` - Ruby linting and code style (Standard gem)
+- `mise exec -- bin/rspec` - Run RSpec test suite
+- `mise exec -- bin/standardrb --fix` - Ruby linting and code style (Standard gem)
 
 ### Assets & Frontend
 - TailwindCSS is used for styling via `tailwindcss-rails` gem

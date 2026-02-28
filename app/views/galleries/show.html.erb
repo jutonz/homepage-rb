@@ -38,16 +38,6 @@
     <% end %>
 
     <%= c.with_action do %>
-      <%= button_to(
-        "Delete",
-        gallery_path(@gallery),
-        method: "delete",
-        data: {turbo_confirm: "Are you sure?"},
-        class: "button button--danger"
-      ) %>
-    <% end %>
-
-    <%= c.with_action do %>
       <%= link_to(
         "Select",
         gallery_path(
@@ -57,6 +47,16 @@
           page: params[:page]
         ),
         class: "button"
+      ) %>
+    <% end %>
+
+    <%= c.with_action do %>
+      <%= button_to(
+        "Delete",
+        gallery_path(@gallery),
+        method: "delete",
+        data: {turbo_confirm: "Are you sure?"},
+        class: "button button--danger"
       ) %>
     <% end %>
   <% end %>

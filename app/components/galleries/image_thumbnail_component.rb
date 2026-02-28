@@ -34,7 +34,7 @@ module Galleries
     private
 
     def link_classes
-      "ring-4 ring-blue-500 ring-offset-1" if @select_mode &&
+      "gallery-image--selected" if @select_mode &&
         @selected_ids.include?(@image.id.to_s)
     end
   end
