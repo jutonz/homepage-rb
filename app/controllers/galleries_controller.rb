@@ -11,6 +11,8 @@ class GalleriesController < ApplicationController
   def show
     @gallery = authorize(find_gallery)
     @filter_tags = find_filter_tags
+    @select_mode = params[:select].present?
+    @selected_ids = params.fetch(:selected_ids, []).map(&:to_s)
     @images =
       @gallery
         .images

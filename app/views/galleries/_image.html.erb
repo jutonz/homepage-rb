@@ -1,1 +1,7 @@
-<%= render(Galleries::ImageThumbnailComponent.new(image:)) %>
+<%= render(
+  Galleries::ImageThumbnailComponent.new(
+    image:,
+    select_mode:,
+    selected_ids:
+  )
+) %>

@@ -6,7 +6,9 @@
       <%= link_to(
         url_for(
           tag_ids: params.fetch(:tag_ids, []) - [tag.id.to_s],
-          tag_search: {query: @tag_search.query}
+          tag_search: {query: @tag_search.query},
+          select: @select_mode ? "true" : nil,
+          selected_ids: @selected_ids
         ),
         class: "bg-gray-200 rounded-full px-4 py-2",
         data: {
@@ -36,6 +38,12 @@
     ) do |form| %>
       <% params.fetch(:tag_ids, []).each do |tag_id| %>
         <input name="tag_ids[]" value="<%= tag_id %>" type="hidden" />
+      <% end %>
+      <% if @select_mode %>
+        <input name="select" value="true" type="hidden" />
+        <% @selected_ids.each do |id| %>
+          <input name="selected_ids[]" value="<%= id %>" type="hidden" />
+        <% end %>
       <% end %>
       <div class="flex gap-3">
         <%= form.input(
@@ -67,7 +75,9 @@
             gallery_path(
               @gallery,
               tag_search: {query: @tag_search.query},
-              tag_ids: (params.fetch(:tag_ids, []) + [tag.id]).uniq
+              tag_ids: (params.fetch(:tag_ids, []) + [tag.id]).uniq,
+              select: @select_mode ? "true" : nil,
+              selected_ids: @selected_ids
             ),
             class: "button",
             data: {turbo: false}
