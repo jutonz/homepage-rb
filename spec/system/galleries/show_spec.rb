@@ -127,7 +127,7 @@ RSpec.describe "Gallery show page" do
     visit(gallery_path(gallery))
 
     click_on("Next ›")
-    sleep 1
+    wait_for_turbo
     click_button("Select")
     expect(page).to have_link("Cancel")
 
