@@ -24,3 +24,20 @@ Capybara.register_driver(:playwright_debug) do |app|
     headless: false
   )
 end
+
+RSpec.configure do |config|
+  config.before(:each, type: :feature) do
+    driver = Capybara.current_session.driver
+    next unless driver.respond_to?(:with_playwright_page)
+
+    driver.with_playwright_page do |pw|
+      pw.route(
+        "**/*",
+        lambda { |route, request|
+          sleep 2 if ENV["RAILS_TEST_LAGGY"].present?
+          route.continue
+        }
+      )
+    end
+  end
+end
