@@ -62,18 +62,6 @@ RSpec.configure do |config|
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include ViewComponent::TestHelpers, type: :component
 
-  config.before(:each, type: :system) do
-    driven_by(:rack_test)
-  end
-
-  config.before(:each, type: :system, js: true) do
-    driven_by(:playwright)
-  end
-
-  config.before(:each, type: :system, debug: true) do
-    driven_by(:playwright_debug)
-  end
-
   config.around(:each) do |example|
     if example.metadata[:type] == :system
       Bullet.start_request
@@ -96,5 +84,3 @@ Shoulda::Matchers.configure do |config|
 end
 
 WebMock.disable_net_connect!(allow_localhost: true)
-
-Capybara.enable_aria_label = true

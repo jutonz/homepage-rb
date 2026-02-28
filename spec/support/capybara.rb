@@ -1,5 +1,7 @@
 require "capybara/playwright"
 
+Capybara.enable_aria_label = true
+
 playwright_cli_version = Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip
 playwright_cli_executable_path =
   "npx playwright@#{playwright_cli_version}"
@@ -26,7 +28,19 @@ Capybara.register_driver(:playwright_debug) do |app|
 end
 
 RSpec.configure do |config|
-  config.before(:each, type: :feature) do
+  config.before(:each, type: :system) do
+    driven_by(:rack_test)
+  end
+
+  config.before(:each, type: :system, js: true) do
+    driven_by(:playwright)
+  end
+
+  config.before(:each, type: :system, debug: true) do
+    driven_by(:playwright_debug)
+  end
+
+  config.before(:each, type: :system) do
     driver = Capybara.current_session.driver
     next unless driver.respond_to?(:with_playwright_page)
 
@@ -34,7 +48,7 @@ RSpec.configure do |config|
       pw.route(
         "**/*",
         lambda { |route, request|
-          sleep 2 if ENV["RAILS_TEST_LAGGY"].present?
+          sleep 1 if ENV["RAILS_TEST_LAGGY"].present?
           route.continue
         }
       )

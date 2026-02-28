@@ -11,11 +11,9 @@ RSpec.describe "Gallery image tags", type: :system do
     visit(gallery_image_path(gallery, image))
 
     click_on("Search")
-    wait_for_turbo
     within("[data-role=tag-search-result]", text: tag.name) do
       click_on("Add tag")
     end
-    wait_for_turbo
     expect(page).not_to have_css(
       "[data-role=tag-search-result]",
       text: tag.name
@@ -28,7 +26,6 @@ RSpec.describe "Gallery image tags", type: :system do
       end
     end
 
-    wait_for_turbo
     expect(page).not_to have_css("turbo-frame#tag_#{tag.id}")
     expect(image.reload.tags).to be_empty
   end
@@ -72,11 +69,9 @@ RSpec.describe "Gallery image tags", type: :system do
 
     fill_in("Tag search query", with: "te")
     click_on("Search")
-    wait_for_turbo
 
     result = find("[data-role=tag-search-result]", text: tag1.name)
     result.find_button("Add tag").click
-    wait_for_turbo
     expect(page).to have_field("Tag search query", with: "")
 
     expect(page).to have_css(
@@ -114,11 +109,9 @@ RSpec.describe "Gallery image tags", type: :system do
 
     fill_in("Tag search query", with: tag.name[0, 2])
     click_on("Search")
-    wait_for_turbo
 
     result = find("[data-role=tag-search-result]", text: tag.name)
     result.find_link(tag.display_name).click
-    wait_for_turbo
     expect(current_path).to eql(gallery_tag_path(gallery, tag))
   end
 end
