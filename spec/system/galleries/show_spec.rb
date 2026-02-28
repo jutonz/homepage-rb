@@ -116,7 +116,7 @@ RSpec.describe "Gallery show page" do
     )
   end
 
-  it "preserves selection when navigating between pages", :js do
+  it "preserves selection when navigating between pages", :js, :debug do
     stub_const("GalleriesController::PER_PAGE", 1)
     user = create(:user)
     gallery = create(:gallery, user:)
@@ -124,22 +124,25 @@ RSpec.describe "Gallery show page" do
     login_as(user)
 
     # images are ordered created_at desc, so image2 is on page 1
-    visit(gallery_path(gallery, select: true))
-
-    expect(page).to have_css("[data-image-id='#{image2.id}']")
-    find("[data-image-id='#{image2.id}']").click
-    expect(find("[data-image-id='#{image2.id}']")).to match_css(".gallery-image--selected")
+    visit(gallery_path(gallery))
 
     click_on("Next ›")
+    click_on("Select")
 
     expect(page).to have_css("[data-image-id='#{image1.id}']")
-    expect(URI.parse(current_url).query).to include(
-      "selected_ids%5B%5D=#{image2.id}"
-    )
+    find("[data-image-id='#{image1.id}']").click
+    expect(find("[data-image-id='#{image1.id}']")).to match_css(".gallery-image--selected")
 
     click_on("‹ Prev")
 
-    expect(find("[data-image-id='#{image2.id}']")).to match_css(".gallery-image--selected")
+    expect(page).to have_css("[data-image-id='#{image2.id}']")
+    expect(URI.parse(current_url).query).to include(
+      "selected_ids%5B%5D=#{image1.id}"
+    )
+
+    click_on("Next ›")
+
+    expect(find("[data-image-id='#{image1.id}']")).to match_css(".gallery-image--selected")
   end
 
   it "bulk tags selected images", :js do
