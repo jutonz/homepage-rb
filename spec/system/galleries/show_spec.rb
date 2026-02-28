@@ -35,21 +35,21 @@ RSpec.describe "Gallery show page" do
     )
   end
 
-  it "enters select mode when clicking Select" do
+  it "enters select mode when clicking Select", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
     login_as(user)
 
     visit(gallery_path(gallery))
 
-    expect(page).to have_link("Select")
+    expect(page).to have_button("Select")
     expect(page).to have_link("Edit")
 
-    click_on("Select")
+    click_button("Select")
 
     expect(page).to have_link("Cancel")
     expect(page).not_to have_link("Edit")
-    expect(page).not_to have_link("Select")
+    expect(page).not_to have_button("Select")
     expect(URI.parse(current_url).query).to include("select=true")
   end
 
@@ -124,22 +124,27 @@ RSpec.describe "Gallery show page" do
     login_as(user)
 
     # images are ordered created_at desc, so image2 is on page 1
-    visit(gallery_path(gallery, select: true))
-
-    expect(page).to have_css("[data-image-id='#{image2.id}']")
-    find("[data-image-id='#{image2.id}']").click
-    expect(find("[data-image-id='#{image2.id}']")).to match_css(".gallery-image--selected")
+    visit(gallery_path(gallery))
 
     click_on("Next ›")
+    sleep 1
+    click_button("Select")
+    expect(page).to have_link("Cancel")
 
     expect(page).to have_css("[data-image-id='#{image1.id}']")
-    expect(URI.parse(current_url).query).to include(
-      "selected_ids%5B%5D=#{image2.id}"
-    )
+    find("[data-image-id='#{image1.id}']").click
+    expect(find("[data-image-id='#{image1.id}']")).to match_css(".gallery-image--selected")
 
     click_on("‹ Prev")
 
-    expect(find("[data-image-id='#{image2.id}']")).to match_css(".gallery-image--selected")
+    expect(page).to have_css("[data-image-id='#{image2.id}']")
+    expect(URI.parse(current_url).query).to include(
+      "selected_ids%5B%5D=#{image1.id}"
+    )
+
+    click_on("Next ›")
+
+    expect(find("[data-image-id='#{image1.id}']")).to match_css(".gallery-image--selected")
   end
 
   it "bulk tags selected images", :js do
