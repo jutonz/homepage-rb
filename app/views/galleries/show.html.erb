@@ -4,46 +4,75 @@
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Galleries", galleries_path) %>
 
-  <%= c.with_action do %>
-    <%= link_to(
-      "Add images",
-      new_gallery_bulk_upload_path(@gallery),
-      class: "button"
-    ) %>
+  <% unless @select_mode %>
+    <%= c.with_action do %>
+      <%= link_to(
+        "Add images",
+        new_gallery_bulk_upload_path(@gallery),
+        class: "button"
+      ) %>
+    <% end %>
+
+    <%= c.with_action do %>
+      <%= link_to(
+        "Tags",
+        gallery_tags_path(@gallery),
+        class: "button"
+      ) %>
+    <% end %>
+
+    <%= c.with_action do %>
+      <%= link_to(
+        "Books",
+        gallery_books_path(@gallery),
+        class: "button"
+      ) %>
+    <% end %>
+
+    <%= c.with_action do %>
+      <%= link_to(
+        "Edit",
+        edit_gallery_path(@gallery),
+        class: "button"
+      ) %>
+    <% end %>
+
+    <%= c.with_action do %>
+      <%= link_to(
+        "Select",
+        gallery_path(
+          @gallery,
+          select: true,
+          tag_ids: params[:tag_ids],
+          page: params[:page]
+        ),
+        class: "button"
+      ) %>
+    <% end %>
+
+    <%= c.with_action do %>
+      <%= button_to(
+        "Delete",
+        gallery_path(@gallery),
+        method: "delete",
+        data: {turbo_confirm: "Are you sure?"},
+        class: "button button--danger"
+      ) %>
+    <% end %>
   <% end %>
 
-  <%= c.with_action do %>
-    <%= link_to(
-      "Tags",
-      gallery_tags_path(@gallery),
-      class: "button"
-    ) %>
-  <% end %>
-
-  <%= c.with_action do %>
-    <%= link_to(
-      "Books",
-      gallery_books_path(@gallery),
-      class: "button"
-    ) %>
-  <% end %>
-
-  <%= c.with_action do %>
-    <%= link_to(
-      "Edit",
-      edit_gallery_path(@gallery),
-      class: "button"
-    ) %>
-  <% end %>
-
-  <%= c.with_action do %>
-    <%= button_to(
-      "Delete",
-      gallery_path(@gallery),
-      method: "delete",
-      data: {turbo_confirm: "Are you sure?"},
-      class: "button button--danger"
-    ) %>
+  <% if @select_mode %>
+    <%= c.with_action do %>
+      <%= link_to(
+        "Cancel",
+        gallery_path(
+          @gallery,
+          tag_ids: params[:tag_ids],
+          page: params[:page]
+        ),
+        class: "button"
+      ) %>
+    <% end %>
   <% end %>
 <% end %>
 
@@ -54,7 +83,12 @@
   )) %>
 </div>
 
-<div class="grid gap-5 grid-cols-1 lg:grid-cols-4">
+<div
+  class="grid gap-5 grid-cols-1 lg:grid-cols-4"
+  data-controller="gallery-select"
+  data-gallery-select-mode-value="<%= @select_mode %>"
+  data-action="turbo:frame-render->gallery-select#handleFrameRender"
+>
   <%= turbo_frame_tag("gallery-filters") do %>
     <%= render(
       partial: "filters",
@@ -68,7 +102,11 @@
     <%= turbo_frame_tag("gallery-images") do %>
       <%= render(
         partial: "images",
-        locals: {images: @images}
+        locals: {
+          images: @images,
+          select_mode: @select_mode,
+          selected_ids: @selected_ids
+        }
       ) %>
     <% end %>
   </div>

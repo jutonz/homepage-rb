@@ -11,6 +11,12 @@ class GalleriesController < ApplicationController
   def show
     @gallery = authorize(find_gallery)
     @filter_tags = find_filter_tags
+    @select_mode = ActiveModel::Type::Boolean.new.cast(params[:select])
+    @selected_ids =
+      Array(params[:selected_ids])
+        .map(&:to_s)
+        .reject(&:blank?)
+        .uniq
     @images =
       @gallery
         .images

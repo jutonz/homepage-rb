@@ -1,6 +1,12 @@
+<% select_mode ||= false %>
+<% selected_ids ||= [] %>
 <div class="flex flex-col gap-4 mb-20">
   <div class="grid gap-4 grid-cols-2 sm:grid-cols-5">
-    <%= render(partial: "galleries/image", collection: images) %>
+    <%= render(
+      partial: "galleries/image",
+      collection: images,
+      locals: {select_mode:, selected_ids:}
+    ) %>
     <div class="hidden only:flex flex-col col-span-full">
       <div class="text-center py-12 text-gray-500">
         <div class="text-lg font-medium mb-2">No images yet</div>

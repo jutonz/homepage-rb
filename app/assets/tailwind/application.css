@@ -62,6 +62,10 @@
   }
 }
 
+.gallery-image--selected {
+  @apply ring-4 ring-blue-500 ring-offset-1;
+}
+
 .hp-header-actions {
   form.button_to {
     @apply flex;
