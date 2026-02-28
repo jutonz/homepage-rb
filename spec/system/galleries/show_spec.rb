@@ -127,6 +127,37 @@ RSpec.describe "Gallery show page" do
     expect(find("[data-image-id='#{image2.id}']")).to match_css(".gallery-image--selected")
   end
 
+  it "bulk tags selected images", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    tag = create(:galleries_tag, gallery:, name: "nature")
+    image = create(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery, select: true))
+
+    find("[data-image-id='#{image.id}']").click
+    expect(find("[data-image-id='#{image.id}']")).to(
+      match_css(".gallery-image--selected")
+    )
+
+    click_on("Add tag")
+
+    within(find("dialog[open]")) do
+      fill_in("tag_search[query]", with: "nat")
+      expect(page).to have_button("nature")
+      click_button("nature")
+      expect(page).to have_text("nature")
+      click_button("Add tag")
+    end
+
+    expect(page).to have_current_path(
+      gallery_path(gallery, select: true)
+    )
+    expect(page).to have_link("Cancel")
+    expect(image.reload.tags).to include(tag)
+  end
+
   it "cancels select mode and clears selection", :js do
     user = create(:user)
     gallery = create(:gallery, user:)

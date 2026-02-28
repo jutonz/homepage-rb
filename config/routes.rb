@@ -45,6 +45,7 @@ Rails.application.routes.draw do
         resources :book_images, only: %i[new create], module: :images
       end
       resource :bulk_upload, only: %i[new create]
+      resource :bulk_tag, only: %i[create]
       resources :tags do
         resources :social_media_links, only: %i[new create edit update destroy]
         resources :auto_add_tags, only: %i[new create destroy]
