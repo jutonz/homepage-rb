@@ -5,7 +5,8 @@ playwright_cli_executable_path =
   "npx playwright@#{playwright_cli_version}"
 PLAWRIGHT_OPTS = {
   playwright_cli_executable_path:,
-  browser_type: :chromium
+  browser_type: :chromium,
+  viewport: {width: 1400, height: 900}
 }.freeze
 
 Capybara.register_driver(:playwright) do |app|
