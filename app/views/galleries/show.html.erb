@@ -47,11 +47,14 @@
           "Select",
           gallery_path(
             @gallery,
-            select: true,
-            tag_ids: params[:tag_ids],
-            page: params[:page]
+            select: true
           ),
-          class: "button"
+          class: "button",
+          disabled: true,
+          data: {
+            controller: "select-mode",
+            action: "click->select-mode#enter"
+          }
         ) %>
       <% end %>
 
@@ -80,12 +83,13 @@
       <%= c.with_action do %>
         <%= link_to(
           "Cancel",
-          gallery_path(
-            @gallery,
-            tag_ids: params[:tag_ids],
-            page: params[:page]
-          ),
-          class: "button"
+          gallery_path(@gallery),
+          class: "button",
+          disabled: true,
+          data: {
+            controller: "select-mode",
+            action: "click->select-mode#exit"
+          }
         ) %>
       <% end %>
     <% end %>
