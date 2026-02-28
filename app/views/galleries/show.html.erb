@@ -101,7 +101,7 @@
   <div
     class="grid gap-5 grid-cols-1 lg:grid-cols-4"
     data-controller="gallery-select"
-    data-gallery-select-mode-value="<%= @select_mode %>"
+    data-gallery-select-mode-value="<%= !!@select_mode %>"
     data-action="turbo:frame-render->gallery-select#handleFrameRender"
   >
     <%= turbo_frame_tag("gallery-filters") do %>
@@ -130,7 +130,7 @@
   <% if @select_mode %>
     <dialog
       data-gallery-bulk-tag-target="dialog"
-      class="rounded-sm p-6 w-full max-w-lg shadow-xl backdrop:bg-black/50"
+      class="rounded-sm p-6 w-full max-w-lg shadow-xl backdrop:bg-black/50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
     >
       <h2 class="text-xl mb-4">Add tag to selected images</h2>
 

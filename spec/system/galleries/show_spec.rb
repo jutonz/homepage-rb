@@ -20,6 +20,21 @@ RSpec.describe "Gallery show page" do
     expect(URI.parse(current_url).query).to eql("page=2")
   end
 
+  it "navigates to image show page when not in select mode", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery))
+
+    find("[data-image-id='#{image.id}']").click
+
+    expect(page).to have_current_path(
+      gallery_image_path(gallery, image)
+    )
+  end
+
   it "enters select mode when clicking Select" do
     user = create(:user)
     gallery = create(:gallery, user:)
@@ -152,10 +167,40 @@ RSpec.describe "Gallery show page" do
     end
 
     expect(page).to have_current_path(
-      gallery_path(gallery, select: true)
+      gallery_path(gallery, select: true, selected_ids: [image.id])
     )
     expect(page).to have_link("Cancel")
     expect(image.reload.tags).to include(tag)
+  end
+
+  it "preserves selection after bulk tagging", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    create(:galleries_tag, gallery:, name: "nature")
+    image = create(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery, select: true))
+
+    find("[data-image-id='#{image.id}']").click
+    expect(find("[data-image-id='#{image.id}']")).to(
+      match_css(".gallery-image--selected")
+    )
+
+    click_on("Add tag")
+
+    within(find("dialog[open]")) do
+      fill_in("tag_search[query]", with: "nat")
+      expect(page).to have_button("nature")
+      click_button("nature")
+      click_button("Add tag")
+    end
+
+    expect(page).to have_text("Tag added to selected images")
+
+    expect(find("[data-image-id='#{image.id}']")).to(
+      match_css(".gallery-image--selected")
+    )
   end
 
   it "cancels select mode and clears selection", :js do

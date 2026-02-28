@@ -22,7 +22,7 @@ RSpec.describe Galleries::BulkTagsController do
       expect(image2.reload.tags).to include(tag)
     end
 
-    it "redirects back to gallery in select mode on success" do
+    it "redirects back to gallery in select mode with selected IDs on success" do
       user = create(:user)
       gallery = create(:gallery, user:)
       tag = create(:galleries_tag, gallery:)
@@ -37,7 +37,9 @@ RSpec.describe Galleries::BulkTagsController do
 
       post(gallery_bulk_tag_path(gallery), params:)
 
-      expect(response).to redirect_to(gallery_path(gallery, select: true))
+      expect(response).to redirect_to(
+        gallery_path(gallery, select: true, selected_ids: [image.id])
+      )
     end
 
     it "requires authentication" do

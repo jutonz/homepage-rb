@@ -11,12 +11,20 @@ module Galleries
 
       if @bulk_tag.save
         redirect_to(
-          gallery_path(@gallery, select: true),
+          gallery_path(
+            @gallery,
+            select: true,
+            selected_ids: @bulk_tag.image_ids
+          ),
           notice: "Tag added to selected images"
         )
       else
         redirect_to(
-          gallery_path(@gallery, select: true),
+          gallery_path(
+            @gallery,
+            select: true,
+            selected_ids: @bulk_tag.image_ids
+          ),
           alert: "Could not add tag"
         )
       end
