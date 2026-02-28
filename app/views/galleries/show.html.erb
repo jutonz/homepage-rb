@@ -43,19 +43,15 @@
       <% end %>
 
       <%= c.with_action do %>
-        <%= link_to(
-          "Select",
-          gallery_path(
-            @gallery,
-            select: true
-          ),
-          class: "button",
-          disabled: true,
-          data: {
-            controller: "select-mode",
-            action: "click->select-mode#enter"
-          }
-        ) %>
+        <button
+          type="button"
+          class="button"
+          disabled
+          data-controller="select-mode"
+          data-action="click->select-mode#enter"
+        >
+          Select
+        </button>
       <% end %>
 
       <%= c.with_action do %>
@@ -83,13 +79,12 @@
       <%= c.with_action do %>
         <%= link_to(
           "Cancel",
-          gallery_path(@gallery),
-          class: "button",
-          disabled: true,
-          data: {
-            controller: "select-mode",
-            action: "click->select-mode#exit"
-          }
+          gallery_path(
+            @gallery,
+            tag_ids: params[:tag_ids],
+            page: params[:page]
+          ),
+          class: "button"
         ) %>
       <% end %>
     <% end %>

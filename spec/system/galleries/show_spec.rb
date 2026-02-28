@@ -35,21 +35,24 @@ RSpec.describe "Gallery show page" do
     )
   end
 
-  it "enters select mode when clicking Select" do
+  it "enters select mode when clicking Select", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
     login_as(user)
 
     visit(gallery_path(gallery))
 
-    expect(page).to have_link("Select")
+    expect(page).to have_button("Select")
     expect(page).to have_link("Edit")
 
-    click_on("Select")
+    find(
+      "button[data-controller='select-mode']:not([disabled])",
+      text: "Select"
+    ).click
 
     expect(page).to have_link("Cancel")
     expect(page).not_to have_link("Edit")
-    expect(page).not_to have_link("Select")
+    expect(page).not_to have_button("Select")
     expect(URI.parse(current_url).query).to include("select=true")
   end
 
@@ -116,7 +119,7 @@ RSpec.describe "Gallery show page" do
     )
   end
 
-  it "preserves selection when navigating between pages", :js, :debug do
+  it "preserves selection when navigating between pages", :js do
     stub_const("GalleriesController::PER_PAGE", 1)
     user = create(:user)
     gallery = create(:gallery, user:)
@@ -127,7 +130,11 @@ RSpec.describe "Gallery show page" do
     visit(gallery_path(gallery))
 
     click_on("Next ›")
-    click_on("Select")
+    find(
+      "button[data-controller='select-mode']:not([disabled])",
+      text: "Select"
+    ).click
+    expect(page).to have_link("Cancel")
 
     expect(page).to have_css("[data-image-id='#{image1.id}']")
     find("[data-image-id='#{image1.id}']").click

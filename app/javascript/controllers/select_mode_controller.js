@@ -10,7 +10,6 @@ export default class extends Controller {
 
     const url = new URL(window.location.href)
     url.searchParams.set("select", "true")
-
     this.visit(url)
   }
 
@@ -20,7 +19,6 @@ export default class extends Controller {
     const url = new URL(window.location.href)
     url.searchParams.delete("select")
     url.searchParams.delete("selected_ids[]")
-
     this.visit(url)
   }
 
