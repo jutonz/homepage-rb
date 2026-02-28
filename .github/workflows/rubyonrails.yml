@@ -31,6 +31,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: |
+          PLAYWRIGHT_CLI_VERSION=$(
+            bundle exec ruby -e \
+            'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'
+          )
+          npx --yes playwright@$PLAYWRIGHT_CLI_VERSION \
+            install --with-deps chromium
       - run: echo -n $TEST_KEY > config/credentials/test.key
       - run: bin/rails db:setup
       - run: bin/rails assets:precompile
