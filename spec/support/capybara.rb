@@ -4,8 +4,8 @@ Capybara.enable_aria_label = true
 
 playwright_cli_version = Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip
 playwright_cli_executable_path =
-  "npx playwright@#{playwright_cli_version}"
-PLAWRIGHT_OPTS = {
+  "npx --yes playwright@#{playwright_cli_version}"
+PLAYWRIGHT_OPTS = {
   playwright_cli_executable_path:,
   browser_type: :chromium,
   viewport: {width: 1400, height: 900}
@@ -14,7 +14,7 @@ PLAWRIGHT_OPTS = {
 Capybara.register_driver(:playwright) do |app|
   Capybara::Playwright::Driver.new(
     app,
-    **PLAWRIGHT_OPTS,
+    **PLAYWRIGHT_OPTS,
     headless: true
   )
 end
@@ -22,7 +22,7 @@ end
 Capybara.register_driver(:playwright_debug) do |app|
   Capybara::Playwright::Driver.new(
     app,
-    **PLAWRIGHT_OPTS,
+    **PLAYWRIGHT_OPTS,
     headless: false
   )
 end
