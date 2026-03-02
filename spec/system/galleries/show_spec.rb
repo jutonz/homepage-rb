@@ -129,6 +129,7 @@ RSpec.describe "Gallery show page" do
     click_on("Next ›")
     wait_for_turbo
     click_button("Select")
+    wait_for_turbo
     expect(page).to have_link("Cancel")
 
     expect(page).to have_css("[data-image-id='#{image1.id}']")
