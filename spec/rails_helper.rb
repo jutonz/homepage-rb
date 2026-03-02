@@ -3,7 +3,9 @@ require "spec_helper"
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+if Rails.env.production?
+  abort("The Rails environment is running in production mode!")
+end
 
 if ENV["COVERAGE"].present?
   require "simplecov"
@@ -60,18 +62,6 @@ RSpec.configure do |config|
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include ViewComponent::TestHelpers, type: :component
 
-  config.before(:each, type: :system) do
-    driven_by :rack_test
-  end
-
-  config.before(:each, type: :system, js: true) do
-    driven_by :selenium_chrome_headless, screen_size: [1400, 900]
-  end
-
-  config.before(:each, type: :system, debug: true) do
-    driven_by :selenium, using: :chrome, screen_size: [1400, 900]
-  end
-
   config.around(:each) do |example|
     if example.metadata[:type] == :system
       Bullet.start_request
@@ -94,5 +84,3 @@ Shoulda::Matchers.configure do |config|
 end
 
 WebMock.disable_net_connect!(allow_localhost: true)
-
-Capybara.enable_aria_label = true

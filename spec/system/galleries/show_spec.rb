@@ -129,6 +129,7 @@ RSpec.describe "Gallery show page" do
     click_on("Next ›")
     wait_for_turbo
     click_button("Select")
+    wait_for_turbo
     expect(page).to have_link("Cancel")
 
     expect(page).to have_css("[data-image-id='#{image1.id}']")
@@ -175,6 +176,7 @@ RSpec.describe "Gallery show page" do
       gallery_path(gallery, select: true, selected_ids: [image.id])
     )
     expect(page).to have_link("Cancel")
+    expect(page).to have_content("Tag added to selected images")
     expect(image.reload.tags).to include(tag)
   end
 
