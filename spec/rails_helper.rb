@@ -62,6 +62,10 @@ RSpec.configure do |config|
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include ViewComponent::TestHelpers, type: :component
 
+  config.around(:each, freeze_time: true) do |example|
+    freeze_time { example.run }
+  end
+
   config.around(:each) do |example|
     if example.metadata[:type] == :system
       Bullet.start_request
