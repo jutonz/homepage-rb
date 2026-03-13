@@ -163,6 +163,9 @@
         method: :post
       ) do |f| %>
         <div data-gallery-bulk-tag-target="selectedIdsContainer"></div>
+        <% if params[:page].present? %>
+          <%= hidden_field_tag(:page, params[:page]) %>
+        <% end %>
         <%= f.hidden_field(
           :tag_id,
           data: {gallery_bulk_tag_target: "tagIdInput"}

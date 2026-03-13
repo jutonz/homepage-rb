@@ -14,7 +14,8 @@ module Galleries
           gallery_path(
             @gallery,
             select: true,
-            selected_ids: @bulk_tag.image_ids
+            selected_ids: @bulk_tag.image_ids,
+            page: params[:page].presence
           ),
           notice: "Tag added to selected images"
         )
@@ -23,7 +24,8 @@ module Galleries
           gallery_path(
             @gallery,
             select: true,
-            selected_ids: @bulk_tag.image_ids
+            selected_ids: @bulk_tag.image_ids,
+            page: params[:page].presence
           ),
           alert: "Could not add tag"
         )
