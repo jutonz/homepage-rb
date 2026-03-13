@@ -64,12 +64,22 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: |
-          PLAYWRIGHT_CLI_VERSION=$(
-            bundle exec ruby -e \
-            'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'
-          )
-          npx --yes playwright@$PLAYWRIGHT_CLI_VERSION \
+      - name: Get Playwright version
+        id: playwright-version
+        run: |
+          echo "version=$(bundle exec ruby -e \
+            'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'\
+          )" >> $GITHUB_OUTPUT
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: |
+          npx --yes playwright@${{ steps.playwright-version.outputs.version }} \
             install --with-deps chromium
       - run: echo -n $TEST_KEY > config/credentials/test.key
       - run: bin/rails db:setup assets:precompile
