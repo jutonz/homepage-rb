@@ -31,7 +31,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: echo -n $TEST_KEY > config/credentials/test.key
+      - run: echo -n "$TEST_KEY" > config/credentials/test.key
       - run: bin/rails db:setup assets:precompile
       - run: >-
           bin/rspec
@@ -81,7 +81,7 @@ jobs:
         run: |
           npx --yes playwright@${{ steps.playwright-version.outputs.version }} \
             install chromium
-      - run: echo -n $TEST_KEY > config/credentials/test.key
+      - run: echo -n "$TEST_KEY" > config/credentials/test.key
       - run: bin/rails db:setup assets:precompile
       - run: bin/rspec spec/system
 
