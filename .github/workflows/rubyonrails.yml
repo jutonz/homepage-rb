@@ -33,6 +33,7 @@ jobs:
           bundler-cache: true
       - run: echo -n $TEST_KEY > config/credentials/test.key
       - run: bin/rails db:setup
+      - run: bin/rails assets:precompile
       - run: >-
           bin/rspec
           --exclude-pattern "spec/system/**/*_spec.rb"
