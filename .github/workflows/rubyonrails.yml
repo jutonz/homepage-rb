@@ -75,12 +75,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ steps.playwright-version.outputs.version }}
+          key: playwright-browsers-v1-${{ steps.playwright-version.outputs.version }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: |
           npx --yes playwright@${{ steps.playwright-version.outputs.version }} \
-            install --with-deps chromium
+            install chromium
       - run: echo -n $TEST_KEY > config/credentials/test.key
       - run: bin/rails db:setup assets:precompile
       - run: bin/rspec spec/system
