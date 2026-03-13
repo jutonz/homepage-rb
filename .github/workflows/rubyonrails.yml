@@ -4,7 +4,7 @@ on:
     branches: [ "main" ]
   pull_request:
 jobs:
-  test:
+  unit_tests:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -31,17 +31,59 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: |
-          PLAYWRIGHT_CLI_VERSION=$(
-            bundle exec ruby -e \
-            'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'
-          )
-          npx --yes playwright@$PLAYWRIGHT_CLI_VERSION \
-            install --with-deps chromium
-      - run: echo -n $TEST_KEY > config/credentials/test.key
-      - run: bin/rails db:setup
-      - run: bin/rails assets:precompile
-      - run: bin/rspec
+      - run: echo -n "$TEST_KEY" > config/credentials/test.key
+      - run: bin/rails db:setup assets:precompile
+      - run: >-
+          bin/rspec
+          --exclude-pattern "spec/system/**/*_spec.rb"
+
+  system_tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+      TEST_KEY: ${{ secrets.TEST_KEY }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - run: sudo apt-get update && sudo apt-get install imagemagick libvips
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Get Playwright version
+        id: playwright-version
+        run: |
+          echo "version=$(bundle exec ruby -e \
+            'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'\
+          )" >> $GITHUB_OUTPUT
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-v1-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: |
+          npx --yes playwright@${{ steps.playwright-version.outputs.version }} \
+            install chromium
+      - run: echo -n "$TEST_KEY" > config/credentials/test.key
+      - run: bin/rails db:setup assets:precompile
+      - run: bin/rspec spec/system
 
   lint:
     runs-on: ubuntu-latest
