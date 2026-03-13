@@ -180,6 +180,30 @@ RSpec.describe "Gallery show page" do
     expect(image.reload.tags).to include(tag)
   end
 
+  it "does not include page param when bulk tagging on page 1", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    create(:galleries_tag, gallery:, name: "nature")
+    image = create(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery, select: true))
+
+    find("[data-image-id='#{image.id}']").click
+
+    click_on("Add tag")
+
+    within(find("dialog[open]")) do
+      fill_in("tag_search[query]", with: "nat")
+      expect(page).to have_button("nature")
+      click_button("nature")
+      click_button("Add tag")
+    end
+
+    expect(page).to have_content("Tag added to selected images")
+    expect(current_url).not_to include("page=")
+  end
+
   it "preserves selection after bulk tagging", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
