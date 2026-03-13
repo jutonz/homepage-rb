@@ -210,6 +210,47 @@ RSpec.describe "Gallery show page" do
     )
   end
 
+  it "preserves page when bulk tagging on page 2", :js do
+    stub_const("GalleriesController::PER_PAGE", 1)
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    tag = create(:galleries_tag, gallery:, name: "nature")
+    # images are ordered created_at desc, so image1 is on page 2
+    image1, _image2 = create_pair(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery))
+    click_on("Next ›")
+    wait_for_turbo
+    click_button("Select")
+    wait_for_turbo
+
+    find("[data-image-id='#{image1.id}']").click
+    expect(find("[data-image-id='#{image1.id}']")).to(
+      match_css(".gallery-image--selected")
+    )
+
+    click_on("Add tag")
+
+    within(find("dialog[open]")) do
+      fill_in("tag_search[query]", with: "nat")
+      expect(page).to have_button("nature")
+      click_button("nature")
+      click_button("Add tag")
+    end
+
+    expect(page).to have_content("Tag added to selected images")
+    expect(page).to have_current_path(
+      gallery_path(
+        gallery,
+        select: true,
+        selected_ids: [image1.id],
+        page: 2
+      )
+    )
+    expect(image1.reload.tags).to include(tag)
+  end
+
   it "cancels select mode and clears selection", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
