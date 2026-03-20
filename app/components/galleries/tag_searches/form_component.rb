@@ -24,7 +24,10 @@ module Galleries
                   autocomplete: "off",
                   aria: {label: "Tag search query"},
                   data: {
-                    action: "input->auto-submit-form#submit"
+                    action: [
+                      "input->auto-submit-form#submit",
+                      "keydown->tag-search#submitFirstResult"
+                    ].join(" ")
                   }
                 }
               ) %>

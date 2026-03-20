@@ -98,6 +98,61 @@ RSpec.describe "Gallery image tags", type: :system do
     expect(page).to have_css("[data-role=tag-search-result]", text: tag.name)
   end
 
+  it "adds first result when pressing Enter", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    tag = create(:galleries_tag, gallery:, name: "alpha")
+    create(:galleries_tag, gallery:, name: "alpine")
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: "alp")
+    click_on("Search")
+    expect(page).to have_css(
+      "[data-role=tag-search-result]",
+      text: tag.name
+    )
+
+    find_field("Tag search query").send_keys(:enter)
+
+    expect(page).to have_css(
+      "[data-role=tag]",
+      text: tag.name
+    )
+    expect(image.reload.tags).to include(tag)
+    expect(page).to have_field(
+      "Tag search query",
+      with: "alp"
+    )
+    field = find_field("Tag search query")
+    expect(field.matches_css?(":focus")).to be(true)
+  end
+
+  it "preserves query when pressing Enter with no results",
+    :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: "zzz")
+    click_on("Search")
+    expect(page).not_to have_css(
+      "[data-role=tag-search-result]"
+    )
+
+    find_field("Tag search query").send_keys(:enter)
+
+    expect(page).to have_field(
+      "Tag search query",
+      with: "zzz"
+    )
+  end
+
   it "allows you to visit a tag by clicking on its search result", :js do
     user = create(:user)
     gallery = create(:gallery, user:)

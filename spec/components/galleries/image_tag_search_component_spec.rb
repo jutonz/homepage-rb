@@ -7,6 +7,9 @@ RSpec.describe Galleries::ImageTagSearchComponent, type: :component do
     render_inline(component)
 
     expect(page).to have_css("h3", text: "Add tag")
+    expect(page).to have_css(
+      "[data-controller=tag-search]"
+    )
   end
 
   it "includes recently used tags" do
