@@ -279,7 +279,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.1-x86_64-linux-gnu)
       racc (~> 1.4)
-    openssl (3.3.2)
+    openssl (4.0.1)
     opentelemetry-api (1.8.0)
       logger
     opentelemetry-common (0.23.0)
@@ -715,7 +715,7 @@ DEPENDENCIES
   jwt
   kaminari
   neighbor
-  openssl (= 3.3.2)
+  openssl (= 4.0.1)
   opentelemetry-exporter-otlp
   opentelemetry-instrumentation-all
   opentelemetry-sdk
