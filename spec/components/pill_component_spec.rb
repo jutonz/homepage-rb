@@ -21,10 +21,17 @@ RSpec.describe PillComponent, type: :component do
     )
   end
 
-  it "raises error for unsupported color" do
-    expect {
-      described_class.new(text: "unknown", color: :purple)
-    }.to raise_error(KeyError, "key not found: :purple")
+  it "renders text with purple color" do
+    component = described_class.new(
+      text: "subject",
+      color: :purple
+    )
+    render_inline(component)
+
+    expect(page).to have_css(
+      "span.bg-purple-100.text-purple-800",
+      text: "subject"
+    )
   end
 
   it "renders text with gray color" do
@@ -35,5 +42,11 @@ RSpec.describe PillComponent, type: :component do
       "span.bg-gray-100.text-gray-800",
       text: "neutral"
     )
+  end
+
+  it "raises error for unsupported color" do
+    expect {
+      described_class.new(text: "unknown", color: :asdf)
+    }.to raise_error(KeyError, "key not found: :asdf")
   end
 end

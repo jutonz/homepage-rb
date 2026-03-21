@@ -11,13 +11,16 @@ module Galleries
               <div class="flex gap-3 items-center">
                 <div>
                   <%= link_to(
-                    tag.display_name,
                     gallery_tag_path(@gallery, tag),
                     data: {
                       turbo: false,
                       role: "tag-link"
                     }
-                  ) %>
+                  ) do %>
+                    <%= render(
+                      Galleries::TagPillComponent.new(tag:)
+                    ) %>
+                  <% end %>
                 </div>
                 <%= button_to(
                   "Remove",

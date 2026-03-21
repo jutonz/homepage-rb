@@ -16,7 +16,9 @@ module Galleries
                 data-tag-id="<%= tag.id %>"
                 data-tag-name="<%= tag.display_name %>"
               >
-                <%= tag.display_name %>
+                <%= render(
+                  Galleries::TagPillComponent.new(tag:)
+                ) %>
               </button>
             </div>
           <% end %>
