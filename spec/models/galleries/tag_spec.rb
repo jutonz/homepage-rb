@@ -40,6 +40,43 @@ RSpec.describe Galleries::Tag, type: :model do
       .scoped_to(:gallery_id)
   end
 
+  describe "classification enum" do
+    it "defaults to none" do
+      tag = create(:galleries_tag)
+
+      expect(tag.classification).to eql("none")
+      expect(tag).to be_classification_none
+    end
+
+    it "can be set to subject" do
+      tag = build(:galleries_tag, classification: :subject)
+
+      expect(tag).to be_valid
+      expect(tag).to be_classification_subject
+    end
+
+    it "rejects invalid classifications" do
+      tag = build(:galleries_tag, classification: :invalid)
+
+      expect(tag).not_to be_valid
+      expect(tag.errors[:classification]).to be_present
+    end
+
+    it "provides a .subject scope" do
+      gallery = create(:gallery)
+      subject_tag = create(
+        :galleries_tag,
+        gallery:,
+        classification: :subject
+      )
+      create(:galleries_tag, gallery:)
+
+      expect(described_class.classification_subject).to contain_exactly(
+        subject_tag
+      )
+    end
+  end
+
   describe ".tagging_needed" do
     it "if a 'tagging needed' tag already exists, returns it" do
       gallery = create(:gallery)
