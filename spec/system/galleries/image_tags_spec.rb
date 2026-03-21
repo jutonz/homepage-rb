@@ -126,8 +126,7 @@ RSpec.describe "Gallery image tags", type: :system do
       "Tag search query",
       with: "alp"
     )
-    field = find_field("Tag search query")
-    expect(field.matches_css?(":focus")).to be(true)
+    expect(page).to have_selector("[aria-label='Tag search query']:focus")
   end
 
   it "preserves query when pressing Enter with no results",
