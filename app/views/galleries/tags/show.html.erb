@@ -30,14 +30,9 @@
     text: "#{@images.size} images",
     color: :blue
   )) %>
-  <% unless @tag.classification_none? %>
-    <span data-role="classification">
-      <%= render(PillComponent.new(
-        text: @tag.classification,
-        color: :purple
-      )) %>
-    </span>
-  <% end %>
+  <%= render(
+    Galleries::TagClassificationPillComponent.new(tag: @tag)
+  ) %>
 </div>
 
 
