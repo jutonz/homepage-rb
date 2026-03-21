@@ -4,6 +4,7 @@
 # Database name: primary
 #
 #  id               :bigint           not null, primary key
+#  classification   :enum             default("none"), not null
 #  image_tags_count :integer          default(0), not null
 #  name             :string           not null
 #  created_at       :datetime         not null

@@ -25,11 +25,19 @@
   <% end %>
 <% end %>
 
-<div class="mb-6">
+<div class="mb-6 flex gap-2">
   <%= render(PillComponent.new(
     text: "#{@images.size} images",
     color: :blue
   )) %>
+  <% unless @tag.classification_none? %>
+    <span data-role="classification">
+      <%= render(PillComponent.new(
+        text: @tag.classification,
+        color: :purple
+      )) %>
+    </span>
+  <% end %>
 </div>
 
 

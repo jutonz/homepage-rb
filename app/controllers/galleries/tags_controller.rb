@@ -86,7 +86,7 @@ module Galleries
     end
 
     def tag_params
-      params.require(:tag).permit(:name)
+      params.require(:tag).permit(:name, :classification)
     end
   end
 end
