@@ -4,6 +4,7 @@
 # Database name: primary
 #
 #  id               :bigint           not null, primary key
+#  classification   :enum             default("none"), not null
 #  image_tags_count :integer          default(0), not null
 #  name             :string           not null
 #  created_at       :datetime         not null
@@ -26,6 +27,11 @@
 module Galleries
   class Tag < ApplicationRecord
     TAGGING_NEEDED_NAME = "tagging needed"
+
+    enum :classification,
+      {none: "none", subject: "subject"},
+      validate: true,
+      prefix: true
 
     belongs_to :gallery, counter_cache: true
     belongs_to :user

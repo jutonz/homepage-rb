@@ -1,4 +1,9 @@
 <%= simple_form_for([@gallery, @tag]) do |form| %>
   <%= form.input(:name) %>
+  <%= form.input(
+    :classification,
+    collection: Galleries::Tag.classifications.keys,
+    include_blank: false
+  ) %>
   <%= form.button(:submit) %>
 <% end %>

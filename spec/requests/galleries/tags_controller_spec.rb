@@ -107,6 +107,29 @@ RSpec.describe Galleries::TagsController do
       expect(response).to redirect_to(gallery_tag_path(gallery, tag))
     end
 
+    it "creates a tag with a classification" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      params = {tag: {name: "Alice", classification: "subject"}}
+
+      post(gallery_tags_path(gallery), params:)
+
+      tag = Galleries::Tag.last
+      expect(tag.classification).to eql("subject")
+    end
+
+    it "rejects an invalid classification" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      params = {tag: {name: "hello", classification: "bogus"}}
+
+      post(gallery_tags_path(gallery), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
     it "returns 404 when creating tag in gallery not owned by current user" do
       gallery = create(:gallery)
       other_user = create(:user)
@@ -143,6 +166,35 @@ RSpec.describe Galleries::TagsController do
       expect(page).to have_link("Tags", href: gallery_tags_path(gallery))
     end
 
+    it "displays the classification for classified tags" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(
+        :galleries_tag,
+        gallery:,
+        classification: :subject
+      )
+      login_as(user)
+
+      get(gallery_tag_path(gallery, tag))
+
+      expect(page).to have_css(
+        "[data-role=classification]",
+        text: "subject"
+      )
+    end
+
+    it "does not display classification for unclassified tags" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:)
+      login_as(user)
+
+      get(gallery_tag_path(gallery, tag))
+
+      expect(page).not_to have_css("[data-role=classification]")
+    end
+
     it "returns 404 when viewing tag from gallery not owned by current user" do
       gallery = create(:gallery)
       tag = create(:galleries_tag, gallery:)
@@ -176,6 +228,18 @@ RSpec.describe Galleries::TagsController do
 
       expect(response).to redirect_to(gallery_tag_path(gallery, tag))
       expect(tag.reload.name).to eql("after")
+    end
+
+    it "updates a tag's classification" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:)
+      login_as(user)
+      params = {tag: {classification: "subject"}}
+
+      put(gallery_tag_path(gallery, tag), params:)
+
+      expect(tag.reload.classification).to eql("subject")
     end
 
     it "returns 404 when updating tag from gallery not owned by current user" do
