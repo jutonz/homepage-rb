@@ -324,8 +324,8 @@ RSpec.describe "Gallery select mode" do
     wait_for_turbo
 
     find("[data-image-id='#{image1.id}']").click
-    expect(find("[data-image-id='#{image1.id}']")).to(
-      match_css(".gallery-image--selected")
+    expect(page).to have_css(
+      "[data-image-id='#{image1.id}'].gallery-image--selected"
     )
 
     fill_in("tag_search[query]", with: "nat")
