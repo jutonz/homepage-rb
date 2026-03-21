@@ -24,10 +24,13 @@ module Galleries
             <%= turbo_frame_tag("tag-search-result-\#{tag.id}") do %>
               <div class="flex gap-4 my-2" data-role="tag-search-result">
                 <%= link_to(
-                  tag.display_name,
                   gallery_tag_path(tag.gallery, tag),
                   data: {turbo: false}
-                ) %>
+                ) do %>
+                  <%= render(
+                    Galleries::TagPillComponent.new(tag:)
+                  ) %>
+                <% end %>
                 <%= button_to(
                   "Add tag",
                   gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
