@@ -45,6 +45,48 @@ RSpec.describe Galleries::SocialMediaLinksController do
 
       expect(response).to have_http_status(:not_found)
     end
+
+    it "classifies the tag as subject when an instagram link is created" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:, user:)
+      login_as(user)
+
+      post(
+        gallery_tag_social_media_links_path(gallery, tag),
+        params: {social_media_link: {platform: "instagram", username: "test"}}
+      )
+
+      expect(tag.reload.classification).to eq("subject")
+    end
+
+    it "does not classify the tag as subject for non-instagram links" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:, user:)
+      login_as(user)
+
+      post(
+        gallery_tag_social_media_links_path(gallery, tag),
+        params: {social_media_link: {platform: "reddit", username: "test"}}
+      )
+
+      expect(tag.reload.classification).to eq("none")
+    end
+
+    it "does not re-update a tag already classified as subject" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:, user:, classification: :subject)
+      login_as(user)
+
+      post(
+        gallery_tag_social_media_links_path(gallery, tag),
+        params: {social_media_link: {platform: "instagram", username: "test"}}
+      )
+
+      expect(tag.reload.classification).to eq("subject")
+    end
   end
 
   describe "edit" do

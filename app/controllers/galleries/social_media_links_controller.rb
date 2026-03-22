@@ -16,6 +16,10 @@ module Galleries
       @social_media_link = authorize(@tag.social_media_links.build(link_params))
 
       if @social_media_link.save
+        if @social_media_link.instagram? && !@tag.classification_subject?
+          @tag.update!(classification: "subject")
+        end
+
         redirect_to(
           gallery_tag_path(@gallery, @tag),
           notice: "Created social media link!"
