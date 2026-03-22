@@ -27,7 +27,7 @@ module Galleries
     end
 
     def search_params
-      params.require(:tag_search).permit(:mode, :turbo_frame_tag)
+      params.fetch(:tag_search, {}).permit(:mode, :turbo_frame_tag)
     end
   end
 end

@@ -18,7 +18,7 @@ RSpec.describe "Gallery filtering" do
     end
 
     expect(page).not_to have_css(
-      "[data-role=gallery-tag-search-result]",
+      "[data-role=tag-search-result]",
       text: tag.name
     )
     expect(page).to have_css("[data-image-id='#{image.id}']")

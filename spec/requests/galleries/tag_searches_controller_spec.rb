@@ -33,6 +33,16 @@ RSpec.describe Galleries::TagSearchesController do
       expect(response).to have_http_status(:success)
     end
 
+    it "returns success when tag_search params are missing" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+
+      get(gallery_tag_search_path(gallery))
+
+      expect(response).to have_http_status(:success)
+    end
+
     it "renders gallery mode action when mode is gallery" do
       user = create(:user)
       gallery = create(:gallery, user:)

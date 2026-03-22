@@ -39,20 +39,17 @@ module Galleries
       def initialize(
         tag_search:,
         mode: :image,
-        link_params: {},
         turbo_frame_tag: "tag-search-results"
       )
         @tag_search = tag_search
         @gallery = tag_search.gallery
         @image = tag_search.image
         @mode = mode
-        @link_params = link_params
         @_turbo_frame_tag = turbo_frame_tag
       end
 
       private
 
-      attr_reader :link_params
       attr_reader :mode
 
       def search_result_action(tag:)
@@ -80,6 +77,7 @@ module Galleries
         elsif mode == :bulk_add_tag
           content_tag(
             :button,
+            type: "button",
             class: "button",
             data: {
               action: "gallery-bulk-tag#selectTag",
