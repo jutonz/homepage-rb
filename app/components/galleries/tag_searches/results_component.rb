@@ -36,7 +36,12 @@ module Galleries
         <% end %>
       ERB
 
-      def initialize(tag_search:, mode: :image, link_params: {}, turbo_frame_tag: "tag-search-results")
+      def initialize(
+        tag_search:,
+        mode: :image,
+        link_params: {},
+        turbo_frame_tag: "tag-search-results"
+      )
         @tag_search = tag_search
         @gallery = tag_search.gallery
         @image = tag_search.image

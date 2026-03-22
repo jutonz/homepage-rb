@@ -17,9 +17,35 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
     end
   end
 
-  it "in image mode, renders a button to tag the image"
-  it "in gallery mode, renders a button to search for the tag"
-  it "in bulk_add_tag mode, renders a button to select the tag"
+  it "in image mode, renders a button to tag the image" do
+    tag_search = create(:galleries_tag_search, :with_image, query: "Hello")
+    gallery = tag_search.gallery
+    create(:galleries_tag, gallery:, name: "Hello World")
+    component = described_class.new(tag_search:, mode: :image)
+    render_inline(component)
+
+    expect(page).to have_button("Add tag")
+  end
+
+  it "in gallery mode, renders a link to add the tag as a filter" do
+    tag_search = create(:galleries_tag_search, query: "Hello")
+    gallery = tag_search.gallery
+    create(:galleries_tag, gallery:, name: "Hello World")
+    component = described_class.new(tag_search:, mode: :gallery)
+    render_inline(component)
+
+    expect(page).to have_link("Add")
+  end
+
+  it "in bulk_add_tag mode, renders a button to select the tag" do
+    tag_search = create(:galleries_tag_search, query: "Hello")
+    gallery = tag_search.gallery
+    create(:galleries_tag, gallery:, name: "Hello World")
+    component = described_class.new(tag_search:, mode: :bulk_add_tag)
+    render_inline(component)
+
+    expect(page).to have_button("Select")
+  end
 
   it "if a query is present, has a button to create a new tag" do
     tag_search = build_stubbed(:galleries_tag_search, :with_image, query: "Hello")
