@@ -45,5 +45,21 @@ RSpec.describe Galleries::SocialLinksCreator do
 
       expect(tag.reload.social_media_links.length).to eq(0)
     end
+
+    it "classifies an IG: tag as subject" do
+      tag = create(:galleries_tag, name: "IG:testin")
+
+      described_class.call(tag)
+
+      expect(tag.reload.classification).to eq("subject")
+    end
+
+    it "does not classify a TT: tag as subject" do
+      tag = create(:galleries_tag, name: "TT:testin")
+
+      described_class.call(tag)
+
+      expect(tag.reload.classification).to eq("none")
+    end
   end
 end

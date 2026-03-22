@@ -14,6 +14,8 @@ module Galleries
 
       username = tag.name.delete_prefix(prefix)
       tag.social_media_links.find_or_create_by!(platform:, username:)
+
+      tag.update!(classification: "subject") if platform == "instagram"
     end
   end
 end
