@@ -32,6 +32,7 @@
       method: :get,
       html: {
         data: {
+          turbo_action: "advance",
           controller: "auto-submit-form"
         },
         class: "w-full",
@@ -69,26 +70,9 @@
       </div>
     <% end %>
 
-    <%= turbo_frame_tag("gallery-tag-search-results") do %>
-      <% Array(@tag_search.results).each do |tag| %>
-        <% next if @filter_tags.include?(tag) %>
-        <div class="flex gap-4 my-2" data-role="gallery-tag-search-result">
-          <%= tag.display_name %>
-          <%= link_to(
-            "Add",
-            gallery_path(
-              @gallery,
-              tag_search: {query: @tag_search.query},
-              tag_ids: (params.fetch(:tag_ids, []) + [tag.id]).uniq,
-              select: @select_mode ? "true" : nil,
-              selected_ids: @selected_ids,
-              page: params[:page]
-            ),
-            class: "button",
-            data: {turbo: false}
-          ) %>
-      </div>
-    <% end %>
+    <%= render(Galleries::TagSearches::ResultsComponent.new(
+      tag_search: @tag_search,
+      mode: :gallery,
+    )) %>
   <% end %>
-<% end %>
 </div>

@@ -11,15 +11,23 @@ module Galleries
         query: params.dig(:tag_search, :query)
       )
 
-      respond_to do |format|
-        format.html
-      end
+      html = TagSearches::ResultsComponent.new(
+        tag_search: @tag_search,
+        mode: search_params["mode"]&.to_sym,
+        turbo_frame_tag: search_params["turbo_frame_tag"]
+      ).render_in(view_context)
+
+      render(html:)
     end
 
     private
 
     def find_gallery
       policy_scope(Gallery).find(params[:gallery_id])
+    end
+
+    def search_params
+      params.expect(tag_search: [:mode, :turbo_frame_tag])
     end
   end
 end
