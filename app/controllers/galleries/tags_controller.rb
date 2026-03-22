@@ -33,6 +33,8 @@ module Galleries
       @tag = authorize(@gallery.tags.new(tag_params.merge(user: current_user)))
 
       if @tag.save
+        Galleries::SocialLinksCreator.call(@tag)
+
         if params[:add_to_image_id]
           image = @gallery.images.find_by(id: params[:add_to_image_id])
           image.add_tag(@tag)

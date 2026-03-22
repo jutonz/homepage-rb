@@ -177,6 +177,38 @@ RSpec.describe Galleries::TagsController do
 
       expect(response).to redirect_to(new_session_path)
     end
+
+    it "calls SocialLinksCreator for IG: prefixed tags" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      allow(Galleries::SocialLinksCreator).to receive(:call)
+
+      post(gallery_tags_path(gallery), params: {tag: {name: "IG:someuser"}})
+
+      tag = Galleries::Tag.last
+      expect(Galleries::SocialLinksCreator).to have_received(:call).with(tag)
+    end
+
+    it "classifies IG: prefixed tags as subject on create" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+
+      post(gallery_tags_path(gallery), params: {tag: {name: "IG:someuser"}})
+
+      expect(Galleries::Tag.last.classification).to eq("subject")
+    end
+
+    it "does not classify non-IG: prefixed tags as subject" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+
+      post(gallery_tags_path(gallery), params: {tag: {name: "RegularTag"}})
+
+      expect(Galleries::Tag.last.classification).to eq("none")
+    end
   end
 
   describe "show" do
