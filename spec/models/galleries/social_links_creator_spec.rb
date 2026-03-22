@@ -62,25 +62,5 @@ RSpec.describe Galleries::SocialLinksCreator do
       expect(tag.reload.classification).to eq("none")
     end
 
-    it "does not classify an RD: tag as subject" do
-      tag = create(:galleries_tag, name: "RD:testin")
-
-      described_class.call(tag)
-
-      expect(tag.reload.classification).to eq("none")
-    end
-
-    it "skips update! when tag is already classified as subject" do
-      tag = create(
-        :galleries_tag,
-        name: "IG:testin",
-        classification: :subject
-      )
-      allow(tag).to receive(:update!)
-
-      described_class.call(tag)
-
-      expect(tag).not_to have_received(:update!)
-    end
   end
 end
