@@ -13,9 +13,12 @@ module Galleries
       return unless prefix
 
       username = tag.name.delete_prefix(prefix)
-      tag.social_media_links.find_or_create_by!(platform:, username:)
+      link = tag.social_media_links.find_or_create_by!(platform:, username:)
+      classify_from_link(tag, link)
+    end
 
-      tag.update!(classification: "subject") if platform == "instagram"
+    def self.classify_from_link(tag, link)
+      tag.update!(classification: "subject") if link.instagram?
     end
   end
 end
