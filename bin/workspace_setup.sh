@@ -31,4 +31,4 @@ mise exec -- bundle install
 
 echo $TEST_KEY > config/credentials/test.key
 RAILS_ENV=test mise exec -- bin/rails db:setup
-npx --yes playwright install firefox --with-deps
+npx --yes playwright install --with-deps
