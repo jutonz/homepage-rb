@@ -61,6 +61,5 @@ RSpec.describe Galleries::SocialLinksCreator do
 
       expect(tag.reload.classification).to eq("none")
     end
-
   end
 end
