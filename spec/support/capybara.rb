@@ -52,6 +52,14 @@ RSpec.configure do |config|
           route.continue
         }
       )
+
+      if ENV["RAILS_TEST_SLOW_JS"].present?
+        cdp = pw.context.new_cdp_session(pw)
+        cdp.send_message(
+          "Emulation.setCPUThrottlingRate",
+          params: {rate: 100}
+        )
+      end
     end
   end
 end
