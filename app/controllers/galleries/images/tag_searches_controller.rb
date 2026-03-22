@@ -14,10 +14,12 @@ module Galleries
           query: tag_search_params[:query]
         )
 
-        respond_to do |format|
-          format.turbo_stream
-          format.html { render "galleries/images/show" }
-        end
+        html =
+          TagSearches::ResultsComponent
+            .new(tag_search: @tag_search)
+            .render_in(view_context)
+
+        render(html:)
       end
 
       private
