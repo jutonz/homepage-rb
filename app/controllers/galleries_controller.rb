@@ -27,7 +27,8 @@ class GalleriesController < ApplicationController
         .per(PER_PAGE)
     @tag_search = Galleries::TagSearch.new(
       gallery: @gallery,
-      query: params.dig(:tag_search, :query)
+      query: params.dig(:tag_search, :query),
+      excluded_ids: Array(params[:tag_ids]).map(&:to_i)
     )
   end
 

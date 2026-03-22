@@ -141,6 +141,8 @@
           controller: "auto-submit-form"
         }
       ) do |f| %>
+        <input name="tag_search[mode]" value="bulk_add_tag" type="hidden" />
+        <input name="tag_search[turbo_frame_tag]" value="bulk-tag-search-results" type="hidden" />
         <div class="flex w-full gap-3 mb-4">
           <%= f.text_field(
             "tag_search[query]",

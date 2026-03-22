@@ -13,12 +13,12 @@ RSpec.describe "Gallery filtering" do
 
     fill_in("Tag search query", with: tag.name)
     click_on("Search")
-    within("[data-role=gallery-tag-search-result]", text: tag.name) do
+    within("[data-role=tag-search-result]", text: tag.name) do
       click_on("Add")
     end
 
     expect(page).not_to have_css(
-      "[data-role=gallery-tag-search-result]",
+      "[data-role=tag-search-result]",
       text: tag.name
     )
     expect(page).to have_css("[data-image-id='#{image.id}']")

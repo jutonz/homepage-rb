@@ -136,9 +136,10 @@ RSpec.describe "Gallery select mode" do
 
     within(find("dialog[open]")) do
       fill_in("tag_search[query]", with: "nat")
-      expect(page).to have_button("nature")
-      click_button("nature")
-      expect(page).to have_text("nature")
+      within("[data-role=tag-search-result]", text: tag.display_name) do
+        click_on("Select")
+      end
+      expect(page).to have_text("Selected tag: #{tag.display_name}")
       click_button("Add tag")
     end
 
@@ -168,8 +169,9 @@ RSpec.describe "Gallery select mode" do
 
     within(find("dialog[open]")) do
       fill_in("tag_search[query]", with: "nat")
-      expect(page).to have_button("nature")
-      click_button("nature")
+      within("[data-role=tag-search-result]", text: "nature") do
+        click_on("Select")
+      end
       click_button("Add tag")
     end
 
@@ -220,8 +222,9 @@ RSpec.describe "Gallery select mode" do
 
     within(find("dialog[open]")) do
       fill_in("tag_search[query]", with: "nat")
-      expect(page).to have_button("nature")
-      click_button("nature")
+      within("[data-role=tag-search-result]", text: "nature") do
+        click_on("Select")
+      end
       click_button("Add tag")
     end
 
@@ -253,8 +256,9 @@ RSpec.describe "Gallery select mode" do
 
     within(find("dialog[open]")) do
       fill_in("tag_search[query]", with: "nat")
-      expect(page).to have_button("nature")
-      click_button("nature")
+      within("[data-role=tag-search-result]", text: "nature") do
+        click_on("Select")
+      end
       click_button("Add tag")
     end
 
@@ -308,7 +312,7 @@ RSpec.describe "Gallery select mode" do
     stub_const("GalleriesController::PER_PAGE", 1)
     user = create(:user)
     gallery = create(:gallery, user:)
-    create(:galleries_tag, gallery:, name: "nature")
+    tag = create(:galleries_tag, gallery:, name: "nature")
     # images are ordered created_at desc, so image1 is on page 2
     image1, _image2 = create_pair(
       :galleries_image,
@@ -329,7 +333,10 @@ RSpec.describe "Gallery select mode" do
     )
 
     fill_in("tag_search[query]", with: "nat")
-    expect(page).to have_css("[data-role='gallery-tag-search-result']")
+    expect(page).to have_css(
+      "[data-role='tag-search-result']",
+      text: tag.display_name
+    )
     click_link("Add")
     wait_for_turbo
 

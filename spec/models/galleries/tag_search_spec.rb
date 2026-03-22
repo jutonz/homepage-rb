@@ -77,6 +77,22 @@ RSpec.describe Galleries::TagSearch do
       expect(result).to be_blank
     end
 
+    it "excludes tags whose ids are in excluded_ids" do
+      gallery = create(:gallery)
+      excluded_tag = create(:galleries_tag, gallery:, name: "hello")
+      other_tag = create(:galleries_tag, gallery:, name: "hello world")
+      search = build(
+        :galleries_tag_search,
+        gallery:,
+        query: "hello",
+        excluded_ids: [excluded_tag.id]
+      )
+
+      result = search.results.pluck(:id)
+
+      expect(result).to eql([other_tag.id])
+    end
+
     it "orders tags by image_tags_count" do
       search = build(:galleries_tag_search, query: "Tag")
       gallery = search.gallery
