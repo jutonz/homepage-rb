@@ -74,7 +74,7 @@ RSpec.describe Galleries::SocialMediaLinksController do
       expect(tag.reload.classification).to eq("none")
     end
 
-    it "does not re-update a tag already classified as subject" do
+    it "tag remains classified as subject when instagram link added to already-classified tag" do
       user = create(:user)
       gallery = create(:gallery, user:)
       tag = create(:galleries_tag, gallery:, user:, classification: :subject)
