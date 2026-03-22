@@ -178,19 +178,16 @@ RSpec.describe Galleries::TagsController do
       expect(response).to redirect_to(new_session_path)
     end
 
-    it "creates an instagram social link for IG: prefixed tags" do
+    it "calls SocialLinksCreator for IG: prefixed tags" do
       user = create(:user)
       gallery = create(:gallery, user:)
       login_as(user)
+      allow(Galleries::SocialLinksCreator).to receive(:call)
 
       post(gallery_tags_path(gallery), params: {tag: {name: "IG:someuser"}})
 
       tag = Galleries::Tag.last
-      expect(tag.social_media_links.count).to eq(1)
-      expect(tag.social_media_links.first).to have_attributes(
-        platform: "instagram",
-        username: "someuser"
-      )
+      expect(Galleries::SocialLinksCreator).to have_received(:call).with(tag)
     end
 
     it "classifies IG: prefixed tags as subject on create" do
