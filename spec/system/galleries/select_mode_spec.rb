@@ -94,8 +94,8 @@ RSpec.describe "Gallery select mode" do
 
     click_on("Next ›")
     wait_for_turbo
+    expect(page).to have_button("Select", disabled: false)
     click_button("Select")
-    wait_for_turbo
     expect(page).to have_link("Cancel")
 
     expect(page).to have_css("[data-image-id='#{image1.id}']")
@@ -244,8 +244,9 @@ RSpec.describe "Gallery select mode" do
     visit(gallery_path(gallery))
     click_on("Next ›")
     wait_for_turbo
+    expect(page).to have_button("Select", disabled: false)
     click_button("Select")
-    wait_for_turbo
+    expect(page).to have_link("Cancel")
 
     find("[data-image-id='#{image1.id}']").click
     expect(find("[data-image-id='#{image1.id}']")).to(
@@ -292,8 +293,9 @@ RSpec.describe "Gallery select mode" do
     visit(gallery_path(gallery, tag_ids: [tag.id]))
     click_on("Next ›")
     wait_for_turbo
+    expect(page).to have_button("Select", disabled: false)
     click_button("Select")
-    wait_for_turbo
+    expect(page).to have_link("Cancel")
 
     find("[data-image-id='#{image1.id}']").click
     expect(find("[data-image-id='#{image1.id}']")).to(
@@ -324,8 +326,9 @@ RSpec.describe "Gallery select mode" do
     visit(gallery_path(gallery))
     click_on("Next ›")
     wait_for_turbo
+    expect(page).to have_button("Select", disabled: false)
     click_button("Select")
-    wait_for_turbo
+    expect(page).to have_link("Cancel")
 
     find("[data-image-id='#{image1.id}']").click
     expect(page).to have_css(
