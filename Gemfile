@@ -23,7 +23,7 @@ gem "pg", "~> 1.6"
 gem "prometheus_exporter", require: false
 gem "puma", ">= 5.0"
 gem "pundit"
-gem "rails", "~> 8.1.2"
+gem "rails", "~> 8.1.3"
 gem "redis", ">= 4.0.1"
 gem "simple_form"
 gem "solid_queue"
