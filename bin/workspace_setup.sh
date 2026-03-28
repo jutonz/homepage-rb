@@ -8,6 +8,9 @@ mise settings ruby.compile=false
 mise install
 mise exec -- bundle install
 
+npm i
+npm exec --no playwright install --with-deps
+
 apt-get update
 apt-get install -y \
   build-essential \
@@ -39,4 +42,3 @@ su postgres -c "psql -c \"CREATE EXTENSION IF NOT EXISTS vector;\""
 
 echo $TEST_KEY > config/credentials/test.key
 RAILS_ENV=test mise exec -- bin/rails db:setup
-npx --yes playwright install --with-deps
