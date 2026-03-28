@@ -2,7 +2,7 @@ module Galleries
   class ImageTagsComponent < ApplicationComponent
     erb_template <<~ERB
       <%= turbo_frame_tag("image-tags") do %>
-        <div class="flex mb-5 flex-col gap-3" data-role="tags">
+        <div class="flex mb-5 flex-wrap gap-2" data-role="tags">
           <span class="hidden only:block">
             This image doesn't have any tags yet.
           </span>
