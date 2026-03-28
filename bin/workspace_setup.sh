@@ -1,12 +1,25 @@
+#!/usr/bin/env bash
+
 set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get update
-apt-get install -y curl ca-certificates gnupg lsb-release git build-essential
-apt-get install -y imagemagick libvips
+mise settings ruby.compile=false
+mise install
+mise exec -- bundle install
 
-apt-get install -y postgresql-common
+apt-get update
+apt-get install -y \
+  build-essential \
+  ca-certificates \
+  curl \
+  git \
+  gnupg \
+  imagemagick \
+  libvips \
+  lsb-release \
+  postgresql-common
+
 /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
 
 apt-get install -y \
@@ -23,11 +36,6 @@ service postgresql start
 
 su postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD 'postgres';\""
 su postgres -c "psql -c \"CREATE EXTENSION IF NOT EXISTS vector;\""
-
-mise settings ruby.compile=false
-mise install
-mise list
-mise exec -- bundle install
 
 echo $TEST_KEY > config/credentials/test.key
 RAILS_ENV=test mise exec -- bin/rails db:setup
