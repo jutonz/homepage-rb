@@ -3,7 +3,8 @@ module Galleries
     CLASSIFICATION_COLORS = {
       "none" => :gray,
       "subject" => :purple,
-      "system" => :red
+      "system" => :red,
+      "artist" => :teal
     }.freeze
 
     renders_many :actions

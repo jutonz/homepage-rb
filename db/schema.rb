@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_28_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_28_171553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
-  create_enum "galleries_tag_classification", ["none", "subject", "system"]
+  create_enum "galleries_tag_classification", ["none", "subject", "system", "artist"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"

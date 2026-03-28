@@ -34,4 +34,17 @@ RSpec.describe Galleries::TagClassificationPillComponent,
       text: "system"
     )
   end
+
+  it "renders a teal pill for artist classification" do
+    tag = build_stubbed(
+      :galleries_tag,
+      classification: :artist
+    )
+    render_inline(described_class.new(tag:))
+
+    expect(page).to have_css(
+      "span.bg-teal-100.text-teal-800",
+      text: "artist"
+    )
+  end
 end

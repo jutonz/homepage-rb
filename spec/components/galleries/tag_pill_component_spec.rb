@@ -62,6 +62,18 @@ RSpec.describe Galleries::TagPillComponent, type: :component do
     )
   end
 
+  it "renders with teal styling for artist classification" do
+    tag = build_stubbed(
+      :galleries_tag,
+      classification: :artist
+    )
+    render_inline(described_class.new(tag:))
+
+    expect(page).to have_css(
+      "span.bg-teal-100.text-teal-800"
+    )
+  end
+
   it "renders actions inside the pill after the display name" do
     tag = build_stubbed(:galleries_tag, name: "Nature")
     component = described_class.new(tag:)
