@@ -8,23 +8,25 @@ module Galleries
     renders_many :actions
 
     erb_template <<~ERB
-      <span class="inline-flex items-center gap-3 px-3 py-1 rounded-full
-                   text-sm font-medium <%= @color_classes %>">
-        <%= link_to(
-          @tag.display_name,
-          gallery_tag_path(@tag.gallery, @tag),
-          data: {turbo: false, role: "tag-link"}
-        ) %>
-        <% actions.each do |action| %>
-          <%= action %>
-        <% end %>
-      </span>
+      <% display_name_html = link_to(
+        @tag.display_name,
+        gallery_tag_path(@tag.gallery, @tag),
+        data: {turbo: false, role: "tag-link"}
+      ) %>
+      <% pill = PillComponent.new(
+        text: display_name_html,
+        color: @color,
+        class_name: "gap-3"
+      ) %>
+      <% actions.each do |action| %>
+        <% pill.with_action { action.to_s.html_safe } %>
+      <% end %>
+      <%= render(pill) %>
     ERB
 
     def initialize(tag:)
       @tag = tag
-      color = CLASSIFICATION_COLORS.fetch(tag.classification, :gray)
-      @color_classes = PillComponent::COLOR_CLASSES.fetch(color)
+      @color = CLASSIFICATION_COLORS.fetch(tag.classification, :gray)
     end
   end
 end
