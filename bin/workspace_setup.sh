@@ -10,6 +10,7 @@ mise exec -- bundle install
 
 npm i
 npm exec --no playwright install --with-deps
+npm exec --no playwright install-deps
 
 apt-get update
 apt-get install -y \
