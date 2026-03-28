@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Galleries::TagPillComponent, type: :component do
+  include Rails.application.routes.url_helpers
+
   it "renders the tag's display name" do
     tag = build_stubbed(:galleries_tag, name: "Nature")
     render_inline(described_class.new(tag:))
@@ -40,18 +42,13 @@ RSpec.describe Galleries::TagPillComponent, type: :component do
     expect(page).to have_button("×")
   end
 
-  it "links the display name when link_url is provided" do
-    tag = build_stubbed(:galleries_tag, name: "Nature")
-    render_inline(described_class.new(tag:, link_url: "/tags/1"))
-
-    expect(page).to have_link(tag.display_name, href: "/tags/1")
-  end
-
-
-  it "does not link the display name when link_url is absent" do
+  it "links the display name to the tag page" do
     tag = build_stubbed(:galleries_tag, name: "Nature")
     render_inline(described_class.new(tag:))
 
-    expect(page).not_to have_link(tag.display_name)
+    expect(page).to have_link(
+      tag.display_name,
+      href: gallery_tag_path(tag.gallery, tag)
+    )
   end
 end

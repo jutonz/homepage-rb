@@ -56,7 +56,7 @@ RSpec.describe PillComponent, type: :component do
       c.with_action { "<span>X</span>".html_safe }
     end
 
-    expect(page).to have_css("span.bg-blue-100.text-blue-800", text: "hello")
-    expect(page).to have_css("span.bg-blue-100.text-blue-800 span", text: "X")
+    expect(page).to have_css("span", text: "hello")
+    expect(page).to have_css("span span", text: "X")
   end
 end

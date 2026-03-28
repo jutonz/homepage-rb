@@ -35,15 +35,18 @@ RSpec.describe "Gallery image tags", type: :system do
     gallery = create(:gallery, user:)
     image = create(:galleries_image, gallery:)
     tag = create(:galleries_tag, gallery:)
-    image.add_tag(tag)
     login_as(user)
 
     visit(gallery_image_path(gallery, image))
 
-    within("turbo-frame#tag_#{tag.id}") do
-      accept_confirm("Really remove tag '#{tag.name}'?") do
-        click_on("×")
-      end
+    click_on("Search")
+    within("[data-role=tag-search-result]", text: tag.name) do
+      click_on("Add tag")
+    end
+    expect(page).to have_css("[data-role=tag]", text: tag.name)
+
+    accept_confirm("Really remove tag '#{tag.name}'?") do
+      within("[data-role=tag]", text: tag.name) { click_on("×") }
     end
 
     expect(page).not_to have_css("turbo-frame#tag_#{tag.id}")
@@ -155,7 +158,7 @@ RSpec.describe "Gallery image tags", type: :system do
 
     visit(gallery_image_path(gallery, image))
 
-    within("turbo-frame#tag_#{tag.id}") do
+    within("[data-role=tag]", text: tag.name) do
       click_on(tag.reload.display_name)
     end
 

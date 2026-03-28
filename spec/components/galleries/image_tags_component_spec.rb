@@ -40,6 +40,5 @@ RSpec.describe Galleries::ImageTagsComponent, type: :component do
     render_inline(described_class.new(image:))
 
     expect(page).to have_css("[data-role=tag]", text: "×")
-    expect(page).not_to have_button("Remove")
   end
 end

@@ -8,14 +8,12 @@ module Galleries
           </span>
           <% @tags.each do |tag| %>
             <%= turbo_frame_tag(tag, data: {role: "tag"}) do %>
-              <%= render(Galleries::TagPillComponent.new(
-                tag:,
-                link_url: gallery_tag_path(@gallery, tag)
-              )) do |c| %>
+              <%= render(Galleries::TagPillComponent.new(tag:)) do |c| %>
                 <% c.with_action do %>
                   <%= link_to(
                     "×",
                     gallery_image_tag_path(@gallery, @image, tag),
+                    aria: {label: "Remove \#{tag.name}"},
                     data: {
                       turbo_method: :delete,
                       turbo_confirm: "Really remove tag" \
