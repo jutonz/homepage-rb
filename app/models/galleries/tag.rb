@@ -32,7 +32,8 @@ module Galleries
       {
         none: "none",
         subject: "subject",
-        system: "system"
+        system: "system",
+        artist: "artist"
       },
       validate: true,
       prefix: true
