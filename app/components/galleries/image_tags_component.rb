@@ -32,7 +32,7 @@ module Galleries
     def initialize(image:)
       @image = image
       @gallery = image.gallery
-      @tags = image.tags.order(:name)
+      @tags = image.tags.includes(:gallery).order(:name)
     end
   end
 end

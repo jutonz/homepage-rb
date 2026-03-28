@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Galleries::TagPillComponent, type: :component do
-  include Rails.application.routes.url_helpers
-
   it "renders the tag's display name" do
     tag = build_stubbed(:galleries_tag, name: "Nature")
     render_inline(described_class.new(tag:))

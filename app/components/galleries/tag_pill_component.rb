@@ -13,15 +13,16 @@ module Galleries
         gallery_tag_path(@tag.gallery, @tag),
         data: {turbo: false, role: "tag-link"}
       ) %>
-      <% pill = PillComponent.new(
+
+      <%= render(PillComponent.new(
         text: display_name_html,
         color: @color,
         class_name: "gap-3"
-      ) %>
-      <% actions.each do |action| %>
-        <% pill.with_action { action.to_s.html_safe } %>
+      )) do |pill|%>
+        <% actions.each do |action| %>
+          <% pill.with_action { action.to_s.html_safe } %>
+        <% end %>
       <% end %>
-      <%= render(pill) %>
     ERB
 
     def initialize(tag:)
