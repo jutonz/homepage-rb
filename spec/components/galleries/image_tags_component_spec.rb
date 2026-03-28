@@ -31,4 +31,15 @@ RSpec.describe Galleries::ImageTagsComponent, type: :component do
       href: gallery_tag_path(gallery, tag)
     )
   end
+
+  it "renders a remove × link inside the tag pill" do
+    gallery = create(:gallery)
+    image = create(:galleries_image, gallery:)
+    tag = create(:galleries_tag, gallery:)
+    image.add_tag(tag)
+    render_inline(described_class.new(image:))
+
+    expect(page).to have_css("[data-role=tag]", text: "×")
+    expect(page).not_to have_button("Remove")
+  end
 end

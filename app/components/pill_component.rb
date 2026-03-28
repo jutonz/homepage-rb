@@ -7,10 +7,15 @@ class PillComponent < ApplicationComponent
     purple: "bg-purple-100 text-purple-800"
   }.freeze
 
+  renders_many :actions
+
   erb_template <<~ERB
     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm
                  font-medium <%= @color_classes %> <%= @class_name %>">
       <%= @text %>
+      <% actions.each do |action| %>
+        <%= action %>
+      <% end %>
     </span>
   ERB
 

@@ -49,4 +49,14 @@ RSpec.describe PillComponent, type: :component do
       described_class.new(text: "unknown", color: :asdf)
     }.to raise_error(KeyError, "key not found: :asdf")
   end
+
+  it "renders actions inside the pill after the text" do
+    component = described_class.new(text: "hello")
+    render_inline(component) do |c|
+      c.with_action { "<span>X</span>".html_safe }
+    end
+
+    expect(page).to have_css("span.bg-blue-100.text-blue-800", text: "hello")
+    expect(page).to have_css("span.bg-blue-100.text-blue-800 span", text: "X")
+  end
 end
