@@ -29,7 +29,11 @@ module Galleries
     TAGGING_NEEDED_NAME = "tagging needed"
 
     enum :classification,
-      {none: "none", subject: "subject"},
+      {
+        none: "none",
+        subject: "subject",
+        system: "system"
+      },
       validate: true,
       prefix: true
 

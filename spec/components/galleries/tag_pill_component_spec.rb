@@ -49,4 +49,27 @@ RSpec.describe Galleries::TagPillComponent, type: :component do
       href: gallery_tag_path(tag.gallery, tag)
     )
   end
+
+  it "renders with red styling for system classification" do
+    tag = build_stubbed(
+      :galleries_tag,
+      classification: :system
+    )
+    render_inline(described_class.new(tag:))
+
+    expect(page).to have_css(
+      "span.bg-red-100.text-red-800"
+    )
+  end
+
+  it "renders actions inside the pill after the display name" do
+    tag = build_stubbed(:galleries_tag, name: "Nature")
+    component = described_class.new(tag:)
+    render_inline(component) do |c|
+      c.with_action { "<button>×</button>".html_safe }
+    end
+
+    expect(page).to have_css("span", text: tag.display_name)
+    expect(page).to have_button("×")
+  end
 end
