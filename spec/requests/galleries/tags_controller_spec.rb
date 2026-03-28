@@ -147,6 +147,18 @@ RSpec.describe Galleries::TagsController do
       expect(tag.classification).to eql("subject")
     end
 
+    it "creates a tag with system classification" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      params = {tag: {name: "system tag", classification: "system"}}
+
+      post(gallery_tags_path(gallery), params:)
+
+      tag = Galleries::Tag.last
+      expect(tag.classification).to eql("system")
+    end
+
     it "rejects an invalid classification" do
       user = create(:user)
       gallery = create(:gallery, user:)
@@ -300,6 +312,18 @@ RSpec.describe Galleries::TagsController do
       put(gallery_tag_path(gallery, tag), params:)
 
       expect(tag.reload.classification).to eql("subject")
+    end
+
+    it "updates a tag to system classification" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:)
+      login_as(user)
+      params = {tag: {classification: "system"}}
+
+      put(gallery_tag_path(gallery, tag), params:)
+
+      expect(tag.reload.classification).to eql("system")
     end
 
     it "returns 404 when updating tag from gallery not owned by current user" do

@@ -21,4 +21,17 @@ RSpec.describe Galleries::TagClassificationPillComponent,
       text: "subject"
     )
   end
+
+  it "renders a red pill for system classification" do
+    tag = build_stubbed(
+      :galleries_tag,
+      classification: :system
+    )
+    render_inline(described_class.new(tag:))
+
+    expect(page).to have_css(
+      "span.bg-red-100.text-red-800",
+      text: "system"
+    )
+  end
 end

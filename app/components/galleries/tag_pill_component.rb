@@ -2,7 +2,8 @@ module Galleries
   class TagPillComponent < ApplicationComponent
     CLASSIFICATION_COLORS = {
       "none" => :gray,
-      "subject" => :purple
+      "subject" => :purple,
+      "system" => :red
     }.freeze
 
     renders_many :actions
