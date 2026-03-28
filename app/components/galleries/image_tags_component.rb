@@ -8,28 +8,21 @@ module Galleries
           </span>
           <% @tags.each do |tag| %>
             <%= turbo_frame_tag(tag, data: {role: "tag"}) do %>
-              <div class="flex gap-3 items-center">
-                <div>
+              <%= render(Galleries::TagPillComponent.new(tag:)) do |c| %>
+                <% c.with_action do %>
                   <%= link_to(
-                    gallery_tag_path(@gallery, tag),
+                    "×",
+                    gallery_image_tag_path(@gallery, @image, tag),
+                    aria: {label: "Remove \#{tag.name}"},
                     data: {
-                      turbo: false,
-                      role: "tag-link"
-                    }
-                  ) do %>
-                    <%= render(
-                      Galleries::TagPillComponent.new(tag:)
-                    ) %>
-                  <% end %>
-                </div>
-                <%= button_to(
-                  "Remove",
-                  gallery_image_tag_path(@gallery, @image, tag),
-                  method: :delete,
-                  class: "button button--danger",
-                  data: {turbo_confirm: "Really remove tag '\#{tag.name}'?"}
-                ) %>
-              </div>
+                      turbo_method: :delete,
+                      turbo_confirm: "Really remove tag" \
+                        " '\#{tag.name}'?"
+                    },
+                    class: "opacity-60 hover:opacity-100"
+                  ) %>
+                <% end %>
+              <% end %>
             <% end %>
           <% end %>
         </div>
@@ -39,7 +32,7 @@ module Galleries
     def initialize(image:)
       @image = image
       @gallery = image.gallery
-      @tags = image.tags.order(:name)
+      @tags = image.tags.includes(:gallery).order(:name)
     end
   end
 end

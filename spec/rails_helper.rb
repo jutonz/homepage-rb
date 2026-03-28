@@ -61,6 +61,7 @@ RSpec.configure do |config|
   config.include JsonResponse, type: :request
   config.include ViewComponent::SystemTestHelpers, type: :component
   config.include ViewComponent::TestHelpers, type: :component
+  config.include Rails.application.routes.url_helpers, type: :component
 
   config.around(:each, freeze_time: true) do |example|
     freeze_time { example.run }

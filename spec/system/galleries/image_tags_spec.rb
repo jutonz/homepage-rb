@@ -22,7 +22,7 @@ RSpec.describe "Gallery image tags", type: :system do
     within("turbo-frame#tag_#{tag.id}", text: tag.name) do
       expect(image.reload.tags).to include(tag)
       accept_confirm("Really remove tag '#{tag.name}'?") do
-        click_on("Remove")
+        click_on("×")
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe "Gallery image tags", type: :system do
     expect(image.reload.tags).to be_empty
   end
 
-  it "can add and remove tags without JS" do
+  it "can add and remove a tag from an image with the × button", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
     image = create(:galleries_image, gallery:)
@@ -43,14 +43,10 @@ RSpec.describe "Gallery image tags", type: :system do
     within("[data-role=tag-search-result]", text: tag.name) do
       click_on("Add tag")
     end
-    expect(page).not_to have_css(
-      "[data-role=tag-search-result]",
-      text: tag.name
-    )
+    expect(page).to have_css("[data-role=tag]", text: tag.name)
 
-    within("turbo-frame#tag_#{tag.id}", text: tag.name) do
-      expect(image.reload.tags).to include(tag)
-      click_on("Remove")
+    accept_confirm("Really remove tag '#{tag.name}'?") do
+      within("[data-role=tag]", text: tag.name) { click_on("×") }
     end
 
     expect(page).not_to have_css("turbo-frame#tag_#{tag.id}")
@@ -150,6 +146,23 @@ RSpec.describe "Gallery image tags", type: :system do
       "Tag search query",
       with: "zzz"
     )
+  end
+
+  it "navigates to the tag page when clicking the tag pill link", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, :with_real_file, gallery:)
+    tag = create(:galleries_tag, gallery:)
+    image.add_tag(tag)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    within("[data-role=tag]", text: tag.name) do
+      click_on(tag.reload.display_name)
+    end
+
+    expect(current_path).to eq(gallery_tag_path(gallery, tag))
   end
 
   it "allows you to visit a tag by clicking on its search result", :js do
