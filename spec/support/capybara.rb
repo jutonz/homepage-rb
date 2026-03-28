@@ -4,7 +4,7 @@ Capybara.enable_aria_label = true
 
 playwright_cli_version = Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip
 playwright_cli_executable_path =
-  "npx --yes playwright@#{playwright_cli_version}"
+  "npm exec --no playwright@#{playwright_cli_version}"
 PLAYWRIGHT_OPTS = {
   playwright_cli_executable_path:,
   browser_type: :chromium,

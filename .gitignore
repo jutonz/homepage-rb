@@ -43,3 +43,5 @@ coverage/
 /config/credentials/test.key
 
 .claude/settings.local.json
+
+node_modules/
