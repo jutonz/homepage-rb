@@ -5,7 +5,7 @@ RSpec.describe "Gallery auto add tags", type: :system do
     user = create(:user)
     gallery = create(:gallery, user:)
     main_tag = create(:galleries_tag, gallery:, name: "main tag")
-    auto_tag = create(:galleries_tag, gallery:, name: "auto tag")
+    auto_tag = create(:galleries_tag, gallery:, name: "Auto tag")
     create(:galleries_tag, gallery:, name: "Zebra tag")
     create(:galleries_tag, gallery:, name: "Apple tag")
     login_as(user)
@@ -25,7 +25,7 @@ RSpec.describe "Gallery auto add tags", type: :system do
     select_options = page.all('select[name="auto_add_tag[auto_add_tag_id]"] option')
       .map(&:text)
       .reject { |text| text.blank? || text == "Select a tag to auto-add" }
-    expect(select_options).to eq(["Apple tag", "auto tag", "Zebra tag"])
+    expect(select_options).to eq(["Apple tag", "Auto tag", "Zebra tag"])
 
     select(auto_tag.name, from: "Auto add tag")
     click_on("Create Auto add tag")
