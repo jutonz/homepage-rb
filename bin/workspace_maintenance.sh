@@ -4,5 +4,5 @@ set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 
-bundle install
+mise exec -- bundle install
 RAILS_ENV=test mise exec -- bin/rails db:prepare assets:precompile
