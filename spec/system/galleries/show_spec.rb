@@ -4,12 +4,13 @@ RSpec.describe "Gallery show page" do
   it "paginates" do
     stub_const("GalleriesController::PER_PAGE", 1)
     user = create(:user)
-    gallery = create(:gallery, user:)
+    gallery = create(:gallery, user:, name: "Hidden")
     image1, image2 = create_pair(:galleries_image, gallery:)
     login_as(user)
 
     visit(gallery_path(gallery))
 
+    expect(page).to have_title("Hidden Gallery")
     expect(page).not_to have_css("[data-image-id='#{image1.id}']")
     expect(page).to have_css("[data-image-id='#{image2.id}']")
 

@@ -50,6 +50,7 @@ RSpec.describe "Gallery tags page" do
 
     expect(current_path).to eq(gallery_tag_path(gallery, tag))
     expect(page).to have_content("Landscape")
+    expect(page).to have_title("Tag: Landscape")
   end
 
   it "displays gallery stats" do
