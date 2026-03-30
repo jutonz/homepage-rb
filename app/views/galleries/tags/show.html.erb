@@ -1,3 +1,5 @@
+<% content_for :title, "Tag: #{@tag.name}" %>
+
 <%= render(HeaderComponent.new(
   title: @tag.name
 )) do |c| %>
