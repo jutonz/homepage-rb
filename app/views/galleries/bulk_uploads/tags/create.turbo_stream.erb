@@ -1,3 +1,9 @@
+<%= turbo_stream.remove(
+  "bulk-upload-tag-#{@tag.id}"
+) %>
+<%= turbo_stream.remove(
+  "bulk-upload-tag-input-#{@tag.id}"
+) %>
 <%= turbo_stream.append("bulk-upload-selected-tags") do %>
   <%= turbo_frame_tag(
     "bulk-upload-tag-#{@tag.id}",

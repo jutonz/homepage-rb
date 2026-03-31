@@ -28,6 +28,37 @@ RSpec.describe Galleries::BulkUploads::TagsController do
       )
     end
 
+    it "removes existing tag elements before appending" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:, user:)
+      login_as(user)
+
+      post(
+        gallery_bulk_upload_tags_path(gallery),
+        params: {tag_id: tag.id},
+        headers: {
+          "Accept" => "text/vnd.turbo-stream.html"
+        }
+      )
+
+      body = response.body
+      remove_pill = body.index(
+        "action=\"remove\"" \
+        " target=\"bulk-upload-tag-#{tag.id}\""
+      )
+      remove_input = body.index(
+        "action=\"remove\"" \
+        " target=\"bulk-upload-tag-input-#{tag.id}\""
+      )
+      append_pill = body.index(
+        "action=\"append\"" \
+        " target=\"bulk-upload-selected-tags\""
+      )
+      expect(remove_pill).to be < append_pill
+      expect(remove_input).to be < append_pill
+    end
+
     it "requires authentication" do
       gallery = create(:gallery)
       tag = create(:galleries_tag, gallery:)

@@ -71,6 +71,27 @@ RSpec.describe Galleries::BulkUpload do
       end
     end
 
+    it "ignores tags from a different gallery" do
+      gallery = create(:gallery)
+      other_gallery = create(:gallery)
+      other_tag = create(
+        :galleries_tag, gallery: other_gallery
+      )
+      bulk_upload = described_class.new(
+        gallery:,
+        files: [audiosurf_jpg],
+        tag_ids: [other_tag.id.to_s]
+      )
+
+      result = bulk_upload.save
+
+      expect(result).to be(true)
+      image = gallery.images.first
+      expect(image.tags.pluck(:name)).to eql(
+        ["tagging needed"]
+      )
+    end
+
     it "works when tag_ids is nil" do
       gallery = create(:gallery)
       bulk_upload = described_class.new(

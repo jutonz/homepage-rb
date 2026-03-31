@@ -17,8 +17,8 @@ module Galleries
           files.filter_map do |file|
             next if file.blank?
             image = gallery.images.create!(file:)
-            image.add_tag(tagging_needed)
-            selected_tags.each { image.add_tag(it) }
+            all_tags = [tagging_needed, *selected_tags]
+            image.add_tag(*all_tags)
             image
           end
         end

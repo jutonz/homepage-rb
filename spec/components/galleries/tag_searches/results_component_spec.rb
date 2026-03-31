@@ -24,12 +24,9 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
     tag = create(:galleries_tag, gallery:, name: "Hello World")
     component = described_class.new(tag_search:, mode: :image)
     render_inline(component)
-    add_tag_path =
-      Rails.application.routes.url_helpers.gallery_image_tags_path(
-        gallery,
-        image,
-        tag_id: tag.id
-      )
+    add_tag_path = gallery_image_tags_path(
+      gallery, image, tag_id: tag.id
+    )
 
     expect(page).to have_selector(
       "form[action='#{add_tag_path}']"
@@ -44,7 +41,7 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
     component = described_class.new(tag_search:, mode: :gallery)
 
     with_request_url(
-      Rails.application.routes.url_helpers.gallery_path(
+      gallery_path(
         gallery,
         tag_search: {query: tag_search.query},
         tag_ids: ["3"],
@@ -58,7 +55,7 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
 
     expect(page).to have_link(
       "Add",
-      href: Rails.application.routes.url_helpers.gallery_path(
+      href: gallery_path(
         gallery,
         page: "2",
         select: "true",
@@ -82,10 +79,9 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
     )
     render_inline(component)
     add_tag_path =
-      Rails.application.routes.url_helpers
-        .gallery_bulk_upload_tags_path(
-          gallery, tag_id: tag.id
-        )
+      gallery_bulk_upload_tags_path(
+        gallery, tag_id: tag.id
+      )
 
     expect(page).to have_selector(
       "form[action='#{add_tag_path}']"
@@ -117,7 +113,7 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
     component = described_class.new(tag_search:, mode: :gallery)
 
     with_request_url(
-      Rails.application.routes.url_helpers.gallery_path(
+      gallery_path(
         gallery,
         tag_ids: [selected_tag.id],
         page: "2"

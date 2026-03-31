@@ -22,8 +22,12 @@ module Galleries
           .then { authorize(Galleries::BulkUpload.new(it)) }
 
       if @bulk_upload.save
-        redirect_to @gallery, notice: "Bulk upload successful"
+        redirect_to @gallery,
+          notice: "Bulk upload successful"
       else
+        @tag_search = Galleries::TagSearch.new(
+          gallery: @gallery
+        )
         render :new, status: :unprocessable_content
       end
     end
