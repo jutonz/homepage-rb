@@ -41,6 +41,51 @@ RSpec.describe Galleries::BulkUploadsController do
       expect(gallery.images.count).to eql(2)
     end
 
+    it "uploads images with tag_ids applied" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:, user:)
+      login_as(user)
+      params = {
+        bulk_upload: {
+          files: [
+            fixture_file_upload(
+              "audiosurf.jpg", "image/jpeg"
+            )
+          ],
+          tag_ids: [tag.id.to_s]
+        }
+      }
+
+      post(gallery_bulk_upload_path(gallery), params:)
+
+      expect(response).to redirect_to(
+        gallery_path(gallery)
+      )
+      image = gallery.images.first
+      expect(image.tags).to include(tag)
+    end
+
+    it "rerenders the form when the upload is invalid" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      params = {
+        bulk_upload: {
+          files: nil
+        }
+      }
+
+      post(gallery_bulk_upload_path(gallery), params:)
+
+      expect(response).to have_http_status(
+        :unprocessable_content
+      )
+      expect(response.body).to include(
+        "Tags to apply"
+      )
+    end
+
     it "requires authentication" do
       gallery = create(:gallery)
       params = {

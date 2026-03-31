@@ -4,6 +4,7 @@ module Galleries
 
     attr_accessor :files
     attr_accessor :gallery
+    attr_accessor :tag_ids
 
     validates :gallery, presence: true
     validates :files, presence: true, length: {minimum: 1}
@@ -16,7 +17,8 @@ module Galleries
           files.filter_map do |file|
             next if file.blank?
             image = gallery.images.create!(file:)
-            image.add_tag(tagging_needed)
+            all_tags = [tagging_needed, *selected_tags]
+            image.add_tag(*all_tags)
             image
           end
         end
@@ -27,6 +29,15 @@ module Galleries
     end
 
     private
+
+    def selected_tags
+      @_selected_tags ||=
+        if tag_ids.present?
+          gallery.tags.where(id: tag_ids)
+        else
+          Galleries::Tag.none
+        end
+    end
 
     def tagging_needed
       @_tagging_needed ||= Galleries::Tag.tagging_needed(gallery)

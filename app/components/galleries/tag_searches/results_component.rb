@@ -69,6 +69,14 @@ module Galleries
             class: "button",
             data: {turbo: false}
           )
+        elsif mode == :bulk_upload_tag
+          helpers.button_to(
+            "Add tag",
+            gallery_bulk_upload_tags_path(
+              @gallery, tag_id: tag.id
+            ),
+            class: "button"
+          )
         elsif mode == :bulk_add_tag
           content_tag(
             :button,
