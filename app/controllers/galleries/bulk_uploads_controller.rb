@@ -22,13 +22,25 @@ module Galleries
           .then { authorize(Galleries::BulkUpload.new(it)) }
 
       if @bulk_upload.save
-        redirect_to @gallery,
-          notice: "Bulk upload successful"
-      else
-        @tag_search = Galleries::TagSearch.new(
-          gallery: @gallery
+        render(
+          turbo_stream: turbo_stream.append(
+            "bulk-upload-cards",
+            Galleries::BulkUploads::ImageCardComponent.new(
+              image: @bulk_upload.image
+            )
+          )
         )
-        render :new, status: :unprocessable_content
+      else
+        render(
+          turbo_stream: turbo_stream.append(
+            "bulk-upload-cards",
+            helpers.tag.div(
+              @bulk_upload.errors.full_messages.join(", "),
+              class: "text-red-600 text-sm"
+            )
+          ),
+          status: :unprocessable_content
+        )
       end
     end
 
@@ -41,7 +53,7 @@ module Galleries
     def bulk_upload_params
       params
         .require(:bulk_upload)
-        .permit(files: [], tag_ids: [])
+        .permit(:signed_id, tag_ids: [])
     end
   end
 end

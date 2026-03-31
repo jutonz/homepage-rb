@@ -66,6 +66,27 @@ RSpec.describe GalleriesController do
       expect(page).to have_text("2 images")
     end
 
+    it "hides images that are still processing" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      processing_image = create(
+        :galleries_image,
+        gallery:,
+        processing: true
+      )
+      done_image = create(:galleries_image, gallery:)
+      login_as(user)
+
+      get(gallery_path(gallery))
+
+      expect(page).to have_css(
+        "[data-role=image-thumbnail][data-image-id='#{done_image.id}']"
+      )
+      expect(page).not_to have_css(
+        "[data-role=image-thumbnail][data-image-id='#{processing_image.id}']"
+      )
+    end
+
     it "doesn't raise an InvariantError if the image is not variable" do
       gallery = create(:gallery)
       create(

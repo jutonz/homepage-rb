@@ -2,33 +2,35 @@ module Galleries
   class BulkUpload
     include ActiveModel::Model
 
-    attr_accessor :files
+    attr_accessor :signed_id
     attr_accessor :gallery
     attr_accessor :tag_ids
+    attr_reader :image
 
     validates :gallery, presence: true
-    validates :files, presence: true, length: {minimum: 1}
+    validates :signed_id, presence: true
 
     def save
       return false unless valid?
 
-      images =
-        ActiveRecord::Base.transaction do
-          files.filter_map do |file|
-            next if file.blank?
-            image = gallery.images.create!(file:)
-            all_tags = [tagging_needed, *selected_tags]
-            image.add_tag(*all_tags)
-            image
-          end
-        end
+      @image = gallery.images.create!(
+        file: blob,
+        processing: true
+      )
+      all_tags = [tagging_needed, *selected_tags]
+      @image.add_tag(*all_tags)
 
-      generate_variants(images)
+      Galleries::ImageVariantJob.perform_later(@image)
+      Galleries::ImagePerceptualHashJob.perform_later(@image)
 
       true
     end
 
     private
+
+    def blob
+      ActiveStorage::Blob.find_signed!(signed_id)
+    end
 
     def selected_tags
       @_selected_tags ||=
@@ -41,17 +43,6 @@ module Galleries
 
     def tagging_needed
       @_tagging_needed ||= Galleries::Tag.tagging_needed(gallery)
-    end
-
-    def generate_variants(images)
-      # Generate inline since, after this returns, we will immediately redirect
-      # to page where variant is shown. We also already should have the image
-      # downloaded so processing will be faster this way.
-      images.each { Galleries::ImageVariantJob.perform_now(it) }
-
-      images
-        .map { Galleries::ImagePerceptualHashJob.new(it) }
-        .then { ActiveJob.perform_all_later(it) }
     end
   end
 end

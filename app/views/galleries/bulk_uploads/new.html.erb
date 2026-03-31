@@ -5,4 +5,28 @@
   <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
 <% end %>
 
-<%= render partial: "form", form: @form %>
+<div
+  data-controller="bulk-upload"
+  data-bulk-upload-url-value="<%= gallery_bulk_upload_path(@gallery) %>"
+>
+  <%= render partial: "form" %>
+
+  <div
+    class="mt-8 hidden"
+    data-bulk-upload-target="progress"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg">Uploading</h3>
+      <%= link_to(
+        "Done",
+        gallery_path(@gallery),
+        class: "btn"
+      ) %>
+    </div>
+
+    <div
+      id="bulk-upload-cards"
+      class="grid grid-cols-4 gap-4"
+    ></div>
+  </div>
+</div>
