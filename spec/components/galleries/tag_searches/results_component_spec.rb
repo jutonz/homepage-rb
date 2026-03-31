@@ -69,6 +69,30 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
     )
   end
 
+  it "in bulk_upload_tag mode, renders add tag button" do
+    tag_search = create(
+      :galleries_tag_search, query: "Hello"
+    )
+    gallery = tag_search.gallery
+    tag = create(
+      :galleries_tag, gallery:, name: "Hello World"
+    )
+    component = described_class.new(
+      tag_search:, mode: :bulk_upload_tag
+    )
+    render_inline(component)
+    add_tag_path =
+      Rails.application.routes.url_helpers
+        .gallery_bulk_upload_tags_path(
+          gallery, tag_id: tag.id
+        )
+
+    expect(page).to have_selector(
+      "form[action='#{add_tag_path}']"
+    )
+    expect(page).to have_button("Add tag")
+  end
+
   it "in bulk_add_tag mode, renders a button to select the tag" do
     tag_search = create(:galleries_tag_search, query: "Hello")
     gallery = tag_search.gallery

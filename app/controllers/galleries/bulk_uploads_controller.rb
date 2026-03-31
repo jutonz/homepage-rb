@@ -5,7 +5,12 @@ module Galleries
 
     def new
       @gallery = find_gallery
-      @bulk_upload = authorize(Galleries::BulkUpload.new(gallery: @gallery))
+      @bulk_upload = authorize(
+        Galleries::BulkUpload.new(gallery: @gallery)
+      )
+      @tag_search = Galleries::TagSearch.new(
+        gallery: @gallery
+      )
     end
 
     def create
@@ -32,7 +37,7 @@ module Galleries
     def bulk_upload_params
       params
         .require(:bulk_upload)
-        .permit(files: [])
+        .permit(files: [], tag_ids: [])
     end
   end
 end

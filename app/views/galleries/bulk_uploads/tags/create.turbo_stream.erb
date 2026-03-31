@@ -1,0 +1,35 @@
+<%= turbo_stream.append("bulk-upload-selected-tags") do %>
+  <%= turbo_frame_tag(
+    "bulk-upload-tag-#{@tag.id}",
+    data: {role: "tag"}
+  ) do %>
+    <%= render(
+      Galleries::TagPillComponent.new(tag: @tag)
+    ) do |c| %>
+      <% c.with_action do %>
+        <%= link_to(
+          "×",
+          gallery_bulk_upload_tag_path(
+            @gallery, @tag
+          ),
+          aria: {
+            label: "Remove #{@tag.name}"
+          },
+          data: {turbo_method: :delete},
+          class: "opacity-60 hover:opacity-100"
+        ) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+<%= turbo_stream.append("bulk-upload-tag-ids") do %>
+  <input
+    type="hidden"
+    name="bulk_upload[tag_ids][]"
+    value="<%= @tag.id %>"
+    id="bulk-upload-tag-input-<%= @tag.id %>"
+  />
+<% end %>
+<%= turbo_stream.remove(
+  "tag-search-result-#{@tag.id}"
+) %>

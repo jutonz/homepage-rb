@@ -54,6 +54,37 @@ RSpec.describe Galleries::BulkUpload do
       expect(image.file.variant(:thumb).blob).to be_present
     end
 
+    it "applies selected tags to all uploaded images" do
+      gallery = create(:gallery)
+      tag = create(:galleries_tag, gallery:)
+      bulk_upload = described_class.new(
+        gallery:,
+        files: [audiosurf_jpg, audiosurf_jpg],
+        tag_ids: [tag.id.to_s]
+      )
+
+      result = bulk_upload.save
+
+      expect(result).to be(true)
+      gallery.images.each do |image|
+        expect(image.tags).to include(tag)
+      end
+    end
+
+    it "works when tag_ids is nil" do
+      gallery = create(:gallery)
+      bulk_upload = described_class.new(
+        gallery:,
+        files: [audiosurf_jpg],
+        tag_ids: nil
+      )
+
+      result = bulk_upload.save
+
+      expect(result).to be(true)
+      expect(gallery.images.count).to eql(1)
+    end
+
     it "generates perceptual hashes" do
       gallery = create(:gallery)
       bulk_upload = described_class.new(gallery:, files: [audiosurf_jpg])
