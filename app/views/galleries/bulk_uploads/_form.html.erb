@@ -1,7 +1,6 @@
 <%= simple_form_for(
   @bulk_upload,
-  url: gallery_bulk_upload_path(@gallery),
-  html: {id: "bulk-upload-form"}
+  url: gallery_bulk_upload_path(@gallery)
 ) do |form| %>
   <%= form.input(
     :files,
@@ -11,11 +10,8 @@
       multiple: true
     }
   ) %>
-  <div id="bulk-upload-tag-ids"></div>
-<% end %>
 
-<section class="my-6" data-controller="tag-search">
-  <h3 class="text-lg mb-3">Tags to apply</h3>
+  <h3 class="text-lg mb-3 mt-6">Tags to apply</h3>
 
   <div
     id="bulk-upload-selected-tags"
@@ -25,6 +21,17 @@
       No tags selected.
     </span>
   </div>
+
+  <div id="bulk-upload-tag-ids"></div>
+
+  <%= form.button(:submit) %>
+<% end %>
+
+<section
+  class="mt-6"
+  data-controller="tag-search"
+>
+  <h3 class="text-lg mb-3">Search tags</h3>
 
   <%= simple_form_for(
     @tag_search,
@@ -72,11 +79,3 @@
     ) %>
   </div>
 </section>
-
-<button
-  type="submit"
-  form="bulk-upload-form"
-  class="button"
->
-  Upload
-</button>
