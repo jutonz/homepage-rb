@@ -23,7 +23,7 @@ module Galleries
           end
         end
 
-      generate_variants(images)
+      process_images(images)
 
       true
     end
@@ -43,15 +43,12 @@ module Galleries
       @_tagging_needed ||= Galleries::Tag.tagging_needed(gallery)
     end
 
-    def generate_variants(images)
-      # Generate inline since, after this returns, we will immediately redirect
-      # to page where variant is shown. We also already should have the image
-      # downloaded so processing will be faster this way.
-      images.each { Galleries::ImageVariantJob.perform_now(it) }
-
-      images
-        .map { Galleries::ImagePerceptualHashJob.new(it) }
-        .then { ActiveJob.perform_all_later(it) }
+    def process_images(images)
+      # Process inline since, after this returns, we will
+      # immediately redirect to page where variant is shown.
+      images.each do |image|
+        Galleries::ImageProcessingJob.perform_now(image)
+      end
     end
   end
 end
