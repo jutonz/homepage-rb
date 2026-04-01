@@ -66,6 +66,50 @@
   @apply ring-4 ring-blue-500 ring-offset-1;
 }
 
+.dropzone {
+  @apply border-2 border-dashed border-gray-300;
+  @apply rounded-lg p-8;
+  @apply text-center text-gray-500;
+  @apply cursor-pointer;
+  @apply transition-colors duration-200;
+  &:hover { @apply border-sky-400 bg-sky-50; }
+}
+
+.dropzone--active {
+  @apply border-sky-500 bg-sky-50;
+}
+
+.dropzone__file-list {
+  @apply mt-4 space-y-2;
+}
+
+.dropzone__file-row {
+  @apply flex items-center gap-3 p-2;
+  @apply rounded-md bg-gray-50;
+}
+
+.dropzone__file-row--uploading {
+  @apply bg-sky-50;
+}
+
+.dropzone__file-row--complete {
+  @apply bg-green-50;
+}
+
+.dropzone__file-row--error {
+  @apply bg-red-50;
+}
+
+.dropzone__progress {
+  @apply h-1.5 rounded-full bg-gray-200;
+  @apply overflow-hidden flex-1;
+}
+
+.dropzone__progress-bar {
+  @apply h-full bg-sky-500 rounded-full;
+  @apply transition-all duration-150;
+}
+
 .hp-header-actions {
   form.button_to {
     @apply flex;
