@@ -1,81 +1,130 @@
-<%= simple_form_for(
-  @bulk_upload,
-  url: gallery_bulk_upload_path(@gallery)
-) do |form| %>
-  <%= form.input(
-    :files,
-    as: :file,
-    input_html: {
-      direct_upload: true,
-      multiple: true
-    }
-  ) %>
-
-  <h3 class="text-lg mb-3 mt-6">Tags to apply</h3>
-
-  <div
-    id="bulk-upload-selected-tags"
-    class="flex flex-wrap gap-2 mb-4"
-  >
-    <span class="text-gray-500 hidden only:block">
-      No tags selected.
-    </span>
-  </div>
-
-  <div id="bulk-upload-tag-ids"></div>
-
-  <%= form.button(:submit) %>
-<% end %>
-
-<section
-  class="mt-6"
-  data-controller="tag-search"
->
-  <h3 class="text-lg mb-3">Search tags</h3>
-
+<div data-controller="dropzone">
   <%= simple_form_for(
-    @tag_search,
-    url: gallery_tag_search_path(@gallery),
-    method: :get,
+    @bulk_upload,
+    url: gallery_bulk_upload_path(@gallery),
     html: {
       data: {
-        turbo_frame:
-          "bulk-upload-tag-search-results",
-        controller: "auto-submit-form"
+        action: "submit->dropzone#handleSubmit"
       }
     }
   ) do |form| %>
-    <%= hidden_field_tag(
-      "tag_search[mode]", "bulk_upload_tag"
-    ) %>
-    <%= hidden_field_tag(
-      "tag_search[turbo_frame_tag]",
-      "bulk-upload-tag-search-results"
-    ) %>
-    <div class="flex w-full gap-3">
-      <%= form.input(
-        :query,
-        label: false,
-        wrapper_html: {class: "grow"},
-        input_html: {
-          autocorrect: "off",
-          autocomplete: "off",
-          aria: {label: "Tag search query"},
-          data: {
-            action: [
-              "input->auto-submit-form#submit",
-              "keydown->tag-search#submitFirstResult"
-            ].join(" ")
-          }
-        }
-      ) %>
-      <%= form.button(:submit, "Search") %>
+    <div
+      class="dropzone"
+      data-dropzone-target="dropArea"
+      role="button"
+      tabindex="0"
+      aria-label="Upload images by dragging
+        them here or by browsing for files"
+      data-action="
+        dragenter->dropzone#dragEnter
+        dragover->dropzone#dragOver
+        dragleave->dropzone#dragLeave
+        drop->dropzone#drop
+        click->dropzone#openFilePicker
+        keydown.enter->dropzone#openFilePicker
+        keydown.space->dropzone#openFilePicker
+      "
+    >
+      <p class="text-lg">
+        Drag images here or click to browse
+      </p>
+      <p class="text-sm text-gray-400 mt-1">
+        Supports multiple files
+      </p>
     </div>
+
+    <%= form.input(
+      :files,
+      as: :file,
+      label: false,
+      wrapper: false,
+      input_html: {
+        direct_upload: true,
+        multiple: true,
+        class: "hidden",
+        data: {
+          dropzone_target: "fileInput",
+          action: "change->dropzone#filesSelected"
+        }
+      }
+    ) %>
+
+    <div
+      data-dropzone-target="fileList"
+      class="dropzone__file-list"
+    ></div>
+
+    <h3 class="text-lg mb-3 mt-6">
+      Tags to apply
+    </h3>
+
+    <div
+      id="bulk-upload-selected-tags"
+      class="flex flex-wrap gap-2 mb-4"
+    >
+      <span class="text-gray-500 hidden only:block">
+        No tags selected.
+      </span>
+    </div>
+
+    <div id="bulk-upload-tag-ids"></div>
+
+    <%= form.button(
+      :submit,
+      data: {dropzone_target: "submitButton"}
+    ) %>
   <% end %>
 
-  <div data-tag-search-target="results">
-    <%= turbo_frame_tag(
-      "bulk-upload-tag-search-results"
-    ) %>
-  </div>
-</section>
+  <section
+    class="mt-6"
+    data-controller="tag-search"
+  >
+    <h3 class="text-lg mb-3">Search tags</h3>
+
+    <%= simple_form_for(
+      @tag_search,
+      url: gallery_tag_search_path(@gallery),
+      method: :get,
+      html: {
+        data: {
+          turbo_frame:
+            "bulk-upload-tag-search-results",
+          controller: "auto-submit-form"
+        }
+      }
+    ) do |form| %>
+      <%= hidden_field_tag(
+        "tag_search[mode]", "bulk_upload_tag"
+      ) %>
+      <%= hidden_field_tag(
+        "tag_search[turbo_frame_tag]",
+        "bulk-upload-tag-search-results"
+      ) %>
+      <div class="flex w-full gap-3">
+        <%= form.input(
+          :query,
+          label: false,
+          wrapper_html: {class: "grow"},
+          input_html: {
+            autocorrect: "off",
+            autocomplete: "off",
+            aria: {label: "Tag search query"},
+            data: {
+              action: [
+                "input->auto-submit-form#submit",
+                "keydown->tag-search#submitFirstResult"
+              ].join(" ")
+            }
+          }
+        ) %>
+        <%= form.button(:submit, "Search") %>
+      </div>
+    <% end %>
+
+    <div data-tag-search-target="results">
+      <%= turbo_frame_tag(
+        "bulk-upload-tag-search-results"
+      ) %>
+    </div>
+  </section>
+</div>
