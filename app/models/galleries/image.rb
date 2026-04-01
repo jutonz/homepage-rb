@@ -5,6 +5,7 @@
 #
 #  id              :bigint           not null, primary key
 #  perceptual_hash :vector(64)
+#  processed_at    :datetime
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  gallery_id      :bigint           not null

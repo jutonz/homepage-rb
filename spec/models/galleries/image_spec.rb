@@ -5,6 +5,7 @@
 #
 #  id              :bigint           not null, primary key
 #  perceptual_hash :vector(64)
+#  processed_at    :datetime
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  gallery_id      :bigint           not null
@@ -26,6 +27,11 @@ RSpec.describe Galleries::Image do
   it { is_expected.to have_many(:tags) }
   it { is_expected.to have_many(:book_images).dependent(:destroy) }
   it { is_expected.to have_many(:books).through(:book_images) }
+
+  it do
+    is_expected.to have_db_column(:processed_at)
+      .of_type(:datetime)
+  end
 
   it "has a valid factory" do
     expect(create(:galleries_image)).to be_valid

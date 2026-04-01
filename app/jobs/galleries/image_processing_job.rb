@@ -8,6 +8,7 @@ module Galleries
       end
 
       image.calculate_perceptual_hash!
+      image.update!(processed_at: Time.current)
     end
   end
 end
