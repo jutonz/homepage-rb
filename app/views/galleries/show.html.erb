@@ -81,7 +81,10 @@
       <%= c.with_action do %>
         <%= button_to(
           "Delete",
-          gallery_bulk_delete_path(@gallery),
+          gallery_bulk_delete_path(
+            @gallery,
+            **request.query_parameters
+          ),
           method: :post,
           params: {
             bulk_delete: {

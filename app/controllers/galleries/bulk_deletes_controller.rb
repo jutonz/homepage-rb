@@ -13,14 +13,19 @@ module Galleries
 
       if @bulk_delete.save
         redirect_to(
-          gallery_path(@gallery, select: true),
+          gallery_path(
+            @gallery,
+            **existing_query_params.except(
+              "selected_ids"
+            )
+          ),
           notice: "Selected images deleted"
         )
       else
         redirect_to(
           gallery_path(
             @gallery,
-            select: true,
+            **existing_query_params,
             selected_ids: @bulk_delete.image_ids
           ),
           alert: "Could not delete images"
@@ -37,6 +42,10 @@ module Galleries
     def bulk_delete_params
       params.require(:bulk_delete)
         .permit(image_ids: [])
+    end
+
+    def existing_query_params
+      request.query_parameters
     end
   end
 end
