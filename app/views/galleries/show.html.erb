@@ -79,6 +79,25 @@
       <% end %>
 
       <%= c.with_action do %>
+        <%= button_to(
+          "Delete",
+          gallery_bulk_delete_path(@gallery),
+          method: :post,
+          params: {
+            bulk_delete: {
+              image_ids: @selected_ids
+            }
+          },
+          data: {
+            turbo_confirm:
+              "Delete the selected images? " \
+              "This cannot be undone."
+          },
+          class: "button button--danger"
+        ) %>
+      <% end %>
+
+      <%= c.with_action do %>
         <%= link_to(
           "Cancel",
           gallery_path(
