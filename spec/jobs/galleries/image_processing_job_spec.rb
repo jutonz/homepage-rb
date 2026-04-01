@@ -24,4 +24,15 @@ RSpec.describe Galleries::ImageProcessingJob, "#perform" do
 
     described_class.new.perform(image)
   end
+
+  it "sets processed_at on the image" do
+    image = create(:galleries_image, :with_real_file)
+
+    freeze_time do
+      described_class.new.perform(image)
+
+      expect(image.reload.processed_at)
+        .to eq(Time.current)
+    end
+  end
 end
