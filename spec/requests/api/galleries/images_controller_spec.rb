@@ -43,12 +43,12 @@ RSpec.describe Api::Galleries::ImagesController do
       })
     end
 
-    it "enqueues ImageVariantJob and ImagePerceptualHashJob" do
+    it "enqueues ImageProcessingJob" do
       gallery = create(:gallery)
       login_as(gallery.user)
       params = {file: audiosurf_jpg}
-      expect(Galleries::ImageVariantJob).to receive(:perform_later)
-      expect(Galleries::ImagePerceptualHashJob).to receive(:perform_later)
+      expect(Galleries::ImageProcessingJob)
+        .to receive(:perform_later)
 
       post(api_gallery_images_path(gallery), params:)
 

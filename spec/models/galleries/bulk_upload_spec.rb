@@ -106,13 +106,13 @@ RSpec.describe Galleries::BulkUpload do
       expect(gallery.images.count).to eql(1)
     end
 
-    it "generates perceptual hashes" do
+    it "processes images inline" do
       gallery = create(:gallery)
-      bulk_upload = described_class.new(gallery:, files: [audiosurf_jpg])
-      expect(ActiveJob).to receive(:perform_all_later) do |jobs|
-        expect(jobs.size).to eql(1)
-        expect(jobs.first.class).to eql(Galleries::ImagePerceptualHashJob)
-      end
+      bulk_upload = described_class.new(
+        gallery:, files: [audiosurf_jpg]
+      )
+      expect(Galleries::ImageProcessingJob)
+        .to receive(:perform_now)
 
       result = bulk_upload.save
 
