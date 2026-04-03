@@ -22,8 +22,10 @@ module Galleries
           .then { authorize(Galleries::BulkUpload.new(it)) }
 
       if @bulk_upload.save
-        redirect_to @gallery,
+        redirect_to(
+          gallery_processing_images_path(@gallery),
           notice: "Bulk upload successful"
+        )
       else
         @tag_search = Galleries::TagSearch.new(
           gallery: @gallery

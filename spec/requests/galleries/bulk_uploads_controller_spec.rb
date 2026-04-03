@@ -37,7 +37,7 @@ RSpec.describe Galleries::BulkUploadsController do
 
       post(gallery_bulk_upload_path(gallery), params:)
 
-      expect(response).to redirect_to(gallery_path(gallery))
+      expect(response).to redirect_to(gallery_processing_images_path(gallery))
       expect(gallery.images.count).to eql(2)
     end
 
@@ -60,7 +60,7 @@ RSpec.describe Galleries::BulkUploadsController do
       post(gallery_bulk_upload_path(gallery), params:)
 
       expect(response).to redirect_to(
-        gallery_path(gallery)
+        gallery_processing_images_path(gallery)
       )
       image = gallery.images.first
       expect(image.tags).to include(tag)

@@ -43,15 +43,18 @@ RSpec.describe Galleries::BulkUpload do
       expect(image.tags.pluck(:name)).to eql(["tagging needed"])
     end
 
-    it "generates image variants" do
+    it "enqueues image processing jobs" do
       gallery = create(:gallery)
-      bulk_upload = described_class.new(gallery:, files: [audiosurf_jpg])
+      bulk_upload = described_class.new(
+        gallery:, files: [audiosurf_jpg]
+      )
 
       result = bulk_upload.save
 
       expect(result).to be(true)
       image = gallery.images.first
-      expect(image.file.variant(:thumb).blob).to be_present
+      expect(Galleries::ImageProcessingJob)
+        .to have_been_enqueued.with(image)
     end
 
     it "applies selected tags to all uploaded images" do
@@ -106,17 +109,20 @@ RSpec.describe Galleries::BulkUpload do
       expect(gallery.images.count).to eql(1)
     end
 
-    it "processes images inline" do
+    it "enqueues processing for each image" do
       gallery = create(:gallery)
       bulk_upload = described_class.new(
-        gallery:, files: [audiosurf_jpg]
+        gallery:,
+        files: [audiosurf_jpg, audiosurf_jpg]
       )
-      expect(Galleries::ImageProcessingJob)
-        .to receive(:perform_now)
 
       result = bulk_upload.save
 
       expect(result).to be(true)
+      gallery.images.each do |image|
+        expect(Galleries::ImageProcessingJob)
+          .to have_been_enqueued.with(image)
+      end
     end
   end
 
