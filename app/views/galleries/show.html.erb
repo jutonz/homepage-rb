@@ -38,6 +38,16 @@
 
       <%= c.with_action do %>
         <%= link_to(
+          "Processing",
+          gallery_processing_images_path(
+            @gallery
+          ),
+          class: "button"
+        ) %>
+      <% end %>
+
+      <%= c.with_action do %>
+        <%= link_to(
           "Edit",
           edit_gallery_path(@gallery),
           class: "button"
