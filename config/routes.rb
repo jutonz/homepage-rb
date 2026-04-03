@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 
   resources :galleries do
     scope module: :galleries do
+      resource :processing_images, only: :show
       resources :images, except: %i[new create] do
         resources :tags, only: %i[create destroy], module: :images
         resource :tag_search, only: %i[show], module: :images

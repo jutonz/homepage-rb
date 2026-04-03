@@ -1,0 +1,45 @@
+<% content_for :title, "Processing Images" %>
+
+<%= render(HeaderComponent.new(
+  title: "Processing Images"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(
+    @gallery.name,
+    gallery_path(@gallery)
+  ) %>
+<% end %>
+
+<div class="mb-6">
+  <%= render(PillComponent.new(
+    text: "#{@images.size} processing",
+    color: :blue
+  )) %>
+</div>
+
+<div
+  class="grid gap-4 grid-cols-2 sm:grid-cols-5"
+>
+  <% @images.each do |image| %>
+    <div id="processing_image_<%= image.id %>">
+      <%= render(
+        Galleries::ImageThumbnailComponent.new(
+          image:
+        )
+      ) %>
+    </div>
+  <% end %>
+  <div
+    class="hidden only:flex flex-col col-span-full"
+  >
+    <div class="text-center py-12 text-gray-500">
+      <div class="text-lg font-medium mb-2">
+        All images processed
+      </div>
+      <div class="text-sm">
+        No images are currently being processed.
+      </div>
+    </div>
+  </div>
+</div>
