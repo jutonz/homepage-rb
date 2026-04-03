@@ -35,4 +35,23 @@ RSpec.describe Galleries::ImageProcessingJob, "#perform" do
         .to eq(Time.current)
     end
   end
+
+  it "broadcasts removal from processing page" do
+    image = create(
+      :galleries_image, :with_real_file
+    )
+    allow(Turbo::StreamsChannel)
+      .to receive(:broadcast_remove_to)
+
+    described_class.new.perform(image)
+
+    expect(Turbo::StreamsChannel)
+      .to have_received(:broadcast_remove_to)
+      .with(
+        "gallery_#{image.gallery_id}" \
+          "_processing_images",
+        target:
+          "processing_image_#{image.id}"
+      )
+  end
 end
