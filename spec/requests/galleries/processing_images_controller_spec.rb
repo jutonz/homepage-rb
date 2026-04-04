@@ -24,6 +24,21 @@ RSpec.describe Galleries::ProcessingImagesController do
         .to have_http_status(:not_found)
     end
 
+    it "does not N+1 query when rendering images", :bullet do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create_pair(
+        :galleries_image,
+        gallery:,
+        processed_at: nil
+      )
+      login_as(user)
+
+      get(gallery_processing_images_path(gallery))
+
+      expect(response).to have_http_status(:ok)
+    end
+
     it "shows unprocessed images" do
       user = create(:user)
       gallery = create(:gallery, user:)

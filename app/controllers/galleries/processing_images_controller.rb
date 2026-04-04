@@ -12,7 +12,7 @@ module Galleries
       @images =
         policy_scope(Galleries::Image)
           .where(gallery: @gallery, processed_at: nil)
-          .includes(:file_attachment)
+          .includes(:gallery, :file_attachment)
     end
 
     private
