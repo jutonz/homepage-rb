@@ -44,9 +44,10 @@ module Galleries
     end
 
     def process_images(images)
-      images.each do |image|
-        Galleries::ImageProcessingJob.perform_later(image)
+      jobs = images.map do |image|
+        Galleries::ImageProcessingJob.new(image)
       end
+      ActiveJob.perform_all_later(jobs)
     end
   end
 end
