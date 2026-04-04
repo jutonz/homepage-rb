@@ -118,9 +118,8 @@ RSpec.describe "Gallery bulk uploads",
     # Submit the form
     click_button("Create Bulk upload")
 
-    # Redirects to gallery with success message
     expect(page).to have_current_path(
-      gallery_path(gallery)
+      gallery_processing_images_path(gallery)
     )
     expect(page).to have_content(
       "Bulk upload successful"
