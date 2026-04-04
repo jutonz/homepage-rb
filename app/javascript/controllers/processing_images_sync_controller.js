@@ -12,8 +12,7 @@ export default class extends Controller {
     this.subscription =
       this.consumer.subscriptions.create(
         {
-          channel:
-            "Galleries::ProcessingImagesChannel",
+          channel: "Galleries::ProcessingImagesChannel",
           gallery_id: this.galleryIdValue,
         },
         {
@@ -43,9 +42,7 @@ export default class extends Controller {
 
   reconcile(unprocessedIds) {
     const keepIds = new Set(
-      unprocessedIds.map(
-        (id) => `processing_image_${id}`
-      )
+      unprocessedIds.map((id) => `processing_image_${id}`)
     )
     const elements = this.element.querySelectorAll(
       "[data-role='processing-image']"

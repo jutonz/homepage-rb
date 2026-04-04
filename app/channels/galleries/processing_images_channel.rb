@@ -20,7 +20,8 @@ module Galleries
 
     def transmit_unprocessed_ids
       ids = Galleries::Image
-        .where(gallery: @gallery, processed_at: nil)
+        .where(gallery: @gallery)
+        .unprocessed
         .pluck(:id)
       transmit({
         action: "reconcile",

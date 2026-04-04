@@ -38,6 +38,10 @@ module Galleries
 
     validates :file, presence: true
 
+    def self.unprocessed = where(processed_at: nil)
+
+    def self.processed = where.not(processed_at: nil)
+
     def self.by_tags(tag_ids)
       joins(:tags)
         .where(tags: {id: tag_ids})

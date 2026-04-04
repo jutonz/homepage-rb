@@ -11,7 +11,8 @@ module Galleries
       )
       @images =
         policy_scope(Galleries::Image)
-          .where(gallery: @gallery, processed_at: nil)
+          .where(gallery: @gallery)
+          .unprocessed
           .includes(:gallery, :file_attachment)
     end
 
