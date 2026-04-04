@@ -11,7 +11,7 @@ development:
   message_retention: 1.week
 
 test:
-  adapter: async
+  adapter: test
 
 production:
   adapter: solid_cable

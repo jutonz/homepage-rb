@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Gallery processing images" do
-  it "removes images when processing completes", :js do
+  it "removes images when processing completes",
+    :js, :real_cable do
     user = create(:user)
     gallery = create(:gallery, user:)
     image = create(:galleries_image, :with_real_file, gallery:)

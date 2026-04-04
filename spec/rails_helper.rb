@@ -67,6 +67,17 @@ RSpec.configure do |config|
     freeze_time { example.run }
   end
 
+  config.around(:each, real_cable: true) do |example|
+    original =
+      ActionCable.server.config.cable
+    ActionCable.server.config.cable =
+      {"adapter" => "async"}
+    example.run
+  ensure
+    ActionCable.server.config.cable =
+      original
+  end
+
   config.around(:each) do |example|
     if example.metadata[:type] == :system
       Bullet.start_request
