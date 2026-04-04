@@ -28,8 +28,8 @@ RSpec.describe Galleries::ProcessingImagesChannel do
     gallery = create(:gallery, user:)
     unprocessed = create(
       :galleries_image,
-      gallery:,
-      processed_at: nil
+      :unprocessed,
+      gallery:
     )
     create(
       :galleries_image,
@@ -51,8 +51,8 @@ RSpec.describe Galleries::ProcessingImagesChannel do
     gallery = create(:gallery, user:)
     unprocessed = create(
       :galleries_image,
-      gallery:,
-      processed_at: nil
+      :unprocessed,
+      gallery:
     )
     stub_connection(current_user: user)
     subscribe(gallery_id: gallery.id)

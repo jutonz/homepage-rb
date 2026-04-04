@@ -42,14 +42,10 @@ RSpec.describe Galleries::Image do
       gallery = create(:gallery)
       unprocessed = create(
         :galleries_image,
-        gallery:,
-        processed_at: nil
+        :unprocessed,
+        gallery:
       )
-      create(
-        :galleries_image,
-        gallery:,
-        processed_at: Time.current
-      )
+      create(:galleries_image, gallery:)
 
       result = described_class.unprocessed
 
@@ -62,14 +58,10 @@ RSpec.describe Galleries::Image do
       gallery = create(:gallery)
       create(
         :galleries_image,
-        gallery:,
-        processed_at: nil
+        :unprocessed,
+        gallery:
       )
-      processed = create(
-        :galleries_image,
-        gallery:,
-        processed_at: Time.current
-      )
+      processed = create(:galleries_image, gallery:)
 
       result = described_class.processed
 

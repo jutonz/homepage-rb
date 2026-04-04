@@ -20,6 +20,7 @@ class GalleriesController < ApplicationController
     @images =
       @gallery
         .images
+        .processed
         .includes(:file_attachment)
         .order(created_at: :desc)
         .then { @filter_tags.any? ? it.by_tags(@filter_tags) : it }

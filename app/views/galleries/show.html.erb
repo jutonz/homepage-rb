@@ -116,7 +116,7 @@
 
   <div class="mb-6">
     <%= render(PillComponent.new(
-      text: "#{@gallery.images.size} images",
+      text: "#{@gallery.images.processed.size} images",
       color: :blue
     )) %>
   </div>

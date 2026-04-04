@@ -82,6 +82,40 @@ RSpec.describe GalleriesController do
       }.not_to raise_error
     end
 
+    it "hides unprocessed images" do
+      gallery = create(:gallery)
+      create(:galleries_image, gallery:)
+      create(
+        :galleries_image,
+        :unprocessed,
+        gallery:
+      )
+      login_as(gallery.user)
+
+      get(gallery_path(gallery))
+
+      expect(page).to have_css(
+        "[data-role=image-thumbnail]",
+        count: 1
+      )
+    end
+
+    it "image count only includes processed images" do
+      gallery = create(:gallery)
+      create(:galleries_image, gallery:)
+      create(
+        :galleries_image,
+        :unprocessed,
+        gallery:
+      )
+      login_as(gallery.user)
+
+      get(gallery_path(gallery))
+
+      expect(page).to have_text("1 image")
+      expect(page).not_to have_text("2 images")
+    end
+
     it "returns 404 for galleries not owned by current user" do
       gallery = create(:gallery)
       other_user = create(:user)

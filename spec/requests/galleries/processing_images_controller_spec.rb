@@ -29,8 +29,8 @@ RSpec.describe Galleries::ProcessingImagesController do
       gallery = create(:gallery, user:)
       create_pair(
         :galleries_image,
-        gallery:,
-        processed_at: nil
+        :unprocessed,
+        gallery:
       )
       login_as(user)
 
@@ -44,14 +44,10 @@ RSpec.describe Galleries::ProcessingImagesController do
       gallery = create(:gallery, user:)
       unprocessed = create(
         :galleries_image,
-        gallery:,
-        processed_at: nil
+        :unprocessed,
+        gallery:
       )
-      processed = create(
-        :galleries_image,
-        gallery:,
-        processed_at: Time.current
-      )
+      processed = create(:galleries_image, gallery:)
       login_as(user)
 
       get(
