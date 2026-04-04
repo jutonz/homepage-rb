@@ -20,6 +20,8 @@
   data-controller="processing-images-sync"
   data-processing-images-sync-gallery-id-value=
     "<%= @gallery.id %>"
+  data-processing-images-sync-interval-value=
+    "<%= Rails.configuration.x.processing_images_sync_interval %>"
 >
   <% @images.each do |image| %>
     <div

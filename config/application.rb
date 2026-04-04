@@ -31,5 +31,6 @@ module Homepage
     config.active_storage.service = :block
 
     config.x.enable_metrics = false
+    config.x.processing_images_sync_interval = 15_000
   end
 end
