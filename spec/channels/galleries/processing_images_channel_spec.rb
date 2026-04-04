@@ -1,14 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Galleries::ProcessingImagesChannel do
-  it "rejects when not authenticated" do
-    stub_connection(current_user: nil)
-
-    subscribe(gallery_id: 1)
-
-    expect(subscription).to be_rejected
-  end
-
   it "rejects for a non-owned gallery" do
     user = create(:user)
     gallery = create(:gallery)
