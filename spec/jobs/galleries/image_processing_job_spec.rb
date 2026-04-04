@@ -48,8 +48,8 @@ RSpec.describe Galleries::ImageProcessingJob, "#perform" do
     expect(Turbo::StreamsChannel)
       .to have_received(:broadcast_remove_to)
       .with(
-        "gallery_#{image.gallery_id}" \
-          "_processing_images",
+        image.gallery
+          .processing_images_stream_name,
         target:
           "processing_image_#{image.id}"
       )

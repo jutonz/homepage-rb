@@ -11,8 +11,7 @@ module Galleries
       image.update!(processed_at: Time.current)
 
       Turbo::StreamsChannel.broadcast_remove_to(
-        "gallery_#{image.gallery_id}" \
-          "_processing_images",
+        image.gallery.processing_images_stream_name,
         target:
           "processing_image_#{image.id}"
       )

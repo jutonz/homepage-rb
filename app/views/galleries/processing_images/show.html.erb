@@ -1,7 +1,7 @@
 <% content_for :title, "Processing Images" %>
 
 <%= turbo_stream_from(
-  "gallery_#{@gallery.id}_processing_images"
+  @gallery.processing_images_stream_name
 ) %>
 
 <%= render(HeaderComponent.new(
