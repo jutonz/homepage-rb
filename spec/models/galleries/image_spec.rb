@@ -37,6 +37,46 @@ RSpec.describe Galleries::Image do
     expect(create(:galleries_image)).to be_valid
   end
 
+  describe ".unprocessed" do
+    it "returns images without a processed_at" do
+      gallery = create(:gallery)
+      unprocessed = create(
+        :galleries_image,
+        gallery:,
+        processed_at: nil
+      )
+      create(
+        :galleries_image,
+        gallery:,
+        processed_at: Time.current
+      )
+
+      result = described_class.unprocessed
+
+      expect(result).to eq([unprocessed])
+    end
+  end
+
+  describe ".processed" do
+    it "returns images with a processed_at" do
+      gallery = create(:gallery)
+      create(
+        :galleries_image,
+        gallery:,
+        processed_at: nil
+      )
+      processed = create(
+        :galleries_image,
+        gallery:,
+        processed_at: Time.current
+      )
+
+      result = described_class.processed
+
+      expect(result).to eq([processed])
+    end
+  end
+
   describe ".by_tags" do
     it "includes only images with the given tag" do
       image1, image2 = create_pair(:galleries_image)
