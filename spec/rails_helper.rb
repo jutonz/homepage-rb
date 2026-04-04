@@ -79,10 +79,14 @@ RSpec.configure do |config|
   end
 
   config.around(:each) do |example|
-    if example.metadata[:type] == :system
+    bullet = example.metadata[:type] == :system ||
+      example.metadata[:bullet]
+    if bullet
       Bullet.start_request
       example.run
-      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      if Bullet.notification?
+        Bullet.perform_out_of_channel_notifications
+      end
       Bullet.end_request
     else
       Bullet.enable = false
