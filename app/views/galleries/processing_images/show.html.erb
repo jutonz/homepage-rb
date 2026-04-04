@@ -17,6 +17,9 @@
 
 <div
   class="grid gap-4 grid-cols-2 sm:grid-cols-5"
+  data-controller="processing-images-sync"
+  data-processing-images-sync-gallery-id-value=
+    "<%= @gallery.id %>"
 >
   <% @images.each do |image| %>
     <div
