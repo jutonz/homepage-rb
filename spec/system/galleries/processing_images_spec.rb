@@ -10,13 +10,13 @@ RSpec.describe "Gallery processing images" do
     visit(gallery_processing_images_path(gallery))
 
     expect(page).to have_css(
-      "#processing_image_#{image.id}"
+      "[data-role=processing-image]"
     )
 
     Galleries::ImageProcessingJob.perform_now(image)
 
     expect(page).not_to have_css(
-      "#processing_image_#{image.id}"
+      "[data-role=processing-image]"
     )
   end
 end

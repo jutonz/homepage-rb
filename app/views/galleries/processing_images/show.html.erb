@@ -26,7 +26,10 @@
   class="grid gap-4 grid-cols-2 sm:grid-cols-5"
 >
   <% @images.each do |image| %>
-    <div id="processing_image_<%= image.id %>">
+    <div
+      id="processing_image_<%= image.id %>"
+      data-role="processing-image"
+    >
       <%= render(
         Galleries::ImageThumbnailComponent.new(
           image:
