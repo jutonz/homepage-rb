@@ -21,6 +21,7 @@
 FactoryBot.define do
   factory :galleries_image, class: "Galleries::Image" do
     gallery
+    processed
 
     after(:build) do |image|
       unless image.file.attached?
@@ -30,6 +31,14 @@ FactoryBot.define do
           content_type: "image/jpeg"
         )
       end
+    end
+
+    trait :processed do
+      processed_at { Time.current }
+    end
+
+    trait :unprocessed do
+      processed_at { nil }
     end
 
     trait :with_perceptual_hash do
