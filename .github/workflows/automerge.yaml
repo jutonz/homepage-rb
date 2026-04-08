@@ -22,21 +22,26 @@ jobs:
           DEP_NAMES: ${{ steps.metadata.outputs.dependency-names }}
           UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
         run: |
-          # dependency|allowed-types (space-separated)
+          # dependency|allowed-types (pipe-delimited)
           POLICIES="
-            aws-sdk-s3|semver-patch semver-minor
-            capybara-playwright-driver|semver-patch
+          aws-sdk-s3|semver-patch semver-minor
+          capybara-playwright-driver|semver-patch
           "
 
-          for policy in $POLICIES; do
-            dep="${policy%%|*}"
-            allowed="${policy##*|}"
+          UPDATE_TYPE="${UPDATE_TYPE#version-update:}"
+          matched=false
+          while IFS='|' read -r dep allowed; do
+            dep="$(echo "$dep" | xargs)"
+            [ -z "$dep" ] && continue
             if echo "$DEP_NAMES" | grep -q "$dep" && \
                echo "$allowed" | grep -q "$UPDATE_TYPE"; then
               echo "Auto-merging: $dep ($UPDATE_TYPE)"
               gh pr merge --auto --squash "$PR_URL"
-              exit 0
+              matched=true
+              break
             fi
-          done
+          done <<< "$POLICIES"
 
-          echo "No matching policy, skipping auto-merge"
+          if [ "$matched" = false ]; then
+            echo "No matching policy, skipping auto-merge"
+          fi
