@@ -26,6 +26,7 @@ jobs:
           POLICIES="
           aws-sdk-s3|semver-patch semver-minor
           capybara-playwright-driver|semver-patch
+          opentelemetry-instrumentation-all|semver-minor semver-patch
           "
 
           UPDATE_TYPE="${UPDATE_TYPE#version-update:}"
