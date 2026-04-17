@@ -45,3 +45,5 @@ coverage/
 .claude/settings.local.json
 
 node_modules/
+
+docs/superpowers/
