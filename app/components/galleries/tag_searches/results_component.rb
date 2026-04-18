@@ -67,7 +67,10 @@ module Galleries
               )
             ),
             class: "button",
-            data: {turbo: false}
+            data: {
+              role: "tag-search-result-add",
+              turbo_frame: "_top"
+            }
           )
         elsif mode == :bulk_upload_tag
           helpers.button_to(
