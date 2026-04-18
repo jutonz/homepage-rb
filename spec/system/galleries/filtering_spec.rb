@@ -68,4 +68,19 @@ RSpec.describe "Gallery filtering" do
       "[aria-label='Tag search query']:focus"
     )
   end
+
+  it "preserves the query when pressing Enter with no results", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    login_as(user)
+
+    visit(gallery_path(gallery))
+
+    fill_in("Tag search query", with: "zzz")
+    expect(page).not_to have_css("[data-role=tag-search-result]")
+
+    find_field("Tag search query").send_keys(:enter)
+
+    expect(page).to have_field("Tag search query", with: "zzz")
+  end
 end
