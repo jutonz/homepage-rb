@@ -60,7 +60,7 @@
             autocomplete: "off",
             aria: {label: "Tag search query"},
             data: {
-              controller: "tag-search-filter-focus tag-search",
+              controller: "tag-search-filter-focus",
               action: "input->auto-submit-form#submit " \
                 "keydown->tag-search#submitFirstResult",
               turbo_permanent: true

@@ -13,11 +13,21 @@ export default class extends Controller {
 
     event.preventDefault()
 
+    const form = result.querySelector("form")
+    if (form) {
+      this.#submitResultForm(event, form)
+      return
+    }
+
+    const link = result.querySelector(
+      "[data-role='tag-search-result-add']"
+    )
+    if (link) link.click()
+  }
+
+  #submitResultForm(event, form) {
     const input = event.target
     const query = input.value
-
-    const form = result.querySelector("form")
-    if (!form) return
 
     const abortController = new AbortController()
     const timeout = setTimeout(
