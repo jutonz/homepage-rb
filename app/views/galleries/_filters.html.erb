@@ -61,8 +61,10 @@
             aria: {label: "Tag search query"},
             data: {
               controller: "tag-search-filter-focus",
-              action: "input->auto-submit-form#submit " \
-                "keydown->tag-search#submitFirstResult",
+              action: [
+                "input->auto-submit-form#submit",
+                "keydown->tag-search#submitFirstResult"
+              ].join(" "),
               turbo_permanent: true
             },
             class: "w-full"
