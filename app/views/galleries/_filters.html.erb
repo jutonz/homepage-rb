@@ -1,4 +1,4 @@
-<div>
+<div data-controller="tag-search">
   <h2 class="text-xl mb-5">Filter by tag</h2>
 
   <div class="flex mb-4 gap-2 flex-wrap">
@@ -60,8 +60,9 @@
             autocomplete: "off",
             aria: {label: "Tag search query"},
             data: {
-              controller: "tag-search-filter-focus",
-              action: "input->auto-submit-form#submit",
+              controller: "tag-search-filter-focus tag-search",
+              action: "input->auto-submit-form#submit " \
+                "keydown->tag-search#submitFirstResult",
               turbo_permanent: true
             },
             class: "w-full"
@@ -71,9 +72,11 @@
       </div>
     <% end %>
 
-    <%= render(Galleries::TagSearches::ResultsComponent.new(
-      tag_search: @tag_search,
-      mode: :gallery,
-    )) %>
+    <div data-tag-search-target="results">
+      <%= render(Galleries::TagSearches::ResultsComponent.new(
+        tag_search: @tag_search,
+        mode: :gallery,
+      )) %>
+    </div>
   <% end %>
 </div>
