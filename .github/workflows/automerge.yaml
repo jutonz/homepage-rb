@@ -25,9 +25,11 @@ jobs:
           # dependency|allowed-types (pipe-delimited)
           POLICIES="
           aws-sdk-s3|semver-patch semver-minor
+          bootsnap|semver-minor semver-patch
           bullet|semver-minor semver-patch
           capybara-playwright-driver|semver-patch
           opentelemetry-instrumentation-all|semver-minor semver-patch
+          puma|semver-minor semver-patch
           view_component|semver-minor semver-patch
           "
 
