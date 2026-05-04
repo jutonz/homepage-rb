@@ -30,6 +30,7 @@ jobs:
           capybara-playwright-driver|semver-patch
           opentelemetry-instrumentation-all|semver-minor semver-patch
           puma|semver-minor semver-patch
+          super_diff|semver-minor semver-patch
           view_component|semver-minor semver-patch
           "
 
