@@ -2,21 +2,15 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [
-    "dialog",
     "tagIdInput",
     "selectedTagName",
     "confirmButton",
     "selectedIdsContainer",
   ]
 
-  open() {
+  prepare() {
     this.syncSelectedIds()
     this.clearTagSelection()
-    this.dialogTarget.showModal()
-  }
-
-  close() {
-    this.dialogTarget.close()
   }
 
   selectTag(event) {

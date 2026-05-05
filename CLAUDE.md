@@ -62,6 +62,9 @@ This is a Ruby on Rails 8.1 application with the following key architectural com
 * Use double quoted strings, e.g. use `"this"`, not `'this'`
 * Prefer global classes in app/assets/tailwind/application.css if one fits the use case.
 
+### View rules
+* When extracting reusable view markup, prefer a ViewComponent under `app/components/` over a Rails partial. Components must have a matching spec under `spec/components/` and use `erb_template` heredoc with `ApplicationComponent` as the base class. Reach for a partial only when explicitly asked.
+
 ### Testing rules
 * Do not use `let`, `let!`, `before`, or `context`
 * Use request specs instead of controller specs.
