@@ -120,9 +120,8 @@ RSpec.describe "Gallery image tags", type: :system do
     expect(image.reload.tags).to include(tag)
     expect(page).to have_field(
       "Tag search query",
-      with: "alp"
+      with: ""
     )
-    expect(page).to have_selector("[aria-label='Tag search query']:focus")
   end
 
   it "preserves query when pressing Enter with no results",

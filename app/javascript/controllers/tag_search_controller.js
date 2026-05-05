@@ -11,44 +11,10 @@ export default class extends Controller {
     )
     if (!result) return
 
-    event.preventDefault()
-
-    const input = event.target
-    const query = input.value
-
     const form = result.querySelector("form")
     if (!form) return
 
-    const abortController = new AbortController()
-    const timeout = setTimeout(
-      () => abortController.abort(),
-      10000
-    )
-
-    document.addEventListener(
-      "turbo:before-stream-render",
-      (renderEvent) => {
-        const streamEl = renderEvent.target
-        if (streamEl.getAttribute("target") !== "tag-search-form") return
-
-        const originalRender = renderEvent.detail.render
-        renderEvent.detail.render = (stream) => {
-          originalRender(stream)
-          requestAnimationFrame(() => {
-            const restored =
-              document.querySelector("[aria-label='Tag search query']")
-            if (restored) {
-              restored.value = query
-              restored.focus()
-            }
-          })
-        }
-        clearTimeout(timeout)
-        abortController.abort()
-      },
-      { signal: abortController.signal }
-    )
-
+    event.preventDefault()
     form.requestSubmit()
   }
 }
