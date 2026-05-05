@@ -132,4 +132,35 @@ RSpec.describe "Gallery bulk uploads",
       image.tags.pluck(:name)
     ).to include("landscapes")
   end
+
+  it "advances to the next tag on each Enter", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    create(:galleries_tag, name: "ruby-rails", gallery:)
+    create(:galleries_tag, name: "ruby-gem", gallery:)
+    login_as(user)
+
+    visit(new_gallery_bulk_upload_path(gallery))
+    fill_in("Tag search query", with: "rub")
+    wait_for_turbo
+    expect(page).to have_button("Add tag", count: 2)
+    find_field("Tag search query").send_keys(:enter)
+    wait_for_turbo
+
+    expect(find_field("Tag search query").value).to eq("")
+    expect(page).to have_css(
+      "input[aria-label='Tag search query']:focus"
+    )
+    expect(page).to have_selector(
+      "[data-role='tag']", count: 1
+    )
+    expect(page).to have_button("Add tag", count: 1)
+
+    find_field("Tag search query").send_keys(:enter)
+    wait_for_turbo
+
+    expect(page).to have_selector(
+      "[data-role='tag']", count: 2
+    )
+  end
 end
