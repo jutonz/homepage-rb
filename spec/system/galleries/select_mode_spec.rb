@@ -118,6 +118,29 @@ RSpec.describe "Gallery select mode" do
     )
   end
 
+  it "opens and closes the bulk tag dialog via Cancel and " \
+    "ESC", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery, select: true))
+
+    find("[data-image-id='#{image.id}']").click
+    expect(page).to have_no_css("dialog[open]")
+
+    click_button("Add tag")
+    expect(page).to have_css("dialog[open]")
+    within("dialog[open]") { click_button("Cancel") }
+    expect(page).to have_no_css("dialog[open]")
+
+    click_button("Add tag")
+    expect(page).to have_css("dialog[open]")
+    find("dialog[open]").send_keys(:escape)
+    expect(page).to have_no_css("dialog[open]")
+  end
+
   it "bulk tags selected images", :js do
     user = create(:user)
     gallery = create(:gallery, user:)

@@ -1,7 +1,7 @@
 <% content_for :title, "#{@gallery.name} Gallery" %>
 
 <% if @select_mode %>
-<div data-controller="gallery-bulk-tag">
+<div data-controller="gallery-bulk-tag dialog">
 <% else %>
 <div>
 <% end %>
@@ -72,7 +72,7 @@
         <button
           type="button"
           class="button"
-          data-action="gallery-bulk-tag#open"
+          data-action="gallery-bulk-tag#prepare dialog#open"
         >
           Add tag
         </button>
@@ -152,7 +152,7 @@
 
   <% if @select_mode %>
     <dialog
-      data-gallery-bulk-tag-target="dialog"
+      data-dialog-target="dialog"
       class="rounded-sm p-6 w-full max-w-lg shadow-xl backdrop:bg-black/50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
     >
       <h2 class="text-xl mb-4">Add tag to selected images</h2>
@@ -211,7 +211,7 @@
           <button
             type="button"
             class="button"
-            data-action="gallery-bulk-tag#close"
+            data-action="dialog#close"
           >
             Cancel
           </button>
