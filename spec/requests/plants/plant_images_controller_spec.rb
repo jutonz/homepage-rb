@@ -138,6 +138,23 @@ RSpec.describe "Plants::PlantImages", type: :request do
       expect(response.body).to(include(
         "Taken #{plant_image.taken_at.to_date.iso8601}"
       ))
+      expect(response.body).not_to(include("Notes"))
+    end
+
+    it "renders notes on show page when present" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant_image = create(
+        :plants_plant_image,
+        plant:,
+        notes: "yellowing on lower leaf"
+      )
+      login_as(user, scope: :user)
+
+      get(plant_plant_image_path(plant, plant_image))
+
+      expect(response).to(have_http_status(:ok))
+      expect(response.body).to(include("yellowing on lower leaf"))
     end
 
     it "errors when accessing another user's plant image" do
@@ -202,13 +219,32 @@ RSpec.describe "Plants::PlantImages", type: :request do
       login_as(user, scope: :user)
       params = {plants_plant_image: {taken_at: "2024-02-03"}}
 
-      patch(plant_plant_image_path(plant, plant_image), params: params)
+      patch(plant_plant_image_path(plant, plant_image), params:)
 
       expect(response).to(
         redirect_to(plant_plant_image_path(plant, plant_image))
       )
       expect(flash[:notice]).to(eq("Image was updated."))
       expect(plant_image.reload.taken_at.to_date).to(eq(Date.new(2024, 2, 3)))
+    end
+
+    it "updates the notes" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      plant_image = create(:plants_plant_image, plant:)
+      login_as(user, scope: :user)
+      params = {
+        plants_plant_image: {notes: "new growth visible"}
+      }
+
+      patch(plant_plant_image_path(plant, plant_image), params:)
+
+      expect(response).to(
+        redirect_to(plant_plant_image_path(plant, plant_image))
+      )
+      expect(plant_image.reload.notes.to_plain_text).to(
+        eq("new growth visible")
+      )
     end
 
     it "renders errors when taken_at is missing" do

@@ -78,7 +78,7 @@ module Plants
     end
 
     def plant_image_update_params
-      params.expect(plants_plant_image: [:taken_at])
+      params.expect(plants_plant_image: [:taken_at, :notes])
     end
   end
 end

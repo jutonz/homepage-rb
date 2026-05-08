@@ -110,6 +110,35 @@ RSpec.describe "Plant management", type: :system do
     expect(page).to have_content("Taken 2024-02-03")
   end
 
+  it "adds and edits notes on a plant image", :js do
+    user = create(:user)
+    plant = create(:plant, user:)
+    plant_image = create(:plants_plant_image, plant:)
+    login_as(user)
+    visit(edit_plant_plant_image_path(plant, plant_image))
+
+    fill_in_rich_text_area(
+      "plants_plant_image_notes",
+      with: "yellowing on lower leaf"
+    )
+    click_button("Update Image")
+
+    expect(page).to have_content("Image was updated.")
+    expect(page).to have_content("Notes")
+    expect(page).to have_content("yellowing on lower leaf")
+
+    click_link("Edit")
+    fill_in_rich_text_area(
+      "plants_plant_image_notes",
+      with: "leaf recovered"
+    )
+    click_button("Update Image")
+
+    expect(page).to have_content("Image was updated.")
+    expect(page).to have_content("leaf recovered")
+    expect(page).not_to have_content("yellowing on lower leaf")
+  end
+
   it "sets the key image from the image show page" do
     user = create(:user)
     plant = create(:plant, user:)
