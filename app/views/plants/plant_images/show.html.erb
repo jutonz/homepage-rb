@@ -51,4 +51,13 @@
       <%= image_tag(@plant_image.file, class: "max-w-full h-auto") %>
     <% end %>
   </div>
+
+  <% if @plant_image.notes.present? %>
+    <div class="mt-8">
+      <h2 class="text-lg font-medium mb-2">Notes</h2>
+      <div class="prose prose-gray max-w-none">
+        <%= @plant_image.notes %>
+      </div>
+    </div>
+  <% end %>
 </div>

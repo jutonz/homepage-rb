@@ -20,6 +20,7 @@
 module Plants
   class PlantImage < ApplicationRecord
     has_one_attached(:file)
+    has_rich_text(:notes)
 
     belongs_to(:plant)
 

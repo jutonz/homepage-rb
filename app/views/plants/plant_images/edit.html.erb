@@ -11,5 +11,6 @@
   method: :patch
 ) do |form| %>
   <%= form.input(:taken_at, as: :date, html5: true) %>
+  <%= form.rich_text_area(:notes) %>
   <%= form.button(:submit, "Update Image") %>
 <% end %>

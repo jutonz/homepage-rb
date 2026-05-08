@@ -21,6 +21,7 @@ require "rails_helper"
 
 RSpec.describe Plants::PlantImage do
   it { is_expected.to(belong_to(:plant)) }
+  it { is_expected.to(have_rich_text(:notes)) }
 
   it { is_expected.to(validate_presence_of(:file)) }
   it { is_expected.to(validate_presence_of(:taken_at)) }
