@@ -187,26 +187,29 @@ RSpec.describe "Gallery bulk uploads", type: :system do
     login_as(user)
 
     visit(new_gallery_bulk_upload_path(gallery))
-    fill_in("Tag search query", with: "rub")
-    wait_for_turbo
-    expect(page).to have_button("Add tag", count: 2)
-    find_field("Tag search query").send_keys(:enter)
-    wait_for_turbo
+    click_button("Add tags")
 
-    expect(find_field("Tag search query").value).to eq("")
-    expect(page).to have_css(
-      "input[aria-label='Tag search query']:focus"
-    )
-    expect(page).to have_selector(
-      "[data-role='tag']", count: 1
-    )
-    expect(page).to have_button("Add tag", count: 1)
+    within("dialog[open]") do
+      fill_in("Tag search query", with: "rub")
+      wait_for_turbo
+      expect(page).to have_button("Add tag", count: 2)
+      find_field("Tag search query").send_keys(:enter)
+      wait_for_turbo
 
-    find_field("Tag search query").send_keys(:enter)
-    wait_for_turbo
+      expect(find_field("Tag search query").value).to eq("")
+      expect(page).to have_css(
+        "input[aria-label='Tag search query']:focus"
+      )
+      expect(page).to have_button("Add tag", count: 1)
 
-    expect(page).to have_selector(
-      "[data-role='tag']", count: 2
-    )
+      find_field("Tag search query").send_keys(:enter)
+      wait_for_turbo
+    end
+
+    within("#bulk-upload-modal-selected-tags") do
+      expect(page).to have_selector(
+        "[data-role='tag']", count: 2
+      )
+    end
   end
 end
