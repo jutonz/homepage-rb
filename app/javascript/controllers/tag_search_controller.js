@@ -15,6 +15,9 @@ export default class extends Controller {
     if (!form) return
 
     event.preventDefault()
+    const input = event.target
     form.requestSubmit()
+    input.value = ""
+    input.focus()
   }
 }
