@@ -65,6 +65,13 @@ RSpec.describe "Gallery bulk uploads", type: :system do
     visit(new_gallery_bulk_upload_path(gallery))
     click_button("Add tags")
 
+    within("#bulk-upload-modal-selected-tags") do
+      expect(page).to have_content("No tags selected.")
+    end
+    within("#bulk-upload-selected-tags") do
+      expect(page).to have_content("No tags selected.")
+    end
+
     within("dialog[open]") do
       fill_in("Tag search query", with: "landscapes")
       wait_for_turbo
@@ -100,6 +107,18 @@ RSpec.describe "Gallery bulk uploads", type: :system do
       "#bulk-upload-selected-tags",
       text: "landscapes"
     )
+
+    within("#bulk-upload-modal-selected-tags") do
+      click_link("Remove portraits")
+    end
+    wait_for_turbo
+
+    within("#bulk-upload-modal-selected-tags") do
+      expect(page).to have_content("No tags selected.")
+    end
+    within("#bulk-upload-selected-tags") do
+      expect(page).to have_content("No tags selected.")
+    end
   end
 
   it "removes from the page panel and syncs into the modal", :js do

@@ -8,17 +8,21 @@
   "bulk-upload-tag-input-#{@tag.id}"
 ) %>
 <%= turbo_stream.append("bulk-upload-selected-tags") do %>
-  <%= render(Galleries::BulkUploadSelectedTagComponent.new(
+  <%= render(Galleries::RemovableTagPillComponent.new(
     tag: @tag,
-    frame_id: "bulk-upload-tag-#{@tag.id}"
+    frame_id: "bulk-upload-tag-#{@tag.id}",
+    remove_path:
+      gallery_bulk_upload_tag_path(@tag.gallery, @tag)
   )) %>
 <% end %>
 <%= turbo_stream.append(
   "bulk-upload-modal-selected-tags"
 ) do %>
-  <%= render(Galleries::BulkUploadSelectedTagComponent.new(
+  <%= render(Galleries::RemovableTagPillComponent.new(
     tag: @tag,
-    frame_id: "bulk-upload-modal-tag-#{@tag.id}"
+    frame_id: "bulk-upload-modal-tag-#{@tag.id}",
+    remove_path:
+      gallery_bulk_upload_tag_path(@tag.gallery, @tag)
   )) %>
 <% end %>
 <%= turbo_stream.append("bulk-upload-tag-ids") do %>
