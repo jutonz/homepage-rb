@@ -83,67 +83,13 @@
     ) %>
   <% end %>
 
-  <dialog
-    data-controller="tag-search"
-    data-dialog-target="dialog"
-    class="m-0 p-0 border-0 bg-white w-screen
-      max-w-none h-[100dvh] max-h-[100dvh]
-      open:flex flex-col backdrop:bg-black/50"
-  >
-    <div
-      class="flex-none px-4 py-3 border-b
-        flex items-center gap-3"
-    >
-      <h3 class="text-lg grow">Search tags</h3>
-      <button
-        type="button"
-        class="button"
-        data-action="dialog#close"
-      >Done</button>
-    </div>
-
-    <div class="flex-1 overflow-y-auto px-4 py-3">
-      <%= simple_form_for(
-        @tag_search,
-        url: gallery_tag_search_path(@gallery),
-        method: :get,
-        html: {
-          data: {
-            turbo_frame:
-              "bulk-upload-tag-search-results",
-            controller: "auto-submit-form"
-          }
-        }
-      ) do |form| %>
-        <%= hidden_field_tag(
-          "tag_search[mode]", "bulk_upload_tag"
-        ) %>
-        <%= hidden_field_tag(
-          "tag_search[turbo_frame_tag]",
-          "bulk-upload-tag-search-results"
-        ) %>
-        <div class="flex w-full gap-3 mb-4">
-          <%= form.input(
-            :query,
-            label: false,
-            wrapper_html: {class: "grow"},
-            input_html: {
-              autofocus: true,
-              autocorrect: "off",
-              autocomplete: "off",
-              aria: {label: "Tag search query"},
-              data: {
-                action: [
-                  "input->auto-submit-form#submit",
-                  "keydown->tag-search#submitFirstResult"
-                ].join(" ")
-              }
-            }
-          ) %>
-          <%= form.button(:submit, "Search") %>
-        </div>
-      <% end %>
-
+  <%= render(Galleries::TagSearchDialogComponent.new(
+    gallery: @gallery,
+    tag_search: @tag_search,
+    mode: "bulk_upload_tag",
+    turbo_frame: "bulk-upload-tag-search-results"
+  )) do |c| %>
+    <% c.with_selected_tags do %>
       <div
         id="bulk-upload-modal-selected-tags"
         class="flex flex-wrap gap-2 mb-4"
@@ -152,12 +98,6 @@
           No tags selected.
         </span>
       </div>
-
-      <div data-tag-search-target="results">
-        <%= turbo_frame_tag(
-          "bulk-upload-tag-search-results"
-        ) %>
-      </div>
-    </div>
-  </dialog>
+    <% end %>
+  <% end %>
 </div>

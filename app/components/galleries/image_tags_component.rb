@@ -7,23 +7,14 @@ module Galleries
             This image doesn't have any tags yet.
           </span>
           <% @tags.each do |tag| %>
-            <%= turbo_frame_tag(tag, data: {role: "tag"}) do %>
-              <%= render(Galleries::TagPillComponent.new(tag:)) do |c| %>
-                <% c.with_action do %>
-                  <%= link_to(
-                    "×",
-                    gallery_image_tag_path(@gallery, @image, tag),
-                    aria: {label: "Remove \#{tag.name}"},
-                    data: {
-                      turbo_method: :delete,
-                      turbo_confirm: "Really remove tag" \
-                        " '\#{tag.name}'?"
-                    },
-                    class: "opacity-60 hover:opacity-100"
-                  ) %>
-                <% end %>
-              <% end %>
-            <% end %>
+            <%= render(Galleries::RemovableTagPillComponent.new(
+              tag:,
+              frame_id: tag,
+              remove_path:
+                gallery_image_tag_path(@gallery, @image, tag),
+              turbo_confirm:
+                "Really remove tag '\#{tag.name}'?"
+            )) %>
           <% end %>
         </div>
       <% end %>

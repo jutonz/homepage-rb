@@ -151,78 +151,55 @@
   </div>
 
   <% if @select_mode %>
-    <dialog
-      data-dialog-target="dialog"
-      class="rounded-sm p-6 w-full max-w-lg shadow-xl backdrop:bg-black/50 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-    >
-      <h2 class="text-xl mb-4">Add tag to selected images</h2>
-
-      <%= form_with(
-        url: gallery_tag_search_path(@gallery),
-        method: :get,
-        data: {
-          turbo_frame: "bulk-tag-search-results",
-          controller: "auto-submit-form"
-        }
-      ) do |f| %>
-        <input name="tag_search[mode]" value="bulk_add_tag" type="hidden" />
-        <input name="tag_search[turbo_frame_tag]" value="bulk-tag-search-results" type="hidden" />
-        <div class="flex w-full gap-3 mb-4">
-          <%= f.text_field(
-            "tag_search[query]",
-            placeholder: "Search tags...",
-            autocorrect: "off",
-            autocomplete: "off",
-            aria: {label: "Tag search query"},
-            data: {action: "input->auto-submit-form#submit"}
+    <%= render(Galleries::TagSearchDialogComponent.new(
+      gallery: @gallery,
+      tag_search: @tag_search,
+      mode: "bulk_add_tag",
+      turbo_frame: "bulk-tag-search-results",
+      title: "Add tag to selected images"
+    )) do |c| %>
+      <% c.with_footer do %>
+        <%= form_with(
+          scope: :bulk_tag,
+          url: gallery_bulk_tag_path(
+            @gallery,
+            **request.query_parameters
+          ),
+          method: :post
+        ) do |f| %>
+          <div data-gallery-bulk-tag-target="selectedIdsContainer"></div>
+          <%= f.hidden_field(
+            :tag_id,
+            data: {gallery_bulk_tag_target: "tagIdInput"}
           ) %>
-        </div>
+
+          <div class="mt-4">
+            <p class="text-sm text-gray-600">
+              Selected tag:
+              <span
+                data-gallery-bulk-tag-target="selectedTagName"
+                class="font-medium"
+              >None selected</span>
+            </p>
+          </div>
+
+          <div class="mt-6 flex gap-3 justify-end">
+            <button
+              type="button"
+              class="button"
+              data-action="dialog#close"
+            >
+              Cancel
+            </button>
+            <%= f.submit(
+              "Add tag",
+              disabled: true,
+              class: "button",
+              data: {gallery_bulk_tag_target: "confirmButton"}
+            ) %>
+          </div>
+        <% end %>
       <% end %>
-
-      <%= turbo_frame_tag("bulk-tag-search-results") do %>
-        <p class="text-gray-500 text-sm">Type to search for tags</p>
-      <% end %>
-
-      <%= form_with(
-        scope: :bulk_tag,
-        url: gallery_bulk_tag_path(
-          @gallery,
-          **request.query_parameters
-        ),
-        method: :post
-      ) do |f| %>
-        <div data-gallery-bulk-tag-target="selectedIdsContainer"></div>
-        <%= f.hidden_field(
-          :tag_id,
-          data: {gallery_bulk_tag_target: "tagIdInput"}
-        ) %>
-
-        <div class="mt-4">
-          <p class="text-sm text-gray-600">
-            Selected tag:
-            <span
-              data-gallery-bulk-tag-target="selectedTagName"
-              class="font-medium"
-            >None selected</span>
-          </p>
-        </div>
-
-        <div class="mt-6 flex gap-3 justify-end">
-          <button
-            type="button"
-            class="button"
-            data-action="dialog#close"
-          >
-            Cancel
-          </button>
-          <%= f.submit(
-            "Add tag",
-            disabled: true,
-            class: "button",
-            data: {gallery_bulk_tag_target: "confirmButton"}
-          ) %>
-        </div>
-      <% end %>
-    </dialog>
+    <% end %>
   <% end %>
 </div>
