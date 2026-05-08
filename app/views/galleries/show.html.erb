@@ -165,7 +165,8 @@
             @gallery,
             **request.query_parameters
           ),
-          method: :post
+          method: :post,
+          data: {action: "submit->dialog#close"}
         ) do |f| %>
           <div data-gallery-bulk-tag-target="selectedIdsContainer"></div>
           <%= f.hidden_field(

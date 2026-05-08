@@ -174,6 +174,45 @@ RSpec.describe "Gallery select mode" do
     expect(image.reload.tags).to include(tag)
   end
 
+  it "keeps header buttons responsive after two consecutive bulk " \
+    "tags", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    tag1 = create(:galleries_tag, gallery:, name: "nature")
+    tag2 = create(:galleries_tag, gallery:, name: "people")
+    image = create(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery, select: true))
+
+    find("[data-image-id='#{image.id}']").click
+
+    click_on("Add tag")
+    within(find("dialog[open]")) do
+      fill_in("tag_search[query]", with: "nat")
+      within("[data-role=tag-search-result]", text: tag1.display_name) do
+        click_on("Select")
+      end
+      click_button("Add tag")
+    end
+    expect(page).to have_text("Tag added to selected images")
+
+    click_on("Add tag")
+    within(find("dialog[open]")) do
+      fill_in("tag_search[query]", with: "peo")
+      within("[data-role=tag-search-result]", text: tag2.display_name) do
+        click_on("Select")
+      end
+      click_button("Add tag")
+    end
+    expect(page).to have_text("Tag added to selected images")
+
+    expect(page).to have_no_css("dialog[open]")
+
+    click_on("Add tag")
+    expect(page).to have_css("dialog[open]")
+  end
+
   it "preserves selection after bulk tagging", :js do
     user = create(:user)
     gallery = create(:gallery, user:)
