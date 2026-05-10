@@ -54,6 +54,7 @@ RSpec.configure do |config|
 
   config.include ActionText::SystemTestHelper, type: :system
   config.include TurboHelpers, type: :system
+  config.include StimulusHelpers, type: :system
   config.include ActiveSupport::Testing::TimeHelpers
   config.include Capybara::RSpecMatchers, type: :component
   config.include CapybaraPage, type: :request

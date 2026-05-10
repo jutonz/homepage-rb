@@ -17,7 +17,7 @@ RSpec.describe "Recent tags refresh on visibility change", type: :system do
         "turbo-frame#image-recent-tags",
         text: "seed-tag"
       )
-      wait_for_stimulus_controller("refresh-on-visible")
+      wait_for_stimulus("refresh-on-visible")
     end
 
     Capybara.using_session("tab_b") do
@@ -39,40 +39,15 @@ RSpec.describe "Recent tags refresh on visibility change", type: :system do
         "document.dispatchEvent(new Event('visibilitychange'))"
       )
 
-      Capybara.using_wait_time(10) do
-        expect(page).to have_css(
-          "turbo-frame#image-recent-tags",
-          text: "new-tag"
-        )
-      end
+      expect(page).to have_css(
+        "turbo-frame#image-recent-tags",
+        text: "new-tag",
+        wait: 10
+      )
       expect(page).to have_css(
         "turbo-frame#image-recent-tags",
         text: "seed-tag"
       )
-    end
-  end
-
-  def wait_for_stimulus_controller(identifier)
-    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 10
-    loop do
-      connected = page.evaluate_script(<<~JS)
-        (() => {
-          const el = document.querySelector(
-            "[data-controller~='#{identifier}']"
-          )
-          if (!el) return false
-          const app = window.Stimulus
-          if (!app) return false
-          return !!app.getControllerForElementAndIdentifier(
-            el, "#{identifier}"
-          )
-        })()
-      JS
-      break if connected == true
-      if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
-        raise "Stimulus controller #{identifier} never connected"
-      end
-      sleep 0.05
     end
   end
 end
