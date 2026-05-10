@@ -133,6 +133,24 @@ RSpec.describe GalleriesController do
 
       expect(response).to redirect_to(new_session_path)
     end
+
+    it "renders filter tag pill with classification color" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(
+        :galleries_tag,
+        gallery:,
+        classification: :subject
+      )
+      login_as(user)
+
+      get(gallery_path(gallery, tag_ids: [tag.id]))
+
+      expect(page).to have_css(
+        "span.bg-purple-100.text-purple-800",
+        text: tag.display_name
+      )
+    end
   end
 
   describe "update" do
