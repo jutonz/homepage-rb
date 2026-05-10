@@ -23,7 +23,8 @@ RSpec.describe Galleries::ImageTagSearchComponent, type: :component do
     expect(page).to have_css(
       "turbo-frame#image-recent-tags" \
       "[src='#{expected_src}']" \
-      "[loading='lazy']"
+      "[loading='lazy']" \
+      "[data-controller~='refresh-on-visible']"
     )
     expect(page).to have_no_css("h4", text: "Recently used tags")
   end

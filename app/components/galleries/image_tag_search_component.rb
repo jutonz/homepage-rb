@@ -17,7 +17,8 @@ module Galleries
         <%= turbo_frame_tag(
           "image-recent-tags",
           src: gallery_image_recent_tags_path(@gallery, @image),
-          loading: :lazy
+          loading: :lazy,
+          data: {controller: "refresh-on-visible"}
         ) %>
       </div>
     ERB
