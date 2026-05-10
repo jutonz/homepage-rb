@@ -8,6 +8,13 @@ module Galleries
         @gallery = find_gallery
         @image = find_image
         authorize(@gallery, :show?)
+
+        html =
+          Galleries::Images::RecentTagsComponent
+            .new(gallery: @gallery, image: @image)
+            .render_in(view_context)
+
+        render(html:)
       end
 
       private
