@@ -180,4 +180,22 @@ RSpec.describe "Gallery image tags", type: :system do
     result.find_link(tag.display_name).click
     expect(current_path).to eql(gallery_tag_path(gallery, tag))
   end
+
+  it "refreshes recent tags on visibilitychange", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image_a, image_b = create_pair(:galleries_image, gallery:)
+    login_as(user)
+    visit(gallery_image_path(gallery, image_a))
+    wait_for_stimulus("refresh-on-visible")
+    expect(page).to have_css("h4", text: "Recently used tags")
+
+    seed_tag = create(:galleries_tag, gallery:, name: "seed-tag")
+    image_b.add_tag(seed_tag)
+
+    page.execute_script(
+      "document.dispatchEvent(new Event('visibilitychange'))"
+    )
+    expect(page).to have_css("[data-role=recent-tag]", text: "seed-tag")
+  end
 end

@@ -1,4 +1,4 @@
-import { Application } from "@hotwired/stimulus"
+import { Application, Controller } from "@hotwired/stimulus"
 
 const application = Application.start()
 
@@ -6,4 +6,23 @@ const application = Application.start()
 application.debug = false
 window.Stimulus   = application
 
-export { application }
+class BaseController extends Controller {
+  constructor(...args) {
+    super(...args)
+
+    const userConnect = this.connect.bind(this)
+    const userDisconnect = this.disconnect.bind(this)
+
+    this.connect = () => {
+      this.element.setAttribute(`data-${this.identifier}-loaded`, "true")
+      userConnect()
+    }
+
+    this.disconnect = () => {
+      userDisconnect()
+      this.element.removeAttribute(`data-${this.identifier}-loaded`)
+    }
+  }
+}
+
+export { application, BaseController }
