@@ -6,13 +6,6 @@ const application = Application.start()
 application.debug = false
 window.Stimulus   = application
 
-// Tags the host element with `data-<identifier>-loaded="true"` while
-// the controller is connected. Lets JS-driven tests wait for a
-// Stimulus controller to actually be live before driving it. We wrap
-// the subclass's connect/disconnect at construction time so subclasses
-// don't have to remember to call super. (Caveat: this won't fire if a
-// subclass declares connect/disconnect as class fields rather than
-// methods, since field initializers run after super().)
 class BaseController extends Controller {
   constructor(...args) {
     super(...args)
