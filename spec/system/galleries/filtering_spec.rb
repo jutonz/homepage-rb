@@ -23,18 +23,14 @@ RSpec.describe "Gallery filtering" do
     )
     expect(page).to have_css("[data-image-id='#{image.id}']")
     expect(page).to have_css(
-      "[data-role=tag-filter-remove-button]",
-      text: tag.name
+      "[aria-label='Remove #{tag.name} filter']"
     )
     expect(page).to have_field("Tag search query", with: tag.name)
     expect(page).to have_selector(
       "[aria-label='Tag search query']:focus"
     )
 
-    find(
-      "[data-role=tag-filter-remove-button]",
-      text: tag.name
-    ).click
+    find("[aria-label='Remove #{tag.name} filter']").click
     expect(page).to have_css("[data-image-id='#{image.id}']")
   end
 end

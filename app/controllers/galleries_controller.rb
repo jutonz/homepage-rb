@@ -92,6 +92,6 @@ class GalleriesController < ApplicationController
 
   def find_filter_tags
     ids = params.fetch(:tag_ids, [])
-    @gallery.tags.where(id: ids)
+    @gallery.tags.where(id: ids).includes(:gallery)
   end
 end
