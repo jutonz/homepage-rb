@@ -25,5 +25,6 @@ RSpec.describe Galleries::ImageTagSearchComponent, type: :component do
       "[src='#{expected_src}']" \
       "[loading='lazy']"
     )
+    expect(page).to have_no_css("h4", text: "Recently used tags")
   end
 end

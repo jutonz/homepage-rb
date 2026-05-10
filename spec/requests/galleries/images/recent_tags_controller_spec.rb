@@ -22,6 +22,18 @@ RSpec.describe Galleries::Images::RecentTagsController do
       expect(response).to have_http_status(:not_found)
     end
 
+    it "returns 404 when the image belongs to a different gallery" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      other_gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery: other_gallery)
+      login_as(user)
+
+      get(gallery_image_recent_tags_path(gallery, image))
+
+      expect(response).to have_http_status(:not_found)
+    end
+
     it "renders the recent tags inside an image-recent-tags turbo-frame" do
       user = create(:user)
       gallery = create(:gallery, user:)
@@ -36,6 +48,19 @@ RSpec.describe Galleries::Images::RecentTagsController do
       expect(response).to have_http_status(:ok)
       expect(page).to have_css("turbo-frame#image-recent-tags")
       expect(page).to have_button(tag.reload.display_name)
+    end
+
+    it "renders an empty turbo-frame when no other images carry tags" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      login_as(user)
+
+      get(gallery_image_recent_tags_path(gallery, image))
+
+      expect(response).to have_http_status(:ok)
+      expect(page).to have_css("turbo-frame#image-recent-tags")
+      expect(page).to have_no_css("button")
     end
   end
 end
