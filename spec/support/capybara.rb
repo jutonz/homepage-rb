@@ -27,6 +27,8 @@ Capybara.register_driver(:playwright_debug) do |app|
   )
 end
 
+def playwright = page.driver.with_playwright_page { it }
+
 RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by(:rack_test)

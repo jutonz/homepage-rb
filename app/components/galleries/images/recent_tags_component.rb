@@ -2,7 +2,7 @@ module Galleries
   module Images
     class RecentTagsComponent < ApplicationComponent
       erb_template <<~ERB
-        <%= turbo_frame_tag("image-recent-tags") do %>
+        <%= turbo_frame_tag("image-recent-tags", data: {role: "recent-tags"}) do %>
           <h4 class="text-xl mt-10">Recently used tags</h4>
           <% grouped_tags.each_with_index do |(image_id, results), index| %>
             <% if index > 0 %>
@@ -10,7 +10,10 @@ module Galleries
             <% end %>
             <div class="flex flex-wrap gap-2 my-2">
               <% results.each do |result| %>
-                <%= turbo_frame_tag("recently-added-tag-\#{result.tag.id}") do %>
+                <%= turbo_frame_tag(
+                  "recently-added-tag-\#{result.tag.id}",
+                  data: {role: "recent-tag"}
+                ) do %>
                   <%= button_to(
                     result.tag.display_name,
                     gallery_image_tags_path(@gallery, @image, tag_id: result.tag.id),
