@@ -28,7 +28,10 @@ jobs:
           bootsnap|semver-minor semver-patch
           bullet|semver-minor semver-patch
           capybara-playwright-driver|semver-patch
+          jwt|semver-minor semver-patch
+          opentelemetry-exporter-otlp|semver-minor semver-patch
           opentelemetry-instrumentation-all|semver-minor semver-patch
+          opentelemetry-sdk|semver-minor semver-patch
           puma|semver-minor semver-patch
           super_diff|semver-minor semver-patch
           view_component|semver-minor semver-patch
