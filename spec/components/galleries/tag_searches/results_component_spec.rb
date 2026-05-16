@@ -98,7 +98,8 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
 
     expect(page).to have_button("Select")
     expect(page).to have_selector(
-      "button[data-action='gallery-bulk-tag#selectTag']" \
+      "button[data-action=" \
+      "'gallery-bulk-tag#selectTag tag-search#clearQuery']" \
       "[data-tag-id='#{tag.id}']" \
       "[data-tag-name='#{tag.display_name}']",
       text: "Select"

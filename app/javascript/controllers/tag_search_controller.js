@@ -1,7 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["results"]
+  static targets = ["results", "query"]
+
+  clearQuery() {
+    this.queryTarget.value = ""
+  }
 
   submitFirstResult(event) {
     if (event.key !== "Enter") return
