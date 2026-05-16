@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "EnterWorktree",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bin/worktree-setup",
+            "timeout": 180,
+            "statusMessage": "Preparing worktree (keys + assets)..."
+          }
+        ]
+      }
+    ]
+  }
+}
