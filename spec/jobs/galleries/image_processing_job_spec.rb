@@ -54,4 +54,14 @@ RSpec.describe Galleries::ImageProcessingJob, "#perform" do
           "processing_image_#{image.id}"
       )
   end
+
+  it "processes a poster preview for previewable (video) files" do
+    image = create(:galleries_image, :webm)
+    poster = instance_double(ActiveStorage::Preview)
+    allow(image).to receive(:poster).and_return(poster)
+    allow(Turbo::StreamsChannel).to receive(:broadcast_remove_to)
+    expect(poster).to receive(:processed)
+
+    described_class.new.perform(image)
+  end
 end

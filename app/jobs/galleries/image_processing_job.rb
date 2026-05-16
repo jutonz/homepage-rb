@@ -5,6 +5,8 @@ module Galleries
     def perform(image)
       if image.file.variable?
         image.file.variant(:thumb).processed
+      elsif image.file.previewable?
+        image.poster.processed
       end
 
       image.calculate_perceptual_hash!
