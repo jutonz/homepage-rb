@@ -11,13 +11,14 @@ RSpec.describe Galleries::ImageThumbnailComponent, type: :component do
     )
   end
 
-  it "displays thumbnails for videos" do
+  it "renders a poster image with a play overlay for videos" do
     image = create(:galleries_image, :webm)
     component = described_class.new(image:)
+
     render_inline(component)
 
-    expect(page).to have_css(
-      "video[preload=metadata]"
-    )
+    expect(page).to have_css("img")
+    expect(page).to have_css("[data-role=video-overlay]")
+    expect(page).not_to have_css("video")
   end
 end

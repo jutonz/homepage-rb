@@ -14,7 +14,28 @@ module Galleries
       ) do %>
         <div class="flex justify-center">
           <% if @image.video? %>
-            <%= video_tag(@image.file, preload: "metadata") %>
+            <div class="relative" data-role="video-thumbnail">
+              <%= image_tag(@image.poster) %>
+              <span
+                data-role="video-overlay"
+                class="absolute inset-0 flex items-center
+                       justify-center"
+              >
+                <span
+                  class="flex items-center justify-center w-12 h-12
+                         rounded-full bg-black/50"
+                >
+                  <svg
+                    class="w-6 h-6 text-white"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </span>
+            </div>
           <% elsif @image.file.variable? %>
             <%= image_tag(@image.file.variant(:thumb)) %>
           <% else %>
