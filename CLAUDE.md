@@ -10,9 +10,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `mise exec -- bin/rails db:migrate` - Run database migrations
 - `mise exec -- bin/rails g migration AddExampleMigration` - Create a new
   database migration
-- Install `ffmpeg` (system binary, not a gem) — required to generate
-  video poster thumbnails. macOS: `brew install ffmpeg`. Linux/CI:
-  `apt-get install -y ffmpeg`.
 ### Testing & Quality
 - `mise exec -- bin/rspec` - Run RSpec test suite
 - `mise exec -- bin/standardrb --fix` - Ruby linting and code style (Standard gem)
