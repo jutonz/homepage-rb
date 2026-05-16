@@ -20,8 +20,11 @@
 #
 module Galleries
   class Image < ActiveRecord::Base
+    THUMB_SIZE = [200, 200].freeze
+    VIDEO_CONTENT_TYPE_PREFIX = "video/"
+
     has_one_attached :file do |file|
-      file.variant(:thumb, resize_to_limit: [200, 200])
+      file.variant(:thumb, resize_to_limit: THUMB_SIZE)
     end
 
     belongs_to :gallery, counter_cache: true
@@ -41,6 +44,14 @@ module Galleries
     def self.unprocessed = where(processed_at: nil)
 
     def self.processed = where.not(processed_at: nil)
+
+    def self.videos
+      joins(file_attachment: :blob)
+        .where(
+          "active_storage_blobs.content_type LIKE ?",
+          "#{VIDEO_CONTENT_TYPE_PREFIX}%"
+        )
+    end
 
     def self.by_tags(tag_ids)
       joins(:tags)
@@ -85,9 +96,9 @@ module Galleries
       image_tags.where(tag:).destroy_all
     end
 
-    def video? = file.content_type.start_with?("video/")
+    def video? = file.content_type.start_with?(VIDEO_CONTENT_TYPE_PREFIX)
 
-    def poster = file.preview(resize_to_limit: [200, 200])
+    def poster = file.preview(resize_to_limit: THUMB_SIZE)
 
     def calculate_perceptual_hash!
       return if video?
