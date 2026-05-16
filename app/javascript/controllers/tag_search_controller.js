@@ -5,6 +5,7 @@ export default class extends Controller {
 
   clearQuery() {
     this.queryTarget.value = ""
+    this.queryTarget.focus()
   }
 
   submitFirstResult(event) {
@@ -19,9 +20,7 @@ export default class extends Controller {
     if (!form) return
 
     event.preventDefault()
-    const input = event.target
     form.requestSubmit()
-    input.value = ""
-    input.focus()
+    this.clearQuery()
   }
 }
