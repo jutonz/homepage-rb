@@ -180,6 +180,19 @@ RSpec.describe Galleries::Image do
     end
   end
 
+  describe "#poster" do
+    it "returns a 200x200-limited Active Storage preview of the video" do
+      image = create(:galleries_image, :webm)
+
+      poster = image.poster
+
+      expect(poster).to be_a(ActiveStorage::Preview)
+      expect(poster.variation.transformations).to eq(
+        resize_to_limit: [200, 200]
+      )
+    end
+  end
+
   describe "#calculate_perceptual_hash!" do
     it "calculates and saves a perceptual_hash" do
       image = create(:galleries_image, :with_real_file, perceptual_hash: nil)

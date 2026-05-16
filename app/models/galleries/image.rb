@@ -87,6 +87,8 @@ module Galleries
 
     def video? = file.content_type.start_with?("video/")
 
+    def poster = file.preview(resize_to_limit: [200, 200])
+
     def calculate_perceptual_hash!
       return if video?
 
