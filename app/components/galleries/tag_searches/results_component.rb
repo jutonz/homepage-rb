@@ -86,7 +86,10 @@ module Galleries
             type: "button",
             class: "button",
             data: {
-              action: "gallery-bulk-tag#selectTag",
+              action: [
+                "gallery-bulk-tag#selectTag",
+                "tag-search#clearQuery"
+              ].join(" "),
               tag_id: tag.id,
               tag_name: tag.display_name
             }

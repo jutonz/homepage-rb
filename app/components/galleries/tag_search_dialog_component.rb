@@ -49,6 +49,7 @@ module Galleries
                   autocomplete: "off",
                   aria: {label: "Tag search query"},
                   data: {
+                    tag_search_target: "query",
                     action: [
                       "input->auto-submit-form#submit",
                       "keydown->tag-search#submitFirstResult"

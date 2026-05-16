@@ -1,7 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["results"]
+  static targets = ["results", "query"]
+
+  clearQuery() {
+    this.queryTarget.value = ""
+    this.queryTarget.focus()
+  }
 
   submitFirstResult(event) {
     if (event.key !== "Enter") return
@@ -15,9 +20,7 @@ export default class extends Controller {
     if (!form) return
 
     event.preventDefault()
-    const input = event.target
     form.requestSubmit()
-    input.value = ""
-    input.focus()
+    this.clearQuery()
   }
 }

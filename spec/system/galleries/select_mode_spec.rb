@@ -174,6 +174,27 @@ RSpec.describe "Gallery select mode" do
     expect(image.reload.tags).to include(tag)
   end
 
+  it "clears the tag search input after clicking Select", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    tag = create(:galleries_tag, gallery:, name: "nature")
+    image = create(:galleries_image, :with_real_file, gallery:)
+    login_as(user)
+
+    visit(gallery_path(gallery, select: true))
+    find("[data-image-id='#{image.id}']").click
+    click_on("Add tag")
+
+    within(find("dialog[open]")) do
+      fill_in("tag_search[query]", with: "nat")
+      within("[data-role=tag-search-result]", text: tag.display_name) do
+        click_on("Select")
+      end
+
+      expect(page).to have_field("tag_search[query]", with: "")
+    end
+  end
+
   it "keeps header buttons responsive after two consecutive bulk " \
     "tags", :js do
     user = create(:user)
