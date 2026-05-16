@@ -191,6 +191,15 @@ RSpec.describe Galleries::Image do
         resize_to_limit: [200, 200]
       )
     end
+
+    it "extracts a real non-empty video frame when processed" do
+      image = create(:galleries_image, :webm)
+
+      processed = image.poster.processed
+
+      expect(processed.image.attached?).to be(true)
+      expect(processed.image.blob.byte_size).to be > 0
+    end
   end
 
   describe "#calculate_perceptual_hash!" do
