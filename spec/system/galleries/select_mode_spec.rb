@@ -364,7 +364,7 @@ RSpec.describe "Gallery select mode" do
       match_css(".gallery-image--selected")
     )
 
-    find("[data-role='tag-filter-remove-button']").click
+    find("[aria-label='Remove #{tag.name} filter']").click
     wait_for_turbo
 
     expect(page).to have_current_path(

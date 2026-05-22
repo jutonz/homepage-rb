@@ -12,7 +12,7 @@ module Galleries
     erb_template <<~ERB
       <% display_name_html = link_to(
         @tag.display_name,
-        gallery_tag_path(@tag.gallery, @tag),
+        gallery_tag_path(@tag.gallery_id, @tag),
         data: {turbo: false, role: "tag-link"}
       ) %>
 
