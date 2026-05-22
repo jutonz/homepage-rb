@@ -279,7 +279,7 @@ RSpec.describe Galleries::TagsController do
       get(gallery_tag_path(gallery, source))
 
       expect(page).to have_css(
-        "[data-role=related-tags] h2",
+        "[data-role=related-tags] h3",
         text: "Related tags"
       )
       expect(page).to have_link(

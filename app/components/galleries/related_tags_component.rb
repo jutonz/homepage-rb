@@ -3,20 +3,23 @@ module Galleries
     erb_template <<~ERB
       <% if @related_tags.any? %>
         <div class="mb-6" data-role="related-tags">
-          <h2 class="text-xl mb-4">Related tags</h2>
-          <div class="flex flex-wrap gap-2 items-center">
-            <% @related_tags.each do |row| %>
-              <span class="inline-flex items-center gap-1">
-                <%= render(
-                  Galleries::TagPillComponent.new(tag: row.tag)
-                ) %>
-                <span
-                  class="text-xs text-gray-500"
-                  data-role="related-tag-count"
-                >(<%= row.shared_count %>)</span>
-              </span>
+          <%= render(CardComponent.new(title: "Related tags")) do |c| %>
+            <% c.with_body do %>
+              <div class="flex flex-wrap gap-2 items-center">
+                <% @related_tags.each do |row| %>
+                  <span class="inline-flex items-center gap-1">
+                    <%= render(
+                      Galleries::TagPillComponent.new(tag: row.tag)
+                    ) %>
+                    <span
+                      class="text-xs text-gray-500"
+                      data-role="related-tag-count"
+                    >(<%= row.shared_count %>)</span>
+                  </span>
+                <% end %>
+              </div>
             <% end %>
-          </div>
+          <% end %>
         </div>
       <% end %>
     ERB

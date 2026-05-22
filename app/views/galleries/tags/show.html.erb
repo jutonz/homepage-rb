@@ -82,10 +82,6 @@
   <% end %>
 </div>
 
-<%= render(Galleries::RelatedTagsComponent.new(
-  related_tags: @related_tags
-)) %>
-
 <div class="mb-6">
   <%= render(CardComponent.new(title: "Social media links")) do |c| %>
     <%= c.with_action do %>
@@ -109,6 +105,10 @@
     <% end %>
   <% end %>
 </div>
+
+<%= render(Galleries::RelatedTagsComponent.new(
+  related_tags: @related_tags
+)) %>
 
 <%= render(
   partial: "galleries/images",

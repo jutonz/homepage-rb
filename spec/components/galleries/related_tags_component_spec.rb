@@ -21,7 +21,7 @@ RSpec.describe Galleries::RelatedTagsComponent, type: :component do
     render_inline(described_class.new(related_tags: [row]))
 
     expect(page).to have_css(
-      "[data-role=related-tags] h2",
+      "[data-role=related-tags] h3",
       text: "Related tags"
     )
   end
