@@ -106,6 +106,10 @@
   <% end %>
 </div>
 
+<%= render(Galleries::RelatedTagsComponent.new(
+  related_tags: @related_tags
+)) %>
+
 <%= render(
   partial: "galleries/images",
   locals: {images: @images}

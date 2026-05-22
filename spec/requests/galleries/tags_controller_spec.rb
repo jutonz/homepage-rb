@@ -267,6 +267,42 @@ RSpec.describe Galleries::TagsController do
       expect(page).not_to have_css("[data-role=classification]")
     end
 
+    it "shows related tags when co-occurring tags exist" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      source = create(:galleries_tag, gallery:)
+      partner = create(:galleries_tag, gallery:, name: "Sunset")
+      image = create(:galleries_image, gallery:)
+      image.add_tag(source, partner)
+      login_as(user)
+
+      get(gallery_tag_path(gallery, source))
+
+      expect(page).to have_css(
+        "[data-role=related-tags] h3",
+        text: "Related tags"
+      )
+      expect(page).to have_link(
+        partner.reload.display_name,
+        href: gallery_tag_path(gallery, partner)
+      )
+      expect(page).to have_css(
+        "[data-role=related-tag-count]",
+        text: "(1)"
+      )
+    end
+
+    it "omits the related tags section when none exist" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      source = create(:galleries_tag, gallery:)
+      login_as(user)
+
+      get(gallery_tag_path(gallery, source))
+
+      expect(page).not_to have_css("[data-role=related-tags]")
+    end
+
     it "returns 404 when viewing tag from gallery not owned by current user" do
       gallery = create(:gallery)
       tag = create(:galleries_tag, gallery:)

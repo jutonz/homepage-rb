@@ -69,6 +69,8 @@ module Galleries
       "#{name} (#{image_tags_count})"
     end
 
+    def related_tags = RelatedTagsQuery.call(tag: self)
+
     def tagging_needed? = name == TAGGING_NEEDED_NAME
 
     def available_auto_add_tags
