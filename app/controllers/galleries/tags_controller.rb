@@ -26,7 +26,7 @@ module Galleries
           .includes(:gallery)
           .order(created_at: :desc)
           .page(params[:page])
-      @related_tags = Galleries::RelatedTagsQuery.call(tag: @tag)
+      @related_tags = @tag.related_tags
     end
 
     def create

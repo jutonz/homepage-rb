@@ -15,8 +15,7 @@ RSpec.describe Galleries::RelatedTagsComponent, type: :component do
     tag = build_stubbed(:galleries_tag, gallery:, name: "Nature")
     row = Galleries::RelatedTagsQuery::Result.new(
       tag:,
-      shared_count: 3,
-      score: 0.5
+      shared_count: 3
     )
 
     render_inline(described_class.new(related_tags: [row]))
@@ -33,10 +32,10 @@ RSpec.describe Galleries::RelatedTagsComponent, type: :component do
     tag_b = build_stubbed(:galleries_tag, gallery:, name: "Beta")
     rows = [
       Galleries::RelatedTagsQuery::Result.new(
-        tag: tag_a, shared_count: 4, score: 0.8
+        tag: tag_a, shared_count: 4
       ),
       Galleries::RelatedTagsQuery::Result.new(
-        tag: tag_b, shared_count: 1, score: 0.2
+        tag: tag_b, shared_count: 1
       )
     ]
 
@@ -57,8 +56,7 @@ RSpec.describe Galleries::RelatedTagsComponent, type: :component do
     tag = build_stubbed(:galleries_tag, gallery:, name: "Nature")
     row = Galleries::RelatedTagsQuery::Result.new(
       tag:,
-      shared_count: 7,
-      score: 0.9
+      shared_count: 7
     )
 
     render_inline(described_class.new(related_tags: [row]))

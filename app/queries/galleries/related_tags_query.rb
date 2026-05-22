@@ -1,6 +1,6 @@
 module Galleries
   class RelatedTagsQuery
-    Result = Data.define(:tag, :shared_count, :score)
+    Result = Data.define(:tag, :shared_count)
 
     SQL = <<~SQL
       WITH weighted AS (
@@ -38,13 +38,13 @@ module Galleries
           .then { ActiveRecord::Base.connection.execute(it) }
 
       tag_ids = raw.map { it["related_tag_id"] }
-      tags = Galleries::Tag.where(id: tag_ids).index_by(&:id)
+      tags =
+        Galleries::Tag.includes(:gallery).where(id: tag_ids).index_by(&:id)
 
       raw.map do |row|
         Result.new(
           tag: tags[row["related_tag_id"]],
-          shared_count: row["shared_count"],
-          score: row["score"].to_f
+          shared_count: row["shared_count"].to_i
         )
       end
     end
