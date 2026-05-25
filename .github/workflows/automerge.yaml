@@ -29,6 +29,7 @@ jobs:
           bullet|semver-minor semver-patch
           capybara-playwright-driver|semver-patch
           faraday|semver-minor semver-patch
+          image_processing|semver-minor semver-patch
           jbuilder|semver-minor semver-patch
           jwt|semver-minor semver-patch
           opentelemetry-exporter-otlp|semver-minor semver-patch
