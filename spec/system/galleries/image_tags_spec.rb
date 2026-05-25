@@ -198,4 +198,132 @@ RSpec.describe "Gallery image tags", type: :system do
     )
     expect(page).to have_css("[data-role=recent-tag]", text: "seed-tag")
   end
+
+  it "suggests related tags when adding a tag", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    source = create(:galleries_tag, gallery:, name: "source")
+    partner = create(:galleries_tag, gallery:, name: "partner")
+    create(:galleries_image, gallery:).add_tag(source, partner)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: "source")
+    expect(page).to have_css("[data-role=tag-search-result]", text: "source")
+    within("[data-role=tag-search-result]", text: "source") do
+      click_on("Add tag")
+    end
+
+    within("[data-role=related-tags-box]") do
+      expect(page).to have_text("Related to \"source\"")
+      expect(page).to have_text("partner")
+      expect(page).to have_text("1 shared")
+    end
+    expect(image.reload.tags.map(&:name)).to include("source")
+  end
+
+  it "adds a related tag from the box and removes its row", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    source = create(:galleries_tag, gallery:, name: "source")
+    partner = create(:galleries_tag, gallery:, name: "partner")
+    create(:galleries_image, gallery:).add_tag(source, partner)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: "source")
+    expect(page).to have_css("[data-role=tag-search-result]", text: "source")
+    within("[data-role=tag-search-result]", text: "source") do
+      click_on("Add tag")
+    end
+
+    within("#related-suggestion-#{partner.id}") { click_on("Add tag") }
+
+    expect(page).to have_css("[data-role=tag]", text: "partner")
+    expect(page).not_to have_css("#related-suggestion-#{partner.id}")
+    expect(image.reload.tags.map(&:name)).to include("partner")
+  end
+
+  it "dismisses the related-tags box with the ✕ button", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    source = create(:galleries_tag, gallery:, name: "source")
+    partner = create(:galleries_tag, gallery:, name: "partner")
+    create(:galleries_image, gallery:).add_tag(source, partner)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: "source")
+    expect(page).to have_css("[data-role=tag-search-result]", text: "source")
+    within("[data-role=tag-search-result]", text: "source") do
+      click_on("Add tag")
+    end
+    expect(page).to have_css("[data-role=related-tags-box]")
+
+    find("[aria-label='Dismiss related tags']").click
+
+    expect(page).not_to have_css("[data-role=related-tags-box]")
+  end
+
+  it "shows only the most recent box when adding two tags", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    one = create(:galleries_tag, gallery:, name: "shared one")
+    one_partner = create(:galleries_tag, gallery:, name: "one partner")
+    two = create(:galleries_tag, gallery:, name: "shared two")
+    two_partner = create(:galleries_tag, gallery:, name: "two partner")
+    create(:galleries_image, gallery:).add_tag(one, one_partner)
+    create(:galleries_image, gallery:).add_tag(two, two_partner)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: "shared")
+    expect(page).to have_css(
+      "[data-role=tag-search-result]",
+      text: "shared one"
+    )
+    within("[data-role=tag-search-result]", text: "shared one") do
+      click_on("Add tag")
+    end
+    expect(page).to have_text("Related to \"shared one\"")
+
+    within("[data-role=tag-search-result]", text: "shared two") do
+      click_on("Add tag")
+    end
+
+    expect(page).to have_text("Related to \"shared two\"")
+    expect(page).not_to have_text("Related to \"shared one\"")
+    expect(page).to have_css("[data-role=related-tags-box]", count: 1)
+  end
+
+  it "clears the box when starting a new search", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    image = create(:galleries_image, gallery:)
+    source = create(:galleries_tag, gallery:, name: "source")
+    partner = create(:galleries_tag, gallery:, name: "partner")
+    create(:galleries_image, gallery:).add_tag(source, partner)
+    login_as(user)
+
+    visit(gallery_image_path(gallery, image))
+
+    fill_in("Tag search query", with: "source")
+    expect(page).to have_css("[data-role=tag-search-result]", text: "source")
+    within("[data-role=tag-search-result]", text: "source") do
+      click_on("Add tag")
+    end
+    expect(page).to have_css("[data-role=related-tags-box]")
+
+    fill_in("Tag search query", with: "partner")
+
+    expect(page).not_to have_css("[data-role=related-tags-box]")
+  end
 end
