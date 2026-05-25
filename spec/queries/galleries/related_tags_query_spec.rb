@@ -25,7 +25,7 @@ RSpec.describe Galleries::RelatedTagsQuery, ".call" do
     expect(result.map(&:tag)).to be_empty
   end
 
-  it "orders by score, with more shared images ranking higher" do
+  it "orders by shared image count, most-shared first" do
     gallery = create(:gallery)
     source, frequent, infrequent =
       create_list(:galleries_tag, 3, gallery:)
@@ -38,19 +38,22 @@ RSpec.describe Galleries::RelatedTagsQuery, ".call" do
     expect(result).to eql([frequent, infrequent])
   end
 
-  it "gives higher weight to rarer partner tags" do
+  it "ranks by co-occurrence count, not rarity" do
     gallery = create(:gallery)
-    source, common, rare = create_list(:galleries_tag, 3, gallery:)
-    img1, img2 = create_list(:galleries_image, 2, gallery:)
-    # source co-occurs once with common AND once with rare. common
-    # is also applied to a third image, making it less rare.
-    img1.add_tag(source, common)
-    img2.add_tag(source, rare)
-    create(:galleries_image, gallery:).add_tag(common)
+    source, frequent_partner, rare_partner =
+      create_list(:galleries_tag, 3, gallery:)
+    shared1, shared2 = create_list(:galleries_image, 2, gallery:)
+    # source co-occurs with frequent_partner on 2 images, rare_partner on 1
+    shared1.add_tag(source, frequent_partner, rare_partner)
+    shared2.add_tag(source, frequent_partner)
+    # frequent_partner also appears on 2 source-less images, making it
+    # common; rare_partner appears nowhere else, making it rare.
+    create_list(:galleries_image, 2, gallery:)
+      .each { it.add_tag(frequent_partner) }
 
     result = described_class.call(tag: source).map(&:tag)
 
-    expect(result).to eql([rare, common])
+    expect(result).to eql([frequent_partner, rare_partner])
   end
 
   it "reports shared_count per related tag" do
