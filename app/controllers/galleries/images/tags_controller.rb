@@ -10,6 +10,15 @@ module Galleries
         @tag = authorize(find_tag)
 
         @image.add_tag(@tag)
+        @from_related = params[:from_related].present?
+
+        unless @from_related
+          @related_tags = Galleries::RelatedTagsQuery.call(
+            tag: @tag,
+            exclude_tag_ids: @image.tag_ids,
+            limit: 5
+          )
+        end
 
         respond_to do |format|
           format.turbo_stream

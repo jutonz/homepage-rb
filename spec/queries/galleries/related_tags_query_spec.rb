@@ -103,4 +103,27 @@ RSpec.describe Galleries::RelatedTagsQuery, ".call" do
 
     expect(result).to be_empty
   end
+
+  it "excludes tags whose ids are in exclude_tag_ids" do
+    gallery = create(:gallery)
+    source, partner, excluded = create_list(:galleries_tag, 3, gallery:)
+    image = create(:galleries_image, gallery:)
+    image.add_tag(source, partner, excluded)
+
+    result = described_class.call(tag: source, exclude_tag_ids: [excluded.id])
+
+    expect(result.map(&:tag)).to eql([partner])
+  end
+
+  it "respects a custom limit" do
+    gallery = create(:gallery)
+    source = create(:galleries_tag, gallery:)
+    partners = create_list(:galleries_tag, 5, gallery:)
+    image = create(:galleries_image, gallery:)
+    image.add_tag(source, *partners)
+
+    result = described_class.call(tag: source, limit: 2)
+
+    expect(result.size).to eql(2)
+  end
 end
