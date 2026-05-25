@@ -44,7 +44,7 @@ module Galleries
         "transition-colors duration-200 group"
       variant = CLASSIFICATION_CARD_CLASSES.fetch(
         classification,
-        CLASSIFICATION_CARD_CLASSES.fetch("none")
+        CLASSIFICATION_CARD_CLASSES["none"]
       )
       "#{base} #{variant}"
     end

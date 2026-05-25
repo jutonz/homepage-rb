@@ -6,7 +6,10 @@ module Galleries
     def index
       @gallery = find_gallery
       authorize Galleries::Tag
-      @tags = policy_scope(Galleries::Tag).where(gallery: @gallery).order(:name)
+      @tags = policy_scope(Galleries::Tag)
+        .where(gallery: @gallery)
+        .includes(:gallery)
+        .order(:name)
     end
 
     def new
