@@ -79,4 +79,4 @@ group :test do
   gem "webmock"
 end
 
-gem "solid_cable", "~> 3.0"
+gem "solid_cable", "~> 4.0"
