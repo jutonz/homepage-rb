@@ -36,6 +36,7 @@ jobs:
           opentelemetry-instrumentation-all|semver-minor semver-patch
           opentelemetry-sdk|semver-minor semver-patch
           puma|semver-minor semver-patch
+          sentry-rails|semver-patch semver-minor
           super_diff|semver-minor semver-patch
           view_component|semver-minor semver-patch
           "
