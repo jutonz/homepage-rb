@@ -68,6 +68,22 @@ RSpec.describe Galleries::TagsController do
       expect(tag_card).not_to have_text("none")
     end
 
+    it "tints the card background by classification" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create(
+        :galleries_tag,
+        gallery:,
+        name: "Alice",
+        classification: :subject
+      )
+      login_as(user)
+
+      get(gallery_tags_path(gallery))
+
+      expect(page).to have_css("[data-role=tag].bg-purple-50")
+    end
+
     it "returns 404 when accessing tags for gallery not owned by current user" do
       gallery = create(:gallery)
       create(:galleries_tag, gallery:)
