@@ -1,6 +1,6 @@
 module Plants
   class PlantImageUpload
-    Result = Struct.new(:saved, :plant_image, keyword_init: true) do
+    Result = Struct.new(:saved, :plant_image) do
       def saved?
         saved
       end
