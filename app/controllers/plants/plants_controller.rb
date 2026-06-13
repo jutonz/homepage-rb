@@ -8,7 +8,7 @@ module Plants
       @plants =
         policy_scope(Plants::Plant)
           .includes(key_image: :file_attachment)
-          .order(created_at: :desc)
+          .order(:name)
     end
 
     def new
