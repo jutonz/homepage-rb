@@ -29,6 +29,18 @@ RSpec.describe Plants::PlantImageComponent, type: :component do
     )
   end
 
+  it "renders the :thumb variant as the image src" do
+    plant_image = create(:plants_plant_image)
+    component = described_class.new(plant_image: plant_image)
+
+    render_inline(component)
+
+    img = page.find("img")
+    expect(img[:src]).to(
+      include("/rails/active_storage/representations/")
+    )
+  end
+
   it "renders the action slot when provided" do
     plant_image = create(:plants_plant_image)
     component = described_class.new(plant_image: plant_image)

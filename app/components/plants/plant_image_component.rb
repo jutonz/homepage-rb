@@ -7,7 +7,10 @@ module Plants
       >
         <div class="flex justify-center mb-2">
           <%= link_to(plant_plant_image_path(@plant, @plant_image)) do %>
-            <%= image_tag(@plant_image.file, loading: "lazy") %>
+            <%= image_tag(
+              @plant_image.file.variant(:thumb),
+              loading: "lazy"
+            ) %>
           <% end %>
         </div>
         <% if @plant_image.taken_at.present? %>
