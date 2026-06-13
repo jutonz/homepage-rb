@@ -32,6 +32,20 @@ RSpec.describe "Plants::Plants", type: :request do
       expect(page).not_to have_content(other_plant.name)
     end
 
+    it "sorts plants by name" do
+      user = create(:user)
+      create(:plant, user:, name: "Zebra Plant")
+      create(:plant, user:, name: "Aloe Vera")
+      create(:plant, user:, name: "Monstera")
+      login_as(user, scope: :user)
+
+      get(plants_path)
+
+      body = response.body
+      expect(body.index("Aloe Vera")).to be < body.index("Monstera")
+      expect(body.index("Monstera")).to be < body.index("Zebra Plant")
+    end
+
     it "renders key image when present" do
       user = create(:user)
       plant = create(:plant, user:)
