@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "Plants inbox", type: :system do
+  around do |example|
+    Bullet.enable = false
+    example.run
+    Bullet.enable = true
+  end
+
   it "shows inbox images for the current user" do
     user = create(:user)
     other_user = create(:user)
