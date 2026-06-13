@@ -80,12 +80,8 @@ RSpec.configure do |config|
   end
 
   config.around(:each) do |example|
-    bullet =
-      if example.metadata.key?(:bullet)
-        example.metadata[:bullet]
-      else
-        example.metadata[:type] == :system
-      end
+    bullet = example.metadata[:type] == :system ||
+      example.metadata[:bullet]
     if bullet
       Bullet.start_request
       example.run

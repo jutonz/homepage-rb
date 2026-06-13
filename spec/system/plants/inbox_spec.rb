@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Plants inbox", type: :system, bullet: false do
+RSpec.describe "Plants inbox", type: :system do
   it "shows inbox images for the current user" do
     user = create(:user)
     other_user = create(:user)

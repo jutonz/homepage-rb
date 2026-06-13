@@ -30,12 +30,7 @@ module Plants
       @plant_images =
         @plant
           .plant_images
-          .with_attached_file
-          .includes(
-            file_attachment: {
-              blob: {variant_records: {image_attachment: :blob}}
-            }
-          )
+          .includes(file_attachment: :blob)
           .order(taken_at: :desc)
     end
 

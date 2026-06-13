@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Plant management", type: :system, bullet: false do
+RSpec.describe "Plant management", type: :system do
   it "creates a plant from the home page" do
     user = create(:user)
     login_as(user)
