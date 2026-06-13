@@ -30,7 +30,7 @@ module Plants
       @plant_images =
         @plant
           .plant_images
-          .includes(:file_attachment)
+          .includes(file_attachment: :blob)
           .order(taken_at: :desc)
     end
 

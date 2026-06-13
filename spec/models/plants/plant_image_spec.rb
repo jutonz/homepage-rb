@@ -29,4 +29,11 @@ RSpec.describe Plants::PlantImage do
   it "has a valid factory" do
     expect(build(:plants_plant_image)).to(be_valid)
   end
+
+  it "defines a :thumb variant on the file attachment" do
+    variants =
+      described_class.attachment_reflections["file"].named_variants
+
+    expect(variants).to(have_key(:thumb))
+  end
 end
