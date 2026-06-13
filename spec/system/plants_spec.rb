@@ -1,12 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Plant management", type: :system do
-  around do |example|
-    Bullet.enable = false
-    example.run
-    Bullet.enable = true
-  end
-
+RSpec.describe "Plant management", type: :system, bullet: false do
   it "creates a plant from the home page" do
     user = create(:user)
     login_as(user)
