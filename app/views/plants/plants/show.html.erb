@@ -49,6 +49,16 @@
   </div>
 <% end %>
 
+<% if @plant.died_at.present? %>
+  <div class="mt-8">
+    <h2 class="text-lg font-medium mb-2">Died</h2>
+    <div>
+      <span class="font-medium">Died at:</span>
+      <%= l(@plant.died_at.to_date) %>
+    </div>
+  </div>
+<% end %>
+
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Images</h2>
   <% if @plant_images.any? %>

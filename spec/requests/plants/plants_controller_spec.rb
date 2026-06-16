@@ -202,6 +202,30 @@ RSpec.describe "Plants::Plants", type: :request do
       expect(response.body).to include("Home Depot")
     end
 
+    it "renders died_at when present" do
+      user = create(:user)
+      died_at = Time.zone.local(2024, 5, 4, 9, 0, 0)
+      plant = create(:plant, user:, died_at:)
+      login_as(user, scope: :user)
+
+      get(plant_path(plant))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Died")
+      expect(response.body).to include("Died at:")
+      expect(response.body).to include(I18n.l(died_at.to_date))
+    end
+
+    it "does not render died section when died_at is blank" do
+      user = create(:user)
+      plant = create(:plant, user:)
+      login_as(user, scope: :user)
+
+      get(plant_path(plant))
+
+      expect(response.body).not_to include("Died at:")
+    end
+
     it "redirects when viewing another user's plant" do
       user = create(:user)
       other_plant = create(:plant)
@@ -299,13 +323,17 @@ RSpec.describe "Plants::Plants", type: :request do
       user = create(:user)
       plant = create(:plant, user:, name: "Old Name")
       login_as(user, scope: :user)
-      params = {plants_plant: {name: "New Name"}}
+      params = {
+        plants_plant: {name: "New Name", died_at: "2024-05-04"}
+      }
 
       patch(plant_path(plant), params:)
 
       expect(response).to redirect_to(plant_path(plant))
       expect(flash[:notice]).to eq("Plant was updated.")
-      expect(plant.reload.name).to eq("New Name")
+      plant.reload
+      expect(plant.name).to eq("New Name")
+      expect(plant.died_at.to_date).to eq(Date.new(2024, 5, 4))
     end
 
     it "renders edit form with errors when validation fails" do
