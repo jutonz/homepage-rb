@@ -182,7 +182,7 @@ RSpec.describe "Plants::Plants", type: :request do
 
     it "renders purchase details when present" do
       user = create(:user)
-      purchased_at = Time.current
+      purchased_at = Time.zone.local(2024, 3, 16, 10, 30, 0)
       plant = create(
         :plant,
         user:,
@@ -196,7 +196,8 @@ RSpec.describe "Plants::Plants", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Purchase")
       expect(response.body).to include("Purchased at:")
-      expect(response.body).to include(I18n.l(purchased_at))
+      expect(response.body).to include(I18n.l(purchased_at.to_date))
+      expect(response.body).not_to include("10:30")
       expect(response.body).to include("Purchased from:")
       expect(response.body).to include("Home Depot")
     end
