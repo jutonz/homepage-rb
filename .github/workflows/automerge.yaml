@@ -39,6 +39,7 @@ jobs:
           sentry-rails|semver-patch semver-minor
           standard|semver-minor semver-patch
           super_diff|semver-minor semver-patch
+          tailwindcss-rails|semver-patch semver-minor
           view_component|semver-minor semver-patch
           "
 
