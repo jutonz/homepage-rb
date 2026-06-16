@@ -30,15 +30,23 @@ module Plants
     def create_images(files)
       saved = true
       plant_image = nil
+      first_saved = nil
 
       Plants::PlantImage.transaction do
         files.each do |file|
           current = @plant.plant_images.new(file:, taken_at: @taken_at)
-          next if current.save
+          if current.save
+            first_saved ||= current
+            next
+          end
 
           plant_image = current
           saved = false
-          raise ActiveRecord::Rollback
+          raise(ActiveRecord::Rollback)
+        end
+
+        if saved && first_saved && @plant.key_image_id.nil?
+          @plant.update!(key_image: first_saved)
         end
       end
 
