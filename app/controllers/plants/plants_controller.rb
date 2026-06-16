@@ -59,7 +59,7 @@ module Plants
     def plant_params
       params.expect(
         plants_plant: %i[
-          name purchased_at purchased_from notes
+          name purchased_at purchased_from died_at notes
         ]
       )
     end

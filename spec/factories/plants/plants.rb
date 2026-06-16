@@ -4,6 +4,7 @@
 # Database name: primary
 #
 #  id             :bigint           not null, primary key
+#  died_at        :datetime
 #  name           :string           not null
 #  purchased_at   :datetime
 #  purchased_from :string

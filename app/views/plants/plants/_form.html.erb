@@ -5,6 +5,7 @@
   <%= form.input(:name, autofocus: true) %>
   <%= form.input(:purchased_from) %>
   <%= form.input(:purchased_at, as: :date, html5: true) %>
+  <%= form.input(:died_at, as: :date, html5: true) %>
   <%= form.rich_text_area(:notes) %>
-  <%= form.button(:submit) %>
+  <%= form.button(:submit, class: "mt-4") %>
 <% end %>
