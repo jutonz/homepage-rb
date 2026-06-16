@@ -37,7 +37,7 @@
     <% if @plant.purchased_at.present? %>
       <div>
         <span class="font-medium">Purchased at:</span>
-        <%= l(@plant.purchased_at) %>
+        <%= l(@plant.purchased_at.to_date) %>
       </div>
     <% end %>
     <% if @plant.purchased_from.present? %>
