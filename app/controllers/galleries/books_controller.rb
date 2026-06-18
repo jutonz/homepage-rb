@@ -21,7 +21,7 @@ module Galleries
         @book
           .images
           .includes(:gallery)
-          .includes(:file_attachment)
+          .includes(file_attachment: :blob)
           .page(params[:page])
           .per(PER_PAGE)
     end

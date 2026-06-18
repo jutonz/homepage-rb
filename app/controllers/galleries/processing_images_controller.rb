@@ -13,7 +13,7 @@ module Galleries
         policy_scope(Galleries::Image)
           .where(gallery: @gallery)
           .unprocessed
-          .includes(:gallery, :file_attachment)
+          .includes(:gallery, file_attachment: :blob)
     end
 
     private
