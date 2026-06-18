@@ -78,6 +78,23 @@ jobs:
           echo "version=$(bundle exec ruby -e \
             'require "playwright"; puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip'\
           )" >> $GITHUB_OUTPUT
+      - name: Verify npm and gem Playwright versions match
+        # The browser is installed for the gem's COMPATIBLE_PLAYWRIGHT_VERSION
+        # but launched at test time by the npm playwright driver, so the two
+        # must resolve to the same version or the browser build won't match.
+        run: |
+          gem_version="${{ steps.playwright-version.outputs.version }}"
+          npm_version="$(node -p "require('playwright/package.json').version")"
+          if [ "$gem_version" != "$npm_version" ]; then
+            echo "::error::Playwright version mismatch: \
+          npm playwright is $npm_version but the playwright-ruby-client gem \
+          expects $gem_version."
+            echo "To fix, align the two versions:"
+            echo "  - set \"playwright\" in package.json to \"$gem_version\","
+            echo "    then run 'npm install' to update package-lock.json; or"
+            echo "  - bump playwright-ruby-client in the Gemfile to match npm."
+            exit 1
+          fi
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v5
