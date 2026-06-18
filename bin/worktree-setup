@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 # Prepare a fresh git worktree.
 #
-# A fresh worktree is missing two gitignored things it needs:
+# A fresh worktree is missing three gitignored things it needs:
 #   - per-environment credential keys (config/credentials/*.key)
 #   - compiled assets (tailwind.css, etc.)
+#   - node_modules (the Playwright driver that system specs launch via
+#     `npm exec`; without it, browser specs hang waiting on a handshake
+#     that never comes)
 # Gems and the database are shared across worktrees, so `bundle install`
 # and `db:prepare` are not needed. This copies the keys from the main
-# checkout (no 1Password prompt, unlike bin/setup) and builds assets.
+# checkout (no 1Password prompt, unlike bin/setup), installs node
+# modules, and builds assets.
 #
 # Idempotent. No-op when run outside a linked worktree.
 set -euo pipefail
@@ -26,6 +30,12 @@ for env in development test production; do
   cp "$main_root/config/credentials/$env.key" \
     "config/credentials/$env.key"
 done
+
+echo "Installing node modules (Playwright driver for system specs)"
+npm ci
+
+echo "Ensuring the Playwright browser is installed"
+npm exec --no -- playwright install chromium >/dev/null 2>&1
 
 echo "Precompiling assets"
 mise exec -- bin/rails assets:precompile >/dev/null 2>&1

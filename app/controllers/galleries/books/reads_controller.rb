@@ -6,7 +6,7 @@ module Galleries
       def show
         @gallery = find_gallery
         @book = authorize(find_book)
-        @images = @book.images.includes(:file_attachment)
+        @images = @book.images.includes(file_attachment: :blob)
       end
 
       private

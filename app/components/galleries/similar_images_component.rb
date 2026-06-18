@@ -38,7 +38,7 @@ module Galleries
       @similar_images =
         scope
           .includes(:gallery)
-          .includes(:file_attachment)
+          .includes(file_attachment: :blob)
           .page(page)
           .per(PER_PAGE)
     end

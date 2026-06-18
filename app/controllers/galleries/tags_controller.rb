@@ -25,7 +25,7 @@ module Galleries
       @images =
         @tag
           .images
-          .includes(:file_attachment)
+          .includes(file_attachment: :blob)
           .includes(:gallery)
           .order(created_at: :desc)
           .page(params[:page])
