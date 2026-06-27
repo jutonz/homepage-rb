@@ -20,8 +20,18 @@ module Galleries
         raw.get("/download/#{ERB::Util.url_encode(file)}").body
       end
 
-      def delete(id)
-        json.post("/delete", {ids: [id], where: "done"}).body
+      def delete(id, where: "done")
+        json.post("/delete", {ids: [id], where:}).body
+      end
+
+      def delete_by_prefix(prefix)
+        hist = history
+        %w[queue done].each do |where|
+          hist.fetch(where, []).each do |entry|
+            next unless entry["custom_name_prefix"] == prefix
+            delete(entry["url"], where:)
+          end
+        end
       end
 
       private

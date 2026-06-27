@@ -84,6 +84,44 @@ RSpec.describe Galleries::VideoDownloader::Metube do
     end
   end
 
+  describe "#delete_by_prefix" do
+    it "deletes matching queue and done entries" do
+      history = {
+        "queue" => [
+          {"custom_name_prefix" => "rvd-1", "url" => "u-q"},
+          {"custom_name_prefix" => "rvd-2", "url" => "u-x"}
+        ],
+        "done" => [
+          {"custom_name_prefix" => "rvd-1", "url" => "u-d"}
+        ]
+      }
+      FakeMetube.stub(method: :get, path: "/history").to_return(
+        body: history.to_json,
+        headers: {"content-type" => "application/json"},
+        status: 200
+      )
+      queue_delete = FakeMetube.stub(method: :post, path: "/delete")
+        .with(body: {ids: ["u-q"], where: "queue"})
+        .to_return(
+          body: "{}",
+          headers: {"content-type" => "application/json"},
+          status: 200
+        )
+      done_delete = FakeMetube.stub(method: :post, path: "/delete")
+        .with(body: {ids: ["u-d"], where: "done"})
+        .to_return(
+          body: "{}",
+          headers: {"content-type" => "application/json"},
+          status: 200
+        )
+
+      described_class.new.delete_by_prefix("rvd-1")
+
+      expect(queue_delete).to have_been_requested
+      expect(done_delete).to have_been_requested
+    end
+  end
+
   describe "#fetch_file" do
     it "returns the raw bytes for the requested file" do
       bytes = "\x00\x01video".b
