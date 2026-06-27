@@ -39,6 +39,16 @@ module Galleries
               <%= @remote_video_download.error_message %>
             </p>
           <% end %>
+          <% if failed? %>
+            <%= button_to(
+              "Retry",
+              gallery_remote_video_download_retries_path(
+                @remote_video_download.gallery,
+                @remote_video_download
+              ),
+              class: "button"
+            ) %>
+          <% end %>
         </div>
       </div>
     ERB
@@ -57,6 +67,10 @@ module Galleries
     def failed_with_message?
       @remote_video_download.status_failed? &&
         @remote_video_download.error_message.present?
+    end
+
+    def failed?
+      @remote_video_download.status_failed?
     end
   end
 end

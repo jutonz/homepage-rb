@@ -60,6 +60,30 @@ RSpec.describe Galleries::RemoteVideoDownloadRowComponent,
     expect(page).to have_no_css("[data-role=thumbnail-placeholder]")
   end
 
+  it "renders a retry button when failed" do
+    download = create(:galleries_remote_video_download, :failed)
+
+    render_inline(described_class.new(remote_video_download: download))
+
+    expect(page).to have_css(
+      "form[action='" \
+      "#{gallery_remote_video_download_retries_path(
+        download.gallery, download
+      )}'] button",
+      text: "Retry"
+    )
+  end
+
+  it "renders no retry button when not failed" do
+    download = build_stubbed(
+      :galleries_remote_video_download, status: "downloading"
+    )
+
+    render_inline(described_class.new(remote_video_download: download))
+
+    expect(page).to have_no_button("Retry")
+  end
+
   it "shows the error message when failed" do
     download = build_stubbed(
       :galleries_remote_video_download,
