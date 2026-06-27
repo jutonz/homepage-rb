@@ -29,6 +29,7 @@ module Galleries
         %w[queue done].each do |where|
           hist.fetch(where, []).each do |entry|
             next unless entry["custom_name_prefix"] == prefix
+            next unless entry["url"]
             delete(entry["url"], where:)
           end
         end

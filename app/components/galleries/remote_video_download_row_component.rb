@@ -65,8 +65,7 @@ module Galleries
     end
 
     def failed_with_message?
-      @remote_video_download.status_failed? &&
-        @remote_video_download.error_message.present?
+      failed? && @remote_video_download.error_message.present?
     end
 
     def failed?

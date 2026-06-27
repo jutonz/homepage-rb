@@ -61,7 +61,7 @@ RSpec.describe Galleries::RemoteVideoDownloadRowComponent,
   end
 
   it "renders a retry button when failed" do
-    download = create(:galleries_remote_video_download, :failed)
+    download = build_stubbed(:galleries_remote_video_download, :failed)
 
     render_inline(described_class.new(remote_video_download: download))
 
