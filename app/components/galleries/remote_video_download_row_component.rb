@@ -49,6 +49,16 @@ module Galleries
               class: "button"
             ) %>
           <% end %>
+          <%= button_to(
+            "Delete",
+            gallery_remote_video_download_path(
+              @remote_video_download.gallery,
+              @remote_video_download
+            ),
+            method: "delete",
+            data: {turbo_confirm: "Delete this video download?"},
+            class: "button button--danger"
+          ) %>
         </div>
       </div>
     ERB
