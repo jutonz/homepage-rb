@@ -2,6 +2,8 @@ module Galleries
   class RemoteVideoDownloadJob < ApplicationJob
     queue_as :background
 
+    discard_on ActiveJob::DeserializationError
+
     POLL_INTERVAL = 30.seconds
     MAX_DURATION = 1.hour
 
