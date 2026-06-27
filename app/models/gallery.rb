@@ -32,6 +32,9 @@ class Gallery < ActiveRecord::Base
   has_many :books,
     class_name: "Galleries::Book",
     dependent: :destroy
+  has_many :remote_video_downloads,
+    class_name: "Galleries::RemoteVideoDownload",
+    dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
 

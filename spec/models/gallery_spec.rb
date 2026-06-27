@@ -29,6 +29,12 @@ RSpec.describe Gallery do
   it { is_expected.to have_many(:tags) }
   it { is_expected.to have_many(:books) }
 
+  it {
+    is_expected.to have_many(:remote_video_downloads)
+      .class_name("Galleries::RemoteVideoDownload")
+      .dependent(:destroy)
+  }
+
   it { is_expected.to validate_presence_of(:name) }
 
   describe "uniqueness validation" do
