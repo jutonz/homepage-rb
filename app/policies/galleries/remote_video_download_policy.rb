@@ -16,6 +16,10 @@ module Galleries
       user_owns_gallery?
     end
 
+    def destroy?
+      user_owns_gallery?
+    end
+
     private
 
     def user_owns_gallery?
