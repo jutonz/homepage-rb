@@ -139,9 +139,6 @@ jobs:
       - run: echo -n "$TEST_KEY" > config/credentials/test.key
       - run: bundle exec standardrb
       - run: ./bin/brakeman
-      # libvips is required to load ruby-vips when the app boots (db:setup
-      # and annotaterb). imagemagick/ffmpeg are not needed here since they
-      # are only shelled out to at runtime, not required at boot.
       - run: sudo apt-get update && sudo apt-get install -y libvips
       - run: bin/rails db:setup
       - run: bundle exec annotaterb models
