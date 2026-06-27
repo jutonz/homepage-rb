@@ -1,0 +1,37 @@
+<%= render(HeaderComponent.new(
+  title: "Video downloads"
+)) do |c| %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+
+  <%= c.with_action do %>
+    <%= link_to(
+      "Add video from URL",
+      new_gallery_remote_video_download_path(@gallery),
+      class: "button"
+    ) %>
+  <% end %>
+<% end %>
+
+<% if @remote_video_downloads.any? %>
+  <table class="w-full text-left">
+    <thead>
+      <tr>
+        <th class="pb-2">URL</th>
+        <th class="pb-2">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @remote_video_downloads.each do |download| %>
+        <tr>
+          <td class="py-1 pr-4 break-all">
+            <%= download.url %>
+          </td>
+          <td class="py-1"><%= download.status %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-gray-500">No video downloads yet.</p>
+<% end %>

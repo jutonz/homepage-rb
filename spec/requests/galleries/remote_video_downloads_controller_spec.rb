@@ -34,6 +34,47 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
     end
   end
 
+  describe "index" do
+    it "lists the gallery's downloads with their status" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create(
+        :galleries_remote_video_download,
+        gallery:,
+        url: "https://example.com/listed.mp4",
+        status: "downloading"
+      )
+      login_as(user)
+
+      get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("https://example.com/listed.mp4")
+      expect(response.body).to include("downloading")
+      expect(response.body).to include(
+        new_gallery_remote_video_download_path(gallery)
+      )
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+
+      get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 when gallery is not owned by current user" do
+      gallery = create(:gallery)
+      other_user = create(:user)
+      login_as(other_user)
+
+      get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "create" do
     it "creates a download and enqueues the job" do
       user = create(:user)

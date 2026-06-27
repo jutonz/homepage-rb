@@ -3,6 +3,16 @@ module Galleries
     before_action :ensure_authenticated!
     after_action :verify_authorized
 
+    def index
+      @gallery = find_gallery
+      @remote_video_downloads = authorize(
+        @gallery.remote_video_downloads.new,
+        :index?
+      ).then do
+        @gallery.remote_video_downloads.order(created_at: :desc)
+      end
+    end
+
     def new
       @gallery = find_gallery
       @remote_video_download = authorize(
