@@ -84,7 +84,7 @@ RSpec.describe Galleries::RemoteVideoDownloadRowComponent,
     expect(page).to have_no_button("Retry")
   end
 
-  it "renders a delete button for every status" do
+  it "renders a delete button with a confirmation for every status" do
     download = build_stubbed(
       :galleries_remote_video_download, status: "downloading"
     )
@@ -95,18 +95,7 @@ RSpec.describe Galleries::RemoteVideoDownloadRowComponent,
       "form[action='" \
       "#{gallery_remote_video_download_path(
         download.gallery, download
-      )}'] button",
-      text: "Delete"
-    )
-  end
-
-  it "asks for confirmation before deleting" do
-    download = build_stubbed(:galleries_remote_video_download)
-
-    render_inline(described_class.new(remote_video_download: download))
-
-    expect(page).to have_css(
-      "button[data-turbo-confirm='Delete this video download?']",
+      )}'] button[data-turbo-confirm='Delete this video download?']",
       text: "Delete"
     )
   end
