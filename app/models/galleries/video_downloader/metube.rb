@@ -1,6 +1,17 @@
 module Galleries
   module VideoDownloader
     class Metube
+      def add(url:, prefix:)
+        json.post("/add", {
+          url:,
+          download_type: "video",
+          quality: "best",
+          format: "mp4",
+          custom_name_prefix: prefix,
+          auto_start: true
+        }).body
+      end
+
       def history = json.get("/history").body
 
       private

@@ -25,4 +25,31 @@ RSpec.describe Galleries::VideoDownloader::Metube do
         .to raise_error(Faraday::ServerError)
     end
   end
+
+  describe "#add" do
+    it "enqueues a download via POST /add" do
+      stub = FakeMetube.stub(method: :post, path: "/add")
+        .with(body: {
+          url: "https://example.com/v",
+          download_type: "video",
+          quality: "best",
+          format: "mp4",
+          custom_name_prefix: "rvd-1",
+          auto_start: true
+        })
+        .to_return(
+          body: {status: "ok"}.to_json,
+          headers: {"content-type" => "application/json"},
+          status: 200
+        )
+
+      result = described_class.new.add(
+        url: "https://example.com/v",
+        prefix: "rvd-1"
+      )
+
+      expect(stub).to have_been_requested
+      expect(result).to eql({"status" => "ok"})
+    end
+  end
 end
