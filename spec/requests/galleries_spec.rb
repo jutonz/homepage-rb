@@ -55,6 +55,18 @@ RSpec.describe GalleriesController do
       expect(page).to have_link("Galleries", href: galleries_path)
     end
 
+    it "links to the add-video-from-url form" do
+      gallery = create(:gallery)
+      login_as(gallery.user)
+
+      get(gallery_path(gallery))
+
+      expect(response.body).to include(
+        new_gallery_remote_video_download_path(gallery)
+      )
+      expect(response.body).to include("Add video from URL")
+    end
+
     it "includes a count of the number of images" do
       user = create(:user)
       gallery = create(:gallery, user:)

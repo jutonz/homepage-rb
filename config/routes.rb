@@ -50,6 +50,7 @@ Rails.application.routes.draw do
         resources :tags, only: %i[create destroy],
           controller: "bulk_uploads/tags"
       end
+      resources :remote_video_downloads, only: %i[index new create]
       resource :bulk_tag, only: %i[create]
       resource :bulk_delete, only: %i[create]
       resources :tags do

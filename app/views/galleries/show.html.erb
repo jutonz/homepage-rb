@@ -22,6 +22,14 @@
 
       <%= c.with_action do %>
         <%= link_to(
+          "Add video from URL",
+          new_gallery_remote_video_download_path(@gallery),
+          class: "button"
+        ) %>
+      <% end %>
+
+      <%= c.with_action do %>
+        <%= link_to(
           "Tags",
           gallery_tags_path(@gallery),
           class: "button"

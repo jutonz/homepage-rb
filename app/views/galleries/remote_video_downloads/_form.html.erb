@@ -1,0 +1,7 @@
+<%= simple_form_for(
+  @remote_video_download,
+  url: gallery_remote_video_downloads_path(@gallery)
+) do |form| %>
+  <%= form.input(:url, label: "Video URL") %>
+  <%= form.button(:submit, "Add video") %>
+<% end %>
