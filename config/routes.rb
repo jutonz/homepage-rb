@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     resources :galleries, only: [] do
       scope module: :galleries do
         resources :images, only: %w[create]
+        resources :remote_video_downloads, only: %w[create]
       end
     end
     scope module: :plants do
