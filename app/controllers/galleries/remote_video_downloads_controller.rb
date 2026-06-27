@@ -64,7 +64,7 @@ module Galleries
 
     def cancel_metube_entry(remote_video_download)
       Galleries::VideoDownloader::Metube.new
-        .delete_by_prefix("rvd-#{remote_video_download.id}")
+        .delete_by_prefix(remote_video_download.metube_prefix)
     rescue => e
       Rails.logger.warn(
         "RemoteVideoDownload #{remote_video_download.id} " \

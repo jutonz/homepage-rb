@@ -103,7 +103,7 @@ module Galleries
       rvd.broadcast_row
     end
 
-    def prefix = "rvd-#{rvd.id}"
+    def prefix = rvd.metube_prefix
 
     def metube = @metube ||= Galleries::VideoDownloader::Metube.new
   end
