@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_16_130814) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_27_170754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "galleries_remote_video_download_status", ["pending", "downloading", "completed", "failed"]
   create_enum "galleries_tag_classification", ["none", "subject", "system", "artist"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -127,6 +128,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_16_130814) do
     t.datetime "processed_at"
     t.datetime "updated_at", null: false
     t.index ["gallery_id"], name: "index_galleries_images_on_gallery_id"
+  end
+
+  create_table "galleries_remote_video_downloads", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.bigint "gallery_id", null: false
+    t.bigint "image_id"
+    t.enum "status", default: "pending", null: false, enum_type: "galleries_remote_video_download_status"
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.index ["gallery_id"], name: "index_galleries_remote_video_downloads_on_gallery_id"
+    t.index ["image_id"], name: "index_galleries_remote_video_downloads_on_image_id"
   end
 
   create_table "galleries_social_media_links", force: :cascade do |t|
@@ -517,6 +530,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_16_130814) do
   add_foreign_key "galleries_image_tags", "galleries_images", column: "image_id"
   add_foreign_key "galleries_image_tags", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_images", "galleries"
+  add_foreign_key "galleries_remote_video_downloads", "galleries"
+  add_foreign_key "galleries_remote_video_downloads", "galleries_images", column: "image_id", on_delete: :nullify
   add_foreign_key "galleries_social_media_links", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
