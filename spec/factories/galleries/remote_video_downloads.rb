@@ -1,3 +1,28 @@
+# == Schema Information
+#
+# Table name: galleries_remote_video_downloads
+# Database name: primary
+#
+#  id            :bigint           not null, primary key
+#  error_message :text
+#  status        :enum             default("pending"), not null
+#  url           :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  gallery_id    :bigint           not null
+#  image_id      :bigint
+#
+# Indexes
+#
+#  index_galleries_remote_video_downloads_on_gallery_id  (gallery_id)
+#  index_galleries_remote_video_downloads_on_image_id    (image_id)
+#  index_galleries_rvd_on_gallery_id_and_url             (gallery_id,url) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (gallery_id => galleries.id)
+#  fk_rails_...  (image_id => galleries_images.id) ON DELETE => nullify
+#
 FactoryBot.define do
   factory :galleries_remote_video_download,
     class: "Galleries::RemoteVideoDownload" do
