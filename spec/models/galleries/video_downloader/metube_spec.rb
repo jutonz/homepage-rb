@@ -69,4 +69,23 @@ RSpec.describe Galleries::VideoDownloader::Metube do
       expect(result).to eql({"status" => "ok"})
     end
   end
+
+  describe "#fetch_file" do
+    it "returns the raw bytes for the requested file" do
+      bytes = "\x00\x01video".b
+      stub = FakeMetube.stub(
+        method: :get,
+        path: "/download/rvd-1%20clip.mp4"
+      ).to_return(
+        body: bytes,
+        headers: {"content-type" => "video/mp4"},
+        status: 200
+      )
+
+      result = described_class.new.fetch_file("rvd-1 clip.mp4")
+
+      expect(stub).to have_been_requested
+      expect(result).to eql(bytes)
+    end
+  end
 end
