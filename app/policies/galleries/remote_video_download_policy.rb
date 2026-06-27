@@ -12,6 +12,10 @@ module Galleries
       user_owns_gallery?
     end
 
+    def update?
+      user_owns_gallery?
+    end
+
     private
 
     def user_owns_gallery?
