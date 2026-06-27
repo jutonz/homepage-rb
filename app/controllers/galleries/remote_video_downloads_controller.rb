@@ -7,7 +7,9 @@ module Galleries
       @gallery = find_gallery
       authorize(@gallery.remote_video_downloads.new, :index?)
       @remote_video_downloads =
-        @gallery.remote_video_downloads.order(created_at: :desc)
+        @gallery.remote_video_downloads
+          .includes(image: [:gallery, {file_attachment: :blob}])
+          .order(created_at: :desc)
     end
 
     def new

@@ -15,30 +15,15 @@
 <% end %>
 
 <% if @remote_video_downloads.load.any? %>
-  <table class="w-full text-left">
-    <thead>
-      <tr>
-        <th class="pb-2">URL</th>
-        <th class="pb-2">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @remote_video_downloads.each do |download| %>
-        <tr>
-          <td class="py-1 pr-4 break-all">
-            <%= download.url %>
-          </td>
-          <td class="py-1">
-            <%= render(
-              Galleries::RemoteVideoDownloadPillComponent.new(
-                remote_video_download: download
-              )
-            ) %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <div class="divide-y">
+    <% @remote_video_downloads.each do |download| %>
+      <%= render(
+        Galleries::RemoteVideoDownloadRowComponent.new(
+          remote_video_download: download
+        )
+      ) %>
+    <% end %>
+  </div>
 <% else %>
   <p class="text-gray-500">No video downloads yet.</p>
 <% end %>
