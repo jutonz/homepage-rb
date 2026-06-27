@@ -22,8 +22,10 @@ module Galleries
     attr_reader :rvd
 
     def start_download
+      cleanup_stale_entry
       metube.add(url: rvd.url, prefix:)
       rvd.status_downloading!
+      rvd.broadcast_row
       reenqueue
     end
 
@@ -68,6 +70,7 @@ module Galleries
           rvd.update!(status: :completed, image:)
           image
         end
+      rvd.broadcast_row
       Galleries::ImageProcessingJob.perform_later(image)
       cleanup(entry)
     end
@@ -85,8 +88,17 @@ module Galleries
       self.class.set(wait: POLL_INTERVAL).perform_later(rvd)
     end
 
+    def cleanup_stale_entry
+      metube.delete_by_prefix(prefix)
+    rescue => e
+      Rails.logger.warn(
+        "RemoteVideoDownload #{rvd.id} stale cleanup failed: #{e.message}"
+      )
+    end
+
     def fail!(message)
       rvd.update!(status: :failed, error_message: message)
+      rvd.broadcast_row
     end
 
     def prefix = "rvd-#{rvd.id}"

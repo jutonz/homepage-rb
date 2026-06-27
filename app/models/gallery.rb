@@ -46,6 +46,10 @@ class Gallery < ActiveRecord::Base
     "gallery_#{id}_processing_images"
   end
 
+  def remote_video_downloads_stream_name
+    "gallery_#{id}_remote_video_downloads"
+  end
+
   def recently_used_tags(excluded_image_ids: nil, image_limit: 10)
     Galleries::RecentTagsQuery.call(
       gallery: self,

@@ -1,3 +1,7 @@
+<%= turbo_stream_from(
+  @gallery.remote_video_downloads_stream_name
+) %>
+
 <%= render(HeaderComponent.new(
   title: "Video downloads"
 )) do |c| %>

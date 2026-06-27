@@ -56,6 +56,16 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
       )
     end
 
+    it "subscribes to the live updates stream" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+
+      get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response.body).to include("turbo-cable-stream-source")
+    end
+
     it "links to the resulting image for a completed download" do
       user = create(:user)
       gallery = create(:gallery, user:)
@@ -118,6 +128,78 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
       login_as(other_user)
 
       get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "retry" do
+    it "resets a failed download and re-enqueues the job" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download, :failed, gallery:
+      )
+      login_as(user)
+      stub_const(
+        "Galleries::RemoteVideoDownloadJob",
+        Class.new(ApplicationJob)
+      )
+
+      post(gallery_remote_video_download_retries_path(gallery, download))
+
+      expect(response).to redirect_to(
+        gallery_remote_video_downloads_path(gallery)
+      )
+      download.reload
+      expect(download).to be_status_pending
+      expect(download.error_message).to be_nil
+      expect(Galleries::RemoteVideoDownloadJob)
+        .to have_been_enqueued.with(download)
+    end
+
+    it "does not re-enqueue a download that has not failed" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        gallery:, status: "downloading"
+      )
+      login_as(user)
+      stub_const(
+        "Galleries::RemoteVideoDownloadJob",
+        Class.new(ApplicationJob)
+      )
+
+      post(gallery_remote_video_download_retries_path(gallery, download))
+
+      expect(response).to redirect_to(
+        gallery_remote_video_downloads_path(gallery)
+      )
+      expect(download.reload).to be_status_downloading
+      expect(Galleries::RemoteVideoDownloadJob)
+        .not_to have_been_enqueued
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      download = create(
+        :galleries_remote_video_download, :failed, gallery:
+      )
+
+      post(gallery_remote_video_download_retries_path(gallery, download))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 when gallery is not owned by current user" do
+      gallery = create(:gallery)
+      download = create(
+        :galleries_remote_video_download, :failed, gallery:
+      )
+      login_as(create(:user))
+
+      post(gallery_remote_video_download_retries_path(gallery, download))
 
       expect(response).to have_http_status(:not_found)
     end

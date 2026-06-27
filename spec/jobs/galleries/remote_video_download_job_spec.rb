@@ -10,6 +10,7 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
 
   it "starts the download and transitions to downloading" do
     metube = stub_metube
+    allow(metube).to receive(:delete_by_prefix)
     allow(metube).to receive(:add)
     rvd = create(:galleries_remote_video_download, status: "pending")
 
@@ -22,6 +23,7 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
 
   it "re-enqueues itself to poll" do
     metube = stub_metube
+    allow(metube).to receive(:delete_by_prefix)
     allow(metube).to receive(:add)
     rvd = create(:galleries_remote_video_download, status: "pending")
 
@@ -164,6 +166,7 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
 
   it "fails fast if add is unreachable" do
     metube = stub_metube
+    allow(metube).to receive(:delete_by_prefix)
     rvd = create(:galleries_remote_video_download, status: "pending")
     allow(metube).to receive(:add)
       .and_raise(Faraday::ConnectionFailed.new("down"))
@@ -173,6 +176,60 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     rvd.reload
     expect(rvd).to be_status_failed
     expect(rvd.error_message).to eq("down")
+  end
+
+  it "clears any stale MeTube entry before re-adding" do
+    metube = stub_metube
+    allow(metube).to receive(:delete_by_prefix)
+    allow(metube).to receive(:add)
+    rvd = create(:galleries_remote_video_download, status: "pending")
+
+    described_class.new.perform(rvd)
+
+    expect(metube).to have_received(:delete_by_prefix)
+      .with("rvd-#{rvd.id}")
+  end
+
+  it "broadcasts the row when the download starts" do
+    metube = stub_metube
+    allow(metube).to receive(:delete_by_prefix)
+    allow(metube).to receive(:add)
+    rvd = create(:galleries_remote_video_download, status: "pending")
+    allow(rvd).to receive(:broadcast_row)
+
+    described_class.new.perform(rvd)
+
+    expect(rvd).to have_received(:broadcast_row)
+  end
+
+  it "broadcasts the row when the download completes" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "downloading")
+    entry = {
+      "custom_name_prefix" => "rvd-#{rvd.id}",
+      "status" => "finished", "filename" => "clip.mp4", "id" => "id-1"
+    }
+    allow(metube).to receive(:history)
+      .and_return("done" => [entry], "queue" => [], "pending" => [])
+    allow(metube).to receive(:fetch_file).and_return("videobytes")
+    allow(metube).to receive(:delete)
+    allow(rvd).to receive(:broadcast_row)
+
+    described_class.new.perform(rvd)
+
+    expect(rvd).to have_received(:broadcast_row)
+  end
+
+  it "broadcasts the row when the download fails" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "downloading")
+    allow(metube).to receive(:history)
+      .and_raise(Faraday::ConnectionFailed.new("down"))
+    allow(rvd).to receive(:broadcast_row)
+
+    described_class.new.perform(rvd)
+
+    expect(rvd).to have_received(:broadcast_row)
   end
 
   it "fails fast if history is unreachable" do
