@@ -112,6 +112,23 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+      TEST_KEY: ${{ secrets.TEST_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -119,8 +136,17 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: echo -n "$TEST_KEY" > config/credentials/test.key
       - run: bundle exec standardrb
       - run: ./bin/brakeman
+      - run: bin/rails db:setup
+      - run: bundle exec annotaterb models
+      - name: Verify db annotations are up to date
+        run: |
+          git diff --exit-code app/models spec/models spec/factories || {
+            echo "::error::db annotations are out of date. Run 'bin/rails db:migrate' (or 'bundle exec annotaterb models') locally and commit the result."
+            exit 1
+          }
 
   build_push:
     if: github.ref == 'refs/heads/main'
