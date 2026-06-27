@@ -116,4 +116,48 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
 
     expect(rvd.reload).to be_status_completed
   end
+
+  it "fails with the error message on a MeTube error entry" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "downloading")
+    entry = {
+      "custom_name_prefix" => "rvd-#{rvd.id}",
+      "status" => "error", "error" => "bad video", "msg" => "x"
+    }
+    allow(metube).to receive(:history)
+      .and_return("done" => [entry], "queue" => [], "pending" => [])
+
+    described_class.new.perform(rvd)
+
+    rvd.reload
+    expect(rvd).to be_status_failed
+    expect(rvd.error_message).to eq("bad video")
+  end
+
+  it "re-enqueues while still downloading" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "downloading")
+    allow(metube).to receive(:history)
+      .and_return("done" => [], "queue" => [], "pending" => [])
+
+    expect { described_class.new.perform(rvd) }
+      .to have_enqueued_job(described_class).with(rvd)
+    expect(rvd.reload).to be_status_downloading
+  end
+
+  it "fails when the overall timeout is exceeded" do
+    metube = stub_metube
+    rvd = create(
+      :galleries_remote_video_download,
+      status: "downloading", created_at: 2.hours.ago
+    )
+    allow(metube).to receive(:history)
+      .and_return("done" => [], "queue" => [], "pending" => [])
+
+    described_class.new.perform(rvd)
+
+    rvd.reload
+    expect(rvd).to be_status_failed
+    expect(rvd.error_message).to match(/timed out/)
+  end
 end

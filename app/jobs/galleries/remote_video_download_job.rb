@@ -27,10 +27,29 @@ module Galleries
 
     def poll_download
       entry = find_entry
-      return reenqueue if entry.nil?
+      return handle_pending if entry.nil?
 
       case entry["status"]
-      when "finished" then handle_finished(entry)
+      when "finished"
+        handle_finished(entry)
+      when "error"
+        rvd.update!(
+          status: :failed,
+          error_message: entry["error"] || entry["msg"]
+        )
+      else
+        handle_pending
+      end
+    end
+
+    def handle_pending
+      if rvd.created_at + MAX_DURATION < Time.current
+        rvd.update!(
+          status: :failed,
+          error_message: "timed out after #{MAX_DURATION.inspect}"
+        )
+      else
+        reenqueue
       end
     end
 
