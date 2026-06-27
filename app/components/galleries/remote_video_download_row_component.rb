@@ -25,7 +25,7 @@ module Galleries
             @remote_video_download.url,
             target: "_blank",
             rel: "noopener",
-            class: "break-all text-blue-600 hover:underline"
+            class: "break-all text-blue-600 hover:text-blue-800"
           ) %>
           <%= render(Galleries::RemoteVideoDownloadPillComponent.new(
             remote_video_download: @remote_video_download
