@@ -5,12 +5,9 @@ module Galleries
 
     def index
       @gallery = find_gallery
-      @remote_video_downloads = authorize(
-        @gallery.remote_video_downloads.new,
-        :index?
-      ).then do
+      authorize(@gallery.remote_video_downloads.new, :index?)
+      @remote_video_downloads =
         @gallery.remote_video_downloads.order(created_at: :desc)
-      end
     end
 
     def new

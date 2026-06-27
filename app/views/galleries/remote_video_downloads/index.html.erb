@@ -1,6 +1,7 @@
 <%= render(HeaderComponent.new(
   title: "Video downloads"
 )) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Galleries", galleries_path) %>
   <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
 
@@ -13,7 +14,7 @@
   <% end %>
 <% end %>
 
-<% if @remote_video_downloads.any? %>
+<% if @remote_video_downloads.load.any? %>
   <table class="w-full text-left">
     <thead>
       <tr>
@@ -27,7 +28,13 @@
           <td class="py-1 pr-4 break-all">
             <%= download.url %>
           </td>
-          <td class="py-1"><%= download.status %></td>
+          <td class="py-1">
+            <%= render(
+              Galleries::RemoteVideoDownloadPillComponent.new(
+                remote_video_download: download
+              )
+            ) %>
+          </td>
         </tr>
       <% end %>
     </tbody>
