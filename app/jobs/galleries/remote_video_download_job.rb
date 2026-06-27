@@ -26,6 +26,39 @@ module Galleries
     end
 
     def poll_download
+      entry = find_entry
+      return reenqueue if entry.nil?
+
+      case entry["status"]
+      when "finished" then handle_finished(entry)
+      end
+    end
+
+    def find_entry
+      metube.history.fetch("done", [])
+        .find { it["custom_name_prefix"] == prefix }
+    end
+
+    def handle_finished(entry)
+      bytes = metube.fetch_file(entry["filename"])
+      image = rvd.gallery.images.create!(
+        file: {
+          io: StringIO.new(bytes),
+          filename: File.basename(entry["filename"])
+        }
+      )
+      image.add_tag(Galleries::Tag.tagging_needed(rvd.gallery))
+      Galleries::ImageProcessingJob.perform_later(image)
+      rvd.update!(status: :completed, image:)
+      cleanup(entry)
+    end
+
+    def cleanup(entry)
+      metube.delete(entry["id"])
+    rescue => e
+      Rails.logger.warn(
+        "RemoteVideoDownload #{rvd.id} cleanup failed: #{e.message}"
+      )
     end
 
     def reenqueue
