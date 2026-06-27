@@ -56,6 +56,38 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
       )
     end
 
+    it "links to the resulting image for a completed download" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        :completed,
+        gallery:
+      )
+      login_as(user)
+
+      get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response.body).to include(
+        gallery_image_path(gallery, download.image)
+      )
+    end
+
+    it "shows the error message for a failed download" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create(
+        :galleries_remote_video_download,
+        :failed,
+        gallery:
+      )
+      login_as(user)
+
+      get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response.body).to include("unable to download video")
+    end
+
     it "requires authentication" do
       gallery = create(:gallery)
 
