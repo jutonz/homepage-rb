@@ -32,7 +32,8 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
 
   it "does nothing when status is not pending or downloading" do
     allow(Galleries::VideoDownloader::Metube).to receive(:new)
-    rvd = create(:galleries_remote_video_download, status: "completed")
+    rvd =
+      build_stubbed(:galleries_remote_video_download, status: "completed")
 
     described_class.new.perform(rvd)
 
@@ -86,7 +87,7 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     entry = {
       "custom_name_prefix" => "rvd-#{rvd.id}",
       "status" => "finished",
-      "filename" => "clip.mp4", "id" => "id-1"
+      "filename" => "clip.mp4", "url" => "https://x/v"
     }
     allow(metube).to receive(:history)
       .and_return("done" => [entry], "queue" => [], "pending" => [])
@@ -95,7 +96,7 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
 
     described_class.new.perform(rvd)
 
-    expect(metube).to have_received(:delete).with("id-1")
+    expect(metube).to have_received(:delete).with("https://x/v")
   end
 
   it "completes even if cleanup delete fails" do

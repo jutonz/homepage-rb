@@ -13,8 +13,8 @@ module Galleries
       elsif rvd.status_downloading?
         poll_download
       end
-    rescue Faraday::Error => e
-      rvd.update!(status: :failed, error_message: e.message)
+    rescue => e
+      fail!(e.message)
     end
 
     private
@@ -35,10 +35,7 @@ module Galleries
       when "finished"
         handle_finished(entry)
       when "error"
-        rvd.update!(
-          status: :failed,
-          error_message: entry["error"] || entry["msg"]
-        )
+        fail!(entry["error"] || entry["msg"])
       else
         handle_pending
       end
@@ -46,10 +43,7 @@ module Galleries
 
     def handle_pending
       if rvd.created_at + MAX_DURATION < Time.current
-        rvd.update!(
-          status: :failed,
-          error_message: "timed out after #{MAX_DURATION.inspect}"
-        )
+        fail!("timed out after #{MAX_DURATION.inspect}")
       else
         reenqueue
       end
@@ -62,20 +56,25 @@ module Galleries
 
     def handle_finished(entry)
       bytes = metube.fetch_file(entry["filename"])
-      image = rvd.gallery.images.create!(
-        file: {
-          io: StringIO.new(bytes),
-          filename: File.basename(entry["filename"])
-        }
-      )
-      image.add_tag(Galleries::Tag.tagging_needed(rvd.gallery))
+      image =
+        ActiveRecord::Base.transaction do
+          image = rvd.gallery.images.create!(
+            file: {
+              io: StringIO.new(bytes),
+              filename: File.basename(entry["filename"])
+            }
+          )
+          image.add_tag(Galleries::Tag.tagging_needed(rvd.gallery))
+          rvd.update!(status: :completed, image:)
+          image
+        end
       Galleries::ImageProcessingJob.perform_later(image)
-      rvd.update!(status: :completed, image:)
       cleanup(entry)
     end
 
     def cleanup(entry)
-      metube.delete(entry["id"])
+      # MeTube keys /delete on the entry url, not the id field.
+      metube.delete(entry["url"])
     rescue => e
       Rails.logger.warn(
         "RemoteVideoDownload #{rvd.id} cleanup failed: #{e.message}"
@@ -84,6 +83,10 @@ module Galleries
 
     def reenqueue
       self.class.set(wait: POLL_INTERVAL).perform_later(rvd)
+    end
+
+    def fail!(message)
+      rvd.update!(status: :failed, error_message: message)
     end
 
     def prefix = "rvd-#{rvd.id}"
