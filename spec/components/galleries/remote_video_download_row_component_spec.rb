@@ -17,6 +17,16 @@ RSpec.describe Galleries::RemoteVideoDownloadRowComponent,
     )
   end
 
+  it "gives the row a stable dom id" do
+    download = build_stubbed(:galleries_remote_video_download)
+
+    render_inline(described_class.new(remote_video_download: download))
+
+    expect(page).to have_css(
+      "#remote_video_download_#{download.id}"
+    )
+  end
+
   it "renders the status pill" do
     download = build_stubbed(
       :galleries_remote_video_download,

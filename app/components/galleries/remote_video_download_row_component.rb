@@ -1,7 +1,11 @@
 module Galleries
   class RemoteVideoDownloadRowComponent < ApplicationComponent
     erb_template <<~ERB
-      <div class="flex gap-4 py-3" data-role="rvd-row">
+      <div
+        id="remote_video_download_<%= @remote_video_download.id %>"
+        class="flex gap-4 py-3"
+        data-role="rvd-row"
+      >
         <div class="w-[200px] shrink-0">
           <% if completed_with_image? %>
             <%= render(Galleries::ImageThumbnailComponent.new(
