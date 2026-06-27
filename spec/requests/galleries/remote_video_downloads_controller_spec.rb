@@ -56,6 +56,16 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
       )
     end
 
+    it "subscribes to the live updates stream" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+
+      get(gallery_remote_video_downloads_path(gallery))
+
+      expect(response.body).to include("turbo-cable-stream-source")
+    end
+
     it "links to the resulting image for a completed download" do
       user = create(:user)
       gallery = create(:gallery, user:)

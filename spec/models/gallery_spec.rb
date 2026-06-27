@@ -68,6 +68,13 @@ RSpec.describe Gallery do
     end
   end
 
+  it "names the remote video downloads turbo stream" do
+    gallery = build_stubbed(:gallery)
+
+    expect(gallery.remote_video_downloads_stream_name)
+      .to eql("gallery_#{gallery.id}_remote_video_downloads")
+  end
+
   describe "#recently_used_tags" do
     it "calls the query object" do
       allow(Galleries::RecentTagsQuery).to receive(:call)
