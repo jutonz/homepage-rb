@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Galleries::RemoteVideoDownloadsController do
+  include ActiveJob::TestHelper
+
   describe "new" do
     it "requires authentication" do
       gallery = create(:gallery)
@@ -29,6 +31,69 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("remote_video_download[url]")
+    end
+  end
+
+  describe "create" do
+    it "creates a download and enqueues the job" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      stub_const(
+        "Galleries::RemoteVideoDownloadJob",
+        Class.new(ApplicationJob)
+      )
+      params = {
+        remote_video_download: {url: "https://example.com/v.mp4"}
+      }
+
+      post(gallery_remote_video_downloads_path(gallery), params:)
+
+      expect(response).to redirect_to(
+        gallery_remote_video_downloads_path(gallery)
+      )
+      download = gallery.remote_video_downloads.last
+      expect(download.url).to eql("https://example.com/v.mp4")
+      expect(download).to be_status_pending
+      expect(Galleries::RemoteVideoDownloadJob)
+        .to have_been_enqueued.with(download)
+    end
+
+    it "rerenders the form when the url is blank" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      params = {remote_video_download: {url: ""}}
+
+      post(gallery_remote_video_downloads_path(gallery), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("remote_video_download[url]")
+      expect(gallery.remote_video_downloads.count).to eql(0)
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      params = {
+        remote_video_download: {url: "https://example.com/v.mp4"}
+      }
+
+      post(gallery_remote_video_downloads_path(gallery), params:)
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 when gallery is not owned by current user" do
+      gallery = create(:gallery)
+      other_user = create(:user)
+      login_as(other_user)
+      params = {
+        remote_video_download: {url: "https://example.com/v.mp4"}
+      }
+
+      post(gallery_remote_video_downloads_path(gallery), params:)
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 end
