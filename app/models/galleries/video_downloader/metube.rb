@@ -1,0 +1,52 @@
+module Galleries
+  module VideoDownloader
+    class Metube
+      DOWNLOAD_TIMEOUT = 600
+
+      def add(url:, prefix:)
+        json.post("/add", {
+          url:,
+          download_type: "video",
+          quality: "best",
+          format: "mp4",
+          custom_name_prefix: prefix,
+          auto_start: true
+        }).body
+      end
+
+      def history = json.get("/history").body
+
+      def fetch_file(file)
+        raw.get("/download/#{ERB::Util.url_encode(file)}").body
+      end
+
+      def delete(id)
+        json.post("/delete", {ids: [id], where: "done"}).body
+      end
+
+      private
+
+      def json
+        @json ||= build_connection do |conn|
+          conn.request(:json)
+          conn.response(:json)
+          conn.response(:raise_error)
+          conn.response(:logger) unless Rails.env.test?
+        end
+      end
+
+      def raw
+        @raw ||= build_connection do |conn|
+          conn.options.timeout = DOWNLOAD_TIMEOUT
+          conn.response(:raise_error)
+        end
+      end
+
+      def build_connection(&block)
+        Faraday.new(url: base_url, &block)
+      end
+
+      def base_url = Rails.application.credentials.dig(:metube, :url)
+    end
+  end
+end
