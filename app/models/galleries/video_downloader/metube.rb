@@ -14,6 +14,10 @@ module Galleries
 
       def history = json.get("/history").body
 
+      def delete(id)
+        json.post("/delete", {ids: [id], where: "done"}).body
+      end
+
       private
 
       def json

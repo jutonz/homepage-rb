@@ -52,4 +52,21 @@ RSpec.describe Galleries::VideoDownloader::Metube do
       expect(result).to eql({"status" => "ok"})
     end
   end
+
+  describe "#delete" do
+    it "removes an entry via POST /delete" do
+      stub = FakeMetube.stub(method: :post, path: "/delete")
+        .with(body: {ids: ["abc"], where: "done"})
+        .to_return(
+          body: {status: "ok"}.to_json,
+          headers: {"content-type" => "application/json"},
+          status: 200
+        )
+
+      result = described_class.new.delete("abc")
+
+      expect(stub).to have_been_requested
+      expect(result).to eql({"status" => "ok"})
+    end
+  end
 end
