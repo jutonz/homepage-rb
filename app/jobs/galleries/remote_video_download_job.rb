@@ -13,6 +13,8 @@ module Galleries
       elsif rvd.status_downloading?
         poll_download
       end
+    rescue Faraday::Error => e
+      rvd.update!(status: :failed, error_message: e.message)
     end
 
     private

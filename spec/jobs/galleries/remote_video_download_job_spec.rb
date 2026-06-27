@@ -160,4 +160,28 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     expect(rvd).to be_status_failed
     expect(rvd.error_message).to match(/timed out/)
   end
+
+  it "fails fast if add is unreachable" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "pending")
+    allow(metube).to receive(:add)
+      .and_raise(Faraday::ConnectionFailed.new("down"))
+
+    described_class.new.perform(rvd)
+
+    rvd.reload
+    expect(rvd).to be_status_failed
+    expect(rvd.error_message).to eq("down")
+  end
+
+  it "fails fast if history is unreachable" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "downloading")
+    allow(metube).to receive(:history)
+      .and_raise(Faraday::ConnectionFailed.new("down"))
+
+    described_class.new.perform(rvd)
+
+    expect(rvd.reload).to be_status_failed
+  end
 end
