@@ -14,11 +14,6 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     env:
       RAILS_ENV: test
       DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
@@ -32,6 +27,14 @@ jobs:
         with:
           bundler-cache: true
       - run: echo -n "$TEST_KEY" > config/credentials/test.key
+      - name: Wait for PostgreSQL
+        run: |
+          for i in $(seq 1 30); do
+            pg_isready -h localhost -p 5432 && exit 0
+            sleep 1
+          done
+          echo "::error::PostgreSQL did not become ready within 30s"
+          exit 1
       - run: bin/rails db:setup assets:precompile
       - run: bundle exec annotaterb models
       - name: Verify db annotations are up to date
@@ -54,11 +57,6 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     env:
       RAILS_ENV: test
       DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
@@ -114,6 +112,14 @@ jobs:
           npx --yes playwright@${{ steps.playwright-version.outputs.version }} \
             install chromium
       - run: echo -n "$TEST_KEY" > config/credentials/test.key
+      - name: Wait for PostgreSQL
+        run: |
+          for i in $(seq 1 30); do
+            pg_isready -h localhost -p 5432 && exit 0
+            sleep 1
+          done
+          echo "::error::PostgreSQL did not become ready within 30s"
+          exit 1
       - run: bin/rails db:setup assets:precompile
       - run: bin/rspec spec/system
 
