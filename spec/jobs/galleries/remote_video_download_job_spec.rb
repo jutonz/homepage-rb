@@ -1,6 +1,16 @@
 require "rails_helper"
 
 RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
+  include ActiveJob::TestHelper
+
+  it "discards the poll job when the download was deleted" do
+    rvd = create(:galleries_remote_video_download, status: "downloading")
+    described_class.perform_later(rvd)
+    rvd.destroy!
+
+    expect { perform_enqueued_jobs }.not_to raise_error
+  end
+
   def stub_metube
     metube = instance_double(Galleries::VideoDownloader::Metube)
     allow(Galleries::VideoDownloader::Metube)

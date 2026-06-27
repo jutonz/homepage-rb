@@ -1,6 +1,24 @@
 require "rails_helper"
 
 RSpec.describe Galleries::RemoteVideoDownloadPolicy do
+  permissions :destroy? do
+    it "grants access when user owns the gallery" do
+      user = build(:user)
+      gallery = build(:gallery, user:)
+      download = build(:galleries_remote_video_download, gallery:)
+
+      expect(described_class).to permit(user, download)
+    end
+
+    it "denies access when user does not own the gallery" do
+      user = build(:user)
+      gallery = build(:gallery, user: build(:user))
+      download = build(:galleries_remote_video_download, gallery:)
+
+      expect(described_class).not_to permit(user, download)
+    end
+  end
+
   permissions :update? do
     it "grants access when user owns the gallery" do
       user = build(:user)

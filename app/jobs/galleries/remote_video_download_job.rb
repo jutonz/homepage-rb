@@ -2,6 +2,8 @@ module Galleries
   class RemoteVideoDownloadJob < ApplicationJob
     queue_as :background
 
+    discard_on ActiveJob::DeserializationError
+
     POLL_INTERVAL = 30.seconds
     MAX_DURATION = 1.hour
 
@@ -101,7 +103,7 @@ module Galleries
       rvd.broadcast_row
     end
 
-    def prefix = "rvd-#{rvd.id}"
+    def prefix = rvd.metube_prefix
 
     def metube = @metube ||= Galleries::VideoDownloader::Metube.new
   end

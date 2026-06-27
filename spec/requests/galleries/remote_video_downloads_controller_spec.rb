@@ -205,6 +205,100 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
     end
   end
 
+  def stub_metube
+    metube = instance_double(Galleries::VideoDownloader::Metube)
+    allow(Galleries::VideoDownloader::Metube)
+      .to receive(:new).and_return(metube)
+    allow(metube).to receive(:delete_by_prefix)
+    metube
+  end
+
+  describe "destroy" do
+    it "deletes the download and redirects to the index" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(:galleries_remote_video_download, gallery:)
+      login_as(user)
+      stub_metube
+
+      delete(gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to redirect_to(
+        gallery_remote_video_downloads_path(gallery)
+      )
+      expect(Galleries::RemoteVideoDownload.exists?(download.id))
+        .to be(false)
+    end
+
+    it "leaves the associated image in the gallery" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download, :completed, gallery:
+      )
+      image = download.image
+      login_as(user)
+      stub_metube
+
+      delete(gallery_remote_video_download_path(gallery, download))
+
+      expect(Galleries::Image.exists?(image.id)).to be(true)
+    end
+
+    it "cancels the in-flight MeTube entry" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        gallery:, status: "downloading"
+      )
+      login_as(user)
+      metube = stub_metube
+
+      delete(gallery_remote_video_download_path(gallery, download))
+
+      expect(metube).to have_received(:delete_by_prefix)
+        .with("rvd-#{download.id}")
+    end
+
+    it "still deletes when MeTube cleanup fails" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(:galleries_remote_video_download, gallery:)
+      login_as(user)
+      metube = stub_metube
+      allow(metube).to receive(:delete_by_prefix)
+        .and_raise(Faraday::ConnectionFailed.new("down"))
+
+      delete(gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to redirect_to(
+        gallery_remote_video_downloads_path(gallery)
+      )
+      expect(Galleries::RemoteVideoDownload.exists?(download.id))
+        .to be(false)
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+
+      delete(gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 when gallery is not owned by current user" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+      login_as(create(:user))
+
+      delete(gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "create" do
     it "creates a download and enqueues the job" do
       user = create(:user)

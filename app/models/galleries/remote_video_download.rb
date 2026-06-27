@@ -44,6 +44,8 @@ module Galleries
       presence: true,
       uniqueness: {scope: :gallery_id}
 
+    def metube_prefix = "rvd-#{id}"
+
     def broadcast_row
       Turbo::StreamsChannel.broadcast_replace_to(
         gallery.remote_video_downloads_stream_name,

@@ -40,10 +40,36 @@ module Galleries
       end
     end
 
+    def destroy
+      @gallery = find_gallery
+      @remote_video_download = authorize(
+        @gallery.remote_video_downloads.find(params[:id])
+      )
+
+      @remote_video_download.destroy!
+      cancel_metube_entry(@remote_video_download)
+
+      redirect_to(
+        gallery_remote_video_downloads_path(@gallery),
+        status: :see_other,
+        notice: "Video download was deleted."
+      )
+    end
+
     private
 
     def find_gallery
       policy_scope(Gallery).find(params[:gallery_id])
+    end
+
+    def cancel_metube_entry(remote_video_download)
+      Galleries::VideoDownloader::Metube.new
+        .delete_by_prefix(remote_video_download.metube_prefix)
+    rescue => e
+      Rails.logger.warn(
+        "RemoteVideoDownload #{remote_video_download.id} " \
+        "metube cleanup failed: #{e.message}"
+      )
     end
 
     def remote_video_download_params
