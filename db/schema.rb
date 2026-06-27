@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_27_170754) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_27_201209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -138,6 +138,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_27_170754) do
     t.enum "status", default: "pending", null: false, enum_type: "galleries_remote_video_download_status"
     t.datetime "updated_at", null: false
     t.string "url", null: false
+    t.index ["gallery_id", "url"], name: "index_galleries_rvd_on_gallery_id_and_url", unique: true
     t.index ["gallery_id"], name: "index_galleries_remote_video_downloads_on_gallery_id"
     t.index ["image_id"], name: "index_galleries_remote_video_downloads_on_image_id"
   end
