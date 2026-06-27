@@ -33,6 +33,13 @@ jobs:
           bundler-cache: true
       - run: echo -n "$TEST_KEY" > config/credentials/test.key
       - run: bin/rails db:setup assets:precompile
+      - run: bundle exec annotaterb models
+      - name: Verify db annotations are up to date
+        run: |
+          git diff --exit-code app/models spec/models spec/factories || {
+            echo "::error::db annotations are out of date. Run 'bin/rails db:migrate' (or 'bundle exec annotaterb models') locally and commit the result."
+            exit 1
+          }
       - run: >-
           bin/rspec
           --exclude-pattern "spec/system/**/*_spec.rb"
