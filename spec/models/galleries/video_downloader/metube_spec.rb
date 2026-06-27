@@ -17,6 +17,20 @@ RSpec.describe Galleries::VideoDownloader::Metube do
       expect(result).to eql(body)
     end
 
+    it "parses JSON bodies served as text/plain" do
+      body = {"done" => [], "queue" => [], "pending" => []}
+      FakeMetube.stub(method: :get, path: "/history")
+        .to_return(
+          body: body.to_json,
+          headers: {"content-type" => "text/plain; charset=utf-8"},
+          status: 200
+        )
+
+      result = described_class.new.history
+
+      expect(result).to eql(body)
+    end
+
     it "raises when MeTube returns an error" do
       FakeMetube.stub(method: :get, path: "/history")
         .to_return(status: 500)

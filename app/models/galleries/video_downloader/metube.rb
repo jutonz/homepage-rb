@@ -29,7 +29,8 @@ module Galleries
       def json
         @json ||= build_connection do |conn|
           conn.request(:json)
-          conn.response(:json)
+          # MeTube serves JSON bodies as text/plain, so parse those too.
+          conn.response(:json, content_type: /\b(json|plain)$/)
           conn.response(:raise_error)
           conn.response(:logger) unless Rails.env.test?
         end
