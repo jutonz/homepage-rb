@@ -188,6 +188,21 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     expect(rvd.error_message).to eq("down")
   end
 
+  it "fails without downloading when MeTube rejects the add" do
+    metube = stub_metube
+    allow(metube).to receive(:delete_by_prefix)
+    rvd = create(:galleries_remote_video_download, status: "pending")
+    allow(metube).to receive(:add)
+      .and_raise(Galleries::VideoDownloader::Metube::Error.new("nope"))
+
+    described_class.new.perform(rvd)
+
+    rvd.reload
+    expect(rvd).to be_status_failed
+    expect(rvd).not_to be_status_downloading
+    expect(rvd.error_message).to eq("nope")
+  end
+
   it "clears any stale MeTube entry before re-adding" do
     metube = stub_metube
     allow(metube).to receive(:delete_by_prefix)

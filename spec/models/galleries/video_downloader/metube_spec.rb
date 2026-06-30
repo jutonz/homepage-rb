@@ -65,6 +65,19 @@ RSpec.describe Galleries::VideoDownloader::Metube do
       expect(stub).to have_been_requested
       expect(result).to eql({"status" => "ok"})
     end
+
+    it "raises when MeTube rejects the add with an error status" do
+      FakeMetube.stub(method: :post, path: "/add")
+        .to_return(
+          body: {status: "error", msg: "could not download"}.to_json,
+          headers: {"content-type" => "application/json"},
+          status: 200
+        )
+
+      expect {
+        described_class.new.add(url: "https://example.com/v", prefix: "rvd-1")
+      }.to raise_error(described_class::Error, "could not download")
+    end
   end
 
   describe "#delete" do
