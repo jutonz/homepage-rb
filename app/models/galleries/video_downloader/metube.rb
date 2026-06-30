@@ -1,10 +1,14 @@
 module Galleries
   module VideoDownloader
     class Metube
+      # Raised when MeTube replies HTTP 200 but rejects the request in the
+      # body, e.g. {"status" => "error", "msg" => "..."}.
+      Error = Class.new(StandardError)
+
       DOWNLOAD_TIMEOUT = 600
 
       def add(url:, prefix:)
-        json.post("/add", {
+        body = json.post("/add", {
           url:,
           download_type: "video",
           quality: "best",
@@ -12,6 +16,8 @@ module Galleries
           custom_name_prefix: prefix,
           auto_start: true
         }).body
+        raise(Error, body["msg"]) if body["status"] == "error"
+        body
       end
 
       def history = json.get("/history").body
