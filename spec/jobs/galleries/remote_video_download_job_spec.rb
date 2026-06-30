@@ -227,11 +227,11 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     expect(rvd.reload).to be_status_downloading
   end
 
-  it "fails when the overall timeout is exceeded" do
+  it "fails when the current attempt exceeds the timeout" do
     metube = stub_metube
     rvd = create(
       :galleries_remote_video_download,
-      status: "downloading", created_at: 2.hours.ago
+      status: "downloading", download_started_at: 2.hours.ago
     )
     allow(metube).to receive(:history)
       .and_return("done" => [], "queue" => [], "pending" => [])
@@ -241,6 +241,22 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     rvd.reload
     expect(rvd).to be_status_failed
     expect(rvd.error_message).to match(/timed out/)
+  end
+
+  it "keeps polling a retry started recently despite an old created_at" do
+    metube = stub_metube
+    rvd = create(
+      :galleries_remote_video_download,
+      status: "downloading",
+      created_at: 2.hours.ago,
+      download_started_at: 1.minute.ago
+    )
+    allow(metube).to receive(:history)
+      .and_return("done" => [], "queue" => [], "pending" => [])
+
+    expect { described_class.new.perform(rvd) }
+      .to have_enqueued_job(described_class).with(rvd)
+    expect(rvd.reload).to be_status_downloading
   end
 
   it "fails fast if add is unreachable" do

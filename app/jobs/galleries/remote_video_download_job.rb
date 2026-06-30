@@ -25,7 +25,11 @@ module Galleries
 
     def start_download
       attach_or_add
-      rvd.update!(status: :downloading, error_message: nil)
+      rvd.update!(
+        status: :downloading,
+        error_message: nil,
+        download_started_at: Time.current
+      )
       rvd.broadcast_row
       reenqueue
     end
@@ -62,12 +66,17 @@ module Galleries
     end
 
     def handle_pending
-      if rvd.created_at + MAX_DURATION < Time.current
+      if attempt_started_at + MAX_DURATION < Time.current
         fail!("timed out after #{MAX_DURATION.inspect}")
       else
         reenqueue
       end
     end
+
+    # Measure the timeout from when the current attempt started polling, not
+    # from creation, so retrying an old record gets a fresh window. Falls
+    # back to created_at for records that predate download_started_at.
+    def attempt_started_at = rvd.download_started_at || rvd.created_at
 
     def find_entry
       metube.history.fetch("done", []).find { matches_prefix?(it) }
