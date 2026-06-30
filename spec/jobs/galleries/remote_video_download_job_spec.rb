@@ -15,6 +15,8 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     metube = instance_double(Galleries::VideoDownloader::Metube)
     allow(Galleries::VideoDownloader::Metube)
       .to receive(:new).and_return(metube)
+    allow(metube).to receive(:history)
+      .and_return("queue" => [], "done" => [], "pending" => [])
     metube
   end
 
@@ -40,6 +42,73 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     expect { described_class.new.perform(rvd) }
       .to have_enqueued_job(described_class)
       .with(rvd).on_queue("background")
+  end
+
+  it "reattaches to an in-progress MeTube download without re-adding" do
+    metube = stub_metube
+    allow(metube).to receive(:add)
+    allow(metube).to receive(:delete_by_prefix)
+    rvd = create(:galleries_remote_video_download, status: "pending")
+    allow(metube).to receive(:history).and_return(
+      "queue" => [{"custom_name_prefix" => "rvd-#{rvd.id}"}],
+      "done" => []
+    )
+
+    described_class.new.perform(rvd)
+
+    expect(metube).not_to have_received(:add)
+    expect(metube).not_to have_received(:delete_by_prefix)
+    expect(rvd.reload).to be_status_downloading
+  end
+
+  it "re-enqueues itself to poll after reattaching" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "pending")
+    allow(metube).to receive(:history).and_return(
+      "queue" => [{"custom_name_prefix" => "rvd-#{rvd.id}"}],
+      "done" => []
+    )
+
+    expect { described_class.new.perform(rvd) }
+      .to have_enqueued_job(described_class).with(rvd)
+  end
+
+  it "reattaches when MeTube already finished the download" do
+    metube = stub_metube
+    allow(metube).to receive(:add)
+    allow(metube).to receive(:delete_by_prefix)
+    rvd = create(:galleries_remote_video_download, status: "pending")
+    allow(metube).to receive(:history).and_return(
+      "queue" => [],
+      "done" => [
+        {"custom_name_prefix" => "rvd-#{rvd.id}", "status" => "finished"}
+      ]
+    )
+
+    described_class.new.perform(rvd)
+
+    expect(metube).not_to have_received(:add)
+    expect(metube).not_to have_received(:delete_by_prefix)
+    expect(rvd.reload).to be_status_downloading
+  end
+
+  it "deletes and re-adds when MeTube reports the entry errored" do
+    metube = stub_metube
+    allow(metube).to receive(:add)
+    allow(metube).to receive(:delete_by_prefix)
+    rvd = create(:galleries_remote_video_download, status: "pending")
+    allow(metube).to receive(:history).and_return(
+      "queue" => [],
+      "done" => [
+        {"custom_name_prefix" => "rvd-#{rvd.id}", "status" => "error"}
+      ]
+    )
+
+    described_class.new.perform(rvd)
+
+    expect(metube).to have_received(:delete_by_prefix).with("rvd-#{rvd.id}")
+    expect(metube).to have_received(:add)
+    expect(rvd.reload).to be_status_downloading
   end
 
   it "does nothing when status is not pending or downloading" do
