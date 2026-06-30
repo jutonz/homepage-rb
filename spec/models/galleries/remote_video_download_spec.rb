@@ -5,14 +5,15 @@ require "rails_helper"
 # Table name: galleries_remote_video_downloads
 # Database name: primary
 #
-#  id            :bigint           not null, primary key
-#  error_message :text
-#  status        :enum             default("pending"), not null
-#  url           :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  gallery_id    :bigint           not null
-#  image_id      :bigint
+#  id                  :bigint           not null, primary key
+#  download_started_at :datetime
+#  error_message       :text
+#  status              :enum             default("pending"), not null
+#  url                 :string           not null
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  gallery_id          :bigint           not null
+#  image_id            :bigint
 #
 # Indexes
 #
