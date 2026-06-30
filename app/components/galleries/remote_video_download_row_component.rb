@@ -31,6 +31,9 @@ module Galleries
             rel: "noopener",
             class: "break-all text-blue-600 hover:text-blue-800"
           ) %>
+          <p class="text-gray-500 text-sm" data-role="created-at">
+            <%= l(@remote_video_download.created_at, format: :long) %>
+          </p>
           <%= render(Galleries::RemoteVideoDownloadPillComponent.new(
             remote_video_download: @remote_video_download
           )) %>

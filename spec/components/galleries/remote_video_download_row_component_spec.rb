@@ -17,6 +17,20 @@ RSpec.describe Galleries::RemoteVideoDownloadRowComponent,
     )
   end
 
+  it "renders the created at timestamp" do
+    download = build_stubbed(
+      :galleries_remote_video_download,
+      created_at: Time.zone.local(2026, 6, 27, 14, 14)
+    )
+
+    render_inline(described_class.new(remote_video_download: download))
+
+    expect(page).to have_css(
+      "[data-role=created-at]",
+      text: "June 27, 2026 14:14"
+    )
+  end
+
   it "gives the row a stable dom id" do
     download = build_stubbed(:galleries_remote_video_download)
 
