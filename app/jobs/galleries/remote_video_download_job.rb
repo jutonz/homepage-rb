@@ -24,11 +24,27 @@ module Galleries
     attr_reader :rvd
 
     def start_download
-      cleanup_stale_entry
-      metube.add(url: rvd.url, prefix:)
-      rvd.status_downloading!
+      attach_or_add
+      rvd.update!(status: :downloading, error_message: nil)
       rvd.broadcast_row
       reenqueue
+    end
+
+    # Reattach to an in-progress (or already finished) MeTube download
+    # instead of cancelling and restarting it. Only delete and re-add when
+    # there is no entry, or MeTube reports the previous attempt errored.
+    def attach_or_add
+      entry = existing_entry
+      return if entry && entry["status"] != "error"
+
+      cleanup_stale_entry
+      metube.add(url: rvd.url, prefix:)
+    end
+
+    def existing_entry
+      hist = metube.history
+      hist.fetch("queue", []).find { matches_prefix?(it) } ||
+        hist.fetch("done", []).find { matches_prefix?(it) }
     end
 
     def poll_download
@@ -54,9 +70,10 @@ module Galleries
     end
 
     def find_entry
-      metube.history.fetch("done", [])
-        .find { it["custom_name_prefix"] == prefix }
+      metube.history.fetch("done", []).find { matches_prefix?(it) }
     end
+
+    def matches_prefix?(entry) = entry["custom_name_prefix"] == prefix
 
     def handle_finished(entry)
       bytes = metube.fetch_file(entry["filename"])
