@@ -19,6 +19,13 @@ module Galleries
       )
     end
 
+    def edit
+      @gallery = find_gallery
+      @remote_video_download = authorize(
+        @gallery.remote_video_downloads.find(params[:id])
+      )
+    end
+
     def create
       @gallery = find_gallery
       @remote_video_download = authorize(

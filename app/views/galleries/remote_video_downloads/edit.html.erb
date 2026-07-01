@@ -1,0 +1,13 @@
+<%= render(HeaderComponent.new(
+  title: "Edit video URL"
+)) do |c| %>
+  <%= c.with_crumb("Home", home_path) %>
+  <%= c.with_crumb("Galleries", galleries_path) %>
+  <%= c.with_crumb(@gallery.name, gallery_path(@gallery)) %>
+  <%= c.with_crumb(
+    "Video downloads",
+    gallery_remote_video_downloads_path(@gallery)
+  ) %>
+<% end %>
+
+<%= render(partial: "form") %>

@@ -34,6 +34,44 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
     end
   end
 
+  describe "edit" do
+    it "renders the url form pre-filled with the current url" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        gallery:,
+        url: "https://example.com/current.mp4"
+      )
+      login_as(user)
+
+      get(edit_gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("remote_video_download[url]")
+      expect(response.body).to include("https://example.com/current.mp4")
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+
+      get(edit_gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 when gallery is not owned by current user" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+      login_as(create(:user))
+
+      get(edit_gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "index" do
     it "lists the gallery's downloads with their status" do
       user = create(:user)
