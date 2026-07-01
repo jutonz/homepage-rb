@@ -19,6 +19,13 @@ module Galleries
       )
     end
 
+    def edit
+      @gallery = find_gallery
+      @remote_video_download = authorize(
+        @gallery.remote_video_downloads.find(params[:id])
+      )
+    end
+
     def create
       @gallery = find_gallery
       @remote_video_download = authorize(
@@ -37,6 +44,22 @@ module Galleries
         )
       else
         render :new, status: :unprocessable_content
+      end
+    end
+
+    def update
+      @gallery = find_gallery
+      @remote_video_download = authorize(
+        @gallery.remote_video_downloads.find(params[:id])
+      )
+
+      if @remote_video_download.update(remote_video_download_params)
+        redirect_to(
+          gallery_remote_video_downloads_path(@gallery),
+          notice: "Video download was updated."
+        )
+      else
+        render :edit, status: :unprocessable_content
       end
     end
 

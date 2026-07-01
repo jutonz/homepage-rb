@@ -34,6 +34,171 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
     end
   end
 
+  describe "edit" do
+    it "renders the url form pre-filled with the current url" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        gallery:,
+        url: "https://example.com/current.mp4"
+      )
+      login_as(user)
+
+      get(edit_gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("remote_video_download[url]")
+      expect(response.body).to include("https://example.com/current.mp4")
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+
+      get(edit_gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 when gallery is not owned by current user" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+      login_as(create(:user))
+
+      get(edit_gallery_remote_video_download_path(gallery, download))
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "update" do
+    it "updates the url and redirects to the index" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        gallery:,
+        url: "https://example.com/old.mp4"
+      )
+      login_as(user)
+      params = {
+        remote_video_download: {url: "https://example.com/new.mp4"}
+      }
+
+      patch(
+        gallery_remote_video_download_path(gallery, download),
+        params:
+      )
+
+      expect(response).to redirect_to(
+        gallery_remote_video_downloads_path(gallery)
+      )
+      expect(download.reload.url).to eql("https://example.com/new.mp4")
+    end
+
+    it "does not change status or enqueue a job" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        gallery:,
+        status: "completed"
+      )
+      login_as(user)
+      params = {
+        remote_video_download: {url: "https://example.com/new.mp4"}
+      }
+
+      expect {
+        patch(
+          gallery_remote_video_download_path(gallery, download),
+          params:
+        )
+      }.not_to have_enqueued_job(Galleries::RemoteVideoDownloadJob)
+      expect(download.reload).to be_status_completed
+    end
+
+    it "rerenders the edit form when the url is blank" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download,
+        gallery:,
+        url: "https://example.com/old.mp4"
+      )
+      login_as(user)
+      params = {remote_video_download: {url: ""}}
+
+      patch(
+        gallery_remote_video_download_path(gallery, download),
+        params:
+      )
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("remote_video_download[url]")
+      expect(download.reload.url).to eql("https://example.com/old.mp4")
+    end
+
+    it "rerenders the edit form when the url duplicates another in the gallery" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create(
+        :galleries_remote_video_download,
+        gallery:,
+        url: "https://example.com/taken.mp4"
+      )
+      download = create(
+        :galleries_remote_video_download,
+        gallery:,
+        url: "https://example.com/old.mp4"
+      )
+      login_as(user)
+      params = {
+        remote_video_download: {url: "https://example.com/taken.mp4"}
+      }
+
+      patch(
+        gallery_remote_video_download_path(gallery, download),
+        params:
+      )
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(download.reload.url).to eql("https://example.com/old.mp4")
+    end
+
+    it "requires authentication" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+      params = {
+        remote_video_download: {url: "https://example.com/new.mp4"}
+      }
+
+      patch(
+        gallery_remote_video_download_path(gallery, download),
+        params:
+      )
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "returns 404 when gallery is not owned by current user" do
+      gallery = create(:gallery)
+      download = create(:galleries_remote_video_download, gallery:)
+      login_as(create(:user))
+      params = {
+        remote_video_download: {url: "https://example.com/new.mp4"}
+      }
+
+      patch(
+        gallery_remote_video_download_path(gallery, download),
+        params:
+      )
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   describe "index" do
     it "lists the gallery's downloads with their status" do
       user = create(:user)

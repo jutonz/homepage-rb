@@ -114,6 +114,21 @@ RSpec.describe Galleries::RemoteVideoDownloadRowComponent,
     )
   end
 
+  it "renders an edit link pointing at the edit page for every status" do
+    download = build_stubbed(
+      :galleries_remote_video_download, status: "downloading"
+    )
+
+    render_inline(described_class.new(remote_video_download: download))
+
+    expect(page).to have_link(
+      "Edit",
+      href: edit_gallery_remote_video_download_path(
+        download.gallery, download
+      )
+    )
+  end
+
   it "shows the error message when failed" do
     download = build_stubbed(
       :galleries_remote_video_download,
