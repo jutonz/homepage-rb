@@ -141,10 +141,6 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
         :galleries_remote_video_download, :failed, gallery:
       )
       login_as(user)
-      stub_const(
-        "Galleries::RemoteVideoDownloadJob",
-        Class.new(ApplicationJob)
-      )
 
       post(gallery_remote_video_download_retries_path(gallery, download))
 
@@ -166,10 +162,6 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
         gallery:, status: "downloading"
       )
       login_as(user)
-      stub_const(
-        "Galleries::RemoteVideoDownloadJob",
-        Class.new(ApplicationJob)
-      )
 
       post(gallery_remote_video_download_retries_path(gallery, download))
 
@@ -188,10 +180,6 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
         :galleries_remote_video_download, :completed, gallery:
       )
       login_as(user)
-      stub_const(
-        "Galleries::RemoteVideoDownloadJob",
-        Class.new(ApplicationJob)
-      )
 
       post(gallery_remote_video_download_retries_path(gallery, download))
 
