@@ -141,6 +141,7 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
         :galleries_remote_video_download, :failed, gallery:
       )
       login_as(user)
+      allow(Galleries::RemoteVideoDownloadJob).to receive(:perform_later)
 
       post(gallery_remote_video_download_retries_path(gallery, download))
 
@@ -151,7 +152,7 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
       expect(download).to be_status_pending
       expect(download.error_message).to be_nil
       expect(Galleries::RemoteVideoDownloadJob)
-        .to have_been_enqueued.with(download)
+        .to have_received(:perform_later).with(download)
     end
 
     it "resets a downloading download and re-enqueues the job" do
@@ -162,6 +163,7 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
         gallery:, status: "downloading"
       )
       login_as(user)
+      allow(Galleries::RemoteVideoDownloadJob).to receive(:perform_later)
 
       post(gallery_remote_video_download_retries_path(gallery, download))
 
@@ -170,7 +172,7 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
       )
       expect(download.reload).to be_status_pending
       expect(Galleries::RemoteVideoDownloadJob)
-        .to have_been_enqueued.with(download)
+        .to have_received(:perform_later).with(download)
     end
 
     it "resets a completed download and re-enqueues the job" do
@@ -180,12 +182,13 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
         :galleries_remote_video_download, :completed, gallery:
       )
       login_as(user)
+      allow(Galleries::RemoteVideoDownloadJob).to receive(:perform_later)
 
       post(gallery_remote_video_download_retries_path(gallery, download))
 
       expect(download.reload).to be_status_pending
       expect(Galleries::RemoteVideoDownloadJob)
-        .to have_been_enqueued.with(download)
+        .to have_received(:perform_later).with(download)
     end
 
     it "requires authentication" do
