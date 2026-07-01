@@ -42,16 +42,15 @@ module Galleries
               <%= @remote_video_download.error_message %>
             </p>
           <% end %>
-          <% if failed? %>
-            <%= button_to(
-              "Retry",
-              gallery_remote_video_download_retries_path(
-                @remote_video_download.gallery,
-                @remote_video_download
-              ),
-              class: "button"
-            ) %>
-          <% end %>
+          <%= button_to(
+            "Retry",
+            gallery_remote_video_download_retries_path(
+              @remote_video_download.gallery,
+              @remote_video_download
+            ),
+            data: {turbo_confirm: "Re-run this download?"},
+            class: "button"
+          ) %>
           <%= button_to(
             "Delete",
             gallery_remote_video_download_path(
