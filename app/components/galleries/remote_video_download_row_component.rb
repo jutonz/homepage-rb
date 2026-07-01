@@ -51,6 +51,14 @@ module Galleries
             data: {turbo_confirm: "Re-run this download?"},
             class: "button"
           ) %>
+          <%= link_to(
+            "Edit",
+            edit_gallery_remote_video_download_path(
+              @remote_video_download.gallery,
+              @remote_video_download
+            ),
+            class: "button"
+          ) %>
           <%= button_to(
             "Delete",
             gallery_remote_video_download_path(
