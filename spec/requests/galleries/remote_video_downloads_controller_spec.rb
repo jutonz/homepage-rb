@@ -158,7 +158,7 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
         .to have_been_enqueued.with(download)
     end
 
-    it "does not re-enqueue a download that has not failed" do
+    it "resets a downloading download and re-enqueues the job" do
       user = create(:user)
       gallery = create(:gallery, user:)
       download = create(
@@ -176,9 +176,28 @@ RSpec.describe Galleries::RemoteVideoDownloadsController do
       expect(response).to redirect_to(
         gallery_remote_video_downloads_path(gallery)
       )
-      expect(download.reload).to be_status_downloading
+      expect(download.reload).to be_status_pending
       expect(Galleries::RemoteVideoDownloadJob)
-        .not_to have_been_enqueued
+        .to have_been_enqueued.with(download)
+    end
+
+    it "resets a completed download and re-enqueues the job" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      download = create(
+        :galleries_remote_video_download, :completed, gallery:
+      )
+      login_as(user)
+      stub_const(
+        "Galleries::RemoteVideoDownloadJob",
+        Class.new(ApplicationJob)
+      )
+
+      post(gallery_remote_video_download_retries_path(gallery, download))
+
+      expect(download.reload).to be_status_pending
+      expect(Galleries::RemoteVideoDownloadJob)
+        .to have_been_enqueued.with(download)
     end
 
     it "requires authentication" do

@@ -13,13 +13,6 @@ module Galleries
           :update?
         )
 
-        unless @remote_video_download.status_failed?
-          return redirect_to(
-            gallery_remote_video_downloads_path(@gallery),
-            notice: "Only failed downloads can be retried"
-          )
-        end
-
         @remote_video_download.update!(
           status: :pending,
           error_message: nil
