@@ -142,7 +142,8 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     rvd.reload
     expect(rvd).to be_status_completed
     expect(rvd.image.file).to be_attached
-    expect(rvd.image.tags.map(&:name)).to include("tagging needed")
+    expect(rvd.image.tags.map(&:name))
+      .to include("tagging needed", "Video")
   end
 
   it "enqueues image processing for the new image" do
