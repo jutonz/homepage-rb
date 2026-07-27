@@ -29,6 +29,7 @@ jobs:
           bootsnap|semver-minor semver-patch
           bullet|semver-minor semver-patch
           capybara-playwright-driver|semver-patch
+          csv|semver-patch semver-minor
           faraday|semver-minor semver-patch
           image_processing|semver-minor semver-patch
           jbuilder|semver-minor semver-patch
@@ -39,6 +40,7 @@ jobs:
           puma|semver-minor semver-patch
           ruby-lsp|semver-minor semver-patch
           sentry-rails|semver-patch semver-minor
+          simplecov|semver-patch semver-minor
           standard|semver-minor semver-patch
           super_diff|semver-minor semver-patch
           tailwindcss-rails|semver-patch semver-minor
