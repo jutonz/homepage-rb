@@ -94,7 +94,10 @@ module Galleries
               filename: File.basename(entry["filename"])
             }
           )
-          image.add_tag(Galleries::Tag.tagging_needed(rvd.gallery))
+          image.add_tag(
+            Galleries::Tag.tagging_needed(rvd.gallery),
+            Galleries::Tag.video(rvd.gallery)
+          )
           rvd.update!(status: :completed, image:)
           image
         end

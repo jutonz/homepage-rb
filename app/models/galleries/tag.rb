@@ -27,6 +27,7 @@
 module Galleries
   class Tag < ApplicationRecord
     TAGGING_NEEDED_NAME = "tagging needed"
+    VIDEO_NAME = "Video"
 
     enum :classification,
       {
@@ -63,6 +64,13 @@ module Galleries
         .tags
         .create_with(user: gallery.user)
         .find_or_create_by(name: TAGGING_NEEDED_NAME)
+    end
+
+    def self.video(gallery)
+      gallery
+        .tags
+        .create_with(user: gallery.user)
+        .find_or_create_by(name: VIDEO_NAME)
     end
 
     def display_name

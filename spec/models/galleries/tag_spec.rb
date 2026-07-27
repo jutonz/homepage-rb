@@ -63,6 +63,26 @@ RSpec.describe Galleries::Tag, type: :model do
     end
   end
 
+  describe ".video" do
+    it "if a 'Video' tag already exists, returns it" do
+      gallery = create(:gallery)
+      tag = create(:galleries_tag, gallery:, name: "Video")
+
+      result = described_class.video(gallery)
+
+      expect(result).to eql(tag)
+    end
+
+    it "creates and returns a 'Video' tag if it doesn't exist" do
+      gallery = create(:gallery)
+
+      tag = described_class.video(gallery)
+
+      expect(tag).to have_attributes(name: "Video", user: gallery.user)
+      expect(gallery.tags.size).to eql(1)
+    end
+  end
+
   describe "#display_name" do
     it "is the name plus the number of times it's been used" do
       gallery = create(:gallery)
