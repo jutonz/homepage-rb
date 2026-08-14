@@ -27,6 +27,7 @@ jobs:
           annotaterb|semver-patch semver-minor
           aws-sdk-s3|semver-patch semver-minor
           bootsnap|semver-minor semver-patch
+          brakeman|semver-patch semver-minor
           bullet|semver-minor semver-patch
           capybara-playwright-driver|semver-patch
           csv|semver-patch semver-minor
