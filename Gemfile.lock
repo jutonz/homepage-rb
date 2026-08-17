@@ -587,7 +587,7 @@ GEM
     simple_form (5.4.1)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
-    simplecov (1.1.0)
+    simplecov (1.1.1)
     simplecov_json_formatter (0.1.4)
     solid_cable (4.0.2)
       actioncable (>= 7.2)
