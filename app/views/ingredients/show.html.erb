@@ -24,8 +24,8 @@
 <% end %>
 
 <div class="max-w-4xl">
-  <% if @ingredient.recipes.any? %>
-    <div class="mb-6">
+  <div class="mb-6">
+    <% if @ingredient.recipes.any? %>
       <h3 class="text-lg font-medium text-gray-900 mb-4">Used in Recipes</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <% @ingredient.recipes.each do |recipe| %>
@@ -42,13 +42,11 @@
           <% end %>
         <% end %>
       </div>
-    </div>
-  <% else %>
-    <div class="mb-6">
+    <% else %>
       <div class="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
         <div class="text-lg font-medium mb-2">Not used in any recipes yet</div>
         <div class="text-sm">This ingredient will appear here when you add it to recipes.</div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

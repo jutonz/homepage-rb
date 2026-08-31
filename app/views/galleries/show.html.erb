@@ -1,10 +1,6 @@
 <% content_for :title, "#{@gallery.name} Gallery" %>
 
-<% if @select_mode %>
-<div data-controller="gallery-bulk-tag dialog">
-<% else %>
-<div>
-<% end %>
+<div data-controller="<%= "gallery-bulk-tag dialog" if @select_mode %>">
   <%= render(HeaderComponent.new(
     title: @gallery.name
   )) do |c| %>

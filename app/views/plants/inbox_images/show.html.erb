@@ -20,7 +20,11 @@
 
   <div class="flex justify-center mb-4">
     <%= link_to(@inbox_image.file) do %>
-      <%= image_tag(@inbox_image.file, class: "max-w-full h-auto") %>
+      <%= image_tag(
+        @inbox_image.file,
+        class: "max-w-full h-auto",
+        alt: "Plant photo taken #{@inbox_image.taken_at.to_date}"
+      ) %>
     <% end %>
   </div>
 </div>

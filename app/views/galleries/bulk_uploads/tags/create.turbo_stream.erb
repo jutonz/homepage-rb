@@ -31,7 +31,7 @@
     name="bulk_upload[tag_ids][]"
     value="<%= @tag.id %>"
     id="bulk-upload-tag-input-<%= @tag.id %>"
-  />
+  >
 <% end %>
 <%= turbo_stream.remove(
   "tag-search-result-#{@tag.id}"

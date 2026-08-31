@@ -41,6 +41,15 @@ version: 0.10.3
 linter:
   enabled: true
 
+  exclude:
+    - 'public/**/*'
+    - 'app/views/kaminari/**/*'
+    - 'app/views/active_storage/**/*'
+
+  rules:
+    erb-no-instance-variables-in-partials:
+      enabled: false
+
   # # Exit with error code when diagnostics of this severity or higher are present
   # # Valid values: error (default), warning, info, hint
   # failLevel: warning

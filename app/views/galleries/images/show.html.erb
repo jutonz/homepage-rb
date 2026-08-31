@@ -35,7 +35,7 @@
 </div>
 
 <div class="mt-5">
-  <%= turbo_frame_tag("similar-images") do %>
+  <%= turbo_frame_tag("similar-images-by-tag") do %>
     <%= render(Galleries::SimilarImagesComponent.new(
       image: @image,
       scope: @image.similar_images,
@@ -47,7 +47,7 @@
 
 <% if @image.perceptual_hash.present? %>
   <div class="mt-5">
-    <%= turbo_frame_tag("similar-images") do %>
+    <%= turbo_frame_tag("similar-images-by-phash") do %>
       <%= render(Galleries::SimilarImagesComponent.new(
         image: @image,
         scope: @image.similar_by_phash,
