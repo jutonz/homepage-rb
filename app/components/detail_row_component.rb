@@ -1,3 +1,5 @@
+# typed: true
+
 class DetailRowComponent < ApplicationComponent
   erb_template <<~ERB
     <div class="flex justify-between">

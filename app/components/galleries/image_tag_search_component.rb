@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class ImageTagSearchComponent < ApplicationComponent
     erb_template <<~ERB

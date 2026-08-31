@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RemoteVideoDownloadRowComponent < ApplicationComponent
     erb_template <<~ERB

@@ -1,3 +1,5 @@
+# typed: true
+
 class UserGroupPolicy < UserOwnedPolicy
   private
 

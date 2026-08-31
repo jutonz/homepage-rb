@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class SimilarImagesQuery
     def self.call(...) = new(...).call

@@ -1,3 +1,5 @@
+# typed: true
+
 class UserGroupInvitationMailer < ApplicationMailer
   def invitation(user_group_invitation)
     @invitation = user_group_invitation

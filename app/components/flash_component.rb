@@ -1,3 +1,5 @@
+# typed: true
+
 class FlashComponent < ApplicationComponent
   erb_template <<~ERB
     <%= tag.div(

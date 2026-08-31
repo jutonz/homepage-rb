@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class TagClassificationPillComponent < ApplicationComponent
     erb_template <<~ERB

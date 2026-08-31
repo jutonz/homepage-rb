@@ -1,3 +1,5 @@
+# typed: true
+
 module Todo
   class TaskOccurrencePolicy < ApplicationPolicy
     def create?

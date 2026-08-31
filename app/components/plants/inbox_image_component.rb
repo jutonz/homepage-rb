@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   class InboxImageComponent < ApplicationComponent
     erb_template <<~ERB

@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class ProcessingImagesPolicy < UserOwnedPolicy
   end

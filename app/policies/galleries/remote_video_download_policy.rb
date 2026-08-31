@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RemoteVideoDownloadPolicy < ApplicationPolicy
     def index?

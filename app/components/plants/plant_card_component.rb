@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   class PlantCardComponent < ApplicationComponent
     erb_template <<~ERB

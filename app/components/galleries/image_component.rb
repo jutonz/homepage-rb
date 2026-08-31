@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class ImageComponent < ApplicationComponent
     erb_template <<~ERB

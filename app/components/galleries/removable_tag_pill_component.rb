@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RemovableTagPillComponent < ApplicationComponent
     erb_template <<~ERB
