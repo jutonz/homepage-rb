@@ -1,16 +1,21 @@
 module AirGradient
-  MEASURES_ATTRS = %i[
-    co2
-    humidity
-    nox
-    pm01
-    pm02
-    pm10
-    temp
-    tvoc
-  ]
+  # Hoisted to a constant so Sorbet can resolve the superclass; it
+  # rejects arbitrary expressions in an ancestor position (srb.help/4002).
+  # The attributes are listed inline rather than splatted from a
+  # constant because Sorbet only supports splats of statically known
+  # size (srb.help/7019).
+  MeasuresData = Data.define(
+    :co2,
+    :humidity,
+    :nox,
+    :pm01,
+    :pm02,
+    :pm10,
+    :temp,
+    :tvoc
+  )
 
-  class Measures < Data.define(*MEASURES_ATTRS)
+  class Measures < MeasuresData
     PATH = "/measures/current"
 
     def self.current(url:)
