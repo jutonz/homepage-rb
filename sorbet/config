@@ -4,3 +4,9 @@
 --ignore=/node_modules/
 --ignore=/tmp/
 --ignore=/log/
+
+# net-imap 0.6.6 reparents these classes relative to the definitions in
+# Sorbet's bundled stdlib payload, so the generated gem RBI conflicts
+# with it. Sorbet's suggested remedy for gem/payload version skew.
+--suppress-payload-superclass-redefinition-for=Net::IMAP::Literal
+--suppress-payload-superclass-redefinition-for=Net::IMAP::QuotedString
