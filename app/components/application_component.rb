@@ -1,4 +1,4 @@
 class ApplicationComponent < ViewComponent::Base
-  include Rails.application.routes.url_helpers
+  T.unsafe(self).include Rails.application.routes.url_helpers
   include Turbo::FramesHelper
 end

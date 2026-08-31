@@ -1,16 +1,16 @@
 module AirGradient
-  MEASURES_ATTRS = %i[
-    co2
-    humidity
-    nox
-    pm01
-    pm02
-    pm10
-    temp
-    tvoc
-  ]
+  MeasuresData = Data.define(
+    :co2,
+    :humidity,
+    :nox,
+    :pm01,
+    :pm02,
+    :pm10,
+    :temp,
+    :tvoc
+  )
 
-  class Measures < Data.define(*MEASURES_ATTRS)
+  class Measures < MeasuresData
     PATH = "/measures/current"
 
     def self.current(url:)
