@@ -44,37 +44,39 @@
         <h3 class="text-lg font-semibold mb-4">Group Details</h3>
       <% end %>
       <div class="space-y-2 text-left">
-        <div class="flex justify-between">
-          <span class="font-medium text-gray-700">Group Name:</span>
-          <span><%= @invitation.user_group.name %></span>
-        </div>
-        <div class="flex justify-between">
-          <span class="font-medium text-gray-700">Invited by:</span>
-          <span><%= @invitation.invited_by.email %></span>
-        </div>
+        <%= render(DetailRowComponent.new(
+          label: "Group Name",
+          value: @invitation.user_group.name
+        )) %>
+        <%= render(DetailRowComponent.new(
+          label: "Invited by",
+          value: @invitation.invited_by.email
+        )) %>
         <% if @invitation.expired? %>
-          <div class="flex justify-between">
-            <span class="font-medium text-gray-700">Expired on:</span>
-            <span class="text-red-600 font-medium"><%= @invitation.expires_at.strftime("%B %d, %Y at %l:%M %p") %></span>
-          </div>
+          <%= render(DetailRowComponent.new(
+            label: "Expired on",
+            value: @invitation.expires_at.strftime("%B %d, %Y at %l:%M %p"),
+            value_class: "text-red-600 font-medium"
+          )) %>
         <% elsif @invitation.accepted? %>
-          <div class="flex justify-between">
-            <span class="font-medium text-gray-700">Accepted on:</span>
-            <span class="text-green-600 font-medium"><%= @invitation.accepted_at.strftime("%B %d, %Y at %l:%M %p") %></span>
-          </div>
-          <div class="flex justify-between">
-            <span class="font-medium text-gray-700">Current Members:</span>
-            <span><%= @invitation.user_group.users_count %></span>
-          </div>
+          <%= render(DetailRowComponent.new(
+            label: "Accepted on",
+            value: @invitation.accepted_at.strftime("%B %d, %Y at %l:%M %p"),
+            value_class: "text-green-600 font-medium"
+          )) %>
+          <%= render(DetailRowComponent.new(
+            label: "Current Members",
+            value: @invitation.user_group.users_count
+          )) %>
         <% else %>
-          <div class="flex justify-between">
-            <span class="font-medium text-gray-700">Current Members:</span>
-            <span><%= @invitation.user_group.users_count %></span>
-          </div>
-          <div class="flex justify-between">
-            <span class="font-medium text-gray-700">Invitation expires:</span>
-            <span><%= @invitation.expires_at.strftime("%B %d, %Y at %l:%M %p") %></span>
-          </div>
+          <%= render(DetailRowComponent.new(
+            label: "Current Members",
+            value: @invitation.user_group.users_count
+          )) %>
+          <%= render(DetailRowComponent.new(
+            label: "Invitation expires",
+            value: @invitation.expires_at.strftime("%B %d, %Y at %l:%M %p")
+          )) %>
         <% end %>
       </div>
     </div>
