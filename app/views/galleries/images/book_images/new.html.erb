@@ -11,6 +11,7 @@
   <div class="text-center py-12 text-gray-500">
     <div class="text-lg font-medium mb-2">No books available</div>
     <div class="text-sm mb-4">Create a book first to add images to it.</div>
+
     <%= link_to(
       "Create a book",
       new_gallery_book_path(@gallery),
@@ -30,6 +31,7 @@
         data: {role: "book-selection"}
       ) do |form| %>
         <%= form.hidden_field(:book_id, value: book.id) %>
+
         <%= form.button(
           type: "submit",
           class: "w-full p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 text-left"

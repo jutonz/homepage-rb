@@ -20,6 +20,7 @@
     <div class="text-center py-12 text-gray-500">
       <div class="text-lg font-medium mb-2">No ingredients added yet</div>
       <div class="text-sm mb-4">Add ingredients to build your recipe.</div>
+
       <%= link_to(
         "Add First Ingredient",
         new_recipe_group_recipe_ingredient_path(@recipe.recipe_group, @recipe),
@@ -30,12 +31,16 @@
 
   <div class="grid grid-cols-1 gap-4">
     <% @recipe_ingredients.each do |recipe_ingredient| %>
-      <div class="border border-gray-200 rounded-lg p-4" data-ingredient="<%= recipe_ingredient.ingredient.name %>">
+      <div
+        class="border border-gray-200 rounded-lg p-4"
+        data-ingredient="<%= recipe_ingredient.ingredient.name %>"
+      >
         <div class="flex justify-between items-center">
           <div>
             <h3 class="font-medium text-gray-900">
               <%= recipe_ingredient.ingredient.name %>
             </h3>
+
             <div class="text-sm text-gray-600 mt-1">
               <%= recipe_ingredient.formatted_quantity %>
               <%= recipe_ingredient.unit.name %>
@@ -48,6 +53,7 @@
               edit_recipe_group_recipe_ingredient_path(@recipe.recipe_group, @recipe, recipe_ingredient),
               class: "text-sm text-blue-600 hover:text-blue-800"
             ) %>
+
             <%= link_to(
               "Remove",
               recipe_group_recipe_ingredient_path(@recipe.recipe_group, @recipe, recipe_ingredient),

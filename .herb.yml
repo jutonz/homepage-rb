@@ -88,6 +88,9 @@ formatter:
   indentWidth: 2
   maxLineLength: 80
 
+  exclude:
+    - 'public/**/*'
+
   # # Additional patterns beyond the defaults for formatting
   # include:
   #   - '**/*.xml.erb'

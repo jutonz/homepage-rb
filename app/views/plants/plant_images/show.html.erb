@@ -2,6 +2,7 @@
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_crumb(@plant.name, plant_path(@plant)) %>
+
   <%= c.with_action do %>
     <% if @plant.key_image_id == @plant_image.id %>
       <%= render(
@@ -21,6 +22,7 @@
       ) %>
     <% end %>
   <% end %>
+
   <%= c.with_action do %>
     <%= link_to(
       "Edit",
@@ -28,6 +30,7 @@
       class: "button"
     ) %>
   <% end %>
+
   <%= c.with_action do %>
     <%= button_to(
       "Delete",
@@ -59,6 +62,7 @@
   <% if @plant_image.notes.present? %>
     <div class="mt-8">
       <h2 class="text-lg font-medium mb-2">Notes</h2>
+
       <div class="prose prose-gray max-w-none">
         <%= @plant_image.notes %>
       </div>

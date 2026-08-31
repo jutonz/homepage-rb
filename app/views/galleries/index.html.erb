@@ -2,6 +2,7 @@
   title: "Galleries"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
+
   <%= c.with_action do %>
     <%= link_to(
       "New Gallery",
@@ -21,6 +22,7 @@
       <div class="flex justify-between items-center mb-2">
         <span class="font-medium text-gray-900 group-hover:text-gray-700"><%= gallery.name %></span>
       </div>
+
       <div class="flex gap-2">
         <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= gallery.images_count %> images</span>
         <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= gallery.tags_count %> tags</span>
@@ -32,6 +34,9 @@
 <% if @galleries.empty? %>
   <div class="text-center py-12 text-gray-500">
     <div class="text-lg font-medium mb-2">No galleries yet</div>
-    <div class="text-sm">Create your first gallery to get started organizing your images.</div>
+
+    <div class="text-sm">
+      Create your first gallery to get started organizing your images.
+    </div>
   </div>
 <% end %>

@@ -8,25 +8,16 @@
       }
     }
   ) do |form| %>
-    <div
-      class="flex justify-between items-center
-        mt-2 mb-3"
-    >
+    <div class="flex justify-between items-center mt-2 mb-3">
       <h3 class="text-lg">Tags to apply</h3>
-      <button
-        type="button"
-        class="button"
-        data-action="dialog#open"
-      >Add tags</button>
+
+      <button type="button" class="button" data-action="dialog#open">
+        Add tags
+      </button>
     </div>
 
-    <div
-      id="bulk-upload-selected-tags"
-      class="flex flex-wrap gap-2 mb-4"
-    >
-      <span class="text-gray-500 hidden only:block">
-        No tags selected.
-      </span>
+    <div id="bulk-upload-selected-tags" class="flex flex-wrap gap-2 mb-4">
+      <span class="text-gray-500 hidden only:block"> No tags selected. </span>
     </div>
 
     <div id="bulk-upload-tag-ids"></div>
@@ -50,6 +41,7 @@
       <p class="text-lg">
         Drag images here or click to browse
       </p>
+
       <p class="text-sm text-gray-400 mt-1">
         Supports multiple files
       </p>
@@ -71,10 +63,7 @@
       }
     ) %>
 
-    <div
-      data-dropzone-target="fileList"
-      class="dropzone__file-list"
-    ></div>
+    <div data-dropzone-target="fileList" class="dropzone__file-list"></div>
 
     <%= form.button(
       :submit,
@@ -93,9 +82,7 @@
         id="bulk-upload-modal-selected-tags"
         class="flex flex-wrap gap-2 mb-4"
       >
-        <span class="text-gray-500 hidden only:block">
-          No tags selected.
-        </span>
+        <span class="text-gray-500 hidden only:block"> No tags selected. </span>
       </div>
     <% end %>
   <% end %>

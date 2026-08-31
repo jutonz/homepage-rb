@@ -2,6 +2,7 @@
   title: "User Groups"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
+
   <%= c.with_action do %>
     <%= link_to(
       "New User Group",
@@ -21,6 +22,7 @@
       <div class="flex justify-between items-center mb-2">
         <span class="font-medium text-gray-900 group-hover:text-gray-700"><%= user_group.name %></span>
       </div>
+
       <div class="flex gap-2">
         <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= user_group.users_count %> members</span>
       </div>
@@ -31,6 +33,9 @@
 <% if @user_groups.empty? %>
   <div class="text-center py-12 text-gray-500">
     <div class="text-lg font-medium mb-2">No user groups yet</div>
-    <div class="text-sm">Create your first user group to get started organizing users.</div>
+
+    <div class="text-sm">
+      Create your first user group to get started organizing users.
+    </div>
   </div>
 <% end %>

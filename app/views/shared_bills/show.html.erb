@@ -26,6 +26,7 @@
 <div class="bg-white rounded-lg border border-gray-200 p-6">
   <div class="flex justify-between items-center mb-4">
     <h3 class="text-lg font-semibold">Payees</h3>
+
     <%= link_to(
       "New Payee",
       new_shared_bill_payee_path(@shared_bill),
@@ -36,15 +37,22 @@
   <% if @payees.any? %>
     <div class="space-y-2">
       <% @payees.each do |payee| %>
-        <div class="flex flex-col items-center justify-between p-3 bg-gray-50 rounded-lg sm:flex-row"
-             data-role="payee">
+        <div
+          class="
+            flex flex-col items-center justify-between p-3 bg-gray-50
+            rounded-lg sm:flex-row
+          "
+          data-role="payee"
+        >
           <span class="font-medium mb-5 sm:mb-0"><%= payee.name %></span>
+
           <div class="flex flex-col gap-2 sm:flex-row">
             <%= link_to(
               "Edit",
               edit_shared_bill_payee_path(@shared_bill, payee),
               class: "button text-center button--secondary button--small"
             ) %>
+
             <%= button_to(
               "Remove",
               shared_bill_payee_path(@shared_bill, payee),
@@ -64,6 +72,7 @@
 <div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">
   <div class="flex justify-between items-center mb-4">
     <h3 class="text-lg font-semibold">Bills</h3>
+
     <%= link_to(
       "New Bill",
       new_shared_bill_bill_path(@shared_bill),
@@ -74,17 +83,25 @@
   <% if @bills.any? %>
     <div class="space-y-4">
       <% @bills.each do |bill| %>
-        <div class="flex flex-col items-start justify-between p-3 bg-gray-50 rounded-lg" data-role="bill">
+        <div
+          class="
+            flex flex-col items-start justify-between p-3 bg-gray-50
+            rounded-lg
+          "
+          data-role="bill"
+        >
           <div class="flex flex-col justify-between w-full mb-4 sm:flex-row">
             <div class="font-medium">
               <%= bill.period_start.to_date %> - <%= bill.period_end.to_date %>
             </div>
+
             <div class="flex flex-row gap-2 mt-4 justify-center sm:mt-0">
               <%= link_to(
                 "Edit",
                 edit_shared_bill_bill_path(@shared_bill, bill),
                 class: "button button--secondary button--small"
               ) %>
+
               <%= button_to(
                 "Remove",
                 shared_bill_bill_path(@shared_bill, bill),
@@ -96,10 +113,12 @@
               ) %>
             </div>
           </div>
+
           <div class="flex items-center gap-3">
             <span class="text-gray-600">
               $<%= sprintf("%.2f", bill.total_amount / 100.0) %>
             </span>
+
             <% if bill.all_payees_paid %>
               <%= render(PillComponent.new(text: "Paid", color: :green)) %>
             <% else %>
@@ -108,6 +127,7 @@
           </div>
         </div>
       <% end %>
+
       <div class="flex justify-center">
         <%= paginate(@bills) %>
       </div>

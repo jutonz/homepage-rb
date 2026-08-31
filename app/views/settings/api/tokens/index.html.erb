@@ -2,6 +2,7 @@
   title: "Tokens"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
+
   <%= c.with_action do %>
     <%= link_to(
       "New Token",
@@ -21,7 +22,5 @@
     <% end %>
   <% end %>
 
-  <span class="hidden only:block">
-    No tokens
-  </span>
+  <span class="hidden only:block"> No tokens </span>
 </div>

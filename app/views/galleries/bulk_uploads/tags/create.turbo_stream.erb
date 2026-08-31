@@ -1,12 +1,15 @@
 <%= turbo_stream.remove(
   "bulk-upload-tag-#{@tag.id}"
 ) %>
+
 <%= turbo_stream.remove(
   "bulk-upload-modal-tag-#{@tag.id}"
 ) %>
+
 <%= turbo_stream.remove(
   "bulk-upload-tag-input-#{@tag.id}"
 ) %>
+
 <%= turbo_stream.append("bulk-upload-selected-tags") do %>
   <%= render(Galleries::RemovableTagPillComponent.new(
     tag: @tag,
@@ -15,6 +18,7 @@
       gallery_bulk_upload_tag_path(@tag.gallery, @tag)
   )) %>
 <% end %>
+
 <%= turbo_stream.append(
   "bulk-upload-modal-selected-tags"
 ) do %>
@@ -25,6 +29,7 @@
       gallery_bulk_upload_tag_path(@tag.gallery, @tag)
   )) %>
 <% end %>
+
 <%= turbo_stream.append("bulk-upload-tag-ids") do %>
   <input
     type="hidden"
@@ -33,6 +38,7 @@
     id="bulk-upload-tag-input-<%= @tag.id %>"
   >
 <% end %>
+
 <%= turbo_stream.remove(
   "tag-search-result-#{@tag.id}"
 ) %>

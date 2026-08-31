@@ -10,25 +10,41 @@
 <% end %>
 
 <div class="mb-6">
-  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg
-              p-6 border border-blue-200">
+  <div
+    class="
+      bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border
+      border-blue-200
+    "
+  >
     <div class="flex items-center space-x-3">
       <div class="flex-shrink-0">
-        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center
-                    justify-center">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
-               viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-            </path>
+        <div
+          class="
+            w-10 h-10 bg-blue-100 rounded-full flex items-center
+            justify-center
+          "
+        >
+          <svg
+            class="w-6 h-6 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            ></path>
           </svg>
         </div>
       </div>
+
       <div>
         <h2 class="text-lg font-medium text-gray-900">
           Welcome back!
         </h2>
+
         <p class="text-sm text-gray-600">
           Signed in as <%= current_user.email %>
         </p>
@@ -41,9 +57,10 @@
   <%= render(CardComponent.new(title: "Photo Galleries")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
-        Manage and organize your photo collections with tags and
-        social media integration.
+        Manage and organize your photo collections with tags and social media
+        integration.
       </p>
+
       <%= link_to(
         "Browse Galleries",
         galleries_path,
@@ -55,15 +72,17 @@
   <%= render(CardComponent.new(title: "Recipe Management")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
-        Store and organize your favorite recipes with ingredients
-        and easy scaling capabilities.
+        Store and organize your favorite recipes with ingredients and easy
+        scaling capabilities.
       </p>
+
       <div class="flex gap-2 flex-col sm:flex-row">
         <%= link_to(
           "Browse Recipe Groups",
           recipe_groups_path,
           class: "button"
         ) %>
+
         <%= link_to(
           "Manage Ingredients",
           ingredients_path,
@@ -76,9 +95,10 @@
   <%= render(CardComponent.new(title: "User Groups")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
-        Create and manage user groups to organize and control access
-        to your resources.
+        Create and manage user groups to organize and control access to your
+        resources.
       </p>
+
       <%= link_to(
         "Manage User Groups",
         user_groups_path,
@@ -90,9 +110,10 @@
   <%= render(CardComponent.new(title: "Todo Management")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
-        Track your tasks and organize them into rooms for better
-        project management.
+        Track your tasks and organize them into rooms for better project
+        management.
       </p>
+
       <%= link_to(
         "View Tasks",
         todo_path,
@@ -104,9 +125,9 @@
   <%= render(CardComponent.new(title: "Plants")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
-        Track and manage your plants with details about care,
-        growth, and notes.
+        Track and manage your plants with details about care, growth, and notes.
       </p>
+
       <%= link_to(
         "View Plants",
         plants_path,
@@ -118,9 +139,10 @@
   <%= render(CardComponent.new(title: "Shared Bills")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
-        Track and manage shared expenses with bills, payees,
-        and payment tracking.
+        Track and manage shared expenses with bills, payees, and payment
+        tracking.
       </p>
+
       <%= link_to(
         "Manage Shared Bills",
         shared_bills_path,
@@ -132,9 +154,10 @@
   <%= render(CardComponent.new(title: "API Access")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">
-        Manage your API tokens for programmatic access to your data
-        and integrations.
+        Manage your API tokens for programmatic access to your data and
+        integrations.
       </p>
+
       <%= link_to(
         "Manage Tokens",
         settings_api_tokens_path,

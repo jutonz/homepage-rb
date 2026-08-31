@@ -37,6 +37,7 @@
 
   <div class="mb-6" data-role="invitation-form">
     <h4 class="text-md font-medium mb-3">Invite user</h4>
+
     <%= simple_form_for(
       UserGroupInvitation.new,
       url: user_group_invitations_path(@user_group),
@@ -51,6 +52,7 @@
           class: "w-full"
         }
       ) %>
+
       <div>
         <%= form.submit("Send Invitation", class: "button") %>
       </div>
@@ -59,6 +61,7 @@
 
   <div>
     <h4 class="text-md font-medium mb-3">Pending Invitations</h4>
+
     <% if @pending_invitations.any? %>
       <div class="space-y-2">
         <% @pending_invitations.each do |invitation| %>

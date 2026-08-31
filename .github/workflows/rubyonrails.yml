@@ -143,6 +143,9 @@ jobs:
       - name: Lint ERB templates
         if: ${{ !cancelled() }}
         run: npx herb-lint --github
+      - name: Check ERB template formatting
+        if: ${{ !cancelled() }}
+        run: npx herb-format --check .
 
   build_push:
     if: github.ref == 'refs/heads/main'

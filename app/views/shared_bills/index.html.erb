@@ -2,6 +2,7 @@
   title: "Shared Bills"
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
+
   <%= c.with_action do %>
     <%= link_to(
       "New Shared Bill",
@@ -20,8 +21,7 @@
              hover:bg-gray-50 hover:border-gray-300
              transition-colors duration-200 group"
     ) do %>
-      <span class="font-medium text-gray-900
-                   group-hover:text-gray-700">
+      <span class="font-medium text-gray-900 group-hover:text-gray-700">
         <%= shared_bill.name %>
       </span>
     <% end %>
@@ -33,9 +33,9 @@
     <div class="text-lg font-medium mb-2">
       No shared bills yet
     </div>
+
     <div class="text-sm">
-      Create your first shared bill to start tracking shared
-      expenses.
+      Create your first shared bill to start tracking shared expenses.
     </div>
   </div>
 <% end %>

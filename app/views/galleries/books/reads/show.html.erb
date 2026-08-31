@@ -3,11 +3,14 @@
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Galleries", galleries_path) %>
+
   <%= c.with_crumb(
     @gallery.name,
     gallery_path(@gallery)
   ) %>
+
   <%= c.with_crumb("Books", gallery_books_path(@gallery)) %>
+
   <%= c.with_crumb(
     @book.name,
     gallery_book_path(@gallery, @book)
@@ -25,10 +28,7 @@
 <div class="flex flex-col gap-8 pb-20">
   <% if @images.any? %>
     <% @images.each do |image| %>
-      <div
-        class="flex justify-center"
-        data-image-id="<%= image.id %>"
-      >
+      <div class="flex justify-center" data-image-id="<%= image.id %>">
         <% if image.video? %>
           <%= video_tag(image.file, controls: true) %>
         <% else %>
@@ -41,9 +41,9 @@
       <div class="text-lg font-medium mb-2">
         No images yet
       </div>
+
       <div class="text-sm">
-        Images will appear here once they're added to
-        this book.
+        Images will appear here once they're added to this book.
       </div>
     </div>
   <% end %>
