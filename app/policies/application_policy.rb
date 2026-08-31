@@ -2,8 +2,6 @@
 # frozen_string_literal: true
 
 class ApplicationPolicy
-  extend T::Sig
-
   sig { returns(T.nilable(User)) }
   attr_reader :user
 
