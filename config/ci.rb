@@ -4,6 +4,7 @@ CI.run do
   # step "Setup", "bin/setup --skip-server"
 
   step "Standard", "bin/standardrb"
+  step "Sorbet", "bin/srb tc"
 
   step "importmap audit", "bin/importmap audit"
   step "brakeman", "bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error"

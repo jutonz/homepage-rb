@@ -139,6 +139,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: bundle exec standardrb
+      - run: bin/srb tc
       - run: ./bin/brakeman
       - name: Lint ERB templates
         if: ${{ !cancelled() }}
