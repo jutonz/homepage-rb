@@ -5,6 +5,7 @@ CI.run do
 
   step "Standard", "bin/standardrb"
   step "Sorbet", "bin/srb tc"
+  step "Tapioca DSL", "bin/tapioca dsl --verify --workers 1"
 
   step "importmap audit", "bin/importmap audit"
   step "brakeman", "bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error"
