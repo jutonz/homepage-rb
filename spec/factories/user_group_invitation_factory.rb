@@ -30,7 +30,7 @@
 #
 FactoryBot.define do
   factory :user_group_invitation do
-    sequence(:email) { |n| "user#{n}@example.com" }
+    sequence(:email) { |n| "invitee#{n}@example.com" }
     user_group
     association(:invited_by, factory: :user)
     expires_at { 7.days.from_now }
