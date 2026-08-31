@@ -48,7 +48,11 @@
 
   <div class="flex justify-center mb-4">
     <%= link_to(@plant_image.file) do %>
-      <%= image_tag(@plant_image.file, class: "max-w-full h-auto") %>
+      <%= image_tag(
+        @plant_image.file,
+        class: "max-w-full h-auto",
+        alt: "Photo of #{@plant_image.plant.name}"
+      ) %>
     <% end %>
   </div>
 

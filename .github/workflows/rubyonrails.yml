@@ -132,8 +132,17 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - name: Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          cache: npm
+      - run: npm ci
       - run: bundle exec standardrb
       - run: ./bin/brakeman
+      - name: Lint ERB templates
+        if: ${{ !cancelled() }}
+        run: npx herb-lint --github
 
   build_push:
     if: github.ref == 'refs/heads/main'

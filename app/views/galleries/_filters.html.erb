@@ -40,15 +40,15 @@
       }
     ) do |form| %>
       <% params.fetch(:tag_ids, []).each do |tag_id| %>
-        <input name="tag_ids[]" value="<%= tag_id %>" type="hidden" />
+        <input name="tag_ids[]" value="<%= tag_id %>" type="hidden">
       <% end %>
       <% if params[:page].present? %>
-        <input name="page" value="<%= params[:page] %>" type="hidden" />
+        <input name="page" value="<%= params[:page] %>" type="hidden">
       <% end %>
       <% if @select_mode %>
-        <input name="select" value="true" type="hidden" />
+        <input name="select" value="true" type="hidden">
         <% @selected_ids.each do |id| %>
-          <input name="selected_ids[]" value="<%= id %>" type="hidden" />
+          <input name="selected_ids[]" value="<%= id %>" type="hidden">
         <% end %>
       <% end %>
       <div class="flex gap-3">

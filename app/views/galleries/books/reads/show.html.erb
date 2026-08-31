@@ -32,7 +32,7 @@
         <% if image.video? %>
           <%= video_tag(image.file, controls: true) %>
         <% else %>
-          <%= image_tag(image.file) %>
+          <%= image_tag(image.file, alt: "Page from #{@book.name}") %>
         <% end %>
       </div>
     <% end %>
