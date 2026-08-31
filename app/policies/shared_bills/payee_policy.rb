@@ -1,3 +1,5 @@
+# typed: true
+
 module SharedBills
   class PayeePolicy < UserOwnedPolicy
     private

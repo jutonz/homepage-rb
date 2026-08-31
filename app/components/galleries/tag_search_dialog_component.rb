@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class TagSearchDialogComponent < ApplicationComponent
     erb_template <<~ERB

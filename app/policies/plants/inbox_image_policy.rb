@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   class InboxImagePolicy < UserOwnedPolicy
     def assign?

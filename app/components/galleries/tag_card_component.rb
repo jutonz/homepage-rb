@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class TagCardComponent < ApplicationComponent
     CLASSIFICATION_CARD_CLASSES = {

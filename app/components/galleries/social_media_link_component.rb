@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class SocialMediaLinkComponent < ApplicationComponent
     erb_template <<~ERB

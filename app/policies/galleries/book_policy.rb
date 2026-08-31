@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BookPolicy < ApplicationPolicy
     def index?

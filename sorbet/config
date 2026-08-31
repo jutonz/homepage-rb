@@ -4,6 +4,7 @@
 --ignore=/node_modules/
 --ignore=/tmp/
 --ignore=/log/
+--ignore=/.claude/
 
 # net-imap 0.6.6 reparents these classes relative to the definitions in
 # Sorbet's bundled stdlib payload, so the generated gem RBI conflicts

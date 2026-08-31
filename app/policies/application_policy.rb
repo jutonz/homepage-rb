@@ -1,7 +1,11 @@
+# typed: true
 # frozen_string_literal: true
 
 class ApplicationPolicy
-  attr_reader :user, :record
+  sig { returns(T.nilable(User)) }
+  attr_reader :user
+
+  attr_reader :record
 
   def initialize(user, record)
     @user = user

@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   class PlantImagePolicy < ApplicationPolicy
     def new?

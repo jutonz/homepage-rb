@@ -1,3 +1,5 @@
+# typed: true
+
 class PendingInvitationComponent < ApplicationComponent
   erb_template <<~ERB
     <div class="flex justify-between items-center p-3 bg-gray-50 rounded-md" data-role="pending-invitation">

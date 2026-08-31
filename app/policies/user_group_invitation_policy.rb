@@ -1,3 +1,5 @@
+# typed: true
+
 class UserGroupInvitationPolicy < ApplicationPolicy
   def create?
     user.present? && user == record.user_group.owner

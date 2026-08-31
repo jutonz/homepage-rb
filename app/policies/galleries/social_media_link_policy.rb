@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class SocialMediaLinkPolicy < ApplicationPolicy
     def new?

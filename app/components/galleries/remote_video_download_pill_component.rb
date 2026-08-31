@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RemoteVideoDownloadPillComponent < ApplicationComponent
     STATUS_COLORS = {

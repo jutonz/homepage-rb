@@ -1,3 +1,5 @@
+# typed: true
+
 class UserOwnedPolicy < ApplicationPolicy
   def index?
     user.present?

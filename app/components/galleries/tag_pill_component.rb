@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class TagPillComponent < ApplicationComponent
     CLASSIFICATION_COLORS = {

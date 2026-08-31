@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BulkUploadPolicy < ApplicationPolicy
     def new?

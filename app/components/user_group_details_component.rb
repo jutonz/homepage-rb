@@ -1,3 +1,5 @@
+# typed: true
+
 class UserGroupDetailsComponent < ApplicationComponent
   erb_template <<~ERB
     <div class="bg-white rounded-lg border border-gray-200 p-6">
