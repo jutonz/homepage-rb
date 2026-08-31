@@ -78,3 +78,14 @@ This is a Ruby on Rails 8.1 application with the following key architectural com
 
 ## git commits
 * Briefly explain the purpose of the change in 1-2 sentences.
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in the Notion database "Homepage RB Backlog". See
+`docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+single-context. See `docs/agents/domain.md`.
