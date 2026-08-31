@@ -1,0 +1,4 @@
+gem:
+  prerequire: sorbet/tapioca/prerequire.rb
+dsl:
+  # Add your `dsl` command parameters here:

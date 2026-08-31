@@ -79,3 +79,8 @@ group :test do
 end
 
 gem "solid_cable", "~> 4.0"
+
+gem "sorbet-runtime", "~> 0.6.13455"
+
+gem "sorbet", "~> 0.6.13455", group: :development
+gem "tapioca", "~> 0.19.2", group: :development
