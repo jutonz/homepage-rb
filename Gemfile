@@ -59,11 +59,13 @@ group :development, :test do
   gem "simplecov", require: false
   gem "simplecov_json_formatter", require: false
   gem "standard"
+  gem "tapioca", "~> 0.19.2", require: false
 end
 
 group :development do
   gem "annotaterb"
   gem "ruby-lsp"
+  gem "sorbet", "~> 0.6.13455"
   gem "web-console"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
@@ -81,6 +83,3 @@ end
 gem "solid_cable", "~> 4.0"
 
 gem "sorbet-runtime", "~> 0.6.13455"
-
-gem "sorbet", "~> 0.6.13455", group: :development
-gem "tapioca", "~> 0.19.2", group: :development
