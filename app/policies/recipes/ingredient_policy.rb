@@ -1,3 +1,5 @@
+# typed: true
+
 module Recipes
   class IngredientPolicy < UserOwnedPolicy
   end

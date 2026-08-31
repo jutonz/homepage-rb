@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class ImageThumbnailComponent < ApplicationComponent
     erb_template <<~ERB

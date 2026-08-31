@@ -1,3 +1,5 @@
+# typed: true
+
 class RecipeGroupPolicy < ApplicationPolicy
   def index?
     user.present?

@@ -1,3 +1,5 @@
+# typed: true
+
 module Todo
   class TaskCardComponent < ApplicationComponent
     erb_template <<~ERB

@@ -1,3 +1,5 @@
+# typed: true
+
 class RecipeComponent < ApplicationComponent
   erb_template <<~ERB
     <%= link_to(

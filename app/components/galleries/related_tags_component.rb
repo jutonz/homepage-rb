@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RelatedTagsComponent < ApplicationComponent
     erb_template <<~ERB

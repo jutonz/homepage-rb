@@ -1,3 +1,5 @@
+# typed: true
+
 module Recipes
   class RecipeIngredientPolicy < UserOwnedPolicy
     def index?

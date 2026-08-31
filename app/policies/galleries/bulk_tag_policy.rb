@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BulkTagPolicy < ApplicationPolicy
     def create?

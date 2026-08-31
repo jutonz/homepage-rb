@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RecentTagsQuery
     Result = Data.define(:tag, :most_recent_image_id)

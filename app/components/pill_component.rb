@@ -1,3 +1,5 @@
+# typed: true
+
 class PillComponent < ApplicationComponent
   COLOR_CLASSES = {
     blue: "bg-blue-100 text-blue-800",

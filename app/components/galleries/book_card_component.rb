@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BookCardComponent < ApplicationComponent
     erb_template <<~ERB
