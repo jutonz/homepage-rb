@@ -1930,6 +1930,21 @@ class ViewComponent::SystemTestControllerNefariousPathError < ::ViewComponent::B
 # pkg:gem/view_component#lib/view_component/errors.rb:223
 ViewComponent::SystemTestControllerNefariousPathError::MESSAGE = T.let(T.unsafe(nil), String)
 
+# pkg:gem/view_component#lib/view_component/system_test_helpers.rb:4
+module ViewComponent::SystemTestHelpers
+  include ::Capybara::Minitest::Assertions
+  include ::ViewComponent::TestHelpers
+
+  # Returns a block that can be used to visit the path of the inline rendered component.
+  # @param fragment [Nokogiri::Fragment] The fragment returned from `render_inline`.
+  # @param layout [String] The (optional) layout to use.
+  #
+  # @return [Proc] A block that can be used to visit the path of the inline rendered component.
+  #
+  # pkg:gem/view_component#lib/view_component/system_test_helpers.rb:12
+  def with_rendered_component_path(fragment, layout: T.unsafe(nil), &block); end
+end
+
 # pkg:gem/view_component#lib/view_component/template.rb:4
 class ViewComponent::Template
   # pkg:gem/view_component#lib/view_component/template.rb:15
@@ -2110,6 +2125,228 @@ end
 class ViewComponent::TemplateError < ::StandardError
   # pkg:gem/view_component#lib/view_component/errors.rb:20
   def initialize(errors, templates = T.unsafe(nil)); end
+end
+
+# pkg:gem/view_component#lib/view_component/test_helpers.rb:4
+module ViewComponent::TestHelpers
+  include ::Capybara::Minitest::Assertions
+
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:18
+  def assert_component_rendered; end
+
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:10
+  def page; end
+
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:14
+  def refute_component_rendered; end
+
+  # Execute the given block in the view context (using `instance_exec`).
+  # Internally sets `page` to be a `Capybara::Node::Simple`, allowing for
+  # Capybara assertions to be used. All arguments are forwarded to the block.
+  #
+  # ```ruby
+  # render_in_view_context(arg1, arg2: nil) do |arg1, arg2:|
+  #   render(MyComponent.new(arg1, arg2))
+  # end
+  #
+  # assert_text("Hello, World!")
+  # ```
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:116
+  def render_in_view_context(*_arg0, **_arg1, &_arg2); end
+
+  # Render a component inline. Internally sets `page` to be a `Capybara::Node::Simple`,
+  # allowing for Capybara assertions to be used:
+  #
+  # ```ruby
+  # render_inline(MyComponent.new)
+  # assert_text("Hello, World!")
+  # ```
+  #
+  # @param component [ViewComponent::Base, ViewComponent::Collection] The instance of the component to be rendered.
+  #
+  # @return [Nokogiri::HTML5]
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:40
+  def render_inline(component, **args, &block); end
+
+  # Render a preview inline. Internally sets `page` to be a `Capybara::Node::Simple`,
+  # allowing for Capybara assertions to be used:
+  #
+  # ```ruby
+  # render_preview(:default)
+  # assert_text("Hello, World!")
+  # ```
+  #
+  # @param name [String] The name of the preview to be rendered.
+  # @param from [ViewComponent::Preview] The class of the preview to be rendered.
+  # @param params [Hash] Parameters to be passed to the preview.
+  #
+  # @return [Nokogiri::HTML5]
+  #
+  # @note `#rendered_preview` expects a preview to be defined with the same class
+  #   name as the calling test, but with `Test` replaced with `Preview`:
+  #
+  #   MyComponentTest -> MyComponentPreview etc.
+  #
+  #   In RSpec, `Preview` is appended to `described_class`.
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:87
+  def render_preview(name, from: T.unsafe(nil), params: T.unsafe(nil)); end
+
+  # Returns the result of a render_inline call.
+  #
+  # @return [ActionView::OutputBuffer]
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:27
+  def rendered_content; end
+
+  # `JSON.parse`-d component output.
+  #
+  # ```ruby
+  # render_inline(MyJsonComponent.new)
+  # assert_equal(rendered_json["hello"], "world")
+  # ```
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:63
+  def rendered_json; end
+
+  # Access the controller used by `render_inline`:
+  #
+  # ```ruby
+  # test "logged out user sees login link" do
+  #   vc_test_controller.expects(:logged_in?).at_least_once.returns(false)
+  #   render_inline(LoginComponent.new)
+  #   assert_selector("[aria-label='You must be signed in']")
+  # end
+  # ```
+  #
+  # @return [ActionController::Base]
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:259
+  def vc_test_controller; end
+
+  # Set the controller used by `render_inline`:
+  #
+  # ```ruby
+  # def vc_test_controller_class
+  #   MyTestController
+  # end
+  # ```
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:270
+  def vc_test_controller_class; end
+
+  # Access the request used by `render_inline`:
+  #
+  # ```ruby
+  # test "component does not render in Firefox" do
+  #   request.env["HTTP_USER_AGENT"] = "Mozilla/5.0"
+  #   render_inline(NoFirefoxComponent.new)
+  #   refute_component_rendered
+  # end
+  # ```
+  #
+  # @return [ActionDispatch::TestRequest]
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:287
+  def vc_test_request; end
+
+  # Returns the view context used to render components in tests. Note that the view context
+  # is reset after each call to `render_inline`.
+  #
+  # @return [ActionView::Base]
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:53
+  def vc_test_view_context; end
+
+  # Set the controller to be used while executing the given block,
+  # allowing access to controller-specific methods:
+  #
+  # ```ruby
+  # with_controller_class(UsersController) do
+  #   render_inline(MyComponent.new)
+  # end
+  # ```
+  #
+  # @param klass [Class<ActionController::Base>] The controller to be used.
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:150
+  def with_controller_class(klass); end
+
+  # Set format of the current request
+  #
+  # ```ruby
+  # with_format(:json) do
+  #   render_inline(MyComponent.new)
+  # end
+  # ```
+  #
+  # @param formats [Array<Symbol>] The format(s) to be set for the provided block.
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:168
+  def with_format(*formats); end
+
+  # Set the URL of the current request (such as when using request-dependent path helpers):
+  #
+  # ```ruby
+  # with_request_url("/users/42") do
+  #   render_inline(MyComponent.new)
+  # end
+  # ```
+  #
+  # To use a specific host, pass the host param:
+  #
+  # ```ruby
+  # with_request_url("/users/42", host: "app.example.com") do
+  #   render_inline(MyComponent.new)
+  # end
+  # ```
+  #
+  # To specify a request method, pass the method param:
+  #
+  # ```ruby
+  # with_request_url("/users/42", method: "POST") do
+  #   render_inline(MyComponent.new)
+  # end
+  # ```
+  #
+  # To specify a protocol, pass the protocol param:
+  #
+  # ```ruby
+  # with_request_url("/users/42", protocol: :https) do
+  #   render_inline(MyComponent.new)
+  # end
+  # ```
+  #
+  # @param full_path [String] The path to set for the current request.
+  # @param host [String] The host to set for the current request.
+  # @param method [String] The request method to set for the current request.
+  # @param protocol [Symbol] The protocol to set for the current request (e.g., `:http` or `:https`).
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:213
+  def with_request_url(full_path, host: T.unsafe(nil), method: T.unsafe(nil), protocol: T.unsafe(nil)); end
+
+  # Set the Action Pack request variant for the given block:
+  #
+  # ```ruby
+  # with_variant(:phone) do
+  #   render_inline(MyComponent.new)
+  # end
+  # ```
+  #
+  # @param variants [Array<Symbol>] The variants to be set for the provided block.
+  #
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:131
+  def with_variant(*variants); end
+
+  private
+
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:301
+  def __vc_test_helpers_build_controller(klass); end
+
+  # pkg:gem/view_component#lib/view_component/test_helpers.rb:305
+  def __vc_test_helpers_preview_class; end
 end
 
 # pkg:gem/view_component#lib/view_component/translatable.rb:8
