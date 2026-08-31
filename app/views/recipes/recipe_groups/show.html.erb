@@ -3,6 +3,7 @@
 )) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Recipe Groups", recipe_groups_path) %>
+
   <% if policy(@recipe_group).edit? %>
     <%= c.with_action do %>
       <%= link_to(
@@ -12,6 +13,7 @@
       ) %>
     <% end %>
   <% end %>
+
   <%= c.with_action do %>
     <%= link_to(
       "New Recipe",
@@ -41,6 +43,9 @@
 <% if @recipes.empty? %>
   <div class="text-center py-12 text-gray-500">
     <div class="text-lg font-medium mb-2">No recipes yet</div>
-    <div class="text-sm">Add your first recipe to this group to get started cooking.</div>
+
+    <div class="text-sm">
+      Add your first recipe to this group to get started cooking.
+    </div>
   </div>
 <% end %>

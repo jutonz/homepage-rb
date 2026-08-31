@@ -1,6 +1,7 @@
 <%= render(HeaderComponent.new(title: "Inbox")) do |c| %>
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
+
   <%= c.with_action do %>
     <%= link_to("Add Images", new_inbox_image_path, class: "button") %>
   <% end %>
@@ -8,6 +9,7 @@
 
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Images</h2>
+
   <% if @inbox_images.any? %>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
       <% @inbox_images.each do |inbox_image| %>

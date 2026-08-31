@@ -1,4 +1,5 @@
-<%# Link showing page number
+<%#
+  Link showing page number
   - available local variables
     page:          a page object for "this" page
     url:           url to this page
@@ -7,6 +8,7 @@
     per_page:      number of items to fetch per page
     remote:        data-remote
 -%>
+
 <span class="page<%= ' current' if page.current? %>">
   <%= link_to_unless page.current?, page, url, {remote: remote, rel: page.rel, data: {turbo_action: :advance}} %>
 </span>

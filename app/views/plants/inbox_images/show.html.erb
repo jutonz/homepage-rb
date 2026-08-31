@@ -2,6 +2,7 @@
   <%= c.with_crumb("Home", home_path) %>
   <%= c.with_crumb("Plants", plants_path) %>
   <%= c.with_crumb("Inbox", inbox_images_path) %>
+
   <%= c.with_action do %>
     <%= button_to(
       "Delete",
@@ -31,12 +32,13 @@
 
 <div class="mt-8">
   <h2 class="text-lg font-medium mb-3">Assign to Plant</h2>
+
   <% if @plants.any? %>
     <div class="flex gap-4 flex-wrap justify-center sm:justify-start">
       <% @plants.each do |plant| %>
         <%= render(Plants::PlantCardComponent.new(plant:)) do |card| %>
           <% card.with_action do %>
-          <%= button_to(
+            <%= button_to(
             "Assign",
             inbox_image_assignments_path(@inbox_image),
             method: :post,

@@ -24,6 +24,7 @@
 <% end %>
 
 <h2 class="text-lg mb-3">Rooms</h2>
+
 <div class="flex gap-4">
   <% @task.rooms.each do |room| %>
     <%= link_to(
@@ -34,7 +35,6 @@
       <%= tag.div(room.name) %>
     <% end %>
   <% end %>
-  <span class="hidden only:block">
-    This task is not used in any rooms.
-  </span>
+
+  <span class="hidden only:block"> This task is not used in any rooms. </span>
 </div>

@@ -42,15 +42,18 @@
       <% params.fetch(:tag_ids, []).each do |tag_id| %>
         <input name="tag_ids[]" value="<%= tag_id %>" type="hidden">
       <% end %>
+
       <% if params[:page].present? %>
         <input name="page" value="<%= params[:page] %>" type="hidden">
       <% end %>
+
       <% if @select_mode %>
         <input name="select" value="true" type="hidden">
         <% @selected_ids.each do |id| %>
           <input name="selected_ids[]" value="<%= id %>" type="hidden">
         <% end %>
       <% end %>
+
       <div class="flex gap-3">
         <%= form.input(
           :query,
@@ -68,6 +71,7 @@
             class: "w-full"
           }
         ) %>
+
         <%= form.button(:submit, "Search") %>
       </div>
     <% end %>

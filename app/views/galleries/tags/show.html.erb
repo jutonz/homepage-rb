@@ -32,11 +32,11 @@
     text: "#{@images.size} images",
     color: :blue
   )) %>
+
   <%= render(
     Galleries::TagClassificationPillComponent.new(tag: @tag)
   ) %>
 </div>
-
 
 <div class="mb-6" data-role="auto-add-tags">
   <%= render(CardComponent.new(title: "Auto-add tags")) do |c| %>
@@ -52,7 +52,10 @@
       <% if @tag.auto_add_tag_associations.any? %>
         <div class="space-y-3">
           <% @tag.auto_add_tag_associations.each do |auto_add_tag_association| %>
-            <div data-role="auto-add-tag" class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+            <div
+              data-role="auto-add-tag"
+              class="flex justify-between items-center p-3 bg-gray-50 rounded-md"
+            >
               <div class="flex items-center">
                 <%= link_to(
                   auto_add_tag_association.auto_add_tag.name,
@@ -60,6 +63,7 @@
                   class: "text-blue-600 hover:text-blue-800 font-medium"
                 ) %>
               </div>
+
               <div class="flex items-center">
                 <%= button_to(
                   "Remove",

@@ -8,6 +8,7 @@
   )
 ) do |form| %>
   <%= form.error_notification %>
+
   <% if form.object.errors.any? %>
     <%= form.error_notification(
       message: form.object.errors.full_messages.to_sentence
@@ -20,6 +21,7 @@
     autofocus: true,
     html5: true
   ) %>
+
   <%= form.input(
     :period_end,
     as: :date,
@@ -31,10 +33,15 @@
       <label class="block text-sm font-medium text-gray-700 mb-2">
         Payees
       </label>
+
       <div class="space-y-2">
         <% @shared_bill.payees.order(:name).each do |payee| %>
-          <div class="flex items-center gap-4 p-3 bg-gray-50
-                      rounded-lg border border-gray-200">
+          <div
+            class="
+              flex items-center gap-4 p-3 bg-gray-50 rounded-lg border
+              border-gray-200
+            "
+          >
             <%= check_box_tag(
               "bill_form[payee_amounts][#{payee.id}][selected]",
               "1",
@@ -43,10 +50,14 @@
               class: "h-4 w-4 text-blue-600 border-gray-300
                       rounded focus:ring-blue-500"
             ) %>
-            <label for="bill_form_payee_amounts_<%= payee.id %>_selected"
-                   class="flex-1 text-sm font-medium text-gray-700">
+
+            <label
+              for="bill_form_payee_amounts_<%= payee.id %>_selected"
+              class="flex-1 text-sm font-medium text-gray-700"
+            >
               <%= payee.name %>
             </label>
+
             <%= number_field_tag(
               "bill_form[payee_amounts][#{payee.id}][amount]",
               @bill_form.payee_amounts[payee.id.to_s]&.dig(:amount),
@@ -54,6 +65,7 @@
               class: "w-40 rounded-md border-gray-300 shadow-sm
                       focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             ) %>
+
             <% if @bill_form.persisted? %>
               <div class="flex items-center">
                 <%= check_box_tag(
@@ -64,8 +76,11 @@
                   class: "h-4 w-4 text-green-600 border-gray-300
                           rounded focus:ring-green-500"
                 ) %>
-                <label for="bill_form_payee_amounts_<%= payee.id %>_paid"
-                       class="ml-2 text-sm text-gray-700">
+
+                <label
+                  for="bill_form_payee_amounts_<%= payee.id %>_paid"
+                  class="ml-2 text-sm text-gray-700"
+                >
                   Paid?
                 </label>
               </div>

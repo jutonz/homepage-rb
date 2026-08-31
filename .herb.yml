@@ -84,9 +84,12 @@ linter:
   #       - 'app/views/admin/**/*'
 
 formatter:
-  enabled: false
+  enabled: true
   indentWidth: 2
   maxLineLength: 80
+
+  exclude:
+    - 'public/**/*'
 
   # # Additional patterns beyond the defaults for formatting
   # include:

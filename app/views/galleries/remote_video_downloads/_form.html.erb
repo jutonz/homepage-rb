@@ -1,5 +1,6 @@
 <%= simple_form_for([@gallery, @remote_video_download]) do |form| %>
   <%= form.input(:url, label: "Video URL") %>
+
   <%= form.button(
     :submit,
     @remote_video_download.persisted? ? "Save" : "Add video"

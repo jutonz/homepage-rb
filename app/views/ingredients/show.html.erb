@@ -34,6 +34,7 @@
             class: "block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
           ) do %>
             <div class="font-medium text-gray-900"><%= recipe.name %></div>
+
             <% if recipe.description.present? %>
               <div class="text-sm text-gray-600 mt-1 line-clamp-2">
                 <%= recipe.description %>
@@ -45,7 +46,10 @@
     <% else %>
       <div class="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
         <div class="text-lg font-medium mb-2">Not used in any recipes yet</div>
-        <div class="text-sm">This ingredient will appear here when you add it to recipes.</div>
+
+        <div class="text-sm">
+          This ingredient will appear here when you add it to recipes.
+        </div>
       </div>
     <% end %>
   </div>

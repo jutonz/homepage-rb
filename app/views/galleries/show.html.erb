@@ -173,6 +173,7 @@
           data: {action: "submit->dialog#close"}
         ) do |f| %>
           <div data-gallery-bulk-tag-target="selectedIdsContainer"></div>
+
           <%= f.hidden_field(
             :tag_id,
             data: {gallery_bulk_tag_target: "tagIdInput"}
@@ -181,21 +182,15 @@
           <div class="mt-4">
             <p class="text-sm text-gray-600">
               Selected tag:
-              <span
-                data-gallery-bulk-tag-target="selectedTagName"
-                class="font-medium"
-              >None selected</span>
+              <span data-gallery-bulk-tag-target="selectedTagName" class="font-medium">None selected</span>
             </p>
           </div>
 
           <div class="mt-6 flex gap-3 justify-end">
-            <button
-              type="button"
-              class="button"
-              data-action="dialog#close"
-            >
+            <button type="button" class="button" data-action="dialog#close">
               Cancel
             </button>
+
             <%= f.submit(
               "Add tag",
               disabled: true,

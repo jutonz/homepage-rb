@@ -1,10 +1,13 @@
 <!DOCTYPE html>
+
 <html>
   <head>
     <title><%= content_for?(:title) ? yield(:title) : "Homepage" %></title>
+
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta name="turbo-refresh-method" content="morph">
     <meta name="turbo-refresh-scroll" content="preserve">
+
     <%= tag.meta(name: "rails_env", content: Rails.env) %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -12,7 +15,7 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <%= Sentry.get_trace_propagation_meta.html_safe %><%# herb:disable erb-no-unsafe-raw %>
+    <%= Sentry.get_trace_propagation_meta.html_safe %> <%# herb:disable erb-no-unsafe-raw %>
   </head>
 
   <body>
