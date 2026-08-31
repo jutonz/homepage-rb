@@ -10,15 +10,18 @@ RSpec.describe DetailRowComponent, type: :component do
       "div.flex.justify-between span.font-medium.text-gray-700",
       text: "Group Name:"
     )
-    expect(page).to have_css("div.flex.justify-between span", text: "Cool Group")
+    expect(page).to have_css(
+      "div.flex.justify-between span",
+      text: "Cool Group"
+    )
   end
 
-  it "renders the value without extra classes by default" do
+  it "omits the class attribute on the value by default" do
     component = described_class.new(label: "Invited by", value: "a@b.com")
 
     render_inline(component)
 
-    expect(page).to have_css('span[class=""]', text: "a@b.com")
+    expect(page).to have_css("span:not([class])", text: "a@b.com")
   end
 
   it "applies value_class to the value span" do
@@ -34,6 +37,18 @@ RSpec.describe DetailRowComponent, type: :component do
       "span.text-red-600.font-medium",
       text: "June 15, 2023"
     )
+  end
+
+  it "escapes html in the value" do
+    component = described_class.new(
+      label: "Group Name",
+      value: "<script>alert(1)</script>"
+    )
+
+    render_inline(component)
+
+    expect(rendered_content).to include("&lt;script&gt;")
+    expect(rendered_content).not_to include("<script>")
   end
 
   it "renders block content as the value when given" do
