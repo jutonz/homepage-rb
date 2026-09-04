@@ -18,6 +18,7 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
       TEST_KEY: ${{ secrets.TEST_KEY }}
+      DEVELOPMENT_KEY: ${{ secrets.DEVELOPMENT_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -26,7 +27,14 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: echo -n "$TEST_KEY" > config/credentials/test.key
+      - name: Write credentials keys
+        run: |
+          if [ -z "$DEVELOPMENT_KEY" ]; then
+            echo "::error::DEVELOPMENT_KEY is unset, so the development environment cannot boot. This is expected for pull requests from forks."
+            exit 1
+          fi
+          echo -n "$TEST_KEY" > config/credentials/test.key
+          echo -n "$DEVELOPMENT_KEY" > config/credentials/development.key
       - name: Wait for PostgreSQL
         run: |
           for i in $(seq 1 30); do
@@ -41,6 +49,16 @@ jobs:
         run: |
           git diff --exit-code app/models spec/models spec/factories || {
             echo "::error::db annotations are out of date. Run 'bin/rails db:migrate' (or 'bundle exec annotaterb models') locally and commit the result."
+            exit 1
+          }
+      - name: Set up development databases for Tapioca
+        run: bin/rails db:prepare
+        env:
+          RAILS_ENV: development
+      - name: Verify Tapioca DSL RBIs are up to date
+        run: |
+          bundle exec tapioca dsl --verify --workers 1 || {
+            echo "::error::Tapioca DSL RBIs are out of date, or the development environment failed to boot. Check the output above. If the RBIs drifted, run 'bundle exec tapioca dsl --workers 1' locally and commit the result."
             exit 1
           }
       - run: >-
