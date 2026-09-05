@@ -24,6 +24,14 @@ Data source: `collection://28829975-1461-80e0-93bd-000b6063f731`
 - **Comment**: `notion-create-comment`.
 - **Close**: set `Status` to `Done` — there is no separate "closed" state.
 
+## Status transitions
+
+- **Starting implementation**: set `Status` to `In progress` before writing
+  any code for the ticket. Do this as the first step of the work, not
+  retroactively.
+- There is no `In review` state in this database. Leave a ticket at
+  `In progress` while its PR is open.
+
 ## When a skill says "publish to the issue tracker"
 
 Create a page in the Homepage RB Backlog database via `notion-create-pages`.

@@ -1,0 +1,75 @@
+name: Regenerate Tapioca gem RBIs
+
+on:
+  pull_request:
+    paths:
+      - Gemfile.lock
+
+permissions: {}
+
+concurrency:
+  group: dependabot-rbis-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  regenerate:
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.repository == 'jutonz/homepage-rb'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the push token is configured
+        env:
+          RBI_PUSH_TOKEN: ${{ secrets.RBI_PUSH_TOKEN }}
+        run: |
+          if [ -z "$RBI_PUSH_TOKEN" ]; then
+            echo "::error::RBI_PUSH_TOKEN is unset, so regenerated RBIs \
+          cannot be pushed."
+            echo "Create a fine-grained PAT scoped to this repository"
+            echo "with 'Contents: read and write', then save it as a"
+            echo "*Dependabot* secret named RBI_PUSH_TOKEN. It has to be"
+            echo "a Dependabot secret: Actions secrets are withheld from"
+            echo "Dependabot-triggered runs."
+            echo "The token expires. When it does, this job starts"
+            echo "failing and Dependabot bumps stop auto-merging."
+            exit 1
+          fi
+      - name: Checkout the pull request branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.RBI_PUSH_TOKEN }}
+          persist-credentials: false
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: sudo apt-get update && sudo apt-get install -y libvips
+      - name: Regenerate gem RBIs when they do not match the lockfile
+        run: |
+          if bundle exec tapioca gem --verify; then
+            echo "Gem RBIs already match the lockfile; nothing to do."
+            exit 0
+          fi
+
+          bundle exec tapioca gem
+          git add sorbet/rbi/gems
+
+          if git diff --cached --quiet; then
+            echo "::error::Verification failed but regenerating changed \
+          nothing, so the mismatch is not something this job can fix."
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Regenerate Tapioca gem RBIs for this bump"
+
+          git push \
+            "https://x-access-token:${TOKEN}@github.com/${REPO}.git" \
+            "HEAD:${HEAD_REF}"
+        env:
+          TOKEN: ${{ secrets.RBI_PUSH_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}

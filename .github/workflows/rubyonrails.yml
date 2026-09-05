@@ -150,6 +150,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - name: Verify Tapioca gem RBIs match the lockfile
+        run: |
+          bundle exec tapioca gem --verify || {
+            echo "::error::Tapioca gem RBIs do not match the lockfile."
+            echo "Run 'bin/tapioca gem' locally and commit the result."
+            exit 1
+          }
       - name: Install Node
         uses: actions/setup-node@v7
         with:
