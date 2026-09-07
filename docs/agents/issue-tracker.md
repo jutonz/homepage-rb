@@ -1,42 +1,58 @@
-# Issue tracker: Notion
+# Issue tracker: Linear
 
-Issues and specs for this repo live in the **Homepage RB Backlog** Notion
-database (under Homepage > Tech):
-https://app.notion.com/p/288299751461805a9f70d607c7beef72
+Issues and specs for this repo live in the **Homepage RB** Linear team
+(key `HPRB`):
+https://linear.app/jt-project42/team/HPRB
 
-Data source: `collection://28829975-1461-80e0-93bd-000b6063f731`
+Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 
 ## Schema
 
-- **Name** (title) — issue title
-- **Status** (status): `Open` → `In progress` → `Done`
-- **Module** (multi-select): `Global`, `Recipes`, `Galleries` — tag with the
-  relevant app area(s)
+- **Title** — issue title
+- **State**: `Backlog` → `Todo` → `In Progress` → `In Review` → `Done`
+  (`Canceled` / `Duplicate` also exist)
+- **Labels**: `Global`, `Recipes`, `Galleries` — tag with the relevant app
+  area(s). Team-scoped; the workspace also has `Bug` / `Feature` /
+  `Improvement`.
 
 ## Conventions
 
-- **Create an issue**: `notion-create-pages` targeting the data source above,
-  setting `Name` and `Module`. New pages default to `Status: Open`.
-- **Read an issue**: `notion-fetch` on the page URL.
-- **List / search issues**: `notion-query-data-sources` against the data
-  source above with a `Status`/`Module` filter, or `notion-search` by title.
-- **Update status or module**: `notion-update-page`.
-- **Comment**: `notion-create-comment`.
-- **Close**: set `Status` to `Done` — there is no separate "closed" state.
+- **Create an issue**: `linear issue create --team HPRB -t "<title>"
+  --description-file <path> -s Backlog -l <label>`. Prefer
+  `--description-file` over `-d` for markdown bodies. Add `--no-interactive`
+  in scripts.
+- **Read an issue**: `linear issue view HPRB-123`.
+- **List / search issues**: `linear issue query --team HPRB --all-states`.
+  Note `linear issue list` is an alias for `issue mine` and only shows
+  issues assigned to you — use `issue query` for the whole team.
+- **Update state or labels**: `linear issue update HPRB-123 -s "In Progress"`,
+  `--add-label` / `--remove-label` to change labels incrementally (`-l`
+  replaces the entire set).
+- **Comment**: `linear issue comment`.
+- **Dependencies**: `linear issue relation add HPRB-123 blocked-by HPRB-456`.
+- **Close**: set state to `Done`.
 
 ## Status transitions
 
-- **Starting implementation**: set `Status` to `In progress` before writing
+- **Starting implementation**: set the state to `In Progress` before writing
   any code for the ticket. Do this as the first step of the work, not
-  retroactively.
-- There is no `In review` state in this database. Leave a ticket at
-  `In progress` while its PR is open.
+  retroactively. `linear issue start HPRB-123` does this too.
+- Move to `In Review` while the ticket's PR is open.
 
 ## When a skill says "publish to the issue tracker"
 
-Create a page in the Homepage RB Backlog database via `notion-create-pages`.
+Create an issue in the HPRB team via `linear issue create --team HPRB`.
 
 ## When a skill says "fetch the relevant ticket"
 
-`notion-fetch` the page URL, or `notion-query-data-sources` /
-`notion-search` by title if only given a name.
+`linear issue view <id>`, or `linear issue query --team HPRB --all-states`
+and match on title if only given a name.
+
+## Migration note
+
+The 35 open / in-progress issues were migrated from the former Notion
+database "Homepage RB Backlog" on 2026-09-07. Each carries a
+`Migrated from Notion` backlink at the bottom of its description. The 60
+`Done` issues were deliberately left behind; the Notion database is
+untouched and still readable at
+https://app.notion.com/p/288299751461805a9f70d607c7beef72

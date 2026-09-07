@@ -83,7 +83,7 @@ This is a Ruby on Rails 8.1 application with the following key architectural com
 
 ### Issue tracker
 
-Issues are tracked in the Notion database "Homepage RB Backlog". See
+Issues are tracked in the Linear team "Homepage RB" (`HPRB`). See
 `docs/agents/issue-tracker.md`.
 
 ### Domain docs
