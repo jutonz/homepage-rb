@@ -2,6 +2,8 @@
 
 module Galleries
   class RecentTagsQuery
+    extend T::Sig
+
     Result = Data.define(:tag, :most_recent_image_id)
 
     SQL = <<~SQL
@@ -43,14 +45,31 @@ module Galleries
       ;
     SQL
 
-    def self.call(...) = new(...).call
+    sig do
+      params(
+        gallery: Gallery,
+        image_limit: Integer,
+        excluded_image_ids: T.nilable(T::Array[Integer])
+      ).returns(T::Array[Result])
+    end
+    def self.call(gallery:, image_limit:, excluded_image_ids: nil)
+      new(gallery:, image_limit:, excluded_image_ids:).call
+    end
 
+    sig do
+      params(
+        gallery: Gallery,
+        image_limit: Integer,
+        excluded_image_ids: T.nilable(T::Array[Integer])
+      ).void
+    end
     def initialize(gallery:, image_limit:, excluded_image_ids: nil)
       @gallery = gallery
       @excluded_image_ids = excluded_image_ids || -1
       @image_limit = image_limit
     end
 
+    sig { returns(T::Array[Result]) }
     def call
       raw_results = ActiveRecord::Base.connection.execute(sanitized_sql)
       tag_ids = raw_results.map { |row| row["id"] }
