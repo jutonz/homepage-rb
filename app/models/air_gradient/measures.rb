@@ -1,3 +1,5 @@
+# typed: true
+
 module AirGradient
   MeasuresData = Data.define(
     :co2,

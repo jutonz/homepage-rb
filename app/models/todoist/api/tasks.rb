@@ -1,3 +1,5 @@
+# typed: true
+
 # frozen_string_literal: true
 
 module Todoist
@@ -13,7 +15,7 @@ module Todoist
         :labels,
         :project_id
       ) do
-        def update(...) = Todoist::Api::Tasks.update(id, ...)
+        def update(...) = T.unsafe(Todoist::Api::Tasks).update(id, ...)
 
         def completed? = completed_at.present?
       end

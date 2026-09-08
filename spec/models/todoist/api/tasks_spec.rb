@@ -180,4 +180,18 @@ RSpec.describe Todoist::Api::Tasks do
       expect(result.content).to eql("hi2")
     end
   end
+
+  describe "Task#update" do
+    it "updates the task it is called on" do
+      task = build(:todoist_api_task, content: "hi")
+      TodoistApiMocks.mock_task_update(
+        task,
+        result: build(:todoist_api_task, id: task.id, content: "hi2")
+      )
+
+      result = task.update({"content" => "hi2"})
+
+      expect(result.content).to eql("hi2")
+    end
+  end
 end

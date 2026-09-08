@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: recipe_group_user_groups

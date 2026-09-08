@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: api_tokens
@@ -28,7 +30,8 @@ module Api
     before_validation :generate_token
 
     def generate_token
-      self.token ||= SecureRandom.hex(32)
+      existing = T.let(token, T.nilable(String))
+      self.token = SecureRandom.hex(32) if existing.nil?
     end
   end
 end

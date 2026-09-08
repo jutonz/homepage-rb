@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: user_group_invitations
@@ -78,7 +80,7 @@ class UserGroupInvitation < ActiveRecord::Base
 
     transaction do
       update!(accepted_at: Time.current)
-      user_group.user_group_memberships.create!(user:)
+      T.must(user_group).user_group_memberships.create!(user:)
     end
   end
 end
