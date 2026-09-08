@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class SocialLinksCreator
     AUTO_CREATE_SOCIAL_PREFIXES = {

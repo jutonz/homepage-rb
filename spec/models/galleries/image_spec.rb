@@ -178,6 +178,13 @@ RSpec.describe Galleries::Image do
 
       expect(image.video?).to be(false)
     end
+
+    it "is false if the content type is nil" do
+      image = create(:galleries_image)
+      expect(image.file).to receive(:content_type).and_return(nil)
+
+      expect(image.video?).to be(false)
+    end
   end
 
   describe "#poster" do

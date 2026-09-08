@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class TagSearch
     include ActiveModel::Model

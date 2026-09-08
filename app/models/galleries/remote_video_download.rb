@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: galleries_remote_video_downloads
@@ -49,7 +51,7 @@ module Galleries
 
     def broadcast_row
       Turbo::StreamsChannel.broadcast_replace_to(
-        gallery.remote_video_downloads_stream_name,
+        T.must(gallery).remote_video_downloads_stream_name,
         target: "remote_video_download_#{id}",
         partial: "galleries/remote_video_downloads/row",
         locals: {remote_video_download: self}

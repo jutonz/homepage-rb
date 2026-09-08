@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   module VideoDownloader
     class Metube

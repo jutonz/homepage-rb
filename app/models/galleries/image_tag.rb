@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: galleries_image_tags

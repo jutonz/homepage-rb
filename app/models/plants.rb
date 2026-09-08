@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   def self.table_name_prefix
     "plants_"

@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   def self.table_name_prefix = "galleries_"
 
