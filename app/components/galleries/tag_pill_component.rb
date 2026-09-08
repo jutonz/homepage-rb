@@ -29,6 +29,7 @@ module Galleries
       <% end %>
     ERB
 
+    sig { params(tag: Galleries::Tag).void }
     def initialize(tag:)
       @tag = tag
       @color = CLASSIFICATION_COLORS.fetch(tag.classification, :gray)

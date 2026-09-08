@@ -47,6 +47,13 @@ module Galleries
       <% end %>
     ERB
 
+    sig do
+      params(
+        image: Galleries::Image,
+        select_mode: T::Boolean,
+        selected_ids: T::Array[String]
+      ).void
+    end
     def initialize(image:, select_mode: false, selected_ids: [])
       @image = image
       @gallery = image.gallery
@@ -56,6 +63,7 @@ module Galleries
 
     private
 
+    sig { returns(T.nilable(String)) }
     def link_classes
       "gallery-image--selected" if @select_mode &&
         @selected_ids.include?(@image.id.to_s)

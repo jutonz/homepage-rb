@@ -17,6 +17,7 @@ module Galleries
             <% end %>
     ERB
 
+    sig { params(book: Galleries::Book).void }
     def initialize(book:)
       @book = book
       @gallery = book.gallery

@@ -40,6 +40,7 @@ module Galleries
         <% end %>
       ERB
 
+      sig { params(tag_search: Galleries::TagSearch).void }
       def initialize(tag_search:)
         @tag_search = tag_search
         @gallery = tag_search.gallery

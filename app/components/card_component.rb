@@ -21,6 +21,7 @@ class CardComponent < ApplicationComponent
   renders_many :actions
   renders_one :body
 
+  sig { params(title: String).void }
   def initialize(title:)
     @title = title
   end

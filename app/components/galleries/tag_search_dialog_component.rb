@@ -77,6 +77,15 @@ module Galleries
     renders_one :footer
     renders_one :selected_tags
 
+    sig do
+      params(
+        gallery: Gallery,
+        tag_search: Galleries::TagSearch,
+        mode: String,
+        turbo_frame: String,
+        title: String
+      ).void
+    end
     def initialize(
       gallery:,
       tag_search:,

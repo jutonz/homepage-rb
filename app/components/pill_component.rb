@@ -22,6 +22,13 @@ class PillComponent < ApplicationComponent
     </span>
   ERB
 
+  sig do
+    params(
+      text: String,
+      color: Symbol,
+      class_name: T.nilable(String)
+    ).void
+  end
   def initialize(text:, color: :blue, class_name: nil)
     @text = text
     @color_classes = color_classes_for(color)
@@ -30,6 +37,7 @@ class PillComponent < ApplicationComponent
 
   private
 
+  sig { params(color: Symbol).returns(String) }
   def color_classes_for(color)
     COLOR_CLASSES.fetch(color)
   end

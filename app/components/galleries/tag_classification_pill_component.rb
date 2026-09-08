@@ -16,6 +16,7 @@ module Galleries
       <% end %>
     ERB
 
+    sig { params(tag: Galleries::Tag).void }
     def initialize(tag:)
       @tag = tag
     end

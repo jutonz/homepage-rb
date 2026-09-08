@@ -33,6 +33,13 @@ module Galleries
         <% end %>
       ERB
 
+      sig do
+        params(
+          tag_search: Galleries::TagSearch,
+          mode: T.nilable(Symbol),
+          turbo_frame_tag: T.nilable(String)
+        ).void
+      end
       def initialize(
         tag_search:,
         mode: :image,
@@ -47,8 +54,10 @@ module Galleries
 
       private
 
+      sig { returns(T.nilable(Symbol)) }
       attr_reader :mode
 
+      sig { params(tag: Galleries::Tag).returns(T.nilable(String)) }
       def search_result_action(tag:)
         if mode == :image
           helpers.button_to(

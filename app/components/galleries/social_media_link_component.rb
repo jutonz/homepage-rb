@@ -29,6 +29,7 @@ module Galleries
       </div>
     ERB
 
+    sig { params(link: Galleries::SocialMediaLink).void }
     def initialize(link:)
       @link = link
       @tag = link.tag
@@ -37,6 +38,7 @@ module Galleries
 
     private
 
+    sig { returns(T.nilable(String)) }
     def icon_path
       case @link.platform
       when "instagram" then "socials/instagram.png"

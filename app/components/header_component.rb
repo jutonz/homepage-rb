@@ -33,6 +33,7 @@ class HeaderComponent < ApplicationComponent
     link_to(title, path)
   end
 
+  sig { params(title: String).void }
   def initialize(title:)
     @title = title
   end

@@ -25,6 +25,7 @@ module Plants
 
     renders_one :action
 
+    sig { params(inbox_image: Plants::InboxImage).void }
     def initialize(inbox_image:)
       @inbox_image = inbox_image
     end

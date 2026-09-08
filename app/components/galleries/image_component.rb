@@ -20,6 +20,7 @@ module Galleries
       </div>
     ERB
 
+    sig { params(image: Galleries::Image).void }
     def initialize(image:)
       @image = image
     end
