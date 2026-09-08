@@ -1,3 +1,5 @@
+# typed: true
+
 module AirGradient
   SensorData = Data.define(:name, :url)
 

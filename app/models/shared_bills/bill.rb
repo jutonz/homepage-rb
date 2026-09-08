@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: shared_bills_bills
@@ -46,9 +48,15 @@ module SharedBills
       )
     end
 
+    NilableTime = T.type_alias { T.nilable(ActiveSupport::TimeWithZone) }
+    private_constant :NilableTime
+
     private
 
     def period_end_after_period_start
+      period_end = T.let(self.period_end, NilableTime)
+      period_start = T.let(self.period_start, NilableTime)
+
       return if period_end.blank? || period_start.blank?
 
       if period_end < period_start

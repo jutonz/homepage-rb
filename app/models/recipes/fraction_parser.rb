@@ -1,3 +1,5 @@
+# typed: true
+
 module Recipes
   class FractionParser
     def self.parse(input)
@@ -16,14 +18,17 @@ module Recipes
       end
 
       # Handle mixed numbers (e.g., "2 1/2")
-      if (match = /^(\d+)\s+(\d+)\/(\d+)$/.match(input))
-        whole, num, denom = match.captures.map(&:to_i)
+      if (match = /^(?<whole>\d+)\s+(?<num>\d+)\/(?<denom>\d+)$/.match(input))
+        whole = match[:whole].to_i
+        num = match[:num].to_i
+        denom = match[:denom].to_i
         return [whole * denom + num, denom]
       end
 
       # Handle simple fractions (e.g., "1/2")
-      if (match = /^(\d+)\/(\d+)$/.match(input))
-        num, denom = match.captures.map(&:to_i)
+      if (match = /^(?<num>\d+)\/(?<denom>\d+)$/.match(input))
+        num = match[:num].to_i
+        denom = match[:denom].to_i
         return [num, denom] if denom != 0
       end
 

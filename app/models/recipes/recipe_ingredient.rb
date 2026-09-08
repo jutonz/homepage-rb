@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: recipes_recipe_ingredients
@@ -85,6 +87,9 @@ module Recipes
     private
 
     def fraction_is_valid
+      numerator = self.numerator
+      denominator = self.denominator
+
       if numerator.present? && denominator.blank?
         errors.add(:denominator, "must be present when numerator is set")
       elsif numerator.blank? && denominator.present?

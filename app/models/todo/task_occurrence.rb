@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: todo_task_occurrences
@@ -45,6 +47,7 @@ module Todo
     end
 
     def duration
+      completed_at = self.completed_at
       return unless completed_at && scheduled_at
       completed_at - scheduled_at
     end

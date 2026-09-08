@@ -1,3 +1,5 @@
+# typed: true
+
 module AirGradient
   class Client
     def initialize(url:)

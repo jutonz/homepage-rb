@@ -1,3 +1,5 @@
+# typed: true
+
 class UserGroupCreator
   def self.call(...) = new(...).call
 

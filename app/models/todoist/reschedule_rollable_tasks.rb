@@ -1,3 +1,5 @@
+# typed: true
+
 module Todoist
   class RescheduleRollableTasks
     def self.perform(...) = new(...).perform

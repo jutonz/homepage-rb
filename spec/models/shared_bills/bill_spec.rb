@@ -31,6 +31,39 @@ RSpec.describe SharedBills::Bill do
     expect(build(:shared_bills_bill)).to be_valid
   end
 
+  describe "period_end_after_period_start" do
+    it "is invalid when period_end is before period_start" do
+      bill = build(
+        :shared_bills_bill,
+        period_start: Time.current,
+        period_end: 1.day.ago
+      )
+
+      bill.validate
+
+      expect(bill.errors[:period_end])
+        .to include("must be after period start")
+    end
+
+    it "is valid when period_end is after period_start" do
+      bill = build(
+        :shared_bills_bill,
+        period_start: 1.day.ago,
+        period_end: Time.current
+      )
+
+      bill.validate
+
+      expect(bill.errors[:period_end]).to be_empty
+    end
+
+    it "does not raise when both periods are nil" do
+      bill = build(:shared_bills_bill, period_start: nil, period_end: nil)
+
+      expect { bill.validate }.not_to raise_error
+    end
+  end
+
   describe ".with_payee_info" do
     it "calculates total_amount as sum of payee_bills" do
       bill = create(:shared_bills_bill)
