@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class SocialMediaLinksController < ApplicationController
     before_action :ensure_authenticated!

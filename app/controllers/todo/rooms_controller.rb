@@ -1,3 +1,5 @@
+# typed: true
+
 module Todo
   class RoomsController < ApplicationController
     before_action :ensure_authenticated!

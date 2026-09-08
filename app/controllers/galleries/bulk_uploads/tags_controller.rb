@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   module BulkUploads
     class TagsController < ApplicationController

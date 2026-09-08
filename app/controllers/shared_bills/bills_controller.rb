@@ -1,3 +1,5 @@
+# typed: true
+
 module SharedBills
   class BillsController < ApplicationController
     before_action :ensure_authenticated!

@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BulkDeletesController < ApplicationController
     before_action :ensure_authenticated!

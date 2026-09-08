@@ -1,3 +1,5 @@
+# typed: true
+
 module Invitations
   class AcceptancesController < ApplicationController
     before_action :ensure_authenticated!
@@ -10,7 +12,7 @@ module Invitations
       if @invitation.accept!
         redirect_to(
           user_group_path(@invitation.user_group),
-          notice: "Welcome to #{@invitation.user_group.name}!"
+          notice: "Welcome to #{T.must(@invitation.user_group).name}!"
         )
       elsif @invitation.expired?
         redirect_to(

@@ -1,3 +1,5 @@
+# typed: true
+
 module Api
   module Webhooks
     class TodoistController < ApplicationController

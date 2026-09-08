@@ -1,3 +1,5 @@
+# typed: true
+
 module Api
   class BaseController < ApplicationController
     skip_before_action :verify_authenticity_token
@@ -17,6 +19,7 @@ module Api
     end
 
     rescue_from WardenHelper::UnauthenticatedError do
+      T.bind(self, Api::BaseController)
       render json: {
         error: "Token is missing or invalid"
       }, status: :unauthorized

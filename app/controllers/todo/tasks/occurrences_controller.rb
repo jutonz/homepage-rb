@@ -1,3 +1,5 @@
+# typed: true
+
 module Todo
   module Tasks
     class OccurrencesController < ApplicationController

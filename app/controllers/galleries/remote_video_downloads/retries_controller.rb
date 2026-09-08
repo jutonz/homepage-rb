@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   module RemoteVideoDownloads
     class RetriesController < ApplicationController

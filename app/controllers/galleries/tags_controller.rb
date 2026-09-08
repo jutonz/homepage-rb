@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class TagsController < ApplicationController
     before_action :ensure_authenticated!

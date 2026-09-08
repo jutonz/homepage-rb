@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   class InboxImagesController < ApplicationController
     before_action :ensure_authenticated!

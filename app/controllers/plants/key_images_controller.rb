@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   class KeyImagesController < ApplicationController
     before_action :ensure_authenticated!
