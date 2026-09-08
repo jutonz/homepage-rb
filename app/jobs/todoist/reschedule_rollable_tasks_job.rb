@@ -1,3 +1,5 @@
+# typed: true
+
 module Todoist
   class RescheduleRollableTasksJob < ApplicationJob
     queue_as :background

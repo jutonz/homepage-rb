@@ -1,3 +1,5 @@
+# typed: true
+
 class UserSeedJob < ApplicationJob
   attr_reader :user
 

@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class ProcessingImagesChannel <
     ApplicationCable::Channel
@@ -20,8 +22,8 @@ module Galleries
 
     def transmit_unprocessed_ids
       ids = Galleries::Image
-        .where(gallery: @gallery)
         .unprocessed
+        .where(gallery: @gallery)
         .pluck(:id)
       transmit({
         action: "reconcile",
@@ -30,6 +32,8 @@ module Galleries
     end
 
     def find_gallery
+      current_user = T.unsafe(self).current_user
+
       Gallery
         .where(user: current_user)
         .find_by(id: params[:gallery_id])
