@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: galleries_auto_add_tags
@@ -40,7 +42,7 @@ module Galleries
     def prevent_circular_reference
       return unless tag && auto_add_tag
 
-      if auto_add_tag.auto_add_tags.include?(tag)
+      if T.must(auto_add_tag).auto_add_tags.include?(tag)
         errors.add(:auto_add_tag, "would create a circular reference")
       end
     end

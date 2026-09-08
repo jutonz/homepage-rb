@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BulkTag
     include ActiveModel::Model

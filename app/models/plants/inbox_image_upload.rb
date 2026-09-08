@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   class InboxImageUpload
     Result = Struct.new(:saved, :inbox_image) do
@@ -28,8 +30,8 @@ module Plants
     end
 
     def create_images(files)
-      saved = true
-      inbox_image = nil
+      saved = T.let(true, T::Boolean)
+      inbox_image = T.let(nil, T.nilable(Plants::InboxImage))
 
       Plants::InboxImage.transaction do
         files.each do |file|

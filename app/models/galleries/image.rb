@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: galleries_images
@@ -96,7 +98,9 @@ module Galleries
       image_tags.where(tag:).destroy_all
     end
 
-    def video? = file.content_type.start_with?(VIDEO_CONTENT_TYPE_PREFIX)
+    def video?
+      file.content_type&.start_with?(VIDEO_CONTENT_TYPE_PREFIX) || false
+    end
 
     def poster = file.preview(resize_to_limit: THUMB_SIZE)
 
