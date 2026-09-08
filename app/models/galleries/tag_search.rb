@@ -4,11 +4,26 @@ module Galleries
   class TagSearch
     include ActiveModel::Model
 
+    sig { returns(Gallery) }
     attr_accessor :gallery
+
+    sig { returns(T.nilable(Galleries::Image)) }
     attr_accessor :image
+
+    sig { returns(T.nilable(String)) }
     attr_accessor :query
+
+    sig { returns(T.nilable(T::Array[Integer])) }
     attr_accessor :excluded_ids
 
+    sig do
+      returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Tag]
+        )
+      )
+    end
     def results
       ilike = query&.strip
       return Tag.none if ilike.nil?
@@ -24,19 +39,46 @@ module Galleries
 
     private
 
-    def maybe_exclude_image_tags(query)
+    sig do
+      params(
+        scope: T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Tag]
+        )
+      ).returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Tag]
+        )
+      )
+    end
+    def maybe_exclude_image_tags(scope)
+      image = self.image
       if image.present?
-        query.where.not(id: image.tags.select(:id))
+        scope.where.not(id: image.tags.select(:id))
       else
-        query
+        scope
       end
     end
 
-    def maybe_exclude_ids(query)
+    sig do
+      params(
+        scope: T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Tag]
+        )
+      ).returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Tag]
+        )
+      )
+    end
+    def maybe_exclude_ids(scope)
       if excluded_ids.present?
-        query.where.not(id: excluded_ids)
+        scope.where.not(id: excluded_ids)
       else
-        query
+        scope
       end
     end
   end
