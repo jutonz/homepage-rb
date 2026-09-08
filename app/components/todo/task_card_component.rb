@@ -32,15 +32,21 @@ module Todo
       <% end %>
     ERB
 
+    sig { params(task: Todo::Task, room: Todo::Room).void }
     def initialize(task:, room:)
       @task = task
       @room = room
     end
 
-    attr_reader :task, :room
+    sig { returns(Todo::Task) }
+    attr_reader :task
+
+    sig { returns(Todo::Room) }
+    attr_reader :room
 
     private
 
+    sig { returns(String) }
     def card_classes
       base_classes = %w[
         rounded-lg p-8 text-center transition-all duration-200

@@ -37,6 +37,7 @@ class PendingInvitationComponent < ApplicationComponent
     </div>
   ERB
 
+  sig { params(invitation: UserGroupInvitation).void }
   def initialize(invitation:)
     @invitation = invitation
   end

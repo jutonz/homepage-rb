@@ -28,6 +28,7 @@ module Galleries
         <% end %>
       ERB
 
+      sig { params(gallery: Gallery, image: Galleries::Image).void }
       def initialize(gallery:, image:)
         @gallery = gallery
         @image = image
@@ -35,6 +36,11 @@ module Galleries
 
       private
 
+      sig do
+        returns(
+          T::Hash[Integer, T::Array[Galleries::RecentTagsQuery::Result]]
+        )
+      end
       def grouped_tags
         @gallery
           .recently_used_tags(excluded_image_ids: [@image.id])

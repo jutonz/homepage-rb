@@ -21,6 +21,14 @@ module Galleries
       <% end %>
     ERB
 
+    sig do
+      params(
+        tag: Galleries::Tag,
+        frame_id: T.any(String, Galleries::Tag),
+        remove_path: String,
+        turbo_confirm: T.nilable(String)
+      ).void
+    end
     def initialize(tag:, frame_id:, remove_path:, turbo_confirm: nil)
       @tag = tag
       @frame_id = frame_id

@@ -34,6 +34,14 @@ module Galleries
 
     PER_PAGE = 20
 
+    sig do
+      params(
+        image: Galleries::Image,
+        scope: ActiveRecord::Relation,
+        title: String,
+        page: T.any(String, Integer)
+      ).void
+    end
     def initialize(image:, scope:, title: "Similar Images", page: 1)
       @title = title
       @image = image

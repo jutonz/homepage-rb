@@ -29,6 +29,7 @@ class UserGroupDetailsComponent < ApplicationComponent
     </div>
   ERB
 
+  sig { params(user_group: UserGroup).void }
   def initialize(user_group:)
     @user_group = user_group
   end

@@ -34,6 +34,7 @@ module Galleries
       <% end %>
     ERB
 
+    sig { params(tag: Galleries::Tag).void }
     def initialize(tag:)
       @tag = tag
       @card_classes = card_classes_for(tag.classification)
@@ -41,6 +42,7 @@ module Galleries
 
     private
 
+    sig { params(classification: String).returns(String) }
     def card_classes_for(classification)
       base = "block p-4 border rounded-lg " \
         "transition-colors duration-200 group"

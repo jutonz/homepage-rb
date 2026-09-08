@@ -26,6 +26,7 @@ module Plants
 
     renders_one :action
 
+    sig { params(plant: Plants::Plant).void }
     def initialize(plant:)
       @plant = plant
     end

@@ -8,6 +8,13 @@ class DetailRowComponent < ApplicationComponent
     </div>
   ERB
 
+  sig do
+    params(
+      label: String,
+      value: T.nilable(T.any(String, Numeric)),
+      value_class: T.nilable(String)
+    ).void
+  end
   def initialize(label:, value: nil, value_class: nil)
     @label = label
     @value = value

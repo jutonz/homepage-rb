@@ -26,6 +26,11 @@ module Galleries
       <% end %>
     ERB
 
+    sig do
+      params(
+        related_tags: T::Array[Galleries::RelatedTagsQuery::Result]
+      ).void
+    end
     def initialize(related_tags:)
       @related_tags = related_tags
     end

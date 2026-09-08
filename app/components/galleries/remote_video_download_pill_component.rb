@@ -16,6 +16,7 @@ module Galleries
       )) %>
     ERB
 
+    sig { params(remote_video_download: Galleries::RemoteVideoDownload).void }
     def initialize(remote_video_download:)
       @remote_video_download = remote_video_download
     end

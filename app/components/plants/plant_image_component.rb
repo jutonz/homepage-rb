@@ -30,6 +30,7 @@ module Plants
 
     renders_one :action
 
+    sig { params(plant_image: Plants::PlantImage).void }
     def initialize(plant_image:)
       @plant_image = plant_image
       @plant = plant_image.plant

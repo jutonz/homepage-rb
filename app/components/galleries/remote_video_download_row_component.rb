@@ -75,21 +75,25 @@ module Galleries
       </div>
     ERB
 
+    sig { params(remote_video_download: Galleries::RemoteVideoDownload).void }
     def initialize(remote_video_download:)
       @remote_video_download = remote_video_download
     end
 
     private
 
+    sig { returns(T::Boolean) }
     def completed_with_image?
       @remote_video_download.status_completed? &&
         @remote_video_download.image.present?
     end
 
+    sig { returns(T::Boolean) }
     def failed_with_message?
       failed? && @remote_video_download.error_message.present?
     end
 
+    sig { returns(T::Boolean) }
     def failed?
       @remote_video_download.status_failed?
     end

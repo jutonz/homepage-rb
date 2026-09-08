@@ -18,6 +18,7 @@ class RecipeComponent < ApplicationComponent
     <% end %>
   ERB
 
+  sig { params(recipe: Recipes::Recipe, recipe_group: RecipeGroup).void }
   def initialize(recipe:, recipe_group:)
     @recipe = recipe
     @recipe_group = recipe_group
