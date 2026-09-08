@@ -1,3 +1,5 @@
+# typed: true
+
 class HeaderComponent < ApplicationComponent
   erb_template <<~ERB
     <div class="flex w-full mb-8 flex-col">
@@ -25,7 +27,9 @@ class HeaderComponent < ApplicationComponent
   ERB
 
   renders_many :actions
+
   renders_many :crumbs, ->(title, path) do
+    T.bind(self, HeaderComponent)
     link_to(title, path)
   end
 

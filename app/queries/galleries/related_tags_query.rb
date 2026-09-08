@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RelatedTagsQuery
     Result = Data.define(:tag, :shared_count)
@@ -11,17 +13,24 @@ module Galleries
     end
 
     def call
-      Galleries::Tag
+      counts = Galleries::Tag
         .where(gallery_id: tag.gallery_id)
         .where.not(id: [tag.id, *exclude_tag_ids])
         .joins(:image_tags)
         .where(galleries_image_tags: {image_id: tag.image_ids})
         .group("galleries_tags.id")
-        .select("galleries_tags.*, COUNT(*) AS shared_count")
         .order(Arel.sql("COUNT(*) DESC"))
         .limit(limit)
+        .pluck(Arel.sql("galleries_tags.id, COUNT(*)"))
+
+      tags = Galleries::Tag
+        .where(id: counts.map(&:first))
         .includes(:gallery)
-        .map { Result.new(tag: it, shared_count: it.shared_count.to_i) }
+        .index_by(&:id)
+
+      counts.map do |id, shared_count|
+        Result.new(tag: tags.fetch(id), shared_count:)
+      end
     end
 
     private
