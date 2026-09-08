@@ -1,3 +1,5 @@
+# typed: true
+
 module Recipes
   class RecipeGroupsController < ApplicationController
     before_action :ensure_authenticated!

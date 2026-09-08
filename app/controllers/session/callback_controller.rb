@@ -1,3 +1,5 @@
+# typed: true
+
 module Session
   class CallbackController < ApplicationController
     skip_after_action :verify_authorized

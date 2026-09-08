@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BooksController < ApplicationController
     before_action :ensure_authenticated!

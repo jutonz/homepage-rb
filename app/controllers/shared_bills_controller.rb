@@ -1,3 +1,5 @@
+# typed: true
+
 class SharedBillsController < ApplicationController
   before_action :ensure_authenticated!
   after_action :verify_authorized

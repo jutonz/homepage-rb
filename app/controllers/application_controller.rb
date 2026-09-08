@@ -1,3 +1,5 @@
+# typed: true
+
 class ApplicationController < ActionController::Base
   include WardenHelper
   include Pundit::Authorization
@@ -5,12 +7,14 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized
 
   rescue_from WardenHelper::UnauthenticatedError do
+    T.bind(self, ApplicationController)
     reset_session
     session[:return_to] = request.fullpath
     redirect_to new_session_path
   end
 
   rescue_from Pundit::NotAuthorizedError do
+    T.bind(self, ApplicationController)
     flash[:alert] = "You are not authorized to perform this action."
     redirect_back(fallback_location: root_path)
   end

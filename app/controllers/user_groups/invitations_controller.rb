@@ -1,3 +1,5 @@
+# typed: true
+
 module UserGroups
   class InvitationsController < ApplicationController
     before_action :ensure_authenticated!

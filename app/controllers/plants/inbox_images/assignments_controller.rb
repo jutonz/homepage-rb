@@ -1,3 +1,5 @@
+# typed: true
+
 module Plants
   module InboxImages
     class AssignmentsController < ApplicationController

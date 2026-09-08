@@ -1,3 +1,5 @@
+# typed: true
+
 module Api
   module Plants
     class InboxImagesController < BaseController

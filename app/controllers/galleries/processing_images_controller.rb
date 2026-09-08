@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class ProcessingImagesController < ApplicationController
     before_action :ensure_authenticated!

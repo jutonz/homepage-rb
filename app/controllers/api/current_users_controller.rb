@@ -1,3 +1,5 @@
+# typed: true
+
 module Api
   class CurrentUsersController < BaseController
     before_action :ensure_authenticated!

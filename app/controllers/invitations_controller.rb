@@ -1,3 +1,5 @@
+# typed: true
+
 class InvitationsController < ApplicationController
   after_action :verify_authorized
 

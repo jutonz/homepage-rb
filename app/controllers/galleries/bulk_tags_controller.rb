@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BulkTagsController < ApplicationController
     before_action :ensure_authenticated!

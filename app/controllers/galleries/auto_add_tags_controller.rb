@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class AutoAddTagsController < ApplicationController
     before_action :ensure_authenticated!

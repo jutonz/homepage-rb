@@ -1,3 +1,5 @@
+# typed: true
+
 module Api
   module Galleries
     class ImagesController < BaseController
