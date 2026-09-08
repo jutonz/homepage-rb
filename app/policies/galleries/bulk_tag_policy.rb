@@ -2,6 +2,8 @@
 
 module Galleries
   class BulkTagPolicy < ApplicationPolicy
+    Record = type_member { {fixed: Galleries::BulkTag} }
+
     def create?
       user_owns_gallery?
     end

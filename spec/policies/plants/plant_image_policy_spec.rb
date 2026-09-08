@@ -24,6 +24,13 @@ RSpec.describe Plants::PlantImagePolicy do
 
       expect(described_class).not_to(permit(nil, plant_image))
     end
+
+    it "denies access when the plant is missing" do
+      user = build(:user)
+      plant_image = build(:plants_plant_image, plant: nil)
+
+      expect(described_class).not_to permit(user, plant_image)
+    end
   end
 
   describe described_class::Scope do

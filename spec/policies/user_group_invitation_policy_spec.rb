@@ -22,6 +22,13 @@ RSpec.describe UserGroupInvitationPolicy, type: :policy do
       invitation = build(:user_group_invitation)
       expect(described_class).not_to permit(nil, invitation)
     end
+
+    it "denies access when the user group is missing" do
+      user = build(:user)
+      invitation = build(:user_group_invitation, user_group: nil)
+
+      expect(described_class).not_to permit(user, invitation)
+    end
   end
 
   permissions :show? do

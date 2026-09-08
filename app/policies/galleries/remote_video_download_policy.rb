@@ -2,6 +2,8 @@
 
 module Galleries
   class RemoteVideoDownloadPolicy < ApplicationPolicy
+    Record = type_member { {fixed: Galleries::RemoteVideoDownload} }
+
     def index?
       user_owns_gallery?
     end
@@ -25,9 +27,10 @@ module Galleries
     private
 
     def user_owns_gallery?
-      return false unless record.gallery
+      gallery = record.gallery
+      return false unless gallery
 
-      user && record.gallery.user == user
+      user && gallery.user == user
     end
   end
 end

@@ -1,6 +1,8 @@
 # typed: true
 
 class RecipeGroupPolicy < ApplicationPolicy
+  Record = type_member { {fixed: RecipeGroup} }
+
   def index?
     user.present?
   end

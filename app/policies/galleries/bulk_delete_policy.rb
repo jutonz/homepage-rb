@@ -2,6 +2,8 @@
 
 module Galleries
   class BulkDeletePolicy < ApplicationPolicy
+    Record = type_member { {fixed: Galleries::BulkDelete} }
+
     def create?
       user_owns_gallery?
     end

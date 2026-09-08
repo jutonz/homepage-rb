@@ -2,6 +2,8 @@
 
 module Galleries
   class ImagePolicy < ApplicationPolicy
+    Record = type_member { {fixed: Galleries::Image} }
+
     def index?
       user_owns_gallery?
     end
@@ -25,7 +27,7 @@ module Galleries
     private
 
     def user_owns_gallery?
-      user && record.gallery.user == user
+      user && record.gallery&.user == user
     end
 
     class Scope < ApplicationPolicy::Scope

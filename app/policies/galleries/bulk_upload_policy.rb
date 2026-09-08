@@ -2,6 +2,8 @@
 
 module Galleries
   class BulkUploadPolicy < ApplicationPolicy
+    Record = type_member { {fixed: Galleries::BulkUpload} }
+
     def new?
       user_owns_gallery?
     end

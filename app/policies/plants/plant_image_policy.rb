@@ -2,6 +2,8 @@
 
 module Plants
   class PlantImagePolicy < ApplicationPolicy
+    Record = type_member { {fixed: Plants::PlantImage} }
+
     def new?
       plant_owner?
     end
@@ -29,7 +31,7 @@ module Plants
     private
 
     def plant_owner?
-      user.present? && record.plant.user == user
+      user.present? && record.plant&.user == user
     end
 
     class Scope < ApplicationPolicy::Scope

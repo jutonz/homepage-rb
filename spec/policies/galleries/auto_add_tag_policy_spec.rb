@@ -31,6 +31,13 @@ RSpec.describe Galleries::AutoAddTagPolicy do
 
       expect(described_class).not_to permit(nil, auto_add_tag)
     end
+
+    it "denies access when the tag is missing" do
+      user = build(:user)
+      auto_add_tag = build(:galleries_auto_add_tag, tag: nil)
+
+      expect(described_class).not_to permit(user, auto_add_tag)
+    end
   end
 
   describe described_class::Scope do

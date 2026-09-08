@@ -24,6 +24,13 @@ RSpec.describe Galleries::ImagePolicy do
 
       expect(described_class).not_to permit(nil, image)
     end
+
+    it "denies access when the gallery is missing" do
+      user = build(:user)
+      image = build(:galleries_image, gallery: nil)
+
+      expect(described_class).not_to permit(user, image)
+    end
   end
 
   describe described_class::Scope do

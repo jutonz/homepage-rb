@@ -25,6 +25,13 @@ RSpec.describe Todo::TaskOccurrencePolicy do
 
       expect(described_class).not_to permit(nil, task_occurrence)
     end
+
+    it "denies access when the task is missing" do
+      user = build(:user)
+      occurrence = build(:todo_task_occurrence, todo_task: nil)
+
+      expect(described_class).not_to permit(user, occurrence)
+    end
   end
 
   describe described_class::Scope do
