@@ -1,3 +1,5 @@
+# typed: true
+
 module Todo
   class SyncTaskOccurrencesJob < ApplicationJob
     queue_as :default

@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class TaggingNeededJob < ApplicationJob
     queue_as :background

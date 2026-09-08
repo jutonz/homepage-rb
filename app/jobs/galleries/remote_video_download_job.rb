@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class RemoteVideoDownloadJob < ApplicationJob
     queue_as :background
@@ -86,21 +88,20 @@ module Galleries
 
     def handle_finished(entry)
       bytes = metube.fetch_file(entry["filename"])
-      image =
-        ActiveRecord::Base.transaction do
-          image = rvd.gallery.images.create!(
-            file: {
-              io: StringIO.new(bytes),
-              filename: File.basename(entry["filename"])
-            }
-          )
-          image.add_tag(
-            Galleries::Tag.tagging_needed(rvd.gallery),
-            Galleries::Tag.video(rvd.gallery)
-          )
-          rvd.update!(status: :completed, image:)
-          image
-        end
+      image = T.let(nil, T.nilable(Galleries::Image))
+      ActiveRecord::Base.transaction do
+        image = rvd.gallery.images.create!(
+          file: {
+            io: StringIO.new(bytes),
+            filename: File.basename(entry["filename"])
+          }
+        )
+        image.add_tag(
+          Galleries::Tag.tagging_needed(rvd.gallery),
+          Galleries::Tag.video(rvd.gallery)
+        )
+        rvd.update!(status: :completed, image:)
+      end
       rvd.broadcast_row
       Galleries::ImageProcessingJob.perform_later(image)
       cleanup(entry)

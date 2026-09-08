@@ -1,3 +1,5 @@
+# typed: true
+
 class TestJob < ApplicationJob
   queue_as :background
 

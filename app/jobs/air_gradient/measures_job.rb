@@ -1,3 +1,5 @@
+# typed: true
+
 require "prometheus_exporter/client"
 
 module AirGradient

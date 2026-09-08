@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class BackfillAutoTagsJob < ApplicationJob
     queue_as :default

@@ -1,3 +1,5 @@
+# typed: true
+
 module Galleries
   class ImageProcessingJob < ApplicationJob
     queue_as :background
