@@ -128,83 +128,88 @@ module ImageProcessing::MiniMagick
   extend ::ImageProcessing::Chainable
 
   class << self
-    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:12
-    def convert_shim(&block); end
+    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:15
+    def convert_shim(inherit_fds: T.unsafe(nil), &block); end
 
     # Returns whether the given image file is processable.
     #
-    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:21
+    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:30
     def valid_image?(file); end
   end
 end
 
-# pkg:gem/image_processing#lib/image_processing/mini_magick.rb:31
+# mini_magick gained `inherit_fds:` on MiniMagick::Shell#execute in 5.4.0.
+#
+# pkg:gem/image_processing#lib/image_processing/mini_magick.rb:13
+ImageProcessing::MiniMagick::INHERIT_FDS_MINIMUM_VERSION = T.let(T.unsafe(nil), Gem::Version)
+
+# pkg:gem/image_processing#lib/image_processing/mini_magick.rb:40
 class ImageProcessing::MiniMagick::Processor < ::ImageProcessing::Processor
   # Appends a raw ImageMagick command-line argument to the command.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:162
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:175
   def append(*args); end
 
   # Overlays the specified image over the current one. Supports specifying
   # an additional mask, composite mode, direction or offset of the overlay
   # image.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:127
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:140
   def composite(overlay = T.unsafe(nil), mask: T.unsafe(nil), mode: T.unsafe(nil), gravity: T.unsafe(nil), offset: T.unsafe(nil), args: T.unsafe(nil), &block); end
 
   # Crops the image with the specified crop points.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:108
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:121
   def crop(*args); end
 
   # Defines settings from the provided hash.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:150
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:163
   def define(options); end
 
   # Specifies resource limits from the provided hash.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:156
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:169
   def limits(options); end
 
   # Resizes the image to fit within the specified dimensions and fills
   # the remaining area with the specified background color.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:94
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:107
   def resize_and_pad(width, height, background: T.unsafe(nil), gravity: T.unsafe(nil), **options); end
 
   # Resizes the image to cover the specified dimensions, without
   # cropping the excess.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:103
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:116
   def resize_to_cover(width, height, **options); end
 
   # Resizes the image to fill the specified dimensions, applying any
   # necessary cropping.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:85
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:98
   def resize_to_fill(width, height, gravity: T.unsafe(nil), **options); end
 
   # Resizes the image to fit within the specified dimensions.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:79
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:92
   def resize_to_fit(width, height, **options); end
 
   # Resizes the image to not be larger than the specified dimensions.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:74
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:87
   def resize_to_limit(width, height, **options); end
 
   # Rotates the image by an arbitrary angle. For angles that are not
   # multiple of 90 degrees an optional background color can be specified to
   # fill in the gaps.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:119
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:132
   def rotate(degrees, background: T.unsafe(nil)); end
 
   protected
 
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:32
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:41
   def magick; end
 
   private
@@ -213,33 +218,37 @@ class ImageProcessing::MiniMagick::Processor < ::ImageProcessing::Processor
   # This supports specifying RGB(A) values with arrays, which mainly exists
   # for compatibility with the libvips implementation.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:175
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:188
   def color(value); end
 
   # Converts the image on disk in various forms into a path.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:198
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:211
   def convert_to_path(file, name); end
 
   # Resizes the image using the specified geometry, and sharpens the
   # resulting thumbnail.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:186
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:199
   def thumbnail(geometry, sharpen: T.unsafe(nil)); end
 
   class << self
     # Initializes the image on disk into a MiniMagick::Tool object. Accepts
     # additional options related to loading the image (e.g. geometry).
     # Additionally auto-orients the image to be upright.
+    # `inherit_fds` names IO objects the tool inherits, so the source may be a
+    # `/dev/fd/N` path. The source stays a path, so `loader`, `page` and
+    # `geometry` still apply to it, which they would not if the caller passed
+    # a pre-built MiniMagick::Tool carrying the descriptor.
     #
-    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:40
-    def load_image(path_or_magick, loader: T.unsafe(nil), page: T.unsafe(nil), geometry: T.unsafe(nil), auto_orient: T.unsafe(nil), **options); end
+    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:53
+    def load_image(path_or_magick, loader: T.unsafe(nil), page: T.unsafe(nil), geometry: T.unsafe(nil), auto_orient: T.unsafe(nil), inherit_fds: T.unsafe(nil), **options); end
 
     # Calls the built ImageMagick command to perform processing and save
     # the result to disk. Accepts additional options related to saving the
     # image (e.g. quality).
     #
-    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:64
+    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:77
     def save_image(magick, destination_path, allow_splitting: T.unsafe(nil), **options); end
   end
 end
@@ -249,46 +258,46 @@ ImageProcessing::MiniMagick::Processor::ACCUMULATOR_CLASS = MiniMagick::Tool
 
 # Default sharpening parameters used on generated thumbnails.
 #
-# pkg:gem/image_processing#lib/image_processing/mini_magick.rb:35
+# pkg:gem/image_processing#lib/image_processing/mini_magick.rb:44
 ImageProcessing::MiniMagick::Processor::SHARPEN_PARAMETERS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/image_processing#lib/image_processing/mini_magick.rb:210
+# pkg:gem/image_processing#lib/image_processing/mini_magick.rb:223
 module ImageProcessing::MiniMagick::Processor::Utils
   private
 
   # Applies settings from the provided (nested) hash.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:246
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:259
   def apply_define(magick, options); end
 
   # Applies options from the provided hash.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:226
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:239
   def apply_options(magick, define: T.unsafe(nil), **options); end
 
   # When a multi-layer format is being converted into a single-layer
   # format, ImageMagick will create multiple images, one for each layer.
   # We want to warn the user that this is probably not what they wanted.
   #
-  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:216
+  # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:229
   def disallow_split_layers!(destination_path); end
 
   class << self
     # Applies settings from the provided (nested) hash.
     #
-    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:246
+    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:259
     def apply_define(magick, options); end
 
     # Applies options from the provided hash.
     #
-    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:226
+    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:239
     def apply_options(magick, define: T.unsafe(nil), **options); end
 
     # When a multi-layer format is being converted into a single-layer
     # format, ImageMagick will create multiple images, one for each layer.
     # We want to warn the user that this is probably not what they wanted.
     #
-    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:216
+    # pkg:gem/image_processing#lib/image_processing/mini_magick.rb:229
     def disallow_split_layers!(destination_path); end
   end
 end
