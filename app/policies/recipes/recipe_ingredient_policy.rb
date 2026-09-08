@@ -2,6 +2,8 @@
 
 module Recipes
   class RecipeIngredientPolicy < UserOwnedPolicy
+    Record = type_member { {fixed: Recipes::RecipeIngredient} }
+
     def index?
       user_owns_record?
     end
@@ -17,7 +19,7 @@ module Recipes
     private
 
     def user_owns_record?
-      user && record.recipe.user == user
+      user && record.recipe&.user == user
     end
 
     class Scope < ApplicationPolicy::Scope

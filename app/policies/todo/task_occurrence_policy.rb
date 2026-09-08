@@ -2,6 +2,8 @@
 
 module Todo
   class TaskOccurrencePolicy < ApplicationPolicy
+    Record = type_member { {fixed: Todo::TaskOccurrence} }
+
     def create?
       user_owns_task?
     end
@@ -9,7 +11,7 @@ module Todo
     private
 
     def user_owns_task?
-      user && record.todo_task.user == user
+      user && record.todo_task&.user == user
     end
 
     class Scope < ApplicationPolicy::Scope

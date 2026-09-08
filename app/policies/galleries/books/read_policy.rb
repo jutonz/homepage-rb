@@ -3,8 +3,10 @@
 module Galleries
   module Books
     class ReadPolicy < ApplicationPolicy
+      Record = type_member { {fixed: Galleries::Book} }
+
       def show?
-        user.present? && record.gallery.user == user
+        user.present? && record.gallery&.user == user
       end
 
       class Scope < ApplicationPolicy::Scope

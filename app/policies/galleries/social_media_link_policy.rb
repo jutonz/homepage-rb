@@ -2,6 +2,8 @@
 
 module Galleries
   class SocialMediaLinkPolicy < ApplicationPolicy
+    Record = type_member { {fixed: Galleries::SocialMediaLink} }
+
     def new?
       user_owns_tag?
     end
@@ -25,7 +27,7 @@ module Galleries
     private
 
     def user_owns_tag?
-      user && record.tag.user == user
+      user && record.tag&.user == user
     end
 
     class Scope < ApplicationPolicy::Scope

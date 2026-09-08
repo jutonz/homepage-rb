@@ -1,12 +1,14 @@
 # typed: true
 
 class UserGroupInvitationPolicy < ApplicationPolicy
+  Record = type_member { {fixed: UserGroupInvitation} }
+
   def create?
-    user.present? && user == record.user_group.owner
+    user.present? && user == record.user_group&.owner
   end
 
   def destroy?
-    user.present? && user == record.user_group.owner
+    user.present? && user == record.user_group&.owner
   end
 
   def show?

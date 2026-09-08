@@ -1,6 +1,8 @@
 # typed: true
 
 class UserGroupPolicy < UserOwnedPolicy
+  Record = type_member { {fixed: UserGroup} }
+
   private
 
   def owner

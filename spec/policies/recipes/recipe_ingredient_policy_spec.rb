@@ -28,6 +28,13 @@ RSpec.describe Recipes::RecipeIngredientPolicy do
 
       expect(described_class).not_to permit(nil, recipe_ingredient)
     end
+
+    it "denies access when the recipe is missing" do
+      user = build(:user)
+      recipe_ingredient = build(:recipes_recipe_ingredient, recipe: nil)
+
+      expect(described_class).not_to permit(user, recipe_ingredient)
+    end
   end
 
   describe described_class::Scope do

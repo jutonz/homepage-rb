@@ -2,9 +2,19 @@
 # frozen_string_literal: true
 
 class ApplicationPolicy
+  extend T::Generic
+
+  # `record` is polymorphic — each policy authorises a different model — so
+  # the type travels with the subclass rather than being fixed here. Every
+  # subclass pins it with `Record = type_member { {fixed: SomeModel} }`,
+  # which is what makes a typo'd call on `record` a type error inside that
+  # subclass.
+  Record = type_member
+
   sig { returns(T.nilable(User)) }
   attr_reader :user
 
+  sig { returns(Record) }
   attr_reader :record
 
   def initialize(user, record)

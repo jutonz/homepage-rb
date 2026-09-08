@@ -68,5 +68,12 @@ RSpec.describe Galleries::RemoteVideoDownloadPolicy do
 
       expect(described_class).not_to permit(user, download)
     end
+
+    it "denies access when the gallery is missing" do
+      user = build(:user)
+      download = build(:galleries_remote_video_download, gallery: nil)
+
+      expect(described_class).not_to permit(user, download)
+    end
   end
 end

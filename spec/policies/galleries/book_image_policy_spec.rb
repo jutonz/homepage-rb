@@ -46,6 +46,13 @@ RSpec.describe Galleries::BookImagePolicy do
 
       expect(described_class).not_to permit(nil, book_image)
     end
+
+    it "denies access when the book is missing" do
+      user = build(:user)
+      book_image = build(:galleries_book_image, book: nil)
+
+      expect(described_class).not_to permit(user, book_image)
+    end
   end
 
   describe described_class::Scope do

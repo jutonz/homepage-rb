@@ -2,6 +2,8 @@
 
 module Galleries
   class BookPolicy < ApplicationPolicy
+    Record = type_member { {fixed: Galleries::Book} }
+
     def index?
       user.present?
     end
@@ -33,7 +35,7 @@ module Galleries
     private
 
     def gallery_owner?
-      user.present? && record.gallery.user == user
+      user.present? && record.gallery&.user == user
     end
 
     class Scope < ApplicationPolicy::Scope

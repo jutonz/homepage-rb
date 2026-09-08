@@ -41,6 +41,13 @@ RSpec.describe Galleries::BookPolicy do
 
       expect(described_class).not_to permit(nil, book)
     end
+
+    it "denies access when the gallery is missing" do
+      user = build(:user)
+      book = build(:galleries_book, gallery: nil)
+
+      expect(described_class).not_to permit(user, book)
+    end
   end
 
   describe described_class::Scope do

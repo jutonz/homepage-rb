@@ -27,6 +27,13 @@ RSpec.describe Galleries::SocialMediaLinkPolicy do
 
       expect(described_class).not_to permit(nil, social_media_link)
     end
+
+    it "denies access when the tag is missing" do
+      user = build(:user)
+      link = build(:galleries_social_media_link, tag: nil)
+
+      expect(described_class).not_to permit(user, link)
+    end
   end
 
   describe described_class::Scope do
