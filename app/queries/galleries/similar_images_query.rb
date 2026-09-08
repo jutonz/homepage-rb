@@ -2,12 +2,32 @@
 
 module Galleries
   class SimilarImagesQuery
-    def self.call(...) = new(...).call
+    extend T::Sig
 
+    sig do
+      params(image: Galleries::Image)
+        .returns(
+          T.all(
+            ActiveRecord::Relation,
+            T::Enumerable[Galleries::Image]
+          )
+        )
+    end
+    def self.call(image:) = new(image:).call
+
+    sig { params(image: Galleries::Image).void }
     def initialize(image:)
       @image = image
     end
 
+    sig do
+      returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Image]
+        )
+      )
+    end
     def call
       ids =
         ActiveRecord::Base.sanitize_sql_array([QUERY, image.id, image.id])
