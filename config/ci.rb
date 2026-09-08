@@ -4,6 +4,7 @@ CI.run do
   # step "Setup", "bin/setup --skip-server"
 
   step "Standard", "bin/standardrb"
+  step "ERB call sites", "bin/rake erb_call_sites:verify"
   step "Sorbet", "bin/srb tc"
   step "Tapioca DSL", "bin/tapioca dsl --verify --workers 1"
   step "Tapioca gem", "bin/tapioca gem --verify"

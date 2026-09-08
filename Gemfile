@@ -55,6 +55,7 @@ group :development, :test do
   gem "bullet"
   gem "debug", platforms: %i[mri windows]
   gem "factory_bot_rails"
+  gem "herb", "~> 0.10.3", require: false
   gem "rspec-rails"
   gem "simplecov", require: false
   gem "simplecov_json_formatter", require: false

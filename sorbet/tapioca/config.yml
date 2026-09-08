@@ -1,4 +1,9 @@
 gem:
   prerequire: sorbet/tapioca/prerequire.rb
+  # Tapioca cannot express herb's `**kwargs` signatures and emits a
+  # malformed RBI that Sorbet then rejects. Hand-written stand-in lives at
+  # sorbet/rbi/shims/herb.rbi.
+  exclude:
+    - herb
 dsl:
   # Add your `dsl` command parameters here:

@@ -47,3 +47,9 @@ coverage/
 node_modules/
 
 docs/superpowers/
+
+# Nothing named `tasks/` is ignored here: lib/tasks is tracked, and so are
+# the generated transcriptions mirroring app/views/*/tasks. A global
+# core.excludesfile carrying a bare `tasks/` rule would otherwise drop them
+# silently on that machine only.
+!tasks/

@@ -179,6 +179,10 @@ GEM
     googleapis-common-protos-types (1.23.0)
       google-protobuf (~> 4.26)
     hashdiff (1.2.1)
+    herb (0.10.3-aarch64-linux-gnu)
+    herb (0.10.3-arm64-darwin)
+    herb (0.10.3-x86_64-darwin)
+    herb (0.10.3-x86_64-linux-gnu)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     image_hash (1.0.0)
@@ -718,6 +722,7 @@ DEPENDENCIES
   debug
   factory_bot_rails
   faraday
+  herb (~> 0.10.3)
   image_hash
   image_processing
   importmap-rails

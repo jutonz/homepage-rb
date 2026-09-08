@@ -14,7 +14,10 @@ module Homepage
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
+    # erb_call_sites is a build-time tool that depends on the herb gem,
+    # which is not bundled in production. Requiring it explicitly keeps it
+    # out of the eager load.
+    config.autoload_lib(ignore: %w[assets tasks erb_call_sites])
 
     # Configuration for the application, engines, and railties goes here.
     #
