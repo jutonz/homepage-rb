@@ -10,6 +10,12 @@ class UserOwnedPolicy < ApplicationPolicy
   # user-owned models, which is model work rather than policy work.
   Record = type_member { {upper: T.untyped} }
 
+  sig { params(user: T.nilable(User)).returns(ActiveRecord::Relation) }
+  def self.scope_for(user)
+    return model.none if user.blank?
+    model.where(user:)
+  end
+
   def index?
     user.present?
   end

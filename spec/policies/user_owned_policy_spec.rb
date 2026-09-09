@@ -56,4 +56,28 @@ RSpec.describe UserOwnedPolicy do
       expect(scope).to be_empty
     end
   end
+
+  # `UserOwnedPolicy` has no model of its own, so these examples call
+  # `GalleryPolicy` — the simplest policy that has one. Do not change it
+  # to `described_class`.
+  describe ".scope_for" do
+    it "returns only records belonging to the user" do
+      user, other_user = create_pair(:user)
+      user_gallery1, user_gallery2 = create_pair(:gallery, user:)
+      _other_gallery = create(:gallery, user: other_user)
+
+      policy_scope = GalleryPolicy.scope_for(user)
+
+      expect(policy_scope).to contain_exactly(user_gallery1, user_gallery2)
+    end
+
+    it "returns an empty collection when user is nil" do
+      user = create(:user)
+      create(:gallery, user:)
+
+      policy_scope = GalleryPolicy.scope_for(nil)
+
+      expect(policy_scope).to be_empty
+    end
+  end
 end

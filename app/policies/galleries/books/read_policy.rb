@@ -5,6 +5,11 @@ module Galleries
     class ReadPolicy < ApplicationPolicy
       Record = type_member { {fixed: Galleries::Book} }
 
+      # This policy governs reads of a book, so its name does not name
+      # its model.
+      sig { returns(T.class_of(ActiveRecord::Base)) }
+      def self.model = Galleries::Book
+
       def show?
         user.present? && record.gallery&.user == user
       end

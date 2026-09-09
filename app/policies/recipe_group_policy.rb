@@ -3,6 +3,18 @@
 class RecipeGroupPolicy < ApplicationPolicy
   Record = type_member { {fixed: RecipeGroup} }
 
+  sig { params(user: T.nilable(User)).returns(ActiveRecord::Relation) }
+  def self.scope_for(user)
+    return model.none if user.blank?
+
+    owned_ids = model.where(owner: user).pluck(:id)
+    shared_ids = model.joins(user_groups: :users)
+      .where(users: {id: user.id})
+      .pluck(:id)
+
+    model.where(id: owned_ids + shared_ids)
+  end
+
   def index?
     user.present?
   end

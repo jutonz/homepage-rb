@@ -17,6 +17,23 @@ class ApplicationPolicy
   sig { returns(Record) }
   attr_reader :record
 
+  # Override this where a policy's name does not name its model. Do not
+  # make the derivation smarter — that changes what every other policy
+  # resolves to.
+  sig { returns(T.class_of(ActiveRecord::Base)) }
+  def self.model
+    T.must(name).delete_suffix("Policy").constantize
+  end
+
+  # Each bespoke `scope_for` copies its `Scope#resolve` word for word,
+  # blank-user guard included, so that a reader can compare the two by
+  # eye. Do not tidy the guards or merge the duplicate queries until
+  # HPRB-48 deletes the `Scope` classes. See ADR 0001.
+  sig { params(user: T.nilable(User)).returns(ActiveRecord::Relation) }
+  def self.scope_for(user)
+    raise NoMethodError, "You must define .scope_for in #{self}"
+  end
+
   def initialize(user, record)
     @user = user
     @record = record

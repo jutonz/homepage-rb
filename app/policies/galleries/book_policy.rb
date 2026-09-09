@@ -4,6 +4,12 @@ module Galleries
   class BookPolicy < ApplicationPolicy
     Record = type_member { {fixed: Galleries::Book} }
 
+    sig { params(user: T.nilable(User)).returns(ActiveRecord::Relation) }
+    def self.scope_for(user)
+      return model.none if user.blank?
+      model.joins(:gallery).where(galleries: {user:})
+    end
+
     def index?
       user.present?
     end

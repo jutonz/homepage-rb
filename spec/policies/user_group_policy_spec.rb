@@ -25,4 +25,24 @@ RSpec.describe UserGroupPolicy do
       expect(scope).to eq(UserGroup.none)
     end
   end
+
+  describe ".scope_for" do
+    it "returns only groups owned by the user" do
+      user, other_user = create_pair(:user)
+      user_group = create(:user_group, owner: user)
+      _other_user_group = create(:user_group, owner: other_user)
+
+      policy_scope = described_class.scope_for(user)
+
+      expect(policy_scope).to contain_exactly(user_group)
+    end
+
+    it "returns no groups for unauthenticated users" do
+      create(:user_group)
+
+      policy_scope = described_class.scope_for(nil)
+
+      expect(policy_scope).to be_empty
+    end
+  end
 end
