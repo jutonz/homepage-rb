@@ -14,11 +14,11 @@ module Galleries
       private
 
       def find_gallery
-        policy_scope(Gallery).find(params[:gallery_id])
+        GalleryPolicy.scope_for(current_user).find(params[:gallery_id])
       end
 
       def find_book
-        policy_scope(Galleries::Book)
+        Galleries::BookPolicy.scope_for(current_user)
           .where(gallery: @gallery)
           .find(params[:book_id])
       end

@@ -8,7 +8,7 @@ module Galleries
     def index
       @gallery = find_gallery
       authorize Galleries::Tag
-      @tags = policy_scope(Galleries::Tag)
+      @tags = Galleries::TagPolicy.scope_for(current_user)
         .where(gallery: @gallery)
         .includes(:gallery)
         .order(:name)
@@ -84,11 +84,12 @@ module Galleries
     private
 
     def find_gallery
-      policy_scope(Gallery).find(params[:gallery_id])
+      GalleryPolicy.scope_for(current_user).find(params[:gallery_id])
     end
 
     def find_tag(includes: nil)
-      query = policy_scope(Galleries::Tag).where(gallery: @gallery)
+      query = Galleries::TagPolicy.scope_for(current_user)
+        .where(gallery: @gallery)
       query = query.includes(includes) if includes.present?
       query.find(params[:id])
     end

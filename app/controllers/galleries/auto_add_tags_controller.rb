@@ -42,15 +42,19 @@ module Galleries
     private
 
     def find_gallery
-      policy_scope(Gallery).find(params[:gallery_id])
+      GalleryPolicy.scope_for(current_user).find(params[:gallery_id])
     end
 
     def find_tag(gallery)
-      policy_scope(Galleries::Tag).where(gallery:).find(params[:tag_id])
+      Galleries::TagPolicy.scope_for(current_user)
+        .where(gallery:)
+        .find(params[:tag_id])
     end
 
     def find_auto_add_tag(tag)
-      policy_scope(Galleries::AutoAddTag).where(tag:).find(params[:id])
+      Galleries::AutoAddTagPolicy.scope_for(current_user)
+        .where(tag:)
+        .find(params[:id])
     end
 
     def auto_add_tag_params

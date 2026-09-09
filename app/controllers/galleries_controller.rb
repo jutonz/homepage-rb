@@ -6,7 +6,7 @@ class GalleriesController < ApplicationController
 
   def index
     authorize Gallery
-    @galleries = policy_scope(Gallery).visible
+    @galleries = GalleryPolicy.scope_for(current_user).visible
   end
 
   PER_PAGE = 20
@@ -77,7 +77,7 @@ class GalleriesController < ApplicationController
   private
 
   def find_gallery
-    policy_scope(Gallery).find(params[:id])
+    GalleryPolicy.scope_for(current_user).find(params[:id])
   end
 
   def gallery_params
