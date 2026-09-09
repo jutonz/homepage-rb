@@ -6,7 +6,8 @@ class IngredientsController < ApplicationController
 
   def index
     authorize Recipes::Ingredient
-    @ingredients = policy_scope(Recipes::Ingredient).order(:name)
+    @ingredients = Recipes::IngredientPolicy.scope_for(current_user)
+      .order(:name)
   end
 
   def show
@@ -55,7 +56,7 @@ class IngredientsController < ApplicationController
   private
 
   def find_ingredient
-    policy_scope(Recipes::Ingredient).find(params[:id])
+    Recipes::IngredientPolicy.scope_for(current_user).find(params[:id])
   end
 
   def ingredient_params

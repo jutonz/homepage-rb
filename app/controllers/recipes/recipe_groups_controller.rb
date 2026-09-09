@@ -7,7 +7,8 @@ module Recipes
 
     def index
       authorize RecipeGroup
-      @recipe_groups = policy_scope(RecipeGroup).order(created_at: :desc)
+      @recipe_groups = RecipeGroupPolicy.scope_for(current_user)
+        .order(created_at: :desc)
     end
 
     def show
@@ -68,7 +69,7 @@ module Recipes
     private
 
     def find_recipe_group
-      policy_scope(RecipeGroup).find(params[:id])
+      RecipeGroupPolicy.scope_for(current_user).find(params[:id])
     end
 
     def recipe_group_params

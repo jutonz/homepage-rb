@@ -58,7 +58,8 @@ module Recipes
     private
 
     def find_recipe_group
-      @recipe_group = policy_scope(RecipeGroup).find(params[:recipe_group_id])
+      @recipe_group = RecipeGroupPolicy.scope_for(current_user)
+        .find(params[:recipe_group_id])
     end
 
     def find_recipe
@@ -71,7 +72,7 @@ module Recipes
     end
 
     def find_available_ingredients
-      policy_scope(Recipes::Ingredient).order(:name)
+      Recipes::IngredientPolicy.scope_for(current_user).order(:name)
     end
 
     def recipe_ingredient_params
