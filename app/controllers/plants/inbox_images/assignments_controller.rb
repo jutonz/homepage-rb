@@ -8,7 +8,8 @@ module Plants
 
       def create
         @inbox_image = authorize(find_inbox_image, :assign?)
-        plant = policy_scope(Plants::Plant).find(params[:plant_id])
+        plant =
+          Plants::PlantPolicy.scope_for(current_user).find(params[:plant_id])
         plant_image = plant.plant_images.new(taken_at: @inbox_image.taken_at)
         plant_image.file.attach(@inbox_image.file.blob)
 
@@ -21,7 +22,7 @@ module Plants
         flash.now[:alert] =
           plant_image.errors.full_messages.to_sentence
         @plants =
-          policy_scope(Plants::Plant)
+          Plants::PlantPolicy.scope_for(current_user)
             .includes(key_image: :file_attachment)
             .order(:name)
         render("plants/inbox_images/show", status: :unprocessable_content)
@@ -30,7 +31,8 @@ module Plants
       private
 
       def find_inbox_image
-        policy_scope(Plants::InboxImage).find(params[:inbox_image_id])
+        Plants::InboxImagePolicy.scope_for(current_user)
+          .find(params[:inbox_image_id])
       end
     end
   end
