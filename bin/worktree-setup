@@ -7,13 +7,35 @@
 #   - node_modules (the Playwright driver that system specs launch via
 #     `npm exec`; without it, browser specs hang waiting on a handshake
 #     that never comes)
-# Gems and the database are shared across worktrees, so `bundle install`
-# and `db:prepare` are not needed. This copies the keys from the main
-# checkout (no 1Password prompt, unlike bin/setup), installs node
-# modules, and builds assets.
+# The database is shared across worktrees, so `db:prepare` is not needed.
+# Gems are shared too, but a worktree cut from a branch that bumped a gem
+# needs that gem installed. This copies the keys from the main checkout
+# (no 1Password prompt, unlike bin/setup), installs node modules, and
+# builds assets.
 #
 # Idempotent. No-op when run outside a linked worktree.
 set -euo pipefail
+
+run_quietly() {
+  local description="$1"
+  shift
+
+  if ! "$@" >"$log_file" 2>&1; then
+    echo "$description failed:" >&2
+    cat "$log_file" >&2
+    exit 1
+  fi
+}
+
+assert_precompiled() {
+  local artifact="$1"
+
+  if [ ! -e "$artifact" ]; then
+    echo "assets:precompile succeeded but $artifact is absent." >&2
+    echo "The worktree is not usable; system specs fail without it." >&2
+    exit 1
+  fi
+}
 
 git_dir="$(cd "$(git rev-parse --git-dir)" && pwd -P)"
 common_dir="$(cd "$(git rev-parse --git-common-dir)" && pwd -P)"
@@ -25,6 +47,9 @@ fi
 
 main_root="$(dirname "$common_dir")"
 
+log_file="$(mktemp)"
+trap 'rm -f "$log_file"' EXIT
+
 echo "Copying credential keys from $main_root"
 for env in development test production; do
   cp "$main_root/config/credentials/$env.key" \
@@ -35,9 +60,20 @@ echo "Installing node modules (Playwright driver for system specs)"
 npm ci
 
 echo "Ensuring the Playwright browser is installed"
-npm exec --no -- playwright install chromium >/dev/null 2>&1
+run_quietly "Playwright browser install" \
+  npm exec --no -- playwright install chromium
+
+echo "Checking that the shared gems satisfy the lockfile"
+if ! mise exec -- bundle check >"$log_file" 2>&1; then
+  cat "$log_file" >&2
+  echo "Installing missing gems"
+  mise exec -- bundle install
+fi
 
 echo "Precompiling assets"
-mise exec -- bin/rails assets:precompile >/dev/null 2>&1
+run_quietly "Asset precompile" mise exec -- bin/rails assets:precompile
+
+assert_precompiled "app/assets/builds/tailwind.css"
+assert_precompiled "public/assets"
 
 echo "Worktree ready"
