@@ -40,7 +40,7 @@ RSpec.describe UserGroupInvitationPolicy, type: :policy do
     end
   end
 
-  describe described_class::Scope do
+  describe ".scope_for" do
     it "returns invitations for groups owned by user" do
       owner, other_user = create_pair(:user)
       owned_group = create(:user_group, owner:)
@@ -49,17 +49,17 @@ RSpec.describe UserGroupInvitationPolicy, type: :policy do
       owned_invitation = create(:user_group_invitation, user_group: owned_group)
       create(:user_group_invitation, user_group: other_group)
 
-      scope = described_class.new(owner, UserGroupInvitation).resolve
+      policy_scope = described_class.scope_for(owner)
 
-      expect(scope).to contain_exactly(owned_invitation)
+      expect(policy_scope).to contain_exactly(owned_invitation)
     end
 
     it "returns empty scope for anonymous users" do
       create(:user_group_invitation)
 
-      scope = described_class.new(nil, UserGroupInvitation).resolve
+      policy_scope = described_class.scope_for(nil)
 
-      expect(scope).to be_empty
+      expect(policy_scope).to be_empty
     end
   end
 end

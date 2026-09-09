@@ -33,31 +33,6 @@ RSpec.describe Galleries::ImagePolicy do
     end
   end
 
-  describe described_class::Scope do
-    it "returns only images from galleries belonging to the user" do
-      user, other_user = create_pair(:user)
-      user_gallery1, user_gallery2 = create_pair(:gallery, user:)
-      other_gallery = create(:gallery, user: other_user)
-      user_image1 = create(:galleries_image, gallery: user_gallery1)
-      user_image2 = create(:galleries_image, gallery: user_gallery2)
-      _other_gallery = create(:galleries_image, gallery: other_gallery)
-
-      scope = described_class.new(user, Galleries::Image.all).resolve
-
-      expect(scope).to contain_exactly(user_image1, user_image2)
-    end
-
-    it "returns empty collection when user is nil" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      create(:galleries_image, gallery:)
-
-      scope = described_class.new(nil, Galleries::Image.all).resolve
-
-      expect(scope).to be_empty
-    end
-  end
-
   describe ".scope_for" do
     it "returns only images from galleries belonging to the user" do
       user, other_user = create_pair(:user)

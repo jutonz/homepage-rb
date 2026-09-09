@@ -60,17 +60,4 @@ class RecipeGroupPolicy < ApplicationPolicy
 
     record.user_groups.any? { |user_group| user_group.users.include?(user) }
   end
-
-  class Scope < ApplicationPolicy::Scope
-    def resolve
-      return scope.none if user.blank?
-
-      owned_ids = scope.where(owner: user).pluck(:id)
-      shared_ids = scope.joins(user_groups: :users)
-        .where(users: {id: user.id})
-        .pluck(:id)
-
-      scope.where(id: owned_ids + shared_ids)
-    end
-  end
 end

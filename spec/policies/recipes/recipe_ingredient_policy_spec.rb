@@ -37,7 +37,7 @@ RSpec.describe Recipes::RecipeIngredientPolicy do
     end
   end
 
-  describe described_class::Scope do
+  describe ".scope_for" do
     it "returns only recipe ingredients for recipes owned by the user" do
       user, other_user = create_pair(:user)
       user_recipe = create(:recipes_recipe, user:)
@@ -55,9 +55,9 @@ RSpec.describe Recipes::RecipeIngredientPolicy do
         ingredient: other_ingredient
       )
 
-      scope = described_class.new(user, Recipes::RecipeIngredient.all).resolve
+      policy_scope = described_class.scope_for(user)
 
-      expect(scope).to contain_exactly(user_recipe_ingredient)
+      expect(policy_scope).to contain_exactly(user_recipe_ingredient)
     end
 
     it "returns empty collection when user is nil" do
@@ -66,9 +66,9 @@ RSpec.describe Recipes::RecipeIngredientPolicy do
       ingredient = create(:recipes_ingredient, user:)
       create(:recipes_recipe_ingredient, recipe:, ingredient:)
 
-      scope = described_class.new(nil, Recipes::RecipeIngredient.all).resolve
+      policy_scope = described_class.scope_for(nil)
 
-      expect(scope).to be_empty
+      expect(policy_scope).to be_empty
     end
   end
 end

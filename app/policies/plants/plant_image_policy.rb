@@ -40,13 +40,5 @@ module Plants
     def plant_owner?
       user.present? && record.plant&.user == user
     end
-
-    class Scope < ApplicationPolicy::Scope
-      def resolve
-        return scope.none if user.blank?
-
-        scope.joins(:plant).where(plants_plants: {user:})
-      end
-    end
   end
 end

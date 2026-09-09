@@ -14,7 +14,7 @@
 # keep the method callable. Here it narrows the static type, and the
 # app-code signature still checks the real return value at runtime.
 #
-# Seven of these policies also define `scope_for` in app code, because
+# Twelve of these policies also define `scope_for` in app code, because
 # their query is bespoke. A narrower type here does not conflict with
 # that definition: Sorbet gives callers this signature and still checks
 # the body against the one in app code. See ADR 0001.
@@ -38,6 +38,21 @@ class Galleries::AutoAddTagPolicy
 end
 
 class Galleries::BookPolicy
+  sig do
+    params(user: T.nilable(User)).returns(Galleries::Book::PrivateRelation)
+  end
+  def self.scope_for(user); end
+end
+
+class Galleries::BookImagePolicy
+  sig do
+    params(user: T.nilable(User))
+      .returns(Galleries::BookImage::PrivateRelation)
+  end
+  def self.scope_for(user); end
+end
+
+class Galleries::Books::ReadPolicy
   sig do
     params(user: T.nilable(User)).returns(Galleries::Book::PrivateRelation)
   end
@@ -100,6 +115,14 @@ class Recipes::IngredientPolicy
   def self.scope_for(user); end
 end
 
+class Recipes::RecipeIngredientPolicy
+  sig do
+    params(user: T.nilable(User))
+      .returns(Recipes::RecipeIngredient::PrivateRelation)
+  end
+  def self.scope_for(user); end
+end
+
 class SharedBills::SharedBillPolicy
   sig do
     params(user: T.nilable(User))
@@ -115,6 +138,22 @@ end
 
 class Todo::TaskPolicy
   sig { params(user: T.nilable(User)).returns(Todo::Task::PrivateRelation) }
+  def self.scope_for(user); end
+end
+
+class Todo::TaskOccurrencePolicy
+  sig do
+    params(user: T.nilable(User))
+      .returns(Todo::TaskOccurrence::PrivateRelation)
+  end
+  def self.scope_for(user); end
+end
+
+class UserGroupInvitationPolicy
+  sig do
+    params(user: T.nilable(User))
+      .returns(UserGroupInvitation::PrivateRelation)
+  end
   def self.scope_for(user); end
 end
 

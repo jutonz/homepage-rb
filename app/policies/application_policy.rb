@@ -25,10 +25,6 @@ class ApplicationPolicy
     T.must(name).delete_suffix("Policy").constantize
   end
 
-  # Each bespoke `scope_for` copies its `Scope#resolve` word for word,
-  # blank-user guard included, so that a reader can compare the two by
-  # eye. Do not tidy the guards or merge the duplicate queries until
-  # HPRB-48 deletes the `Scope` classes. See ADR 0001.
   sig { params(user: T.nilable(User)).returns(ActiveRecord::Relation) }
   def self.scope_for(user)
     raise NoMethodError, "You must define .scope_for in #{self}"
@@ -65,20 +61,5 @@ class ApplicationPolicy
 
   def destroy?
     false
-  end
-
-  class Scope
-    def initialize(user, scope)
-      @user = user
-      @scope = scope
-    end
-
-    def resolve
-      raise NoMethodError, "You must define #resolve in #{self.class}"
-    end
-
-    private
-
-    attr_reader :user, :scope
   end
 end

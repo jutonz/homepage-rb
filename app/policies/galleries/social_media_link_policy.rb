@@ -38,15 +38,5 @@ module Galleries
     def user_owns_tag?
       user && record.tag&.user == user
     end
-
-    class Scope < ApplicationPolicy::Scope
-      def resolve
-        return scope.none unless user
-
-        scope
-          .joins(tag: :gallery)
-          .where(galleries_tags: {user:})
-      end
-    end
   end
 end
