@@ -33,32 +33,6 @@ RSpec.describe Plants::PlantImagePolicy do
     end
   end
 
-  describe described_class::Scope do
-    it "returns plant_images for plants belonging to the user" do
-      user, other_user = create_pair(:user)
-      plant1 = create(:plant, user:)
-      plant2 = create(:plant, user:)
-      other_plant = create(:plant, user: other_user)
-      plant_image1 = create(:plants_plant_image, plant: plant1)
-      plant_image2 = create(:plants_plant_image, plant: plant2)
-      _other_image = create(:plants_plant_image, plant: other_plant)
-
-      scope = described_class.new(user, Plants::PlantImage.all).resolve
-
-      expect(scope).to(contain_exactly(plant_image1, plant_image2))
-    end
-
-    it "returns empty collection when user is nil" do
-      user = create(:user)
-      plant = create(:plant, user:)
-      create(:plants_plant_image, plant:)
-
-      scope = described_class.new(nil, Plants::PlantImage.all).resolve
-
-      expect(scope).to(be_empty)
-    end
-  end
-
   describe ".scope_for" do
     it "returns plant_images for plants belonging to the user" do
       user, other_user = create_pair(:user)

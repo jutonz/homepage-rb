@@ -10,15 +10,14 @@ module Galleries
       sig { returns(T.class_of(ActiveRecord::Base)) }
       def self.model = Galleries::Book
 
-      def show?
-        user.present? && record.gallery&.user == user
+      sig { params(user: T.nilable(User)).returns(ActiveRecord::Relation) }
+      def self.scope_for(user)
+        return model.none if user.blank?
+        model.joins(:gallery).where(galleries: {user:})
       end
 
-      class Scope < ApplicationPolicy::Scope
-        def resolve
-          return scope.none if user.blank?
-          scope.joins(:gallery).where(galleries: {user:})
-        end
+      def show?
+        user.present? && record.gallery&.user == user
       end
     end
   end

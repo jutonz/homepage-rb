@@ -53,11 +53,4 @@ class UserOwnedPolicy < ApplicationPolicy
   def owner
     record.user
   end
-
-  class Scope < ApplicationPolicy::Scope
-    def resolve
-      return scope.none if user.blank?
-      scope.where(user:)
-    end
-  end
 end

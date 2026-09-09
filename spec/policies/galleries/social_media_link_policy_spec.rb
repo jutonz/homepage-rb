@@ -36,33 +36,6 @@ RSpec.describe Galleries::SocialMediaLinkPolicy do
     end
   end
 
-  describe described_class::Scope do
-    it "returns only social media links from tags belonging to the user" do
-      user, other_user = create_pair(:user)
-      user_gallery = create(:gallery, user:)
-      other_gallery = create(:gallery, user: other_user)
-      user_tag = create(:galleries_tag, user:, gallery: user_gallery)
-      other_tag = create(:galleries_tag, user: other_user, gallery: other_gallery)
-      user_link = create(:galleries_social_media_link, tag: user_tag)
-      create(:galleries_social_media_link, tag: other_tag)
-
-      scope = described_class.new(user, Galleries::SocialMediaLink.all).resolve
-
-      expect(scope).to contain_exactly(user_link)
-    end
-
-    it "returns empty collection when user is nil" do
-      user = create(:user)
-      gallery = create(:gallery, user:)
-      tag = create(:galleries_tag, user:, gallery:)
-      create(:galleries_social_media_link, tag:)
-
-      scope = described_class.new(nil, Galleries::SocialMediaLink.all).resolve
-
-      expect(scope).to be_empty
-    end
-  end
-
   describe ".scope_for" do
     it "returns only social media links from tags belonging to the user" do
       user, other_user = create_pair(:user)

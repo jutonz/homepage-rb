@@ -33,7 +33,7 @@ RSpec.describe Galleries::Books::ReadPolicy do
     end
   end
 
-  describe described_class::Scope do
+  describe ".scope_for" do
     it "returns only books from galleries belonging to user" do
       user, other_user = create_pair(:user)
       user_gallery1, user_gallery2 = create_pair(:gallery, user:)
@@ -42,9 +42,9 @@ RSpec.describe Galleries::Books::ReadPolicy do
       user_book2 = create(:galleries_book, gallery: user_gallery2)
       _other_book = create(:galleries_book, gallery: other_gallery)
 
-      scope = described_class.new(user, Galleries::Book.all).resolve
+      policy_scope = described_class.scope_for(user)
 
-      expect(scope).to contain_exactly(user_book1, user_book2)
+      expect(policy_scope).to contain_exactly(user_book1, user_book2)
     end
 
     it "returns empty collection when user is nil" do
@@ -52,9 +52,9 @@ RSpec.describe Galleries::Books::ReadPolicy do
       gallery = create(:gallery, user:)
       create(:galleries_book, gallery:)
 
-      scope = described_class.new(nil, Galleries::Book.all).resolve
+      policy_scope = described_class.scope_for(nil)
 
-      expect(scope).to be_empty
+      expect(policy_scope).to be_empty
     end
   end
 end

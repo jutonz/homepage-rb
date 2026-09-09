@@ -43,12 +43,5 @@ module Galleries
     def gallery_owner?
       user.present? && record.gallery&.user == user
     end
-
-    class Scope < ApplicationPolicy::Scope
-      def resolve
-        return scope.none if user.blank?
-        scope.joins(:gallery).where(galleries: {user:})
-      end
-    end
   end
 end

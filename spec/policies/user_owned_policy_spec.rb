@@ -34,29 +34,6 @@ RSpec.describe UserOwnedPolicy do
     end
   end
 
-  describe described_class::Scope do
-    it "returns only records belonging to the user" do
-      user = create(:user)
-      other_user = create(:user)
-      user_gallery1 = create(:gallery, user:)
-      user_gallery2 = create(:gallery, user:)
-      create(:gallery, user: other_user)
-
-      scope = described_class.new(user, Gallery.all).resolve
-
-      expect(scope).to contain_exactly(user_gallery1, user_gallery2)
-    end
-
-    it "returns empty collection when user is nil" do
-      user = create(:user)
-      create(:gallery, user:)
-
-      scope = described_class.new(nil, Gallery.all).resolve
-
-      expect(scope).to be_empty
-    end
-  end
-
   # `UserOwnedPolicy` has no model of its own, so these examples call
   # `GalleryPolicy` — the simplest policy that has one. Do not change it
   # to `described_class`.
