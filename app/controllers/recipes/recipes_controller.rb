@@ -64,7 +64,8 @@ module Recipes
     private
 
     def find_recipe_group
-      @recipe_group = policy_scope(RecipeGroup).find(params[:recipe_group_id])
+      @recipe_group = RecipeGroupPolicy.scope_for(current_user)
+        .find(params[:recipe_group_id])
     end
 
     def find_recipe
