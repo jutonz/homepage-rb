@@ -10,9 +10,14 @@ export default class extends BaseController {
     document.removeEventListener("visibilitychange", this.boundRefresh)
   }
 
-  refresh() {
+  async refresh() {
     if (document.visibilityState !== "visible") return
     if (typeof this.element.reload !== "function") return
+
+    await this.element.loaded
+
+    if (document.visibilityState !== "visible") return
+
     this.element.reload()
   }
 }
