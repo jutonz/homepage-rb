@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Prepare a fresh git worktree.
 #
-# A fresh worktree is missing three gitignored things it needs:
+# A fresh worktree is missing four gitignored things it needs:
 #   - per-environment credential keys (config/credentials/*.key)
+#   - Linear CLI configuration (.linear.toml)
 #   - compiled assets (tailwind.css, etc.)
 #   - node_modules (the Playwright driver that system specs launch via
 #     `npm exec`; without it, browser specs hang waiting on a handshake
@@ -30,6 +31,9 @@ for env in development test production; do
   cp "$main_root/config/credentials/$env.key" \
     "config/credentials/$env.key"
 done
+
+echo "Copying Linear CLI configuration from $main_root"
+cp "$main_root/.linear.toml" ".linear.toml"
 
 echo "Installing node modules (Playwright driver for system specs)"
 npm ci
