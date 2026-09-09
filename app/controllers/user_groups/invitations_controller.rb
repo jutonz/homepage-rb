@@ -40,7 +40,7 @@ module UserGroups
     private
 
     def find_user_group
-      policy_scope(UserGroup).find(params[:user_group_id])
+      UserGroupPolicy.scope_for(current_user).find(params[:user_group_id])
     end
 
     def find_invitation

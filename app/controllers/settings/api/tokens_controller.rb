@@ -7,7 +7,7 @@ module Settings
       after_action :verify_authorized
       def index
         authorize ::Api::Token
-        @tokens = policy_scope(::Api::Token)
+        @tokens = ::Api::TokenPolicy.scope_for(current_user)
       end
 
       def new
@@ -45,7 +45,7 @@ module Settings
       private
 
       def find_token
-        policy_scope(::Api::Token).find(params[:id])
+        ::Api::TokenPolicy.scope_for(current_user).find(params[:id])
       end
 
       def token_params

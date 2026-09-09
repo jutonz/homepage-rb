@@ -6,7 +6,7 @@ class UserGroupsController < ApplicationController
 
   def index
     authorize(UserGroup)
-    @user_groups = policy_scope(UserGroup).order(:name)
+    @user_groups = UserGroupPolicy.scope_for(current_user).order(:name)
   end
 
   def show
@@ -59,7 +59,7 @@ class UserGroupsController < ApplicationController
   private
 
   def find_user_group
-    policy_scope(UserGroup).find(params[:id])
+    UserGroupPolicy.scope_for(current_user).find(params[:id])
   end
 
   def user_group_params
