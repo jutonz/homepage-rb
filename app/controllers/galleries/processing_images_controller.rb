@@ -12,7 +12,7 @@ module Galleries
         policy_class: Galleries::ProcessingImagesPolicy
       )
       @images =
-        policy_scope(Galleries::Image)
+        Galleries::ImagePolicy.scope_for(current_user)
           .where(gallery: @gallery)
           .unprocessed
           .includes(:gallery, file_attachment: :blob)
@@ -21,7 +21,7 @@ module Galleries
     private
 
     def find_gallery
-      policy_scope(Gallery)
+      GalleryPolicy.scope_for(current_user)
         .find(params[:gallery_id])
     end
   end

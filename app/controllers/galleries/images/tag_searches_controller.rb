@@ -27,11 +27,13 @@ module Galleries
       private
 
       def find_gallery
-        policy_scope(Gallery).find(params[:gallery_id])
+        GalleryPolicy.scope_for(current_user).find(params[:gallery_id])
       end
 
       def find_image
-        policy_scope(Galleries::Image).where(gallery: @gallery).find(params[:image_id])
+        Galleries::ImagePolicy.scope_for(current_user)
+          .where(gallery: @gallery)
+          .find(params[:image_id])
       end
 
       def tag_search_params

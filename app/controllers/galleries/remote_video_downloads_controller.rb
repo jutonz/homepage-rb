@@ -84,7 +84,7 @@ module Galleries
     private
 
     def find_gallery
-      policy_scope(Gallery).find(params[:gallery_id])
+      GalleryPolicy.scope_for(current_user).find(params[:gallery_id])
     end
 
     def cancel_metube_entry(remote_video_download)

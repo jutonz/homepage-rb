@@ -7,7 +7,8 @@ module Galleries
       after_action :verify_authorized
 
       def create
-        @gallery = policy_scope(Gallery).find(params[:gallery_id])
+        @gallery = GalleryPolicy.scope_for(current_user)
+          .find(params[:gallery_id])
         @remote_video_download = authorize(
           @gallery.remote_video_downloads.find(
             params[:remote_video_download_id]
