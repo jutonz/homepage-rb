@@ -7,7 +7,7 @@ module Todo
 
     def index
       authorize Todo::Task
-      @tasks = policy_scope(Todo::Task)
+      @tasks = Todo::TaskPolicy.scope_for(current_user)
     end
 
     def new
@@ -62,7 +62,7 @@ module Todo
     end
 
     def find_task
-      policy_scope(Todo::Task).find(params[:id])
+      Todo::TaskPolicy.scope_for(current_user).find(params[:id])
     end
   end
 end

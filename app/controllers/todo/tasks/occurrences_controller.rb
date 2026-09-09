@@ -41,7 +41,7 @@ module Todo
       private
 
       def find_task
-        @task = policy_scope(Todo::Task).find(params[:task_id])
+        @task = Todo::TaskPolicy.scope_for(current_user).find(params[:task_id])
       end
 
       def room_id(task)
