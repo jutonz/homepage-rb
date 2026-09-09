@@ -8,7 +8,7 @@ module Plants
     def index
       authorize(Plants::Plant)
       @plants =
-        policy_scope(Plants::Plant)
+        Plants::PlantPolicy.scope_for(current_user)
           .includes(key_image: :file_attachment)
           .order(:name)
     end

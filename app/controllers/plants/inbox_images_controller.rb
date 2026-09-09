@@ -8,7 +8,7 @@ module Plants
     def index
       authorize(Plants::InboxImage)
       @inbox_images =
-        policy_scope(Plants::InboxImage)
+        Plants::InboxImagePolicy.scope_for(current_user)
           .includes(:file_attachment)
           .order(taken_at: :desc)
     end
@@ -39,7 +39,7 @@ module Plants
     def show
       @inbox_image = authorize(find_inbox_image)
       @plants =
-        policy_scope(Plants::Plant)
+        Plants::PlantPolicy.scope_for(current_user)
           .includes(key_image: :file_attachment)
           .order(:name)
     end
@@ -53,7 +53,7 @@ module Plants
     private
 
     def find_inbox_image
-      policy_scope(Plants::InboxImage).find(params[:id])
+      Plants::InboxImagePolicy.scope_for(current_user).find(params[:id])
     end
 
     def inbox_image_params

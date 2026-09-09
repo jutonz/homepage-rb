@@ -25,7 +25,7 @@ module Plants
     private
 
     def find_plant
-      policy_scope(Plants::Plant).find(params[:plant_id])
+      Plants::PlantPolicy.scope_for(current_user).find(params[:plant_id])
     end
 
     def find_plant_image
