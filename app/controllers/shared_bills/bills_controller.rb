@@ -76,7 +76,7 @@ module SharedBills
     private
 
     def find_shared_bill
-      policy_scope(SharedBills::SharedBill)
+      SharedBills::SharedBillPolicy.scope_for(current_user)
         .find(params[:shared_bill_id])
     end
 

@@ -7,7 +7,7 @@ class SharedBillsController < ApplicationController
   def index
     authorize(SharedBills::SharedBill)
     @shared_bills =
-      policy_scope(SharedBills::SharedBill)
+      SharedBills::SharedBillPolicy.scope_for(current_user)
         .order(created_at: :desc)
   end
 
@@ -74,7 +74,8 @@ class SharedBillsController < ApplicationController
   private
 
   def find_shared_bill
-    policy_scope(SharedBills::SharedBill).find(params[:id])
+    SharedBills::SharedBillPolicy.scope_for(current_user)
+      .find(params[:id])
   end
 
   def shared_bill_params
