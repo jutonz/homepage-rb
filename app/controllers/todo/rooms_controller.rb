@@ -7,7 +7,7 @@ module Todo
 
     def index
       authorize Todo::Room
-      @rooms = policy_scope(Todo::Room)
+      @rooms = Todo::RoomPolicy.scope_for(current_user)
     end
 
     def new
@@ -54,7 +54,7 @@ module Todo
     end
 
     def find_room(includes: [])
-      query = policy_scope(Todo::Room)
+      query = Todo::RoomPolicy.scope_for(current_user)
       query = query.includes(includes) if includes.present?
       query.find(params[:id])
     end
