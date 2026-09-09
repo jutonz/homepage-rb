@@ -4,6 +4,13 @@ module Galleries
   class ImagePolicy < ApplicationPolicy
     Record = type_member { {fixed: Galleries::Image} }
 
+    sig { params(user: T.nilable(User)).returns(ActiveRecord::Relation) }
+    def self.scope_for(user)
+      return model.none unless user
+
+      model.joins(:gallery).where(gallery: {user:})
+    end
+
     def index?
       user_owns_gallery?
     end

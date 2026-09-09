@@ -103,4 +103,31 @@ RSpec.describe RecipeGroupPolicy do
       expect(scope).to be_empty
     end
   end
+
+  describe ".scope_for" do
+    it "returns owned and shared recipe groups for the user" do
+      user, other_user = create_pair(:user)
+      owned_group1, owned_group2 = create_pair(:recipe_group, owner: user)
+      user_group = create(:user_group, owner: user)
+      shared_group = create(
+        :recipe_group,
+        owner: other_user,
+        user_groups: [user_group]
+      )
+      _inaccessible_group = create(:recipe_group, owner: other_user)
+
+      policy_scope = described_class.scope_for(user)
+
+      expect(policy_scope)
+        .to contain_exactly(owned_group1, owned_group2, shared_group)
+    end
+
+    it "returns an empty collection when user is nil" do
+      create(:recipe_group)
+
+      policy_scope = described_class.scope_for(nil)
+
+      expect(policy_scope).to be_empty
+    end
+  end
 end
