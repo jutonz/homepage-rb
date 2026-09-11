@@ -25,9 +25,11 @@ module Session
         UserSeedJob.perform_later(user)
       end
 
+      return_to = session.delete(:return_to)
+      reset_session
       warden.set_user(user)
 
-      if (return_to = session.delete(:return_to))
+      if return_to
         redirect_to return_to and return
       end
 

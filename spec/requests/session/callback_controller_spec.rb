@@ -63,7 +63,6 @@ RSpec.describe Session::CallbackController do
     it "redirects if a return_to value is saved" do
       get(home_path) # establish session
 
-      session[:return_to] = home_path
       user = create(:user)
       jwt, _attrs = build(:access_token, user:)
 
@@ -73,6 +72,24 @@ RSpec.describe Session::CallbackController do
       ))
 
       expect(response).to redirect_to(home_path)
+    end
+
+    it "rotates the session id" do
+      get(home_path) # establish session
+      before_id = session.id.public_id
+      user = create(:user)
+      jwt, _attrs = build(:access_token, user:)
+
+      get(session_callback_path(
+        access_token: jwt,
+        refresh_token: "todo"
+      ))
+
+      # `reset_session` changes the session id during the request. The
+      # Warden renew flag changes the id only at commit time, and only
+      # in the cookie. A comparison of cookie ids passes without the
+      # reset.
+      expect(session.id.public_id).not_to eql(before_id)
     end
   end
 end
