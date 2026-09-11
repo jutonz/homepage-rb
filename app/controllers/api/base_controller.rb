@@ -14,7 +14,7 @@ module Api
         end
 
       if user.present?
-        warden.set_user(user)
+        warden.set_user(user, store: false)
       end
     end
 
