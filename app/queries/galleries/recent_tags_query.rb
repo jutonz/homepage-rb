@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class RecentTagsQuery
@@ -65,7 +65,13 @@ module Galleries
     end
     def initialize(gallery:, image_limit:, excluded_image_ids: nil)
       @gallery = gallery
-      @excluded_image_ids = excluded_image_ids || -1
+      # An empty list makes `sanitize_sql_array` write `NOT IN (NULL)`,
+      # which excludes every row. The `-1` keeps the list non-empty and
+      # matches no image id.
+      @excluded_image_ids = T.let(
+        excluded_image_ids || [-1],
+        T::Array[Integer]
+      )
       @image_limit = image_limit
     end
 
@@ -91,15 +97,21 @@ module Galleries
 
     private
 
+    sig { returns(Gallery) }
     attr_reader :gallery
+
+    sig { returns(T::Array[Integer]) }
     attr_reader :excluded_image_ids
+
+    sig { returns(Integer) }
     attr_reader :image_limit
 
+    sig { returns(String) }
     def sanitized_sql
       ActiveRecord::Base.sanitize_sql_array([
         SQL,
         gallery.id,
-        Array(excluded_image_ids),
+        excluded_image_ids,
         image_limit
       ])
     end
