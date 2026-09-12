@@ -11,9 +11,9 @@ Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 - **Title** — issue title
 - **State**: `Backlog` → `Todo` → `In Progress` → `In Review` → `Done`
   (`Canceled` / `Duplicate` also exist)
-- **Labels**: `Global`, `Recipes`, `Galleries` — tag with the relevant app
-  area(s). Team-scoped; the workspace also has `Bug` / `Feature` /
-  `Improvement`.
+- **Labels**: `Bug`, `Feature`, `Improvement` — workspace-wide labels
+  available to HPRB. HPRB has no team-specific labels. Confirm the current
+  list with `linear label list --team HPRB`.
 
 ## Conventions
 
