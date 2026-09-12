@@ -50,7 +50,7 @@ RSpec.describe "Gallery bulk uploads", type: :system do
 
     click_button("Add tags")
     expect(page).to have_css("dialog[open]")
-    find_field("Tag search query").send_keys(:escape)
+    find_field("Search tags to add").send_keys(:escape)
     expect(page).to have_no_css("dialog[open]")
   end
 
@@ -73,12 +73,12 @@ RSpec.describe "Gallery bulk uploads", type: :system do
     end
 
     within("dialog[open]") do
-      fill_in("Tag search query", with: "landscapes")
+      fill_in("Search tags to add", with: "landscapes")
       wait_for_turbo
       expect(page).to have_content("landscapes")
       click_button("Add tag")
       wait_for_turbo
-      fill_in("Tag search query", with: "portraits")
+      fill_in("Search tags to add", with: "portraits")
       wait_for_turbo
       click_button("Add tag")
       wait_for_turbo
@@ -131,7 +131,7 @@ RSpec.describe "Gallery bulk uploads", type: :system do
     click_button("Add tags")
 
     within("dialog[open]") do
-      fill_in("Tag search query", with: "landscapes")
+      fill_in("Search tags to add", with: "landscapes")
       wait_for_turbo
       click_button("Add tag")
       wait_for_turbo
@@ -176,7 +176,7 @@ RSpec.describe "Gallery bulk uploads", type: :system do
 
     click_button("Add tags")
     within("dialog[open]") do
-      fill_in("Tag search query", with: "landscapes")
+      fill_in("Search tags to add", with: "landscapes")
       wait_for_turbo
       click_button("Add tag")
       wait_for_turbo
@@ -209,19 +209,19 @@ RSpec.describe "Gallery bulk uploads", type: :system do
     click_button("Add tags")
 
     within("dialog[open]") do
-      fill_in("Tag search query", with: "rub")
+      fill_in("Search tags to add", with: "rub")
       wait_for_turbo
       expect(page).to have_button("Add tag", count: 2)
-      find_field("Tag search query").send_keys(:enter)
+      find_field("Search tags to add").send_keys(:enter)
       wait_for_turbo
 
-      expect(find_field("Tag search query").value).to eq("")
+      expect(find_field("Search tags to add").value).to eq("")
       expect(page).to have_css(
-        "input[aria-label='Tag search query']:focus"
+        "input[aria-label='Search tags to add']:focus"
       )
       expect(page).to have_button("Add tag", count: 1)
 
-      find_field("Tag search query").send_keys(:enter)
+      find_field("Search tags to add").send_keys(:enter)
       wait_for_turbo
     end
 

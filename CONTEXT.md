@@ -50,3 +50,19 @@ rather than a scope of any kind. See
 **Model** — the ActiveRecord class a policy governs, available as
 `Policy.model`. Inferred from the policy's own name, so a policy whose
 name does not name its model overrides it.
+
+## Galleries
+
+**Tag filter** — the tag set that narrows which of a gallery's images
+are shown. The sidebar on a gallery page edits it. Filtering changes
+what the viewer sees; it never changes what an image is tagged with.
+
+**Tag search** — the lookup that finds a tag to attach to images. The
+bulk tag dialog and the per-image tag form each run one. Searching
+changes what an image is tagged with; it never changes which images the
+gallery shows.
+
+*Avoid*: "tag search" for the sidebar. Both controls submit the same
+`tag_search[query]` parameter to the same `Galleries::TagSearch`, so
+the code gives them one name, but they answer different questions.
+HPRB-59 arose from that conflation.

@@ -27,6 +27,7 @@ module Galleries
             url: helpers.gallery_tag_search_path(@gallery),
             method: :get,
             html: {
+              id: "tag_search_dialog_form",
               data: {
                 turbo_frame: @turbo_frame,
                 controller: "auto-submit-form"
@@ -46,11 +47,12 @@ module Galleries
                 label: false,
                 wrapper_html: {class: "grow"},
                 input_html: {
+                  id: "tag_search_dialog_query",
                   value: "",
                   autofocus: true,
                   autocorrect: "off",
                   autocomplete: "off",
-                  aria: {label: "Tag search query"},
+                  aria: {label: "Search tags to add"},
                   data: {
                     tag_search_target: "query",
                     action: [
