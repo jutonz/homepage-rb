@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class SimilarImagesQuery
@@ -41,6 +41,7 @@ module Galleries
 
     private
 
+    sig { returns(Galleries::Image) }
     attr_reader :image
 
     QUERY = <<~SQL

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class RelatedTagsQuery
@@ -54,6 +54,13 @@ module Galleries
 
     private
 
-    attr_reader :tag, :exclude_tag_ids, :limit
+    sig { returns(Galleries::Tag) }
+    attr_reader :tag
+
+    sig { returns(T::Array[Integer]) }
+    attr_reader :exclude_tag_ids
+
+    sig { returns(Integer) }
+    attr_reader :limit
   end
 end
