@@ -120,4 +120,36 @@ RSpec.describe Galleries::TagSearchDialogComponent,
 
     expect(page).to have_css("#my-footer")
   end
+
+  it "renders an empty query input when the search has a query" do
+    gallery = build_stubbed(:gallery)
+    tag_search = Galleries::TagSearch.new(gallery:, query: "needed")
+
+    render_inline(
+      described_class.new(
+        gallery:,
+        tag_search:,
+        mode: "bulk_add_tag",
+        turbo_frame: "bulk-tag-search-results"
+      )
+    )
+
+    expect(page).to have_field("Tag search query", with: "")
+  end
+
+  it "renders an empty query input in bulk upload mode too" do
+    gallery = build_stubbed(:gallery)
+    tag_search = Galleries::TagSearch.new(gallery:, query: "needed")
+
+    render_inline(
+      described_class.new(
+        gallery:,
+        tag_search:,
+        mode: "bulk_upload_tag",
+        turbo_frame: "bulk-upload-tag-search-results"
+      )
+    )
+
+    expect(page).to have_field("Tag search query", with: "")
+  end
 end

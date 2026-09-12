@@ -46,6 +46,7 @@ module Galleries
                 label: false,
                 wrapper_html: {class: "grow"},
                 input_html: {
+                  value: "",
                   autofocus: true,
                   autocorrect: "off",
                   autocomplete: "off",
