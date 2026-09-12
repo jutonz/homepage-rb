@@ -93,6 +93,18 @@ RSpec.describe Galleries::TagSearch do
       expect(result).to eql([other_tag.id])
     end
 
+    it "orders equally used tags by id after a tag changes" do
+      gallery = create(:gallery)
+      first_tag = create(:galleries_tag, gallery:, name: "alpine")
+      second_tag = create(:galleries_tag, gallery:, name: "alpha")
+      first_tag.update!(name: "alps")
+      search = build(:galleries_tag_search, gallery:, query: "alp")
+
+      result = search.results.pluck(:id)
+
+      expect(result).to eql([first_tag.id, second_tag.id])
+    end
+
     it "orders tags by image_tags_count" do
       search = build(:galleries_tag_search, query: "Tag")
       gallery = search.gallery

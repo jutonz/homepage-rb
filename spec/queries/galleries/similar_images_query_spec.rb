@@ -37,4 +37,16 @@ RSpec.describe Galleries::SimilarImagesQuery, ".call" do
     # with image3 is also shared with image4, making it less rare.
     expect(result).to eql([image3.id, image2.id, image4.id])
   end
+
+  it "orders images with equal similarity scores by id" do
+    gallery = create(:gallery)
+    image = create(:galleries_image, gallery:)
+    matches = create_list(:galleries_image, 6, gallery:)
+    tag = create(:galleries_tag, gallery:)
+    [image, *matches.reverse].each { it.add_tag(tag) }
+
+    result = described_class.call(image:).pluck(:id)
+
+    expect(result).to eql(matches.map(&:id))
+  end
 end

@@ -100,6 +100,7 @@ RSpec.describe "Gallery image tags", type: :system do
     image = create(:galleries_image, gallery:)
     tag = create(:galleries_tag, gallery:, name: "alpha")
     create(:galleries_tag, gallery:, name: "alpine")
+    tag.update!(name: "alphabet")
     login_as(user)
 
     visit(gallery_image_path(gallery, image))
