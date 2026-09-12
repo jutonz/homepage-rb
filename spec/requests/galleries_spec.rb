@@ -163,6 +163,34 @@ RSpec.describe GalleriesController do
         text: tag.display_name
       )
     end
+
+    it "renders no duplicate DOM ids in select mode" do
+      gallery = create(:gallery)
+      login_as(gallery.user)
+
+      get(gallery_path(gallery, select: true))
+
+      ids = Nokogiri::HTML(response.body).css("[id]").map { it["id"] }
+
+      expect(ids.tally.select { |_, count| count > 1 }).to eq({})
+    end
+
+    it "distinguishes the sidebar and dialog tag inputs" do
+      gallery = create(:gallery)
+      login_as(gallery.user)
+
+      get(gallery_path(gallery, select: true))
+
+      expect(page).to have_css("#tag_search_query", count: 1)
+      expect(page).to have_css(
+        "[aria-label='Tag search query']",
+        count: 1
+      )
+      expect(page).to have_css(
+        "[aria-label='Search tags to add']",
+        count: 1
+      )
+    end
   end
 
   describe "update" do

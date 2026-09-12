@@ -134,7 +134,7 @@ RSpec.describe Galleries::TagSearchDialogComponent,
       )
     )
 
-    expect(page).to have_field("Tag search query", with: "")
+    expect(page).to have_field("Search tags to add", with: "")
   end
 
   it "renders an empty query input in bulk upload mode too" do
@@ -150,6 +150,41 @@ RSpec.describe Galleries::TagSearchDialogComponent,
       )
     )
 
-    expect(page).to have_field("Tag search query", with: "")
+    expect(page).to have_field("Search tags to add", with: "")
+  end
+
+  it "gives the query input a dialog id and keeps its name" do
+    gallery = build_stubbed(:gallery)
+    tag_search = Galleries::TagSearch.new(gallery:)
+
+    render_inline(
+      described_class.new(
+        gallery:,
+        tag_search:,
+        mode: "bulk_add_tag",
+        turbo_frame: "bulk-tag-search-results"
+      )
+    )
+
+    expect(page).to have_css(
+      "input#tag_search_dialog_query[name='tag_search[query]']"
+    )
+  end
+
+  it "names the query input for the tags it adds" do
+    gallery = build_stubbed(:gallery)
+    tag_search = Galleries::TagSearch.new(gallery:)
+
+    render_inline(
+      described_class.new(
+        gallery:,
+        tag_search:,
+        mode: "bulk_add_tag",
+        turbo_frame: "bulk-tag-search-results"
+      )
+    )
+
+    expect(page).to have_field("Search tags to add")
+    expect(page).to have_no_field("Tag search query")
   end
 end
