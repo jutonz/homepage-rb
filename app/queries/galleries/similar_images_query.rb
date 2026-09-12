@@ -78,7 +78,7 @@ module Galleries
       FROM
         similar_images si
       ORDER BY
-        si.similarity_score DESC;
+        si.similarity_score DESC, si.id ASC;
     SQL
   end
 end

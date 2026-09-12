@@ -34,7 +34,7 @@ module Galleries
         .where("galleries_tags.name ILIKE ?", "%#{ilike}%")
         .then { maybe_exclude_image_tags(it) }
         .then { maybe_exclude_ids(it) }
-        .order(image_tags_count: :desc)
+        .order(image_tags_count: :desc, id: :asc)
     end
 
     private
