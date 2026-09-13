@@ -51,6 +51,7 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", require: false
 
 group :development, :test do
+  gem "archspec", require: false
   gem "brakeman", require: false
   gem "bullet"
   gem "debug", platforms: %i[mri windows]

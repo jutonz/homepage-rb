@@ -4,6 +4,7 @@ CI.run do
   # step "Setup", "bin/setup --skip-server"
 
   step "Standard", "bin/standardrb"
+  step "ArchSpec", "bin/archspec check"
   step "Sorbet", "bin/srb tc"
   step "Tapioca DSL", "bin/tapioca dsl --verify --workers 1"
   step "Tapioca gem", "bin/tapioca gem --verify"

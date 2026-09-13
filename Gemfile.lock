@@ -81,6 +81,9 @@ GEM
     annotaterb (4.24.0)
       activerecord (>= 6.0.0)
       activesupport (>= 6.0.0)
+    archspec (1.1.0)
+      prism (>= 1.0)
+      rubydex (~> 0.4.0)
     ast (2.4.3)
     attr_extras (7.1.0)
     aws-eventstream (1.4.0)
@@ -708,6 +711,7 @@ PLATFORMS
 DEPENDENCIES
   after_party
   annotaterb
+  archspec
   aws-sdk-s3
   bootsnap
   brakeman
