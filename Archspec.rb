@@ -131,6 +131,25 @@ models.cannot_call(
     "policy_scope with Policy.scope_for"
 )
 
+# ArchSpec counts an edge only when its source component appears in
+# `among`. The list omits jobs, concrete_jobs and queries, and that drops
+# the `jobs -> models` and `queries -> models` edges. Two pairs point both
+# ways by design. A model refers to a job, and a job drives models. A
+# model reads through a query, and a query reads models. HPRB-61 rejected
+# the code changes that remove those edges.
+#
+# concrete_jobs also matches the job files, so it repeats the same pair
+# under a second name. Add each new component to this list, but leave out
+# any component that overlaps another one.
+no_cycles(
+  among: %i[
+    channels components controllers forms helpers mailers models policies
+    services
+  ],
+  because: "each of these components depends on the ones below it, so " \
+    "none of them may be reachable from itself"
+)
+
 components.method_names.matching(/\A(get|set)_/).forbidden(
   because: "a Ruby reader takes the name of the value it returns"
 )
