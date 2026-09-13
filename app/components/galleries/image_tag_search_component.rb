@@ -7,7 +7,8 @@ module Galleries
         <h3 class="text-lg mb-3">Add tag</h3>
 
         <%= render(Galleries::TagSearches::FormComponent.new(
-          tag_search: @tag_search
+          tag_search: @tag_search,
+          search_path: gallery_image_tag_search_path(@gallery, @image)
         )) %>
 
         <div data-tag-search-target="results">
