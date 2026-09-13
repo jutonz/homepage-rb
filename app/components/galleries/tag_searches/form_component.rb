@@ -7,7 +7,7 @@ module Galleries
         <%= turbo_frame_tag("tag-search-form") do %>
           <%= helpers.simple_form_for(
             @tag_search,
-            url: gallery_image_tag_search_path(@gallery, @image),
+            url: @search_path,
             method: :get,
             html: {
               data: {
@@ -40,11 +40,15 @@ module Galleries
         <% end %>
       ERB
 
-      sig { params(tag_search: Galleries::TagSearch).void }
-      def initialize(tag_search:)
+      sig do
+        params(
+          tag_search: Galleries::TagSearch,
+          search_path: String
+        ).void
+      end
+      def initialize(tag_search:, search_path:)
         @tag_search = tag_search
-        @gallery = tag_search.gallery
-        @image = tag_search.image
+        @search_path = search_path
       end
     end
   end

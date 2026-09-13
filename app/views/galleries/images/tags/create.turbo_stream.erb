@@ -12,7 +12,8 @@
       tag_search: Galleries::TagSearch.new(
         gallery: @image.gallery,
         image: @image
-      )
+      ),
+      search_path: gallery_image_tag_search_path(@image.gallery, @image)
     )) %>
   <% end %>
 
