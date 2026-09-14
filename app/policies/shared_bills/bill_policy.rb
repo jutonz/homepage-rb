@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module SharedBills
   class BillPolicy < UserOwnedPolicy
@@ -6,6 +6,7 @@ module SharedBills
 
     private
 
+    sig { returns(T.nilable(User)) }
     def owner
       record.shared_bill&.user
     end
