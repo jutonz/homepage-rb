@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Recipes
   class RecipeIngredientPolicy < UserOwnedPolicy
@@ -12,20 +12,24 @@ module Recipes
       model.joins(:recipe).where(recipe: {user:})
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def index?
       user_owns_record?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def new?
       user_owns_record?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def create?
       user_owns_record?
     end
 
     private
 
+    sig { returns(T.nilable(T::Boolean)) }
     def user_owns_record?
       user && record.recipe&.user == user
     end

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module SharedBills
   class SharedBillPolicy < UserOwnedPolicy

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Recipes
   class RecipePolicy < UserOwnedPolicy
