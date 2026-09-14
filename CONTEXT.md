@@ -69,6 +69,12 @@ HPRB-59 arose from that conflation. Since those implementations were
 unified they also share `Galleries::TagSearches::ResultsComponent`, so a
 `:gallery` branch inside a component named for tag searches is expected.
 
+**Tag search mode** — the surface a tag search serves. The mode names
+one caller: the per-image tag form, the gallery sidebar, the bulk-upload
+dialog, the bulk tag dialog, or the auto-add picker. It decides which
+action the viewer gets beside each result. A new surface adds a mode; it
+does not change what the other modes offer.
+
 **Auto-add source** — the tag that triggers an auto-add. Adding it to an
 image also adds the auto-add tag.
 
