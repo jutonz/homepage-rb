@@ -11,8 +11,10 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     expect { perform_enqueued_jobs }.not_to raise_error
   end
 
+  # Sorbet checks the return type of the job's metube reader at runtime.
+  # It rejects an instance_double, so this spec stubs a real client.
   def stub_metube
-    metube = instance_double(Galleries::VideoDownloader::Metube)
+    metube = Galleries::VideoDownloader::Metube.new
     allow(Galleries::VideoDownloader::Metube)
       .to receive(:new).and_return(metube)
     allow(metube).to receive(:history)
@@ -179,6 +181,27 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
     described_class.new.perform(rvd)
 
     expect(metube).to have_received(:delete).with("https://x/v")
+  end
+
+  it "completes and logs when the finished entry has no url" do
+    metube = stub_metube
+    rvd = create(:galleries_remote_video_download, status: "downloading")
+    entry = {
+      "custom_name_prefix" => "rvd-#{rvd.id}",
+      "status" => "finished",
+      "filename" => "clip.mp4"
+    }
+    allow(metube).to receive(:history)
+      .and_return("done" => [entry], "queue" => [], "pending" => [])
+    allow(metube).to receive(:fetch_file).and_return("videobytes")
+    allow(metube).to receive(:delete)
+    allow(Rails.logger).to receive(:warn)
+
+    described_class.new.perform(rvd)
+
+    expect(metube).not_to have_received(:delete)
+    expect(Rails.logger).to have_received(:warn).with(/cleanup failed/)
+    expect(rvd.reload).to be_status_completed
   end
 
   it "completes even if cleanup delete fails" do

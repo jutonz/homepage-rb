@@ -9,13 +9,13 @@ class Galleries::RemoteVideoDownloadJob
   class << self
     sig do
       params(
-        remote_video_download: T.untyped,
+        remote_video_download: ::Galleries::RemoteVideoDownload,
         block: T.nilable(T.proc.params(job: Galleries::RemoteVideoDownloadJob).void)
       ).returns(T.any(Galleries::RemoteVideoDownloadJob, FalseClass))
     end
     def perform_later(remote_video_download, &block); end
 
-    sig { params(remote_video_download: T.untyped).returns(T.untyped) }
+    sig { params(remote_video_download: ::Galleries::RemoteVideoDownload).void }
     def perform_now(remote_video_download); end
   end
 end
