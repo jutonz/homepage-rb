@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   module VideoDownloader
@@ -9,6 +9,20 @@ module Galleries
 
       DOWNLOAD_TIMEOUT = 600
 
+      Entry = T.type_alias { T::Hash[String, T.nilable(String)] }
+
+      History = T.type_alias { T::Hash[String, T::Array[Entry]] }
+      private_constant(:History)
+
+      sig { void }
+      def initialize
+        @json = T.let(nil, T.nilable(Faraday::Connection))
+        @raw = T.let(nil, T.nilable(Faraday::Connection))
+      end
+
+      sig do
+        params(url: String, prefix: String).returns(T::Hash[String, T.untyped])
+      end
       def add(url:, prefix:)
         body = json.post("/add", {
           url:,
@@ -19,32 +33,45 @@ module Galleries
           auto_start: true
         }).body
         raise(Error, body["msg"]) if body["status"] == "error"
-        body
+        T.cast(body, T::Hash[String, T.untyped])
       end
 
-      def history = json.get("/history").body
+      sig { returns(History) }
+      def history
+        T.cast(json.get("/history").body, History)
+      end
 
+      sig { params(file: String).returns(String) }
       def fetch_file(file)
-        raw.get("/download/#{ERB::Util.url_encode(file)}").body
+        T.cast(raw.get("/download/#{ERB::Util.url_encode(file)}").body, String)
       end
 
+      sig do
+        params(id: String, where: String).returns(T::Hash[String, T.untyped])
+      end
       def delete(id, where: "done")
-        json.post("/delete", {ids: [id], where:}).body
+        T.cast(
+          json.post("/delete", {ids: [id], where:}).body,
+          T::Hash[String, T.untyped]
+        )
       end
 
+      sig { params(prefix: String).void }
       def delete_by_prefix(prefix)
         hist = history
         %w[queue done].each do |where|
           hist.fetch(where, []).each do |entry|
             next unless entry["custom_name_prefix"] == prefix
-            next unless entry["url"]
-            delete(entry["url"], where:)
+
+            url = entry["url"]
+            delete(url, where:) if url
           end
         end
       end
 
       private
 
+      sig { returns(Faraday::Connection) }
       def json
         @json ||= build_connection do |conn|
           conn.request(:json)
@@ -55,6 +82,7 @@ module Galleries
         end
       end
 
+      sig { returns(Faraday::Connection) }
       def raw
         @raw ||= build_connection do |conn|
           conn.options.timeout = DOWNLOAD_TIMEOUT
@@ -62,11 +90,19 @@ module Galleries
         end
       end
 
+      sig do
+        params(
+          block: T.proc.params(conn: Faraday::Connection).void
+        ).returns(Faraday::Connection)
+      end
       def build_connection(&block)
         Faraday.new(url: base_url, &block)
       end
 
-      def base_url = Rails.application.credentials.dig(:metube, :url)
+      sig { returns(String) }
+      def base_url
+        T.cast(Rails.application.credentials.dig(:metube, :url), String)
+      end
     end
   end
 end
