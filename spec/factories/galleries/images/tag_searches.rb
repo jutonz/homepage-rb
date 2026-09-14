@@ -6,5 +6,11 @@ FactoryBot.define do
     trait :with_image do
       image { association(:galleries_image, gallery: instance.gallery) }
     end
+
+    trait :for_auto_add do
+      auto_add_source {
+        association(:galleries_tag, gallery: instance.gallery)
+      }
+    end
   end
 end

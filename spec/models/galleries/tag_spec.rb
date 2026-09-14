@@ -106,50 +106,25 @@ RSpec.describe Galleries::Tag, type: :model do
     end
   end
 
-  describe "#available_auto_add_tags" do
-    it "returns other tags in the same gallery" do
+  describe "#unavailable_auto_add_tag_ids" do
+    it "includes the tag's own id" do
       gallery = create(:gallery)
       tag1 = create(:galleries_tag, gallery:, name: "tag1")
-      create(:galleries_tag, gallery:, name: "tag2")
-      create(:galleries_tag, gallery:, name: "tag3")
 
-      available = tag1.available_auto_add_tags
+      unavailable_ids = tag1.unavailable_auto_add_tag_ids
 
-      expect(available.pluck(:name)).to contain_exactly("tag2", "tag3")
+      expect(unavailable_ids).to contain_exactly(tag1.id)
     end
 
-    it "excludes itself from available tags" do
-      gallery = create(:gallery)
-      tag1 = create(:galleries_tag, gallery:, name: "tag1")
-      create(:galleries_tag, gallery:, name: "tag2")
-
-      available = tag1.available_auto_add_tags
-
-      expect(available.pluck(:name)).not_to include("tag1")
-    end
-
-    it "excludes already configured auto-add tags" do
+    it "includes the ids of tags it already auto-adds" do
       gallery = create(:gallery)
       tag1 = create(:galleries_tag, gallery:, name: "tag1")
       tag2 = create(:galleries_tag, gallery:, name: "tag2")
-      create(:galleries_tag, gallery:, name: "tag3")
       create(:galleries_auto_add_tag, tag: tag1, auto_add_tag: tag2)
 
-      available = tag1.available_auto_add_tags
+      unavailable_ids = tag1.unavailable_auto_add_tag_ids
 
-      expect(available.pluck(:name)).to contain_exactly("tag3")
-    end
-
-    it "excludes tags from other galleries" do
-      gallery1 = create(:gallery)
-      gallery2 = create(:gallery)
-      tag1 = create(:galleries_tag, gallery: gallery1, name: "tag1")
-      create(:galleries_tag, gallery: gallery1, name: "tag2")
-      create(:galleries_tag, gallery: gallery2, name: "tag3")
-
-      available = tag1.available_auto_add_tags
-
-      expect(available.pluck(:name)).to contain_exactly("tag2")
+      expect(unavailable_ids).to contain_exactly(tag1.id, tag2.id)
     end
   end
 end

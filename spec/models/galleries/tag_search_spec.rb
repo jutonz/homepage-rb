@@ -77,6 +77,70 @@ RSpec.describe Galleries::TagSearch do
       expect(result).to be_blank
     end
 
+    it "excludes the auto-add source itself" do
+      search = create(:galleries_tag_search, :for_auto_add, query: "tag")
+      gallery = search.gallery
+      source = search.auto_add_source
+      other_tag = create(:galleries_tag, gallery:, name: "tag two")
+      source.update!(name: "tag one")
+
+      result = search.results.pluck(:id)
+
+      expect(result).to eql([other_tag.id])
+    end
+
+    it "excludes tags the auto-add source already auto-adds" do
+      search = create(:galleries_tag_search, :for_auto_add, query: "tag")
+      gallery = search.gallery
+      source = search.auto_add_source
+      auto_add_tag = create(:galleries_tag, gallery:, name: "tag two")
+      other_tag = create(:galleries_tag, gallery:, name: "tag three")
+      source.update!(name: "tag one")
+      create(
+        :galleries_auto_add_tag,
+        tag: source,
+        auto_add_tag:
+      )
+
+      result = search.results.pluck(:id)
+
+      expect(result).to eql([other_tag.id])
+    end
+
+    it "returns the gallery's other tags when an auto-add source is set" do
+      search = create(:galleries_tag_search, :for_auto_add, query: "tag")
+      gallery = search.gallery
+      source = search.auto_add_source
+      auto_add_tag = create(
+        :galleries_tag,
+        gallery:,
+        name: "tag auto",
+        image_tags_count: 3
+      )
+      first_tag = create(
+        :galleries_tag,
+        gallery:,
+        name: "tag first",
+        image_tags_count: 2
+      )
+      second_tag = create(
+        :galleries_tag,
+        gallery:,
+        name: "tag second",
+        image_tags_count: 1
+      )
+      source.update!(name: "tag source")
+      create(
+        :galleries_auto_add_tag,
+        tag: source,
+        auto_add_tag:
+      )
+
+      result = search.results.pluck(:id)
+
+      expect(result).to eql([first_tag.id, second_tag.id])
+    end
+
     it "excludes tags whose ids are in excluded_ids" do
       gallery = create(:gallery)
       excluded_tag = create(:galleries_tag, gallery:, name: "hello")

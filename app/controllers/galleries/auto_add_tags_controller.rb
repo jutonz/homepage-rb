@@ -9,6 +9,10 @@ module Galleries
       @gallery = find_gallery
       @tag = find_tag(@gallery)
       @auto_add_tag = authorize(@tag.auto_add_tag_associations.build)
+      @tag_search = Galleries::TagSearch.new(
+        gallery: @gallery,
+        auto_add_source: @tag
+      )
     end
 
     def create
@@ -23,7 +27,12 @@ module Galleries
           notice: "Auto add tag was successfully created"
         )
       else
-        render :new, status: :unprocessable_content
+        @tag_search = Galleries::TagSearch.new(
+          gallery: @gallery,
+          auto_add_source: @tag
+        )
+        flash.now[:alert] = @auto_add_tag.errors.full_messages.to_sentence
+        render(:new, status: :unprocessable_content)
       end
     end
 

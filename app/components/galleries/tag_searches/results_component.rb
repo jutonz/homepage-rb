@@ -36,8 +36,8 @@ module Galleries
       sig do
         params(
           tag_search: Galleries::TagSearch,
-          mode: T.nilable(Symbol),
-          turbo_frame_tag: T.nilable(String)
+          mode: Symbol,
+          turbo_frame_tag: String
         ).void
       end
       def initialize(
@@ -48,13 +48,14 @@ module Galleries
         @tag_search = tag_search
         @gallery = tag_search.gallery
         @image = tag_search.image
+        @auto_add_source = tag_search.auto_add_source
         @mode = mode
         @_turbo_frame_tag = turbo_frame_tag
       end
 
       private
 
-      sig { returns(T.nilable(Symbol)) }
+      sig { returns(Symbol) }
       attr_reader :mode
 
       sig { params(tag: Galleries::Tag).returns(T.nilable(String)) }
@@ -107,6 +108,19 @@ module Galleries
           ) do
             "Select"
           end
+        elsif mode == :auto_add
+          helpers.button_to(
+            "Add",
+            gallery_tag_auto_add_tags_path(
+              @gallery,
+              @auto_add_source,
+              auto_add_tag: {auto_add_tag_id: tag.id}
+            ),
+            class: "button",
+            form: {data: {turbo_frame: "_top"}}
+          )
+        else
+          raise(ArgumentError, "unknown tag search mode: #{mode.inspect}")
         end
       end
     end

@@ -106,6 +106,37 @@ RSpec.describe Galleries::TagSearches::ResultsComponent, type: :component do
     )
   end
 
+  it "in auto_add mode, renders a form that creates the rule" do
+    tag_search = create(:galleries_tag_search, :for_auto_add, query: "Hello")
+    gallery = tag_search.gallery
+    source = tag_search.auto_add_source
+    tag = create(:galleries_tag, gallery:, name: "Hello World")
+    component = described_class.new(tag_search:, mode: :auto_add)
+    render_inline(component)
+    add_tag_path = gallery_tag_auto_add_tags_path(
+      gallery,
+      source,
+      auto_add_tag: {auto_add_tag_id: tag.id}
+    )
+
+    row = page.find("[data-role=tag-search-result]", text: tag.display_name)
+
+    expect(row).to have_button("Add", exact: true)
+    expect(row).to have_css(
+      "form[action='#{add_tag_path}'][data-turbo-frame='_top']"
+    )
+  end
+
+  it "raises for an unrecognized mode" do
+    tag_search = create(:galleries_tag_search, query: "Hello")
+    gallery = tag_search.gallery
+    create(:galleries_tag, gallery:, name: "Hello World")
+    component = described_class.new(tag_search:, mode: :unknown)
+
+    expect { render_inline(component) }
+      .to raise_error(ArgumentError, "unknown tag search mode: :unknown")
+  end
+
   it "in gallery mode, does not render Add for a selected tag" do
     tag_search = create(:galleries_tag_search, query: "Hello")
     gallery = tag_search.gallery

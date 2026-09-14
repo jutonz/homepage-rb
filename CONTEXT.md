@@ -57,12 +57,29 @@ name does not name its model overrides it.
 are shown. The sidebar on a gallery page edits it. Filtering changes
 what the viewer sees; it never changes what an image is tagged with.
 
-**Tag search** — the lookup that finds a tag to attach to images. The
-bulk tag dialog and the per-image tag form each run one. Searching
-changes what an image is tagged with; it never changes which images the
-gallery shows.
+**Tag search** — the lookup that finds a tag to attach to something. The
+bulk tag dialog, the bulk-upload tag dialog, the per-image tag form, and
+the auto-add tag picker each run one. Searching changes what something is
+tagged with; it never changes which images the gallery shows.
 
 *Avoid*: "tag search" for the sidebar. Both controls submit the same
 `tag_search[query]` parameter to the same `Galleries::TagSearch`, so
 the code gives them one name, but they answer different questions.
-HPRB-59 arose from that conflation.
+HPRB-59 arose from that conflation. Since those implementations were
+unified they also share `Galleries::TagSearches::ResultsComponent`, so a
+`:gallery` branch inside a component named for tag searches is expected.
+
+**Auto-add source** — the tag that triggers an auto-add. Adding it to an
+image also adds the auto-add tag.
+
+**Auto-add tag** — the tag that an auto-add applies.
+
+*Avoid*: "auto tag". `BackfillAutoTagsJob` still carries that older name;
+HPRB-65 renames it.
+
+**Auto-add rule** — the pairing of one auto-add source with one auto-add
+tag. `Galleries::AutoAddTag` is the rule.
+
+*Avoid*: "auto-add tag" for the rule. The class and the `auto_add_tag`
+association it holds share one word, and that is what causes the
+confusion.
