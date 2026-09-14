@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -24,6 +24,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Gallery < ActiveRecord::Base
+  extend T::Sig
+
   belongs_to :user
   has_many :tags,
     class_name: "Galleries::Tag",
@@ -40,18 +42,32 @@ class Gallery < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
+  sig do
+    returns(T.all(ActiveRecord::Relation, T::Enumerable[Gallery]))
+  end
   def self.visible = where(hidden_at: nil)
 
+  sig do
+    returns(T.all(ActiveRecord::Relation, T::Enumerable[Gallery]))
+  end
   def self.hidden = where.not(hidden_at: nil)
 
+  sig { returns(String) }
   def processing_images_stream_name
     "gallery_#{id}_processing_images"
   end
 
+  sig { returns(String) }
   def remote_video_downloads_stream_name
     "gallery_#{id}_remote_video_downloads"
   end
 
+  sig do
+    params(
+      excluded_image_ids: T.nilable(T::Array[Integer]),
+      image_limit: Integer
+    ).returns(T::Array[Galleries::RecentTagsQuery::Result])
+  end
   def recently_used_tags(excluded_image_ids: nil, image_limit: 10)
     Galleries::RecentTagsQuery.call(
       gallery: self,
