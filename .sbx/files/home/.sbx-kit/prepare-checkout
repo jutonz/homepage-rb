@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Make the checkout runnable: credential keys, dependencies, databases, and
+# compiled assets. Runs as the agent user at every sandbox start.
+#
+# The dependency steps are deliberately unconditional. A sandbox created from a
+# baked template starts with whatever gems and node modules the template froze,
+# which a branch that bumps a dependency invalidates. HPRB-53 was filed because
+# that failure was swallowed by output redirection, so nothing here is quiet.
+
+. /home/agent/.sbx-kit/lib.sh
+
+STATUS_FILE="$(status_file)"
+
+report_failure() {
+  printf 'failed\n' > "$STATUS_FILE"
+}
+
+trap report_failure ERR
+rm -f "$STATUS_FILE"
+
+cd "$WORKSPACE_DIR"
+
+write_credential_key() {
+  local environment="$1"
+  local value="$2"
+
+  if [ -z "$value" ]; then
+    say "no key supplied for $environment; pass it with" \
+      "sbx create -e ${environment^^}_KEY" >&2
+    return 1
+  fi
+
+  mkdir -p config/credentials
+  printf '%s\n' "$value" > "config/credentials/$environment.key"
+}
+
+install_gems() {
+  if mise exec -- bundle check; then
+    return
+  fi
+
+  say "the installed gems do not satisfy Gemfile.lock; installing"
+  mise exec -- bundle install
+}
+
+install_node_modules() {
+  say "installing node modules"
+  mise exec -- npm ci
+}
+
+prepare_databases() {
+  say "preparing the development and test databases"
+  mise exec -- bin/rails db:prepare
+  RAILS_ENV=test mise exec -- bin/rails db:prepare
+}
+
+precompile_assets() {
+  say "precompiling assets"
+  mise exec -- bin/rails assets:precompile
+}
+
+write_credential_key development "${DEVELOPMENT_KEY:-}"
+write_credential_key test "${TEST_KEY:-}"
+install_gems
+install_node_modules
+prepare_databases
+precompile_assets
+
+printf 'ready\n' > "$STATUS_FILE"
+say "the checkout is ready"

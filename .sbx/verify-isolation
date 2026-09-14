@@ -1,0 +1,207 @@
+#!/usr/bin/env bash
+# Prove that two sandboxes cannot interfere with each other, by trying to make
+# them interfere.
+#
+# Under git worktrees every one of these steps fails: the second `bin/dev` dies
+# on port 3000, two `bin/rspec` runs corrupt one another through the shared test
+# databases, and either Solid Queue supervisor may claim the other's job.
+#
+# The sandboxes run a plain shell, not an agent. Isolation is a property of the
+# sandbox; a real agent would only add cost and nondeterminism.
+
+. "$(dirname "$0")/host-lib.sh"
+
+first=isolation-a
+second=isolation-b
+failures=0
+
+check() {
+  local description="$1"
+  shift
+
+  if "$@"; then
+    printf 'PASS  %s\n' "$description"
+  else
+    printf 'FAIL  %s\n' "$description"
+    failures=$((failures + 1))
+  fi
+}
+
+# Each sandbox commits a job class that records what it processed. The commit
+# doubles as the change this script retrieves over the sandbox's git remote.
+#
+# The job names Solid Queue explicitly. The application only selects that
+# adapter in production, so a development `perform_later` runs in-process and
+# never reaches the queue database, which is the thing under test here.
+commit_probe_job() {
+  local name="$1"
+
+  in_sandbox "$name" "
+    git switch --quiet --create '$name-probe' &&
+    mkdir -p app/jobs &&
+    cat > app/jobs/sandbox_probe_job.rb <<'RUBY'
+# typed: true
+
+class SandboxProbeJob < ApplicationJob
+  self.queue_adapter = :solid_queue
+
+  def perform(token)
+    File.open(Rails.root.join(\"tmp\", \"sandbox-probe.log\"), \"a\") do |log|
+      log.puts(token)
+    end
+  end
+end
+RUBY
+    git add app/jobs/sandbox_probe_job.rb &&
+    git -c user.email=sandbox@example.com -c user.name=sandbox \
+      commit --quiet --message 'Add a probe job for $name'
+  "
+}
+
+# `sbx exec --detach` detaches the process from the terminal but does not
+# return while it runs, so the host side has to background the call too.
+start_application() {
+  local name="$1"
+
+  sbx exec --detach "$name" bash -lc \
+    'cd "$WORKSPACE_DIR" && mise exec -- bin/dev > tmp/dev.log 2>&1' \
+    >/dev/null 2>&1 &
+}
+
+answers_locally() {
+  in_sandbox "$1" "curl --silent --fail http://localhost:3000/up" \
+    >/dev/null 2>&1
+}
+
+application_answers() {
+  local name="$1"
+
+  if wait_until 180 5 answers_locally "$name"; then
+    return 0
+  fi
+
+  in_sandbox "$name" "tail -30 tmp/dev.log" >&2 || true
+  return 1
+}
+
+published_port() {
+  sbx ports "$1" 2>/dev/null |
+    awk '$1 ~ /^127\./ && $3 == 3000 { print $2; exit }'
+}
+
+answers_on_host() {
+  local name="$1"
+  local port
+
+  port="$(published_port "$name")"
+
+  if [ -z "$port" ]; then
+    say "no published host port found for $name" >&2
+    return 1
+  fi
+
+  say "$name publishes 3000 on host port $port"
+  curl --silent --fail --max-time 30 "http://127.0.0.1:$port/up" >/dev/null
+}
+
+enqueue_probe() {
+  local name="$1"
+  local token="$2"
+
+  in_sandbox "$name" \
+    "mise exec -- bin/rails runner 'SandboxProbeJob.perform_later(\"$token\")'"
+}
+
+logged_token() {
+  in_sandbox "$1" "grep --quiet '$2' tmp/sandbox-probe.log" 2>/dev/null
+}
+
+processed_token() {
+  wait_until 120 5 logged_token "$1" "$2"
+}
+
+never_saw_token() {
+  local name="$1"
+  local token="$2"
+
+  if logged_token "$name" "$token"; then
+    return 1
+  fi
+
+  # The log only shows what this sandbox executed. The queue database shows
+  # what it could even see.
+  in_sandbox "$name" "mise exec -- bin/rails runner '
+    jobs = SolidQueue::Job.where(\"arguments::text LIKE ?\", \"%$token%\")
+    exit(jobs.count.zero? ? 0 : 1)
+  '"
+}
+
+host_can_fetch_commit() {
+  local name="$1"
+
+  git -C "$repo_root" fetch --quiet "sandbox-$name" "$name-probe" &&
+    git -C "$repo_root" cat-file -e \
+      "FETCH_HEAD:app/jobs/sandbox_probe_job.rb"
+}
+
+cleanup() {
+  remove_sandbox "$first"
+  remove_sandbox "$second"
+}
+
+trap cleanup EXIT
+cleanup
+
+say "creating $first and $second"
+create_sandbox "$first" --publish 3000 >/dev/null
+create_sandbox "$second" --publish 3000 >/dev/null
+
+wait_until_ready "$first"
+wait_until_ready "$second"
+
+say "committing a probe job in each sandbox"
+commit_probe_job "$first"
+commit_probe_job "$second"
+
+say "starting bin/dev in both sandboxes at once"
+start_application "$first"
+start_application "$second"
+
+both_applications_answer() {
+  application_answers "$first" && application_answers "$second"
+}
+
+check "both applications stay up on port 3000" both_applications_answer
+
+check "$first answers in a host browser" answers_on_host "$first"
+
+say "running both suites at once"
+suite_log_dir="$(mktemp -d)"
+in_sandbox "$first" "mise exec -- bin/rspec" \
+  > "$suite_log_dir/$first.log" 2>&1 &
+first_suite=$!
+in_sandbox "$second" "mise exec -- bin/rspec" \
+  > "$suite_log_dir/$second.log" 2>&1 &
+second_suite=$!
+
+check "the suite passes in $first while $second runs it" wait "$first_suite"
+check "the suite passes in $second while $first runs it" wait "$second_suite"
+say "suite output is in $suite_log_dir"
+
+token="probe-$$-$(od -An -N4 -tx1 /dev/urandom | tr -d ' ')"
+say "enqueueing $token in $first only"
+enqueue_probe "$first" "$token"
+
+check "$first processes its own job" processed_token "$first" "$token"
+check "$second never sees that job" never_saw_token "$second" "$token"
+
+check "the host can fetch $first's commit" host_can_fetch_commit "$first"
+check "the host can fetch $second's commit" host_can_fetch_commit "$second"
+
+if [ "$failures" -eq 0 ]; then
+  say "isolation holds"
+else
+  say "$failures check(s) failed" >&2
+fi
+
+exit "$failures"

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Start this sandbox's own PostgreSQL cluster. Runs as root at every sandbox
+# start, not only the first one.
+
+. /home/agent/.sbx-kit/lib.sh
+
+say "starting PostgreSQL $POSTGRES_MAJOR"
+pg_ctlcluster "$POSTGRES_MAJOR" main start || \
+  pg_ctlcluster "$POSTGRES_MAJOR" main restart
+
+until pg_isready --quiet --host localhost; do
+  sleep 1
+done
+
+# config/database.yml reads its URL from encrypted credentials, which name the
+# postgres superuser with a password. The cluster is reachable only from inside
+# this sandbox.
+su postgres --command \
+  "psql --quiet --command \"ALTER USER postgres WITH PASSWORD 'postgres';\"" \
+  >/dev/null
+
+say "PostgreSQL is accepting connections on localhost:5432"

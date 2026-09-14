@@ -69,6 +69,42 @@ the primary database.
 **Cable database** — the database Action Cable owns, holding the pubsub
 messages it relays between processes.
 
+## Development environments
+
+**Sandbox** — the microVM `sbx` creates, holding its own kernel, file
+system, PostgreSQL, gems, and port 3000. Two sandboxes share nothing, so
+two agents can run the suite at once without corrupting each other's
+data. `bin/sandbox` creates one.
+
+*Avoid*: "container". A sandbox runs its own kernel, and the difference
+decides what it does and does not isolate.
+
+**Worktree** — the git-linked checkout under `.claude/worktrees/`, made
+by `git worktree` and prepared by `bin/worktree-setup`. It isolates the
+files an agent edits and nothing more: the databases, port 3000, and the
+installed gems stay shared. A sandbox isolates what a worktree cannot.
+
+*Avoid*: "workspace" for a worktree, and for a provisioned machine.
+`sbx` uses *workspace* for the host directory it mounts, and
+`WORKSPACE_DIR` inside a sandbox names that directory, so the word is
+reserved for that sense. The deleted `bin/workspace_setup.sh` used it
+for a machine, which is part of what made it ambiguous.
+
+**Kit** — the checked-in `.sbx/` directory, the only source of truth for
+what a sandbox contains: packages, toolchain, databases, and the network
+allowlist. It carries no agent-specific configuration, so one kit serves
+a shell sandbox and an agent sandbox alike.
+
+**Template** — the local image holding an already provisioned toolchain,
+so that a new sandbox starts in seconds rather than minutes. It is a
+cache and never a shipped artifact: `.sbx/build-template` rebuilds it
+from the kit, and it holds no repository state, so a branch change never
+makes it stale. A template belongs to one agent and is refused for
+another.
+
+*Avoid*: "snapshot". It names the same object, and `sbx`, the script,
+and `TEMPLATE_TAG` all say *template*.
+
 ## Galleries
 
 **Tag filter** — the tag set that narrows which of a gallery's images

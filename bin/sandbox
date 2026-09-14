@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Create a sandbox and attach to it, or attach to one that already exists.
+#
+# A sandbox holds its own PostgreSQL, gems, node modules, and port 3000, so
+# two of them cannot corrupt each other's data. See .sbx/README.md.
+
+. "$(dirname "$0")/../.sbx/host-lib.sh"
+
+if [ "$#" -eq 0 ]; then
+  echo "usage: bin/sandbox NAME [sbx flags...]" >&2
+  exit 1
+fi
+
+name="$1"
+shift
+
+if [ "$USE_TEMPLATE" = yes ] && ! template_exists; then
+  say "no $TEMPLATE_TAG template; this sandbox builds from scratch," >&2
+  say "which takes minutes rather than seconds." >&2
+  say "run .sbx/build-template to make later sandboxes fast." >&2
+fi
+
+run_sandbox "$name" "$@"
