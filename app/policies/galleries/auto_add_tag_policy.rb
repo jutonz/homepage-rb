@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class AutoAddTagPolicy < ApplicationPolicy
@@ -13,20 +13,24 @@ module Galleries
         .where(galleries_tags: {user:})
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def new?
       user_owns_tag?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def create?
       user_owns_tag?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def destroy?
       user_owns_tag?
     end
 
     private
 
+    sig { returns(T.nilable(T::Boolean)) }
     def user_owns_tag?
       user && record.tag&.user == user
     end
