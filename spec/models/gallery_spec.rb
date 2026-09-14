@@ -77,7 +77,7 @@ RSpec.describe Gallery do
 
   describe "#recently_used_tags" do
     it "calls the query object" do
-      allow(Galleries::RecentTagsQuery).to receive(:call)
+      allow(Galleries::RecentTagsQuery).to receive(:call).and_return([])
       gallery = build(:gallery)
 
       gallery.recently_used_tags

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -22,6 +22,8 @@
 #
 module Galleries
   class Image < ActiveRecord::Base
+    extend T::Sig
+
     THUMB_SIZE = [200, 200].freeze
     VIDEO_CONTENT_TYPE_PREFIX = "video/"
 
@@ -43,10 +45,34 @@ module Galleries
 
     validates :file, presence: true
 
+    sig do
+      returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Image]
+        )
+      )
+    end
     def self.unprocessed = where(processed_at: nil)
 
+    sig do
+      returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Image]
+        )
+      )
+    end
     def self.processed = where.not(processed_at: nil)
 
+    sig do
+      returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Image]
+        )
+      )
+    end
     def self.videos
       joins(file_attachment: :blob)
         .where(
@@ -55,6 +81,16 @@ module Galleries
         )
     end
 
+    sig do
+      params(
+        tag_ids: T.any(Galleries::Tag, T::Array[Galleries::Tag])
+      ).returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Image]
+        )
+      )
+    end
     def self.by_tags(tag_ids)
       joins(:tags)
         .where(tags: {id: tag_ids})
@@ -63,8 +99,17 @@ module Galleries
         .distinct
     end
 
+    sig do
+      returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Image]
+        )
+      )
+    end
     def similar_by_phash
-      return self.class.none if perceptual_hash.nil?
+      hash = perceptual_hash
+      return self.class.none unless hash
 
       self.class
         .where(gallery_id:)
@@ -72,13 +117,22 @@ module Galleries
         .order(
           Arel.sql(
             "perceptual_hash <-> ? ASC",
-            perceptual_hash.join(",").then { "[#{it}]" }
+            hash.join(",").then { "[#{it}]" }
           )
         )
     end
 
+    sig do
+      returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Image]
+        )
+      )
+    end
     def similar_images = SimilarImagesQuery.call(image: self)
 
+    sig { params(tags: Galleries::Tag).returns(T::Set[Galleries::Tag]) }
     def add_tag(*tags)
       tags = Array(tags)
       tags_relation = Tag.where(id: tags.map(&:id)).includes(:auto_add_tags)
@@ -94,28 +148,33 @@ module Galleries
       tags_to_add.each { SocialLinksCreator.call(it) }
     end
 
+    sig { params(tag: Galleries::Tag).returns(T::Array[Galleries::ImageTag]) }
     def remove_tag(tag)
       image_tags.where(tag:).destroy_all
     end
 
+    sig { returns(T::Boolean) }
     def video?
       file.content_type&.start_with?(VIDEO_CONTENT_TYPE_PREFIX) || false
     end
 
+    sig { returns(ActiveStorage::Preview) }
     def poster = file.preview(resize_to_limit: THUMB_SIZE)
 
+    sig { returns(T.nilable(T::Boolean)) }
     def calculate_perceptual_hash!
       return if video?
 
       file.open do |file|
         ImageHash
-          .new(file.path)
+          .new(T.must(file.path))
           .binary_hash
           .then { hash_to_vector(it) }
           .then { update!(perceptual_hash: it) }
       end
     end
 
+    sig { params(binary_hash: String).returns(T::Array[Integer]) }
     def hash_to_vector(binary_hash)
       vector = Array.new(binary_hash.length)
       vector.length.times do |n|
