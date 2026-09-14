@@ -3,6 +3,18 @@
 module Galleries
   module TagSearches
     class ResultsComponent < ApplicationComponent
+      MODE_ACTIONS = T.let(
+        {
+          image: ResultActions::ImageComponent,
+          gallery: ResultActions::GalleryComponent,
+          bulk_upload_tag: ResultActions::BulkUploadTagComponent,
+          bulk_add_tag: ResultActions::BulkAddTagComponent,
+          auto_add: ResultActions::AutoAddComponent
+        }.freeze,
+        T::Hash[Symbol, T.class_of(ResultActions::BaseComponent)]
+      )
+      private_constant(:MODE_ACTIONS)
+
       erb_template <<~ERB
         <%= turbo_frame_tag(@_turbo_frame_tag) do %>
           <% if @image && @tag_search.query.present? %>
@@ -26,7 +38,7 @@ module Galleries
             <%= turbo_frame_tag("tag-search-result-\#{tag.id}") do %>
               <div class="flex gap-4 my-2" data-role="tag-search-result">
                 <%= render(Galleries::TagPillComponent.new(tag:)) %>
-                <%= search_result_action(tag:) %>
+                <%= render(search_result_action(tag:)) %>
               </div>
             <% end %>
           <% end %>
@@ -48,7 +60,6 @@ module Galleries
         @tag_search = tag_search
         @gallery = tag_search.gallery
         @image = tag_search.image
-        @auto_add_source = tag_search.auto_add_source
         @mode = mode
         @_turbo_frame_tag = turbo_frame_tag
       end
@@ -58,70 +69,11 @@ module Galleries
       sig { returns(Symbol) }
       attr_reader :mode
 
-      sig { params(tag: Galleries::Tag).returns(T.nilable(String)) }
+      sig { params(tag: Galleries::Tag).returns(ResultActions::BaseComponent) }
       def search_result_action(tag:)
-        if mode == :image
-          helpers.button_to(
-            "Add tag",
-            gallery_image_tags_path(@gallery, @image, tag_id: tag.id),
-            class: "button"
-          )
-        elsif mode == :gallery
-          existing_tag_ids = Array(helpers.request.query_parameters[:tag_ids])
-          return if existing_tag_ids.include?(tag.id.to_s)
-
-          helpers.link_to(
-            "Add",
-            gallery_path(
-              @gallery,
-              **helpers.request.query_parameters.merge(
-                tag_ids: existing_tag_ids + [tag.id.to_s]
-              )
-            ),
-            class: "button",
-            data: {
-              role: "tag-search-result-add",
-              turbo_frame: "_top"
-            }
-          )
-        elsif mode == :bulk_upload_tag
-          helpers.button_to(
-            "Add tag",
-            gallery_bulk_upload_tags_path(
-              @gallery, tag_id: tag.id
-            ),
-            class: "button"
-          )
-        elsif mode == :bulk_add_tag
-          content_tag(
-            :button,
-            type: "button",
-            class: "button",
-            data: {
-              action: [
-                "gallery-bulk-tag#selectTag",
-                "tag-search#clearQuery"
-              ].join(" "),
-              tag_id: tag.id,
-              tag_name: tag.display_name
-            }
-          ) do
-            "Select"
-          end
-        elsif mode == :auto_add
-          helpers.button_to(
-            "Add",
-            gallery_tag_auto_add_tags_path(
-              @gallery,
-              @auto_add_source,
-              auto_add_tag: {auto_add_tag_id: tag.id}
-            ),
-            class: "button",
-            form: {data: {turbo_frame: "_top"}}
-          )
-        else
+        MODE_ACTIONS.fetch(mode) {
           raise(ArgumentError, "unknown tag search mode: #{mode.inspect}")
-        end
+        }.new(tag_search: @tag_search, tag:)
       end
     end
   end
