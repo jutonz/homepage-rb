@@ -83,8 +83,6 @@ module Galleries
 
     def tagging_needed? = name == TAGGING_NEEDED_NAME
 
-    def available_auto_add_tags
-      T.must(gallery).tags.where.not(id: [id] + auto_add_tag_ids)
-    end
+    def unavailable_auto_add_tag_ids = [id] + auto_add_tag_ids
   end
 end

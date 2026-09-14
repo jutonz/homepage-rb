@@ -21,6 +21,18 @@ RSpec.describe Galleries::AutoAddTagsController, type: :request do
 
       expect(response).to have_http_status(:not_found)
     end
+
+    it "renders the typeahead without a select" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      tag = create(:galleries_tag, gallery:)
+      login_as(user)
+
+      get(new_gallery_tag_auto_add_tag_path(gallery, tag))
+
+      expect(response.body).to include("Tag search query")
+      expect(response.body).not_to include("<select")
+    end
   end
 
   describe "create" do
@@ -38,6 +50,7 @@ RSpec.describe Galleries::AutoAddTagsController, type: :request do
       post(path, params:)
 
       expect(response).to redirect_to(gallery_tag_path(gallery, main_tag))
+      expect(flash[:notice]).to eql("Auto add tag was successfully created")
     end
 
     it "requires authentication" do
@@ -62,6 +75,27 @@ RSpec.describe Galleries::AutoAddTagsController, type: :request do
       post(gallery_tag_auto_add_tags_path(gallery, tag), params:)
 
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns the picker with the reason for a circular rule" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      first_tag = create(:galleries_tag, gallery:)
+      second_tag = create(:galleries_tag, gallery:)
+      create(
+        :galleries_auto_add_tag,
+        tag: second_tag,
+        auto_add_tag: first_tag
+      )
+      login_as(user)
+      params = {auto_add_tag: {auto_add_tag_id: second_tag.id}}
+
+      post(gallery_tag_auto_add_tags_path(gallery, first_tag), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body)
+        .to include("Auto add tag would create a circular reference")
+      expect(response.body).to include("Tag search query")
     end
   end
 

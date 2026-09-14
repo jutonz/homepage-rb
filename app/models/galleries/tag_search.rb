@@ -10,6 +10,9 @@ module Galleries
     sig { returns(T.nilable(Galleries::Image)) }
     attr_accessor :image
 
+    sig { returns(T.nilable(Galleries::Tag)) }
+    attr_accessor :auto_add_source
+
     sig { returns(T.nilable(String)) }
     attr_accessor :query
 
@@ -33,6 +36,7 @@ module Galleries
         .tags
         .where("galleries_tags.name ILIKE ?", "%#{ilike}%")
         .then { maybe_exclude_image_tags(it) }
+        .then { maybe_exclude_auto_add_candidates(it) }
         .then { maybe_exclude_ids(it) }
         .order(image_tags_count: :desc, id: :asc)
     end
@@ -56,6 +60,28 @@ module Galleries
       image = self.image
       if image.present?
         scope.where.not(id: image.tags.select(:id))
+      else
+        scope
+      end
+    end
+
+    sig do
+      params(
+        scope: T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Tag]
+        )
+      ).returns(
+        T.all(
+          ActiveRecord::Relation,
+          T::Enumerable[Galleries::Tag]
+        )
+      )
+    end
+    def maybe_exclude_auto_add_candidates(scope)
+      source = auto_add_source
+      if source
+        scope.where.not(id: source.unavailable_auto_add_tag_ids)
       else
         scope
       end

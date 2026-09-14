@@ -16,6 +16,9 @@ module Galleries
               }
             }
           ) do |form| %>
+            <% @extra_search_params.each do |name, value| %>
+              <%= helpers.hidden_field_tag(search_param_name(name), value) %>
+            <% end %>
             <div class="flex w-full gap-3">
               <%= form.input(
                 :query,
@@ -43,12 +46,24 @@ module Galleries
       sig do
         params(
           tag_search: Galleries::TagSearch,
-          search_path: String
+          search_path: String,
+          # A GET form replaces the query component of its action URL with the
+          # form data, and discards the parameters in `search_path`. Put them
+          # here.
+          extra_search_params: T::Hash[Symbol, T.untyped]
         ).void
       end
-      def initialize(tag_search:, search_path:)
+      def initialize(tag_search:, search_path:, extra_search_params: {})
         @tag_search = tag_search
         @search_path = search_path
+        @extra_search_params = extra_search_params
+      end
+
+      private
+
+      sig { params(name: Symbol).returns(String) }
+      def search_param_name(name)
+        "#{@tag_search.class.model_name.param_key}[#{name}]"
       end
     end
   end

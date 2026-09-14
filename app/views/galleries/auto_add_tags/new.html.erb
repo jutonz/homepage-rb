@@ -8,4 +8,6 @@
   <%= c.with_crumb(@tag.name, gallery_tag_path(@gallery, @tag)) %>
 <% end %>
 
-<%= render partial: "form" %>
+<%= render(Galleries::AutoAddTagSearchComponent.new(
+  tag_search: @tag_search
+)) %>
