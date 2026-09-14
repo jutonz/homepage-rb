@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -47,8 +47,10 @@ module Galleries
       presence: true,
       uniqueness: {scope: :gallery_id}
 
+    sig { returns(String) }
     def metube_prefix = "rvd-#{id}"
 
+    sig { void }
     def broadcast_row
       Turbo::StreamsChannel.broadcast_replace_to(
         T.must(gallery).remote_video_downloads_stream_name,
