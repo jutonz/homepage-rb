@@ -51,6 +51,24 @@ rather than a scope of any kind. See
 `Policy.model`. Inferred from the policy's own name, so a policy whose
 name does not name its model overrides it.
 
+## Databases
+
+**Primary database** — the database holding every model this codebase
+defines: users, galleries, images, tags, todos. When something here says
+"the database" without qualifying it, this is the one.
+
+*Avoid*: "the jobs table" for the primary database's `solid_queue_*`
+tables. They are a dead copy left behind when the queue database was
+split out, and nothing reads them. HPRB-115 removes them.
+
+**Queue database** — the database Solid Queue owns, holding queued jobs,
+their executions, and the recurring task schedule. It is authoritative
+for background work: a job the application enqueues lands here, never in
+the primary database.
+
+**Cable database** — the database Action Cable owns, holding the pubsub
+messages it relays between processes.
+
 ## Galleries
 
 **Tag filter** — the tag set that narrows which of a gallery's images
