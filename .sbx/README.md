@@ -11,7 +11,7 @@ This directory is the only source of truth for what a sandbox contains.
 spec.yaml                    network, environment, and the five scripts below
 files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   install-system             apt packages, PostgreSQL, pgvector, Playwright,
-                              the linear CLI
+                              the linear, claude, and opencode CLIs
   install-toolchain          the Ruby and Node versions .tool-versions pins
   enable-toolchain-path      puts the mise shims on PATH for the agent
   start-postgres             starts the cluster, on every sandbox start
@@ -34,8 +34,8 @@ name to re-enter that sandbox rather than build a second one. The name
 is required, and `sbx` accepts only letters, numbers, hyphens, and
 periods.
 
-The sandbox runs a shell. Run `claude`, or any other agent, from inside
-it; the kit carries no agent-specific configuration.
+The sandbox runs a shell. Run `claude` or `opencode` from inside it; see
+[Agents](#agents) below.
 
 Extra arguments reach `sbx`, so `.sbx/sandbox my-agent -p 3000:3000`
 publishes port 3000 at creation. To publish one later, use
@@ -47,6 +47,19 @@ Commits made inside come back with `git fetch sandbox-my-agent`.
 
 The production credential key stays on the host. A sandbox gets the
 development and test keys and nothing else.
+
+## Agents
+
+Every sandbox has `claude` and `opencode` on `PATH`. The kit installs the
+binaries and nothing else: neither is authenticated, and neither carries
+any agent-specific configuration, so the first run of either asks you to
+log in.
+
+`install-system` asks for the newest published version of each on every
+run, so a sandbox creation that finds its template already current starts
+in seconds. When a newer release exists, that sandbox installs it at
+creation and pays the download. Rebuild the template to make creation
+fast again.
 
 ## Linear
 

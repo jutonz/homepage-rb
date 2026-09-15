@@ -197,6 +197,84 @@ install_linear() {
   rm -rf "$workdir"
 }
 
+CLAUDE_RELEASES_URL=https://downloads.claude.ai/claude-code-releases
+
+# `claude --version` prints the version followed by the product name, as in
+# "2.1.272 (Claude Code)", so only the first field is the version number.
+installed_claude_version() {
+  claude --version 2>/dev/null | awk '{print $1}'
+}
+
+claude_checksum() {
+  local manifest_file="$1" platform="$2"
+
+  node -e '
+    const fs = require("fs");
+    const manifest = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+    process.stdout.write(manifest.platforms[process.argv[2]].checksum);
+  ' "$manifest_file" "$platform"
+}
+
+install_claude() {
+  local target_version
+  target_version="$(curl -fsSL "$CLAUDE_RELEASES_URL/latest")"
+
+  if command -v claude >/dev/null \
+      && [ "$(installed_claude_version)" = "$target_version" ]; then
+    say "claude code $target_version already installed"
+    return
+  fi
+
+  local architecture
+
+  case "$(dpkg --print-architecture)" in
+    arm64) architecture=arm64 ;;
+    amd64) architecture=x64 ;;
+    *)
+      say "no claude code release is published for" \
+        "$(dpkg --print-architecture)" >&2
+      return 1
+      ;;
+  esac
+
+  local platform="linux-$architecture"
+  local workdir
+  workdir="$(mktemp -d)"
+
+  # The installer at https://claude.ai/install.sh always writes to $HOME, and
+  # it accepts no other target. This script runs as root, so that installer
+  # puts the binary in /root/.local/bin. The agent user cannot reach that
+  # directory. Download the same binary from the same host, and put it on the
+  # system path instead.
+  say "installing claude code $target_version"
+  curl -fsSL --output "$workdir/manifest.json" \
+    "$CLAUDE_RELEASES_URL/$target_version/manifest.json"
+  curl -fsSL --output "$workdir/claude" \
+    "$CLAUDE_RELEASES_URL/$target_version/$platform/claude"
+
+  printf '%s  %s\n' \
+    "$(claude_checksum "$workdir/manifest.json" "$platform")" \
+    "$workdir/claude" | sha256sum --check
+
+  install -m 0755 "$workdir/claude" /usr/local/bin/claude
+  rm -rf "$workdir"
+}
+
+install_opencode() {
+  local target_version
+  target_version="$(npm view opencode-ai version)"
+
+  if command -v opencode >/dev/null \
+      && [ "$(opencode --version 2>/dev/null)" = "$target_version" ]; then
+    say "opencode $target_version already installed"
+    return
+  fi
+
+  say "installing opencode $target_version"
+  mkdir -p "${NPM_CONFIG_PREFIX:-/usr/local/share/npm-global}/lib"
+  npm install --global "opencode-ai@$target_version"
+}
+
 install_playwright() {
   local version
   version="$(playwright_version)"
@@ -222,6 +300,8 @@ install_packages
 install_pgvector
 install_mise
 install_linear
+install_claude
+install_opencode
 install_playwright
 create_postgres_socket_dir
 
