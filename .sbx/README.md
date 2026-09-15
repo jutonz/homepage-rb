@@ -15,8 +15,7 @@ files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   start-postgres             starts the cluster, on every sandbox start
   prepare-checkout           keys, gems, node modules, databases, assets
 build-template               rebuilds the local template from this kit
-verify-isolation             proves two sandboxes cannot interfere
-host-lib.sh                  shared helpers for the scripts above
+host-lib.sh                  shared helpers for bin/sandbox and build-template
 ```
 
 `bin/sandbox` is the entry point; everything else here supports it.
@@ -58,17 +57,8 @@ stale. It is a local cache, rebuildable on any Mac from this directory,
 and is never shared as a file.
 
 `build-template` only saves a template from a sandbox whose suite is
-green.
-
-## Check that isolation still holds
-
-```sh
-./.sbx/verify-isolation
-```
-
-This creates two sandboxes and tries to make them collide. Set
-`KEEP_SANDBOXES=yes` to leave them behind for inspection when a check
-fails.
+green. Set `KEEP_SANDBOXES=yes` to leave the build sandbox behind for
+inspection when the suite fails.
 
 ## Settings
 
