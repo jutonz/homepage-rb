@@ -9,6 +9,7 @@
 
 PGVECTOR_VERSION=v0.8.2
 MISE_VERSION=v2026.9.7
+LINEAR_CLI_VERSION=2.6.0
 
 # The base shell sandbox runs its own `apt-get update` in the background at
 # container start, so the package lock is often already held when this script
@@ -109,6 +110,55 @@ install_mise() {
   chmod 0755 /usr/local/bin/mise
 }
 
+# `linear --version` colors its output with ANSI codes even when piped, so
+# the color codes must be stripped before the version number is usable.
+installed_linear_version() {
+  linear --version 2>/dev/null \
+    | sed -E 's/\x1b\[[0-9;]*m//g' \
+    | awk '{print $2}'
+}
+
+install_linear() {
+  if command -v linear >/dev/null \
+      && [ "$(installed_linear_version)" = "$LINEAR_CLI_VERSION" ]; then
+    say "linear cli $LINEAR_CLI_VERSION already installed"
+    return
+  fi
+
+  local architecture
+
+  case "$(dpkg --print-architecture)" in
+    arm64) architecture=aarch64 ;;
+    amd64) architecture=x86_64 ;;
+    *)
+      say "no linear-cli release is published for" \
+        "$(dpkg --print-architecture)" >&2
+      return 1
+      ;;
+  esac
+
+  # GitHub release downloads are allowed by the sandbox network policy; see
+  # install_mise above.
+  local release=https://github.com/schpet/linear-cli/releases/download
+  local archive="linear-$architecture-unknown-linux-gnu.tar.xz"
+  local workdir
+  workdir="$(mktemp -d)"
+
+  say "installing linear cli $LINEAR_CLI_VERSION"
+  curl -fsSL --output "$workdir/$archive" \
+    "$release/v$LINEAR_CLI_VERSION/$archive"
+  curl -fsSL --output "$workdir/$archive.sha256" \
+    "$release/v$LINEAR_CLI_VERSION/$archive.sha256"
+
+  (cd "$workdir" && sha256sum --check "$archive.sha256")
+
+  tar -xJf "$workdir/$archive" -C "$workdir"
+  install -m 0755 \
+    "$workdir/linear-$architecture-unknown-linux-gnu/linear" \
+    /usr/local/bin/linear
+  rm -rf "$workdir"
+}
+
 install_playwright() {
   local version
   version="$(playwright_version)"
@@ -132,6 +182,7 @@ create_postgres_socket_dir() {
 install_packages
 install_pgvector
 install_mise
+install_linear
 install_playwright
 create_postgres_socket_dir
 

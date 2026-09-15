@@ -10,6 +10,7 @@ READY_TIMEOUT="${READY_TIMEOUT:-1800}"
 USE_TEMPLATE="${USE_TEMPLATE:-yes}"
 KEEP_SANDBOXES="${KEEP_SANDBOXES:-no}"
 SUITE_ATTEMPTS="${SUITE_ATTEMPTS:-3}"
+FORWARD_LINEAR_KEY="${FORWARD_LINEAR_KEY:-yes}"
 
 say() {
   printf '[sbx] %s\n' "$*"
@@ -51,6 +52,14 @@ build_sandbox_argv() {
 
   if [ "$USE_TEMPLATE" = yes ] && template_exists; then
     sandbox_argv+=(--template "$TEMPLATE_TAG")
+  fi
+
+  # Linear is optional and, unlike the credential keys above, forwards the
+  # developer's own host value rather than one read from a repo file. A
+  # Template build sets FORWARD_LINEAR_KEY=no so a cached Template never
+  # carries the builder's Linear identity.
+  if [ "$FORWARD_LINEAR_KEY" = yes ] && [ -n "${LINEAR_API_KEY:-}" ]; then
+    sandbox_argv+=(--env LINEAR_API_KEY)
   fi
 }
 

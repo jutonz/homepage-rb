@@ -16,6 +16,8 @@ permissions:
       # Bundler's compact index. Denied by the default policy, which sends
       # Bundler to the full RubyGems index instead and costs tens of minutes.
       - index.rubygems.org
+      # The Linear API, for the linear CLI installed by install-system.
+      - api.linear.app
 
 environment:
   variables:
@@ -28,7 +30,9 @@ setup:
   install:
     - command: bash /home/agent/.sbx-kit/install-system
       user: "0"
-      description: Install system packages, PostgreSQL, pgvector, and Playwright
+      description: >-
+        Install system packages, PostgreSQL, pgvector, Playwright, and the
+        linear CLI
     - command: bash /home/agent/.sbx-kit/install-toolchain
       user: "1000"
       description: Install the Ruby and Node versions the repository pins
