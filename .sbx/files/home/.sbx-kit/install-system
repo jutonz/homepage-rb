@@ -9,6 +9,24 @@
 
 PGVECTOR_VERSION=v0.8.2
 
+# sbx exports /etc/sandbox-persistent.sh as BASH_ENV, so every shell reads it.
+# A template baked before the kit guarded that file puts the agent's mise
+# shims on root's PATH. mise refuses to read the agent's config as root, so
+# `node` and `npm` must come from the system.
+drop_agent_mise_shims() {
+  local entries entry kept=""
+
+  IFS=: read -ra entries <<< "$PATH"
+
+  for entry in "${entries[@]}"; do
+    if [ "$entry" != "$AGENT_MISE_SHIMS" ]; then
+      kept="${kept:+$kept:}$entry"
+    fi
+  done
+
+  export PATH="$kept"
+}
+
 # The base shell sandbox runs its own `apt-get update` in the background at
 # container start, so the package lock is often already held when this script
 # begins.
@@ -199,6 +217,7 @@ create_postgres_socket_dir() {
   install -d -o postgres -g postgres /var/run/postgresql
 }
 
+drop_agent_mise_shims
 install_packages
 install_pgvector
 install_mise

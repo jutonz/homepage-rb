@@ -2,6 +2,7 @@ set -Eeuo pipefail
 
 SOURCE_DIR="${SOURCE_DIR:-/run/sandbox/source}"
 POSTGRES_MAJOR=18
+AGENT_MISE_SHIMS=/home/agent/.local/share/mise/shims
 
 # The status file lives on a tmpfs, so a sandbox created from a template never
 # starts out claiming to be ready because the template froze a "ready" from the
