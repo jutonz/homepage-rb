@@ -8,7 +8,6 @@
 . /home/agent/.sbx-kit/lib.sh
 
 PGVECTOR_VERSION=v0.8.2
-MISE_VERSION=v2026.9.7
 
 # The base shell sandbox runs its own `apt-get update` in the background at
 # container start, so the package lock is often already held when this script
@@ -82,9 +81,28 @@ install_pgvector() {
   rm -rf /tmp/pgvector
 }
 
+# GitHub redirects .../releases/latest to .../releases/tag/vX.Y.Z; the
+# resolved tag names the newest release without a GitHub API call.
+latest_github_version() {
+  local repository="$1" url
+  url="$(curl -fsSL -o /dev/null -w '%{url_effective}' \
+    "https://github.com/$repository/releases/latest")"
+  printf '%s\n' "${url##*/v}"
+}
+
+# `mise --version` prints the version, the platform, and the build date, as
+# in "2026.9.9 linux-arm64 (2026-09-09)".
+installed_mise_version() {
+  mise --version 2>/dev/null | awk '{print $1}'
+}
+
 install_mise() {
-  if command -v mise >/dev/null; then
-    say "mise already installed"
+  local target_version
+  target_version="$(latest_github_version jdx/mise)"
+
+  if command -v mise >/dev/null \
+      && [ "$(installed_mise_version)" = "$target_version" ]; then
+    say "mise $target_version already installed"
     return
   fi
 
@@ -103,9 +121,9 @@ install_mise() {
   # GitHub release downloads are allowed, so the binary comes from there.
   local release=https://github.com/jdx/mise/releases/download
 
-  say "installing mise $MISE_VERSION"
+  say "installing mise $target_version"
   curl -fsSL --output /usr/local/bin/mise \
-    "$release/$MISE_VERSION/mise-$MISE_VERSION-linux-$architecture"
+    "$release/v$target_version/mise-v$target_version-linux-$architecture"
   chmod 0755 /usr/local/bin/mise
 }
 
@@ -117,18 +135,9 @@ installed_linear_version() {
     | awk '{print $2}'
 }
 
-# GitHub redirects .../releases/latest to .../releases/tag/vX.Y.Z; the
-# resolved tag names the newest release without a GitHub API call.
-latest_linear_version() {
-  local url
-  url="$(curl -fsSL -o /dev/null -w '%{url_effective}' \
-    https://github.com/schpet/linear-cli/releases/latest)"
-  printf '%s\n' "${url##*/v}"
-}
-
 install_linear() {
   local target_version
-  target_version="$(latest_linear_version)"
+  target_version="$(latest_github_version schpet/linear-cli)"
 
   if command -v linear >/dev/null \
       && [ "$(installed_linear_version)" = "$target_version" ]; then
