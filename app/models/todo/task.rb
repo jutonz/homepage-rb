@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -21,6 +21,8 @@
 #
 module Todo
   class Task < ActiveRecord::Base
+    extend T::Sig
+
     self.table_name = "todo_tasks"
 
     belongs_to :user
@@ -30,22 +32,27 @@ module Todo
 
     validates :name, presence: true
 
+    sig { returns(T::Boolean) }
     def available_for_scheduling?
       !has_active_occurrence?
     end
 
+    sig { returns(T::Boolean) }
     def has_active_occurrence?
       task_occurrences.scheduled.exists?
     end
 
+    sig { returns(T.nilable(Todo::TaskOccurrence)) }
     def current_occurrence
       task_occurrences.scheduled.first
     end
 
+    sig { returns(T.nilable(Todo::TaskOccurrence)) }
     def last_completed_occurrence
       task_occurrences.completed.order(completed_at: :desc).first
     end
 
+    sig { returns(String) }
     def status
       if has_active_occurrence?
         "scheduled"

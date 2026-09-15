@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -24,6 +24,8 @@
 #
 module Todo
   class TaskOccurrence < ApplicationRecord
+    extend T::Sig
+
     self.table_name = "todo_task_occurrences"
 
     belongs_to :todo_task, class_name: "Todo::Task"
@@ -34,18 +36,22 @@ module Todo
     scope :scheduled, -> { where(completed_at: nil) }
     scope :completed, -> { where.not(completed_at: nil) }
 
+    sig { returns(T::Boolean) }
     def scheduled?
       completed_at.nil?
     end
 
+    sig { returns(T::Boolean) }
     def completed?
       completed_at.present?
     end
 
+    sig { returns(T::Boolean) }
     def complete!
       update!(completed_at: Time.current)
     end
 
+    sig { returns(T.nilable(Float)) }
     def duration
       completed_at = self.completed_at
       return unless completed_at && scheduled_at
