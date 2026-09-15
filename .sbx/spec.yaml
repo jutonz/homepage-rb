@@ -24,6 +24,12 @@ environment:
     DEBIAN_FRONTEND: noninteractive
     BINDING: 0.0.0.0
     PLAYWRIGHT_BROWSERS_PATH: /usr/local/share/ms-playwright
+    # mise keeps a trust database outside the config file, and a template
+    # does not carry it. A sandbox from a template then finds the global
+    # config that install-toolchain wrote, refuses it, and fails every
+    # command that reaches a mise shim. install-system reaches one when it
+    # runs node, so the sandbox never provisions.
+    MISE_TRUSTED_CONFIG_PATHS: /home/agent/.config/mise
     SOURCE_DIR: /run/sandbox/source
 
 setup:
@@ -41,9 +47,20 @@ setup:
     - command: ["bash", "/home/agent/.sbx-kit/enable-toolchain-path"]
       user: "0"
       description: Put the mise shims on PATH for every shell
+    # Early, so that an agent the developer attaches to has their skills and
+    # instructions within seconds rather than after the dependency install.
+    - command: ["bash", "/home/agent/.sbx-kit/push-agent-config"]
+      user: "1000"
+      description: Copy the developer's own agent configuration into the sandbox
     - command: ["bash", "/home/agent/.sbx-kit/start-postgres"]
       user: "0"
       description: Start PostgreSQL
     - command: ["bash", "/home/agent/.sbx-kit/prepare-checkout"]
       user: "1000"
       description: Write keys, install dependencies, prepare databases
+    # Again last, because an agent image can rewrite its own configuration
+    # after the step above and the kit must have the final say. The script
+    # is repeatable and skips the one expensive copy on this second run.
+    - command: ["bash", "/home/agent/.sbx-kit/push-agent-config"]
+      user: "1000"
+      description: Re-apply the developer's own agent configuration

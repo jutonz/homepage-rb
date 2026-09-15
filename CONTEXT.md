@@ -74,7 +74,7 @@ messages it relays between processes.
 **Sandbox** — the microVM `sbx` creates, holding its own kernel, file
 system, PostgreSQL, gems, and port 3000. Two sandboxes share nothing, so
 two agents can run the suite at once without corrupting each other's
-data. `.sbx/sandbox` creates one.
+data. `.sbx/sandbox` creates one, running the agent it is asked for.
 
 *Avoid*: "container". A sandbox runs its own kernel, and the difference
 decides what it does and does not isolate.
@@ -95,17 +95,40 @@ installed gems stay shared. A sandbox isolates what a worktree cannot.
 reserved for that sense. The deleted `bin/workspace_setup.sh` used it
 for a machine, which is part of what made it ambiguous.
 
-**Kit** — the checked-in `.sbx/` directory, the only source of truth for
-what a sandbox contains: packages, toolchain, databases, and the network
-allowlist. It carries no agent-specific configuration, so one kit serves
-a shell sandbox and an agent sandbox alike.
+**Agent** — the program a sandbox runs: `shell`, `claude`, or
+`opencode`. `.sbx/sandbox --agent` chooses one, and `shell` is the
+default. `sbx` supplies the agent and its credentials; the kit supplies
+everything the application needs. Two people who choose the same agent
+get the same tools.
+
+*Avoid*: "agent" for the person or session doing the work when a sandbox
+is in the sentence. `.sbx/sandbox NAME` takes a sandbox name, and naming
+it after the worker is what makes the two senses collide.
+
+**Kit** — the checked-in `.sbx/` directory, describing what the kit adds
+to an agent's sandbox: packages, toolchain, databases, and the network
+allowlist. One kit serves every agent. It is not the whole of what a
+sandbox contains, because `sbx` brings the agent and the host pushes in
+the agent config.
+
+**Agent config** — the developer's own, personal, never-committed agent
+configuration on the host: skills, the global `CLAUDE.md`,
+`settings.json`, `agents/`, `plugins/`, and `opencode.json`.
+`.sbx/sandbox` pushes it into the sandbox at startup, so an agent in a
+sandbox behaves the way it does on the developer's machine. It is the
+reason two people running the same kit get the same tools and different
+agent setups.
+
+*Avoid*: "agent config" for anything in the repository. The whole point
+of the term is that it lives on the host and is personal.
 
 **Template** — the local image holding an already provisioned toolchain,
 so that a new sandbox starts in seconds rather than minutes. It is a
 cache and never a shipped artifact: `.sbx/build-template` rebuilds it
 from the kit, and it holds no repository state, so a branch change never
 makes it stale. A template belongs to one agent and is refused for
-another.
+another, so there is one per agent and the tag names it:
+`homepage-rb:claude`.
 
 *Avoid*: "snapshot". It names the same object, and `sbx`, the script,
 and `TEMPLATE_TAG` all say *template*.

@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+# Put the developer's own agent configuration into the sandbox: the global
+# CLAUDE.md, personal agent definitions, plugins, and the opencode config.
+# Runs as the agent user at every sandbox start.
+#
+# The host stages a copy of that configuration and mounts it read only; see
+# stage_agent_config in .sbx/host-lib.sh. Skills do not come through here.
+# sbx keeps skills in a machine-global store, and mounts that store at
+# ~/.claude/skills.
+#
+# A template build passes no staging directory. This script then finds
+# nothing, and the builder's configuration cannot reach a saved template.
+
+. /home/agent/.sbx-kit/lib.sh
+
+agent_home=/home/agent
+state_dir="$agent_home/.sbx-kit-state"
+staged="${SBX_KIT_AGENT_CONFIG:-}"
+
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+# The host passes its own path for the staging directory, because sbx
+# mounts an extra workspace at the same absolute path it has on the host. A
+# silent exit here would hide a change to that rule.
+if [ ! -d "$staged" ]; then
+  say "the host staged an agent config at $staged, but the sandbox" \
+    "cannot see it" >&2
+  exit 1
+fi
+
+run_node() {
+  if command -v node >/dev/null; then
+    node "$@"
+  else
+    mise exec -- node "$@"
+  fi
+}
+
+# A symlink, not a copy, so that an edit on the host reaches a sandbox that
+# already runs. The agent only reads these files. That is what makes the
+# read-only mount behind the link safe.
+link_staged() {
+  local source="$1"
+  local target="$2"
+
+  [ -e "$source" ] || return 0
+
+  mkdir -p "$(dirname "$target")"
+  rm -rf "$target"
+  ln -s "$source" "$target"
+}
+
+# Claude Code writes to settings.json while it runs, so this is a real file
+# and not a link. The sandbox image seeds the file with the keys that start
+# Claude Code without a login prompt, and those keys win over the
+# developer's own. The merge overwrites the file it read the seed from, so
+# this keeps the seed aside and the merge stays repeatable.
+merge_claude_settings() {
+  local source="$staged/claude/settings.json"
+  local target="$agent_home/.claude/settings.json"
+  local seed="$state_dir/claude-settings-seed.json"
+
+  [ -f "$source" ] || return 0
+
+  mkdir -p "$agent_home/.claude" "$state_dir"
+
+  if [ ! -f "$seed" ]; then
+    if [ -f "$target" ]; then
+      cp "$target" "$seed"
+    else
+      printf '{}\n' > "$seed"
+    fi
+  fi
+
+  say "merging the agent settings"
+  run_node -e '
+    const fs = require("fs");
+    const [source, seed, target] = process.argv.slice(1);
+    const read = (path) => JSON.parse(fs.readFileSync(path, "utf8"));
+    const isObject = (value) =>
+      value !== null && typeof value === "object" && !Array.isArray(value);
+    // A shallow merge would drop the whole of the developer permissions
+    // block, because the seed carries a permissions block of its own.
+    const merge = (base, wins) => {
+      const merged = { ...base };
+      for (const [key, value] of Object.entries(wins)) {
+        merged[key] = isObject(value) && isObject(base[key])
+          ? merge(base[key], value)
+          : value;
+      }
+      return merged;
+    };
+    const merged = merge(read(source), read(seed));
+    fs.writeFileSync(target, JSON.stringify(merged, null, 2) + "\n");
+  ' "$source" "$seed" "$target"
+}
+
+# opencode owns this file. It rewrites the file to register the sandbox MCP
+# gateway, and that drops the developer's model choice. This function writes
+# the gateway entry too, so the result is the same whichever of the two
+# startup steps runs last.
+merge_opencode_config() {
+  local source="$staged/opencode/opencode.json"
+  local target="$agent_home/.config/opencode/opencode.json"
+
+  [ -f "$source" ] || return 0
+
+  mkdir -p "$agent_home/.config/opencode"
+
+  say "merging the opencode configuration"
+  run_node -e '
+    const fs = require("fs");
+    const [source, target, url, sentinel] = process.argv.slice(1);
+    const config = JSON.parse(fs.readFileSync(source, "utf8"));
+    if (url) {
+      config.mcp = {
+        ...(config.mcp || {}),
+        "mcp-gateway": {
+          type: "remote",
+          url,
+          enabled: true,
+          headers: { Authorization: `Bearer ${sentinel}` },
+        },
+      };
+    }
+    fs.writeFileSync(target, JSON.stringify(config, null, 2) + "\n");
+  ' "$source" "$target" "${MCP_GATEWAY_URL:-}" "${MCP_SENTINEL_TOKEN_NAME:-}"
+}
+
+# Plugins carry native state that the agent rewrites, so this is a copy
+# where CLAUDE.md and agents are links. The copy happens once, for the
+# reason stage_entry_once in .sbx/host-lib.sh gives.
+copy_claude_plugins_once() {
+  local source="$staged/claude/plugins"
+  local target="$agent_home/.claude/plugins"
+
+  # The test is for content, not for the directory. An agent image can ship
+  # an empty plugin directory, and `[ -e ]` would then skip the copy for
+  # the life of the sandbox.
+  if [ ! -d "$source" ] || [ -n "$(ls -A "$target" 2>/dev/null)" ]; then
+    return 0
+  fi
+
+  mkdir -p "$agent_home/.claude"
+  rm -rf "$target"
+
+  say "copying the agent plugins"
+  cp -R "$source" "$target"
+}
+
+link_staged "$staged/claude/CLAUDE.md" "$agent_home/.claude/CLAUDE.md"
+link_staged "$staged/claude/agents" "$agent_home/.claude/agents"
+link_staged "$staged/opencode/commands" \
+  "$agent_home/.config/opencode/commands"
+link_staged "$staged/opencode/plugins" \
+  "$agent_home/.config/opencode/plugins"
+
+merge_claude_settings
+merge_opencode_config
+copy_claude_plugins_once
+
+say "the agent configuration is in place"
