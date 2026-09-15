@@ -13,7 +13,7 @@ files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   install-system             apt packages, PostgreSQL, pgvector, Playwright,
                               the linear CLI
   install-toolchain          the Ruby and Node versions .tool-versions pins
-  enable-toolchain-path      puts the mise shims on PATH for every shell
+  enable-toolchain-path      puts the mise shims on PATH for the agent
   start-postgres             starts the cluster, on every sandbox start
   prepare-checkout           keys, gems, node modules, databases, assets
 sandbox                      the entry point: creates or attaches to a sandbox

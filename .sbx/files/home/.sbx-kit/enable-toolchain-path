@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Put the mise shims on PATH for every shell in the sandbox.
+# Put the mise shims on PATH for the agent user.
 #
 # `mise use --global` writes the shims but does not put them on PATH, so a
 # shell reports `bash: ruby: command not found` while `mise exec -- ruby`
@@ -8,20 +8,25 @@
 
 . /home/agent/.sbx-kit/lib.sh
 
-shims=/home/agent/.local/share/mise/shims
 persistent_env=/etc/sandbox-persistent.sh
+agent_uid="$(stat -c %u /home/agent)"
 
-if grep -qs "$shims" "$persistent_env"; then
+if grep -qs "$AGENT_MISE_SHIMS" "$persistent_env"; then
   exit 0
 fi
 
 say "putting the mise shims on PATH"
 
-# The file is read by every shell, so the guard stops PATH from growing.
+# Every shell reads this file. The guard prevents a repeated entry in PATH.
+# Only the agent user gets the shims: mise refuses to read the agent's config
+# as another user, so a root shell that resolves a shim fails. sbx bakes a
+# startup step into a template, so root reads this block in later sandboxes.
 cat >> "$persistent_env" <<EOF
 
-case ":\$PATH:" in
-  *":$shims:"*) ;;
-  *) export PATH="$shims:\$PATH" ;;
-esac
+if [ "\$(id -u)" = "$agent_uid" ]; then
+  case ":\$PATH:" in
+    *":$AGENT_MISE_SHIMS:"*) ;;
+    *) export PATH="$AGENT_MISE_SHIMS:\$PATH" ;;
+  esac
+fi
 EOF
