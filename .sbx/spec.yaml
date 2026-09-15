@@ -18,6 +18,10 @@ permissions:
       - index.rubygems.org
       # The Linear API, for the linear CLI installed by install-system.
       - api.linear.app
+      # The Claude Code releases, for the claude CLI installed by
+      # install-system. https://claude.ai/install.sh redirects to this host,
+      # which also serves the manifest and the binary itself.
+      - downloads.claude.ai
 
 environment:
   variables:
@@ -32,7 +36,7 @@ setup:
       user: "0"
       description: >-
         Install system packages, PostgreSQL, pgvector, Playwright, and the
-        linear CLI
+        linear, claude, and opencode CLIs
     - command: bash /home/agent/.sbx-kit/install-toolchain
       user: "1000"
       description: Install the Ruby and Node versions the repository pins
