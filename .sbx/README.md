@@ -8,10 +8,11 @@ cannot corrupt each other, because they do not share anything.
 This directory is the only source of truth for what a sandbox contains.
 
 ```
-spec.yaml                    network, environment, and the four scripts below
+spec.yaml                    network, environment, and the five scripts below
 files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   install-system             apt packages, PostgreSQL, pgvector, Playwright
   install-toolchain          the Ruby and Node versions .tool-versions pins
+  enable-toolchain-path      puts the mise shims on PATH for every shell
   start-postgres             starts the cluster, on every sandbox start
   prepare-checkout           keys, gems, node modules, databases, assets
 build-template               rebuilds the local template from this kit

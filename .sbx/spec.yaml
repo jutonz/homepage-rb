@@ -34,6 +34,9 @@ setup:
       description: Install the Ruby and Node versions the repository pins
 
   startup:
+    - command: ["bash", "/home/agent/.sbx-kit/enable-toolchain-path"]
+      user: "0"
+      description: Put the mise shims on PATH for every shell
     - command: ["bash", "/home/agent/.sbx-kit/start-postgres"]
       user: "0"
       description: Start PostgreSQL
