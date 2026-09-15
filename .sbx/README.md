@@ -50,26 +50,30 @@ development and test keys and nothing else.
 
 ## Linear
 
-Every sandbox has the `linear` CLI on `PATH`. Export `LINEAR_API_KEY` on
-the host before creating a sandbox to forward it in automatically:
+Every sandbox has the `linear` CLI on `PATH`. Creation forwards it a
+Linear API key from the first of these that has one:
+
+1. `LINEAR_API_KEY`, if exported on the host.
+2. Otherwise, the 1Password CLI, if `op` is on the host:
+   `op read "$LINEAR_OP_ITEM" --account="$LINEAR_OP_ACCOUNT"`. Override
+   `LINEAR_OP_ITEM` / `LINEAR_OP_ACCOUNT` to point at a different vault
+   item; both default to this project's own key.
 
 ```sh
-export LINEAR_API_KEY=lin_api_...
 .sbx/sandbox my-agent
 ```
 
 This is the real key, not a host-only proxy like the GitHub credential:
-the sandbox can do anything that key can do. Nothing reads the host
-keychain or runs an interactive login; an unset or empty
-`LINEAR_API_KEY` just means the sandbox has no Linear access, and the
-rest of the environment still comes up. `linear` reports its own
-missing- or invalid-credential error in that case.
+the sandbox can do anything that key can do. Neither source is required;
+with no export and no usable 1Password entry, the sandbox still comes
+up, just without Linear access. `linear` reports its own missing- or
+invalid-credential error in that case.
 
 Attaching to an existing sandbox reuses whatever key it was created
-with; it does not re-read the host's current export. Recreate the
-sandbox (`sbx rm` it, then run `.sbx/sandbox` again) to pick up a
-changed key, or to add Linear to a sandbox created before this CLI
-existed in the kit.
+with; it does not re-resolve either source. Recreate the sandbox
+(`sbx rm` it, then run `.sbx/sandbox` again) to pick up a changed key,
+or to add Linear to a sandbox created before this CLI existed in the
+kit.
 
 ## Build the template
 
@@ -87,8 +91,8 @@ and is never shared as a file.
 green. Set `KEEP_SANDBOXES=yes` to leave the build sandbox behind for
 inspection when the suite fails.
 
-The build never forwards `LINEAR_API_KEY`, even when it is exported on
-the host, so the saved template never carries the builder's own Linear
+The build never resolves or forwards a Linear key, from either source
+above, so the saved template never carries the builder's own Linear
 identity.
 
 ## Settings

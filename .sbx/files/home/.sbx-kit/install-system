@@ -9,7 +9,6 @@
 
 PGVECTOR_VERSION=v0.8.2
 MISE_VERSION=v2026.9.7
-LINEAR_CLI_VERSION=2.6.0
 
 # The base shell sandbox runs its own `apt-get update` in the background at
 # container start, so the package lock is often already held when this script
@@ -118,10 +117,22 @@ installed_linear_version() {
     | awk '{print $2}'
 }
 
+# GitHub redirects .../releases/latest to .../releases/tag/vX.Y.Z; the
+# resolved tag names the newest release without a GitHub API call.
+latest_linear_version() {
+  local url
+  url="$(curl -fsSL -o /dev/null -w '%{url_effective}' \
+    https://github.com/schpet/linear-cli/releases/latest)"
+  printf '%s\n' "${url##*/v}"
+}
+
 install_linear() {
+  local target_version
+  target_version="$(latest_linear_version)"
+
   if command -v linear >/dev/null \
-      && [ "$(installed_linear_version)" = "$LINEAR_CLI_VERSION" ]; then
-    say "linear cli $LINEAR_CLI_VERSION already installed"
+      && [ "$(installed_linear_version)" = "$target_version" ]; then
+    say "linear cli $target_version already installed"
     return
   fi
 
@@ -144,11 +155,11 @@ install_linear() {
   local workdir
   workdir="$(mktemp -d)"
 
-  say "installing linear cli $LINEAR_CLI_VERSION"
+  say "installing linear cli $target_version"
   curl -fsSL --output "$workdir/$archive" \
-    "$release/v$LINEAR_CLI_VERSION/$archive"
+    "$release/v$target_version/$archive"
   curl -fsSL --output "$workdir/$archive.sha256" \
-    "$release/v$LINEAR_CLI_VERSION/$archive.sha256"
+    "$release/v$target_version/$archive.sha256"
 
   (cd "$workdir" && sha256sum --check "$archive.sha256")
 
