@@ -15,16 +15,17 @@ files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   enable-toolchain-path      puts the mise shims on PATH for every shell
   start-postgres             starts the cluster, on every sandbox start
   prepare-checkout           keys, gems, node modules, databases, assets
+sandbox                      the entry point: creates or attaches to a sandbox
 build-template               rebuilds the local template from this kit
-host-lib.sh                  shared helpers for bin/sandbox and build-template
+host-lib.sh                  shared helpers for sandbox and build-template
 ```
 
-`bin/sandbox` is the entry point; everything else here supports it.
+`.sbx/sandbox` is the entry point; everything else here supports it.
 
 ## Create a sandbox
 
 ```sh
-bin/sandbox my-agent
+.sbx/sandbox my-agent
 ```
 
 This creates the sandbox and attaches to it. Run it again with the same
@@ -35,9 +36,10 @@ periods.
 The sandbox runs a shell. Run `claude`, or any other agent, from inside
 it; the kit carries no agent-specific configuration.
 
-Extra arguments reach `sbx`, so `bin/sandbox my-agent -p 3000` publishes
-port 3000 at creation. To publish one later, use
-`sbx ports my-agent --publish 3000`.
+Extra arguments reach `sbx`, so `.sbx/sandbox my-agent -p 3000:3000`
+publishes port 3000 at creation. To publish one later, use
+`sbx ports my-agent --publish 3000:3000`. A bare `3000` names the
+sandbox port and leaves the host port to `sbx`, which picks a free one.
 
 `--clone` gives the sandbox a private clone rather than a bind mount.
 Commits made inside come back with `git fetch sandbox-my-agent`.

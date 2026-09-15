@@ -33,8 +33,8 @@ template_exists() {
   '
 }
 
-# Writes the flags that sbx create and sbx run share. The result is a global
-# array because macOS ships bash 3.2, which has no name references.
+# Writes the flags that create a sandbox. The result is a global array
+# because macOS ships bash 3.2, which has no name references.
 build_sandbox_argv() {
   local name="$1"
 
@@ -64,15 +64,40 @@ create_sandbox() {
   sbx create "${sandbox_argv[@]}" "$@" "$repo_root"
 }
 
-# Creates the sandbox if it does not exist, then attaches to it.
+# Writes the state sbx reports for a sandbox, or nothing when no sandbox
+# has the name. The ports column is empty for a stopped sandbox, so the
+# fields after it shift left. Only $1 and $3 hold in both cases.
+sbx_state() {
+  local name="$1"
+
+  sbx ls 2>/dev/null | awk -v name="$name" '$1 == name { print $3 }' || true
+}
+
+# sbx rejects --kit, --cpus, --memory, and --template when the sandbox
+# already exists, so the attach path must not send them. sbx starts a
+# stopped sandbox itself.
 run_sandbox() {
   local name="$1"
   shift
 
-  export_credential_keys
-  build_sandbox_argv "$name"
+  local state
+  state="$(sbx_state "$name")"
 
-  sbx run "${sandbox_argv[@]}" "$@" "$repo_root"
+  if [ -z "$state" ]; then
+    export_credential_keys
+    build_sandbox_argv "$name"
+
+    sbx run "${sandbox_argv[@]}" "$@" "$repo_root"
+    return
+  fi
+
+  if [ "$state" = stopped ]; then
+    say "starting stopped sandbox"
+  else
+    say "attaching to already running sandbox"
+  fi
+
+  sbx run shell --name "$name" "$@"
 }
 
 # Poll until a command succeeds. Returns 1 once the timeout is reached.
