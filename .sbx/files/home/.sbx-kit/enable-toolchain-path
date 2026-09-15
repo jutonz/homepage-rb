@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Put the mise shims on PATH for every shell in the sandbox.
+#
+# `mise use --global` writes the shims but does not put them on PATH, so a
+# shell reports `bash: ruby: command not found` while `mise exec -- ruby`
+# succeeds. sbx sources /etc/sandbox-persistent.sh from ~/.bashrc and exports
+# it as BASH_ENV, which makes it the one file every shell reads.
+
+. /home/agent/.sbx-kit/lib.sh
+
+shims=/home/agent/.local/share/mise/shims
+persistent_env=/etc/sandbox-persistent.sh
+
+if grep -qs "$shims" "$persistent_env"; then
+  exit 0
+fi
+
+say "putting the mise shims on PATH"
+
+# The file is read by every shell, so the guard stops PATH from growing.
+cat >> "$persistent_env" <<EOF
+
+case ":\$PATH:" in
+  *":$shims:"*) ;;
+  *) export PATH="$shims:\$PATH" ;;
+esac
+EOF

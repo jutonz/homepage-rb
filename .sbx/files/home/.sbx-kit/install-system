@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+# Install everything the application needs that is not the repository itself
+# and is not owned by the agent user. Runs as root, once, at sandbox creation.
+#
+# Every step is guarded so that a sandbox created from a baked template
+# re-runs this script in seconds instead of minutes.
+
+. /home/agent/.sbx-kit/lib.sh
+
+PGVECTOR_VERSION=v0.8.2
+MISE_VERSION=v2026.9.7
+
+# The base shell sandbox runs its own `apt-get update` in the background at
+# container start, so the package lock is often already held when this script
+# begins.
+wait_for_apt() {
+  local waited=0
+
+  while pgrep -x "apt-get|apt|dpkg|unattended-upgr" >/dev/null 2>&1; do
+    if [ "$waited" -eq 0 ]; then
+      say "waiting for another apt process to finish"
+    fi
+
+    sleep 2
+    waited=$((waited + 2))
+
+    if [ "$waited" -ge 600 ]; then
+      say "apt is still locked after $waited seconds; giving up" >&2
+      return 1
+    fi
+  done
+}
+
+install_packages() {
+  local packages checksum marker
+
+  packages="build-essential ca-certificates curl ffmpeg git imagemagick
+    libvips42t64 libvips-tools postgresql-$POSTGRES_MAJOR
+    postgresql-client-$POSTGRES_MAJOR postgresql-server-dev-$POSTGRES_MAJOR"
+
+  # The marker is keyed to the package list so that adding a package to this
+  # script installs it, even in a sandbox built from a template that already
+  # ran an earlier version.
+  checksum="$(printf '%s' "$packages" | md5sum | cut -d" " -f1)"
+  marker="/var/lib/sbx-kit/packages-$checksum"
+
+  if [ -e "$marker" ]; then
+    say "system packages already installed"
+    return
+  fi
+
+  wait_for_apt
+
+  say "installing system packages"
+  apt-get update -qq
+  # shellcheck disable=SC2086
+  apt-get install -y -qq $packages
+
+  mkdir -p /var/lib/sbx-kit
+  touch "$marker"
+}
+
+install_pgvector() {
+  local extension_dir
+  extension_dir="$(pg_config --sharedir)/extension"
+
+  if [ -e "$extension_dir/vector.control" ]; then
+    say "pgvector already installed"
+    return
+  fi
+
+  say "building pgvector $PGVECTOR_VERSION from source"
+  rm -rf /tmp/pgvector
+  git clone --quiet --depth 1 --branch "$PGVECTOR_VERSION" \
+    https://github.com/pgvector/pgvector.git /tmp/pgvector
+  # pgvector compiles with -march=native by default. The guest CPU advertises
+  # Apple's SME extension without SVE2, which GCC refuses to target, so the
+  # default flags fail. Clearing OPTFLAGS is the documented workaround:
+  # https://github.com/pgvector/pgvector#installation-notes---linux-and-mac
+  make --quiet -C /tmp/pgvector OPTFLAGS=""
+  make --quiet -C /tmp/pgvector OPTFLAGS="" install
+  rm -rf /tmp/pgvector
+}
+
+install_mise() {
+  if command -v mise >/dev/null; then
+    say "mise already installed"
+    return
+  fi
+
+  local architecture
+
+  case "$(dpkg --print-architecture)" in
+    arm64) architecture=arm64 ;;
+    amd64) architecture=x64 ;;
+    *)
+      say "no mise release is published for $(dpkg --print-architecture)" >&2
+      return 1
+      ;;
+  esac
+
+  # The installer at https://mise.run is denied by the sandbox network policy.
+  # GitHub release downloads are allowed, so the binary comes from there.
+  local release=https://github.com/jdx/mise/releases/download
+
+  say "installing mise $MISE_VERSION"
+  curl -fsSL --output /usr/local/bin/mise \
+    "$release/$MISE_VERSION/mise-$MISE_VERSION-linux-$architecture"
+  chmod 0755 /usr/local/bin/mise
+}
+
+install_playwright() {
+  local version
+  version="$(playwright_version)"
+
+  if [ -e "$PLAYWRIGHT_BROWSERS_PATH/.sbx-kit-$version" ]; then
+    say "Playwright $version browsers already installed"
+    return
+  fi
+
+  say "installing Playwright $version chromium and its system dependencies"
+  mkdir -p "${NPM_CONFIG_PREFIX:-/usr/local/share/npm-global}/lib" \
+    "$PLAYWRIGHT_BROWSERS_PATH"
+  npx --yes "playwright@$version" install --with-deps chromium
+  touch "$PLAYWRIGHT_BROWSERS_PATH/.sbx-kit-$version"
+}
+
+create_postgres_socket_dir() {
+  install -d -o postgres -g postgres /var/run/postgresql
+}
+
+install_packages
+install_pgvector
+install_mise
+install_playwright
+create_postgres_socket_dir
+
+say "system provisioning complete"

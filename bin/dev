@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if command -v overmind &> /dev/null
+if command -v overmind > /dev/null 2>&1
 then
   overmind start -f Procfile.dev "$@"
   exit $?

@@ -1,0 +1,45 @@
+schemaVersion: "2"
+kind: mixin
+name: homepage-rb
+version: "1.0.0"
+displayName: homepage-rb
+description: >-
+  Ruby, Node, PostgreSQL with pgvector, Playwright, and a self-healing
+  dependency install for the homepage-rb application.
+
+permissions:
+  network:
+    allow:
+      # Playwright's browser CDN. Denied by the default policy, and on the
+      # critical path to a green system-spec run.
+      - cdn.playwright.dev
+      # Bundler's compact index. Denied by the default policy, which sends
+      # Bundler to the full RubyGems index instead and costs tens of minutes.
+      - index.rubygems.org
+
+environment:
+  variables:
+    DEBIAN_FRONTEND: noninteractive
+    BINDING: 0.0.0.0
+    PLAYWRIGHT_BROWSERS_PATH: /usr/local/share/ms-playwright
+    SOURCE_DIR: /run/sandbox/source
+
+setup:
+  install:
+    - command: bash /home/agent/.sbx-kit/install-system
+      user: "0"
+      description: Install system packages, PostgreSQL, pgvector, and Playwright
+    - command: bash /home/agent/.sbx-kit/install-toolchain
+      user: "1000"
+      description: Install the Ruby and Node versions the repository pins
+
+  startup:
+    - command: ["bash", "/home/agent/.sbx-kit/enable-toolchain-path"]
+      user: "0"
+      description: Put the mise shims on PATH for every shell
+    - command: ["bash", "/home/agent/.sbx-kit/start-postgres"]
+      user: "0"
+      description: Start PostgreSQL
+    - command: ["bash", "/home/agent/.sbx-kit/prepare-checkout"]
+      user: "1000"
+      description: Write keys, install dependencies, prepare databases

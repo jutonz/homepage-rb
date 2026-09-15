@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Rebuild the local sandbox template from the kit, on any Mac, with one
+# command. The template is a cache, never a shipped artifact: it holds the
+# toolchain and the gem and npm caches, and no repository state.
+#
+# No template is saved until the suite passes, so a broken environment can
+# never become the thing every later sandbox starts from.
+
+. "$(dirname "$0")/host-lib.sh"
+
+build_sandbox=homepage-rb-template-build
+
+# A build that started from the previous template would bake its mistakes in
+# again. This always builds from the stock agent image.
+USE_TEMPLATE=no
+
+trap 'remove_sandbox "$build_sandbox"' EXIT
+
+remove_sandbox "$build_sandbox"
+
+say "creating $build_sandbox from the kit"
+create_sandbox "$build_sandbox"
+
+say "waiting for provisioning to finish"
+wait_until_ready "$build_sandbox"
+
+# The suite must pass, but not necessarily on the first attempt: one flaky
+# system spec (HPRB-112) would otherwise cost a whole rebuild and become the
+# reason the template is never refreshed.
+attempt=1
+until in_sandbox "$build_sandbox" "mise exec -- bin/rspec"; do
+  attempt=$((attempt + 1))
+
+  if [ "$attempt" -gt "$SUITE_ATTEMPTS" ]; then
+    say "the suite failed $SUITE_ATTEMPTS times; not saving a template" >&2
+    exit 1
+  fi
+
+  say "the suite failed; attempt $attempt of $SUITE_ATTEMPTS"
+done
+
+TEMPLATE_TAG="${1:-$TEMPLATE_TAG}"
+say "saving $TEMPLATE_TAG"
+sbx stop "$build_sandbox" >/dev/null
+sbx template save "$build_sandbox" "$TEMPLATE_TAG"
+
+say "$TEMPLATE_TAG is ready; new sandboxes will start from it"
