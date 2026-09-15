@@ -10,7 +10,8 @@ This directory is the only source of truth for what a sandbox contains.
 ```
 spec.yaml                    network, environment, and the five scripts below
 files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
-  install-system             apt packages, PostgreSQL, pgvector, Playwright
+  install-system             apt packages, PostgreSQL, pgvector, Playwright,
+                              the linear CLI
   install-toolchain          the Ruby and Node versions .tool-versions pins
   enable-toolchain-path      puts the mise shims on PATH for every shell
   start-postgres             starts the cluster, on every sandbox start
@@ -47,6 +48,33 @@ Commits made inside come back with `git fetch sandbox-my-agent`.
 The production credential key stays on the host. A sandbox gets the
 development and test keys and nothing else.
 
+## Linear
+
+Every sandbox has the `linear` CLI on `PATH`. Creation forwards it a
+Linear API key from the first of these that has one:
+
+1. `LINEAR_API_KEY`, if exported on the host.
+2. Otherwise, the 1Password CLI, if `op` is on the host:
+   `op read "$LINEAR_OP_ITEM" --account="$LINEAR_OP_ACCOUNT"`. Override
+   `LINEAR_OP_ITEM` / `LINEAR_OP_ACCOUNT` to point at a different vault
+   item; both default to this project's own key.
+
+```sh
+.sbx/sandbox my-agent
+```
+
+This is the real key, not a host-only proxy like the GitHub credential:
+the sandbox can do anything that key can do. Neither source is required;
+with no export and no usable 1Password entry, the sandbox still comes
+up, just without Linear access. `linear` reports its own missing- or
+invalid-credential error in that case.
+
+Attaching to an existing sandbox reuses whatever key it was created
+with; it does not re-resolve either source. Recreate the sandbox
+(`sbx rm` it, then run `.sbx/sandbox` again) to pick up a changed key,
+or to add Linear to a sandbox created before this CLI existed in the
+kit.
+
 ## Build the template
 
 ```sh
@@ -62,6 +90,10 @@ and is never shared as a file.
 `build-template` only saves a template from a sandbox whose suite is
 green. Set `KEEP_SANDBOXES=yes` to leave the build sandbox behind for
 inspection when the suite fails.
+
+The build never resolves or forwards a Linear key, from either source
+above, so the saved template never carries the builder's own Linear
+identity.
 
 ## Settings
 

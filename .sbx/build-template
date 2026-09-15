@@ -14,6 +14,10 @@ build_sandbox=homepage-rb-template-build
 # again. This always builds from the stock agent image.
 USE_TEMPLATE=no
 
+# A saved Template is shared by every later sandbox, so it must never carry
+# the builder's own Linear identity even when they have LINEAR_API_KEY set.
+FORWARD_LINEAR_KEY=no
+
 trap 'remove_sandbox "$build_sandbox"' EXIT
 
 remove_sandbox "$build_sandbox"

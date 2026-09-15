@@ -10,6 +10,9 @@ READY_TIMEOUT="${READY_TIMEOUT:-1800}"
 USE_TEMPLATE="${USE_TEMPLATE:-yes}"
 KEEP_SANDBOXES="${KEEP_SANDBOXES:-no}"
 SUITE_ATTEMPTS="${SUITE_ATTEMPTS:-3}"
+FORWARD_LINEAR_KEY="${FORWARD_LINEAR_KEY:-yes}"
+LINEAR_OP_ITEM="${LINEAR_OP_ITEM:-op://Private/Linear/Beads sync API key}"
+LINEAR_OP_ACCOUNT="${LINEAR_OP_ACCOUNT:-my.1password.com}"
 
 say() {
   printf '[sbx] %s\n' "$*"
@@ -21,6 +24,22 @@ export_credential_keys() {
   DEVELOPMENT_KEY="$(cat "$repo_root/config/credentials/development.key")"
   TEST_KEY="$(cat "$repo_root/config/credentials/test.key")"
   export DEVELOPMENT_KEY TEST_KEY
+}
+
+# An explicit export always wins. Otherwise, when the 1Password CLI is on
+# the host, read the key from there instead of requiring an export.
+resolve_linear_api_key() {
+  if [ -n "${LINEAR_API_KEY:-}" ] || ! command -v op >/dev/null; then
+    return
+  fi
+
+  if LINEAR_API_KEY="$(op read "$LINEAR_OP_ITEM" \
+      --account="$LINEAR_OP_ACCOUNT" 2>/dev/null)"; then
+    export LINEAR_API_KEY
+  else
+    say "could not read the Linear key from 1Password;" \
+      "the sandbox will have no Linear access" >&2
+  fi
 }
 
 template_exists() {
@@ -51,6 +70,18 @@ build_sandbox_argv() {
 
   if [ "$USE_TEMPLATE" = yes ] && template_exists; then
     sandbox_argv+=(--template "$TEMPLATE_TAG")
+  fi
+
+  # Linear is optional and, unlike the credential keys above, forwards the
+  # developer's own host value rather than one read from a repo file. A
+  # Template build sets FORWARD_LINEAR_KEY=no so a cached Template never
+  # acquires or carries the builder's Linear identity.
+  if [ "$FORWARD_LINEAR_KEY" = yes ]; then
+    resolve_linear_api_key
+
+    if [ -n "${LINEAR_API_KEY:-}" ]; then
+      sandbox_argv+=(--env LINEAR_API_KEY)
+    fi
   fi
 }
 
