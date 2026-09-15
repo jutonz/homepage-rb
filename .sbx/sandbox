@@ -2,12 +2,12 @@
 # Create a sandbox and attach to it, or attach to one that already exists.
 #
 # A sandbox holds its own PostgreSQL, gems, node modules, and port 3000, so
-# two of them cannot corrupt each other's data. See .sbx/README.md.
+# two of them cannot corrupt each other's data. See README.md.
 
-. "$(dirname "$0")/../.sbx/host-lib.sh"
+. "$(dirname "$0")/host-lib.sh"
 
 if [ "$#" -eq 0 ]; then
-  echo "usage: bin/sandbox NAME [sbx flags...]" >&2
+  echo "usage: .sbx/sandbox NAME [sbx flags...]" >&2
   exit 1
 fi
 

@@ -74,10 +74,15 @@ messages it relays between processes.
 **Sandbox** — the microVM `sbx` creates, holding its own kernel, file
 system, PostgreSQL, gems, and port 3000. Two sandboxes share nothing, so
 two agents can run the suite at once without corrupting each other's
-data. `bin/sandbox` creates one.
+data. `.sbx/sandbox` creates one.
 
 *Avoid*: "container". A sandbox runs its own kernel, and the difference
 decides what it does and does not isolate.
+
+**Attach** — opening an additional shell in a sandbox that already
+exists. `.sbx/sandbox` attaches when the named sandbox is present, and
+creates when it is not. A stopped sandbox starts first, then accepts the
+shell. One sandbox serves any number of attached shells at once.
 
 **Worktree** — the git-linked checkout under `.claude/worktrees/`, made
 by `git worktree` and prepared by `bin/worktree-setup`. It isolates the
