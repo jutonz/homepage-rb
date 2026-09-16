@@ -137,8 +137,10 @@ every sandbox without a recreate. The mounts are writable in both
 directions, so a skill refined from inside a sandbox changes on the host
 too. That also means an agent in the sandbox can change a skill that
 `claude` on the host later runs, outside the sandbox; review skill edits
-before you use them on the host. Only a symlink target that exists at creation is mounted; a skill
-that links into a new directory needs a recreated sandbox.
+before you use them on the host.
+
+Only a symlink target that exists at creation is mounted; a skill that
+links into a new directory needs a recreated sandbox.
 
 `sbx skills import` does not help here: only the agent-specific
 sandboxes, such as `sbx create claude`, mount its store, and a `shell`
