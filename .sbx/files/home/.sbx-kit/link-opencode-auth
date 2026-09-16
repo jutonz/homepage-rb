@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Give opencode the logins of the host. The host auth directory is mounted at
+# its host path; see .sbx/host-lib.sh.
+#
+# opencode reads auth.json before each request and writes a refreshed token
+# in place, through the symlink. A refresh in one sandbox thus reaches the
+# host and every other sandbox that has the mount.
+
+. /home/agent/.sbx-kit/lib.sh
+
+agent_auth=/home/agent/.local/share/opencode/auth.json
+
+if [ -z "${HOST_OPENCODE_AUTH_FILE:-}" ]; then
+  exit 0
+fi
+
+if [ ! -f "$HOST_OPENCODE_AUTH_FILE" ]; then
+  say "cannot find the host opencode logins at $HOST_OPENCODE_AUTH_FILE" >&2
+  exit 0
+fi
+
+if [ -e "$agent_auth" ] && [ ! -L "$agent_auth" ]; then
+  say "$agent_auth already exists; not linking the host opencode logins" >&2
+  exit 0
+fi
+
+say "linking the host opencode logins from $HOST_OPENCODE_AUTH_FILE"
+mkdir -p "$(dirname "$agent_auth")"
+ln -sfn "$HOST_OPENCODE_AUTH_FILE" "$agent_auth"

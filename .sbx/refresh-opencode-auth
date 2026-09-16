@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Refresh the ChatGPT login in the shared opencode auth.json before it
+# expires. launchd runs a copy of this script every hour, and .sbx/sandbox
+# runs it before each sandbox starts; see share_opencode_auth in host-lib.sh.
+#
+# OpenAI accepts a refresh token one time only. opencode refreshes a token
+# only after it expires, and two opencode processes can then send the same
+# refresh token, so one of them fails. This script refreshes the token first,
+# so no opencode process finds an expired token.
+#
+# launchd runs the copy outside any checkout, so this script must not read
+# other files of the kit.
+
+set -Eeuo pipefail
+
+OPENCODE_AUTH_DIR="${OPENCODE_AUTH_DIR:-$HOME/.local/share/opencode-auth}"
+REFRESH_WITHIN_SECONDS="${REFRESH_WITHIN_SECONDS:-86400}"
+
+auth_file="$OPENCODE_AUTH_DIR/auth.json"
+
+# The client ID of the Codex login in opencode, from
+# packages/opencode/src/plugin/openai/codex.ts. A refresh token works only
+# with the client that issued it.
+client_id=app_EMoamEEZ73f0CkXaXp7hrann
+
+say() {
+  printf '[%s refresh-opencode-auth] %s\n' "$(date '+%F %T')" "$*"
+}
+
+expires_at() {
+  jq -r '.openai | select(.type == "oauth") | .expires' "$auth_file"
+}
+
+request_tokens() {
+  jq -j '.openai.refresh' "$auth_file" |
+    curl --silent --show-error --fail-with-body --max-time 60 \
+      --data-urlencode grant_type=refresh_token \
+      --data-urlencode "client_id=$client_id" \
+      --data-urlencode refresh_token@- \
+      https://auth.openai.com/oauth/token
+}
+
+# The rename replaces the file in one step, so opencode never reads a
+# partial file.
+store_tokens() {
+  local response="$1"
+  local now_ms="$2"
+  local temporary
+
+  temporary="$(mktemp "$OPENCODE_AUTH_DIR/.auth.json.XXXXXX")"
+
+  printf '%s' "$response" | jq \
+    --slurpfile auth "$auth_file" \
+    --argjson now "$now_ms" '
+      . as $tokens
+      | $auth[0]
+      | .openai.access = $tokens.access_token
+      | .openai.refresh = ($tokens.refresh_token // .openai.refresh)
+      | .openai.expires = $now + (($tokens.expires_in // 3600) * 1000)
+    ' > "$temporary"
+
+  chmod 600 "$temporary"
+  mv "$temporary" "$auth_file"
+}
+
+if [ ! -f "$auth_file" ]; then
+  exit 0
+fi
+
+expires_ms="$(expires_at)"
+
+if [ -z "$expires_ms" ]; then
+  exit 0
+fi
+
+now_ms="$(($(date +%s) * 1000))"
+
+if [ $((expires_ms - now_ms)) -gt $((REFRESH_WITHIN_SECONDS * 1000)) ]; then
+  exit 0
+fi
+
+if ! response="$(request_tokens)"; then
+  say "the ChatGPT login refresh failed: $response" >&2
+  say "log in again with /connect in opencode on the host" >&2
+  exit 1
+fi
+
+if ! printf '%s' "$response" | jq -e '.access_token' >/dev/null; then
+  say "the ChatGPT login refresh returned no access token" >&2
+  exit 1
+fi
+
+store_tokens "$response" "$now_ms"
+say "refreshed the ChatGPT login in $auth_file"

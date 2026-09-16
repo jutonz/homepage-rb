@@ -18,6 +18,9 @@ CLAUDE_OP_ITEM="${CLAUDE_OP_ITEM:-op://Private/Claude AI/oauth token}"
 CLAUDE_OP_ACCOUNT="${CLAUDE_OP_ACCOUNT:-my.1password.com}"
 SHARE_CLAUDE_SKILLS="${SHARE_CLAUDE_SKILLS:-yes}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
+SHARE_OPENCODE_AUTH="${SHARE_OPENCODE_AUTH:-yes}"
+OPENCODE_AUTH_DIR="${OPENCODE_AUTH_DIR:-$HOME/.local/share/opencode-auth}"
+OPENCODE_REFRESH_JOB=homepage-rb.refresh-opencode-auth
 
 say() {
   printf '[sbx] %s\n' "$*"
@@ -69,6 +72,140 @@ claude_skill_directories() {
       fi
     done
   } | sort -u
+}
+
+# sbx can mount a directory read/write, but not a single file. The rest of
+# ~/.local/share/opencode holds a SQLite database, which must not be shared
+# between machines. Thus auth.json moves into a directory of its own, and a
+# symlink stays at the old path. Returns 1 when there is no login to share.
+link_host_opencode_auth() {
+  local host_auth="$HOME/.local/share/opencode/auth.json"
+  local shared_auth="$OPENCODE_AUTH_DIR/auth.json"
+
+  if [ -L "$host_auth" ]; then
+    if [ "$(readlink "$host_auth")" = "$shared_auth" ]; then
+      [ -f "$shared_auth" ]
+      return
+    fi
+
+    say "$host_auth links somewhere other than $shared_auth;" \
+      "not sharing opencode logins" >&2
+    return 1
+  fi
+
+  if [ -f "$host_auth" ]; then
+    say "moving $host_auth to $shared_auth, to share it with sandboxes"
+  elif [ -f "$shared_auth" ]; then
+    say "restoring the symlink from $host_auth to $shared_auth"
+  else
+    return 1
+  fi
+
+  mkdir -p -m 700 "$OPENCODE_AUTH_DIR"
+
+  if [ -f "$host_auth" ]; then
+    mv -f "$host_auth" "$shared_auth"
+  fi
+
+  mkdir -p "$(dirname "$host_auth")"
+  ln -s "$shared_auth" "$host_auth"
+}
+
+# launchd gives a job a minimal PATH, which has no Homebrew jq.
+render_opencode_refresh_job() {
+  local script="$1"
+  local job_log="$2"
+  local path
+
+  path="$(dirname "$(command -v jq)"):/usr/bin:/bin"
+
+  cat <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$OPENCODE_REFRESH_JOB</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>$script</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>$path</string>
+    <key>OPENCODE_AUTH_DIR</key>
+    <string>$OPENCODE_AUTH_DIR</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StartInterval</key>
+  <integer>3600</integer>
+  <key>StandardOutPath</key>
+  <string>$job_log</string>
+  <key>StandardErrorPath</key>
+  <string>$job_log</string>
+</dict>
+</plist>
+PLIST
+}
+
+# launchd runs a copy of the refresh script, so the job keeps working after
+# this checkout moves or its worktree is removed. A job is reloaded only when
+# its script or its definition changes.
+install_opencode_refresh_job() {
+  local support_dir="$HOME/Library/Application Support/homepage-rb"
+  local script="$support_dir/refresh-opencode-auth"
+  local job_file="$HOME/Library/LaunchAgents/$OPENCODE_REFRESH_JOB.plist"
+  local job_log="$HOME/Library/Logs/$OPENCODE_REFRESH_JOB.log"
+  local domain="gui/$(id -u)"
+  local changed=no
+  local definition
+
+  if [ "$(uname -s)" != Darwin ] || ! command -v jq >/dev/null; then
+    say "cannot install the $OPENCODE_REFRESH_JOB job; sandboxes" \
+      "that refresh at the same time can log each other out" >&2
+    return 0
+  fi
+
+  mkdir -p "$support_dir" "$(dirname "$job_file")" "$(dirname "$job_log")"
+
+  if ! cmp -s "$kit_dir/refresh-opencode-auth" "$script"; then
+    cp "$kit_dir/refresh-opencode-auth" "$script"
+    chmod 755 "$script"
+    changed=yes
+  fi
+
+  definition="$(render_opencode_refresh_job "$script" "$job_log")"
+
+  if [ "$definition" != "$(cat "$job_file" 2>/dev/null)" ]; then
+    printf '%s\n' "$definition" > "$job_file"
+    changed=yes
+  fi
+
+  if [ "$changed" = no ] && launchctl print "$domain/$OPENCODE_REFRESH_JOB" \
+    >/dev/null 2>&1; then
+    return 0
+  fi
+
+  say "loading the $OPENCODE_REFRESH_JOB launchd job"
+  launchctl bootout "$domain/$OPENCODE_REFRESH_JOB" 2>/dev/null || true
+  launchctl bootstrap "$domain" "$job_file"
+}
+
+# Sets up, and repairs, everything that shares the opencode logins of the
+# host with sandboxes. Returns 1 when there is nothing to share.
+share_opencode_auth() {
+  if [ "$SHARE_OPENCODE_AUTH" != yes ] || ! link_host_opencode_auth; then
+    return 1
+  fi
+
+  install_opencode_refresh_job
+
+  if ! OPENCODE_AUTH_DIR="$OPENCODE_AUTH_DIR" \
+    bash "$kit_dir/refresh-opencode-auth"; then
+    say "the sandbox starts with a ChatGPT login that does not work" >&2
+  fi
 }
 
 template_exists() {
@@ -135,6 +272,11 @@ build_sandbox_argv() {
       sandbox_paths+=("$directory")
     done < <(claude_skill_directories)
   fi
+
+  if share_opencode_auth; then
+    sandbox_argv+=(--env "HOST_OPENCODE_AUTH_FILE=$OPENCODE_AUTH_DIR/auth.json")
+    sandbox_paths+=("$OPENCODE_AUTH_DIR")
+  fi
 }
 
 create_sandbox() {
@@ -173,6 +315,8 @@ run_sandbox() {
     sbx run "${sandbox_argv[@]}" "$@" "${sandbox_paths[@]}"
     return
   fi
+
+  share_opencode_auth || true
 
   if [ "$state" = stopped ]; then
     say "starting stopped sandbox"
