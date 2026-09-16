@@ -16,6 +16,8 @@ LINEAR_OP_ACCOUNT="${LINEAR_OP_ACCOUNT:-my.1password.com}"
 FORWARD_CLAUDE_TOKEN="${FORWARD_CLAUDE_TOKEN:-yes}"
 CLAUDE_OP_ITEM="${CLAUDE_OP_ITEM:-op://Private/Claude AI/oauth token}"
 CLAUDE_OP_ACCOUNT="${CLAUDE_OP_ACCOUNT:-my.1password.com}"
+SHARE_CLAUDE_SKILLS="${SHARE_CLAUDE_SKILLS:-yes}"
+CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 
 say() {
   printf '[sbx] %s\n' "$*"
@@ -51,6 +53,24 @@ resolve_from_1password() {
   fi
 }
 
+# Writes the skills directory and each directory that its skill symlinks
+# point into. sbx mounts a host directory at its host path, so a symlink
+# resolves in the sandbox only when sbx also mounts the symlink target.
+claude_skill_directories() {
+  local entry
+
+  {
+    printf '%s\n' "$CLAUDE_SKILLS_DIR"
+
+    for entry in "$CLAUDE_SKILLS_DIR"/*; do
+      if [ -L "$entry" ] && [ -d "$entry" ]; then
+        (cd "$CLAUDE_SKILLS_DIR" && cd "$(dirname "$(readlink "$entry")")" \
+          && pwd)
+      fi
+    done
+  } | sort -u
+}
+
 template_exists() {
   local repository="${TEMPLATE_TAG%:*}"
   local tag="${TEMPLATE_TAG##*:}"
@@ -61,10 +81,14 @@ template_exists() {
   '
 }
 
-# Writes the flags that create a sandbox. The result is a global array
-# because macOS ships bash 3.2, which has no name references.
+# Writes the flags and the workspace paths that create a sandbox. The results
+# are global arrays because macOS ships bash 3.2, which has no name
+# references.
 build_sandbox_argv() {
   local name="$1"
+  local directory
+
+  sandbox_paths=("$repo_root")
 
   sandbox_argv=(
     shell
@@ -103,6 +127,14 @@ build_sandbox_argv() {
       sandbox_argv+=(--env CLAUDE_CODE_OAUTH_TOKEN)
     fi
   fi
+
+  if [ "$SHARE_CLAUDE_SKILLS" = yes ] && [ -d "$CLAUDE_SKILLS_DIR" ]; then
+    sandbox_argv+=(--env "HOST_CLAUDE_SKILLS_DIR=$CLAUDE_SKILLS_DIR")
+
+    while IFS= read -r directory; do
+      sandbox_paths+=("$directory")
+    done < <(claude_skill_directories)
+  fi
 }
 
 create_sandbox() {
@@ -112,7 +144,7 @@ create_sandbox() {
   export_credential_keys
   build_sandbox_argv "$name"
 
-  sbx create "${sandbox_argv[@]}" "$@" "$repo_root"
+  sbx create "${sandbox_argv[@]}" "$@" "${sandbox_paths[@]}"
 }
 
 # Writes the state sbx reports for a sandbox, or nothing when no sandbox
@@ -138,7 +170,7 @@ run_sandbox() {
     export_credential_keys
     build_sandbox_argv "$name"
 
-    sbx run "${sandbox_argv[@]}" "$@" "$repo_root"
+    sbx run "${sandbox_argv[@]}" "$@" "${sandbox_paths[@]}"
     return
   fi
 

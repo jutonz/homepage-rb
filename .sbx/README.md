@@ -15,6 +15,7 @@ files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   install-toolchain          the Ruby and Node versions .tool-versions pins
   enable-toolchain-path      puts the mise shims on PATH for the agent
   configure-claude           lets claude use a forwarded subscription token
+  link-claude-skills         gives claude the host's skills
   start-postgres             starts the cluster, on every sandbox start
   prepare-checkout           keys, gems, node modules, databases, assets
 sandbox                      the entry point: creates or attaches to a sandbox
@@ -121,6 +122,30 @@ it. With no token from either source, the sandbox still comes up and
 `claude` asks you to log in. Attaching to an existing sandbox reuses the
 token it was created with; recreate the sandbox to pick up a new one.
 
+## Claude skills
+
+Creation mounts `~/.claude/skills` from the host into the sandbox at its
+host path, and `link-claude-skills` points the agent's
+`~/.claude/skills` at it. A skill that is a symlink resolves in the
+sandbox too: creation also mounts each directory the symlinks in
+`~/.claude/skills` point into, such as the skillshare source. Set
+`CLAUDE_SKILLS_DIR` to share a different directory, or
+`SHARE_CLAUDE_SKILLS=no` to share none.
+
+The mounts are live, so a skill added or changed on the host appears in
+every sandbox without a recreate. The mounts are writable in both
+directions, so a skill refined from inside a sandbox changes on the host
+too. That also means an agent in the sandbox can change a skill that
+`claude` on the host later runs, outside the sandbox; review skill edits
+before you use them on the host.
+
+Only a symlink target that exists at creation is mounted; a skill that
+links into a new directory needs a recreated sandbox.
+
+`sbx skills import` does not help here: only the agent-specific
+sandboxes, such as `sbx create claude`, mount its store, and a `shell`
+sandbox does not.
+
 ## Build the template
 
 ```sh
@@ -138,8 +163,8 @@ green. Set `KEEP_SANDBOXES=yes` to leave the build sandbox behind for
 inspection when the suite fails.
 
 The build never resolves or forwards a Linear key or a Claude token,
-from either source above, so the saved template never carries the
-builder's own Linear or Claude identity.
+from either source above, and never mounts the builder's skills, so the
+saved template never carries the builder's own Linear or Claude identity.
 
 ## Settings
 
@@ -153,6 +178,8 @@ builder's own Linear or Claude identity.
 | `READY_TIMEOUT` | `1800` | Seconds to wait for provisioning |
 | `SUITE_ATTEMPTS` | `3` | Suite runs `build-template` will try |
 | `KEEP_SANDBOXES` | `no` | Leave sandboxes behind instead of removing |
+| `SHARE_CLAUDE_SKILLS` | `yes` | Mount the host's Claude skills |
+| `CLAUDE_SKILLS_DIR` | `~/.claude/skills` | Host skills directory to mount |
 
 The defaults for CPU and memory are deliberate. Left alone, `sbx` gives
 one sandbox every host CPU and half the host's memory, which two

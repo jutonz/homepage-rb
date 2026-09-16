@@ -50,6 +50,9 @@ setup:
       description: >-
         Let claude start with a forwarded subscription token, without
         onboarding or a login
+    - command: ["bash", "/home/agent/.sbx-kit/link-claude-skills"]
+      user: "1000"
+      description: Give claude the skills of the host
     - command: ["bash", "/home/agent/.sbx-kit/start-postgres"]
       user: "0"
       description: Start PostgreSQL

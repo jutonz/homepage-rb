@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Give claude the skills of the host. The host skill directories are mounted
+# at their host paths; see .sbx/host-lib.sh.
+
+. /home/agent/.sbx-kit/lib.sh
+
+agent_skills=/home/agent/.claude/skills
+
+if [ -z "${HOST_CLAUDE_SKILLS_DIR:-}" ]; then
+  exit 0
+fi
+
+if [ ! -d "$HOST_CLAUDE_SKILLS_DIR" ]; then
+  say "cannot find the host skills at $HOST_CLAUDE_SKILLS_DIR" >&2
+  exit 0
+fi
+
+if [ -e "$agent_skills" ] && [ ! -L "$agent_skills" ]; then
+  say "$agent_skills already exists; not linking the host skills" >&2
+  exit 0
+fi
+
+say "linking the host claude skills from $HOST_CLAUDE_SKILLS_DIR"
+mkdir -p "$(dirname "$agent_skills")"
+ln -sfn "$HOST_CLAUDE_SKILLS_DIR" "$agent_skills"
