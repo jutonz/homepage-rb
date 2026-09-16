@@ -8,12 +8,13 @@ cannot corrupt each other, because they do not share anything.
 This directory is the only source of truth for what a sandbox contains.
 
 ```
-spec.yaml                    network, environment, and the five scripts below
+spec.yaml                    network, environment, and the six scripts below
 files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   install-system             apt packages, PostgreSQL, pgvector, Playwright,
                               the linear, claude, and opencode CLIs
   install-toolchain          the Ruby and Node versions .tool-versions pins
   enable-toolchain-path      puts the mise shims on PATH for the agent
+  configure-claude           lets claude use a forwarded subscription token
   start-postgres             starts the cluster, on every sandbox start
   prepare-checkout           keys, gems, node modules, databases, assets
 sandbox                      the entry point: creates or attaches to a sandbox
@@ -51,9 +52,10 @@ development and test keys and nothing else.
 ## Agents
 
 Every sandbox has `claude` and `opencode` on `PATH`. The kit installs the
-binaries and nothing else: neither is authenticated, and neither carries
-any agent-specific configuration, so the first run of either asks you to
-log in.
+binaries and no agent-specific configuration. `opencode` is not
+authenticated, so its first run asks you to log in. `claude` uses your
+Claude subscription when creation forwards a token; see
+[Claude subscription](#claude-subscription) below.
 
 `install-system` asks for the newest published version of each on every
 run, so a sandbox creation that finds its template already current starts
@@ -88,6 +90,37 @@ with; it does not re-resolve either source. Recreate the sandbox
 or to add Linear to a sandbox created before this CLI existed in the
 kit.
 
+## Claude subscription
+
+Creation forwards `claude` a subscription token, as
+`CLAUDE_CODE_OAUTH_TOKEN`, from the first of these that has one:
+
+1. `CLAUDE_CODE_OAUTH_TOKEN`, if exported on the host.
+2. Otherwise, the 1Password CLI, if `op` is on the host:
+   `op read "$CLAUDE_OP_ITEM" --account="$CLAUDE_OP_ACCOUNT"`. Override
+   `CLAUDE_OP_ITEM` / `CLAUDE_OP_ACCOUNT` to point at a different vault
+   item; both default to the owner's token.
+
+Generate a token with `claude setup-token`. It lasts a year.
+
+A `shell` sandbox sets `ANTHROPIC_API_KEY=proxy-managed`, and the `sbx`
+proxy fills that placeholder only from a stored Anthropic API key, never
+from a stored subscription login. `claude` prefers `ANTHROPIC_API_KEY`
+to the token, so without a stored API key it reports
+`Invalid API key · Fix external API key`. `configure-claude` unsets the
+placeholder in every shell of a sandbox that has a token.
+
+An interactive `claude` also ignores the token until its onboarding is
+complete, and that onboarding ends with a login. `configure-claude`
+marks onboarding complete and trusts the workspace in
+`~/.claude.json`, so a session starts at the prompt.
+
+Like the Linear key, this is the real token, not a host-only proxy: the
+sandbox can spend your subscription, and the token is readable inside
+it. With no token from either source, the sandbox still comes up and
+`claude` asks you to log in. Attaching to an existing sandbox reuses the
+token it was created with; recreate the sandbox to pick up a new one.
+
 ## Build the template
 
 ```sh
@@ -104,9 +137,9 @@ and is never shared as a file.
 green. Set `KEEP_SANDBOXES=yes` to leave the build sandbox behind for
 inspection when the suite fails.
 
-The build never resolves or forwards a Linear key, from either source
-above, so the saved template never carries the builder's own Linear
-identity.
+The build never resolves or forwards a Linear key or a Claude token,
+from either source above, so the saved template never carries the
+builder's own Linear or Claude identity.
 
 ## Settings
 

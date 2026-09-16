@@ -45,6 +45,11 @@ setup:
     - command: ["bash", "/home/agent/.sbx-kit/enable-toolchain-path"]
       user: "0"
       description: Put the mise shims on PATH for the agent user
+    - command: ["bash", "/home/agent/.sbx-kit/configure-claude"]
+      user: "0"
+      description: >-
+        Let claude start with a forwarded subscription token, without
+        onboarding or a login
     - command: ["bash", "/home/agent/.sbx-kit/start-postgres"]
       user: "0"
       description: Start PostgreSQL

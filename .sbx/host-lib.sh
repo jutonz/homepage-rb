@@ -13,6 +13,9 @@ SUITE_ATTEMPTS="${SUITE_ATTEMPTS:-3}"
 FORWARD_LINEAR_KEY="${FORWARD_LINEAR_KEY:-yes}"
 LINEAR_OP_ITEM="${LINEAR_OP_ITEM:-op://Private/Linear/Beads sync API key}"
 LINEAR_OP_ACCOUNT="${LINEAR_OP_ACCOUNT:-my.1password.com}"
+FORWARD_CLAUDE_TOKEN="${FORWARD_CLAUDE_TOKEN:-yes}"
+CLAUDE_OP_ITEM="${CLAUDE_OP_ITEM:-op://Private/Claude AI/oauth token}"
+CLAUDE_OP_ACCOUNT="${CLAUDE_OP_ACCOUNT:-my.1password.com}"
 
 say() {
   printf '[sbx] %s\n' "$*"
@@ -27,18 +30,24 @@ export_credential_keys() {
 }
 
 # An explicit export always wins. Otherwise, when the 1Password CLI is on
-# the host, read the key from there instead of requiring an export.
-resolve_linear_api_key() {
-  if [ -n "${LINEAR_API_KEY:-}" ] || ! command -v op >/dev/null; then
+# the host, read the value from there instead of requiring an export.
+resolve_from_1password() {
+  local variable="$1"
+  local item="$2"
+  local account="$3"
+  local service="$4"
+
+  if [ -n "${!variable:-}" ] || ! command -v op >/dev/null; then
     return
   fi
 
-  if LINEAR_API_KEY="$(op read "$LINEAR_OP_ITEM" \
-      --account="$LINEAR_OP_ACCOUNT" 2>/dev/null)"; then
-    export LINEAR_API_KEY
+  local value
+
+  if value="$(op read "$item" --account="$account" 2>/dev/null)"; then
+    export "$variable=$value"
   else
-    say "could not read the Linear key from 1Password;" \
-      "the sandbox will have no Linear access" >&2
+    say "could not read $variable from 1Password;" \
+      "the sandbox will have no $service access" >&2
   fi
 }
 
@@ -72,15 +81,26 @@ build_sandbox_argv() {
     sandbox_argv+=(--template "$TEMPLATE_TAG")
   fi
 
-  # Linear is optional and, unlike the credential keys above, forwards the
-  # developer's own host value rather than one read from a repo file. A
-  # Template build sets FORWARD_LINEAR_KEY=no so a cached Template never
-  # acquires or carries the builder's Linear identity.
+  # Linear and the Claude subscription are optional and, unlike the
+  # credential keys above, forward the developer's own host values rather
+  # than ones read from a repo file. A Template build sets both FORWARD_
+  # settings to no so a cached Template never acquires or carries the
+  # builder's Linear or Claude identity.
   if [ "$FORWARD_LINEAR_KEY" = yes ]; then
-    resolve_linear_api_key
+    resolve_from_1password LINEAR_API_KEY "$LINEAR_OP_ITEM" \
+      "$LINEAR_OP_ACCOUNT" Linear
 
     if [ -n "${LINEAR_API_KEY:-}" ]; then
       sandbox_argv+=(--env LINEAR_API_KEY)
+    fi
+  fi
+
+  if [ "$FORWARD_CLAUDE_TOKEN" = yes ]; then
+    resolve_from_1password CLAUDE_CODE_OAUTH_TOKEN "$CLAUDE_OP_ITEM" \
+      "$CLAUDE_OP_ACCOUNT" "Claude subscription"
+
+    if [ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]; then
+      sandbox_argv+=(--env CLAUDE_CODE_OAUTH_TOKEN)
     fi
   fi
 }
