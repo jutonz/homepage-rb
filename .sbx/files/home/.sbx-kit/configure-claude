@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Let an interactive claude session start with a forwarded
+# CLAUDE_CODE_OAUTH_TOKEN. A sandbox without a token keeps the sbx defaults.
+
+. /home/agent/.sbx-kit/lib.sh
+
+persistent_env=/etc/sandbox-persistent.sh
+claude_config=/home/agent/.claude.json
+
+if [ -z "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]; then
+  exit 0
+fi
+
+# A shell sandbox sets ANTHROPIC_API_KEY=proxy-managed, and the sbx proxy
+# replaces it only with a stored Anthropic API key. Claude Code prefers
+# ANTHROPIC_API_KEY to CLAUDE_CODE_OAUTH_TOKEN, so the placeholder causes
+# "Invalid API key" until a shell removes it. Every shell reads this file;
+# see enable-toolchain-path.
+remove_api_key_placeholder() {
+  if grep -qs CLAUDE_CODE_OAUTH_TOKEN "$persistent_env"; then
+    return
+  fi
+
+  cat >> "$persistent_env" <<'SH'
+
+if [ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]; then
+  unset ANTHROPIC_API_KEY
+fi
+SH
+}
+
+# An interactive session ignores the token until onboarding is complete, and
+# onboarding ends with a login. The claude agent image of sbx writes the same
+# two keys.
+skip_onboarding() {
+  local current='{}'
+  local agent_uid
+
+  if [ -s "$claude_config" ]; then
+    current="$(cat "$claude_config")"
+  fi
+
+  agent_uid="$(stat -c %u /home/agent)"
+
+  printf '%s\n' "$current" | jq --arg workspace "$WORKSPACE_DIR" '
+    .hasCompletedOnboarding = true
+    | .projects[$workspace].hasTrustDialogAccepted = true
+  ' > "$claude_config.tmp"
+
+  chown "$agent_uid:$agent_uid" "$claude_config.tmp"
+  mv "$claude_config.tmp" "$claude_config"
+}
+
+say "letting claude use the forwarded subscription token"
+remove_api_key_placeholder
+skip_onboarding
