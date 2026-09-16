@@ -16,10 +16,12 @@ files/home/.sbx-kit/         the scripts, copied to /home/agent in the sandbox
   enable-toolchain-path      puts the mise shims on PATH for the agent
   configure-claude           lets claude use a forwarded subscription token
   link-claude-skills         gives claude the host's skills
+  link-opencode-auth         gives opencode the host's logins
   start-postgres             starts the cluster, on every sandbox start
   prepare-checkout           keys, gems, node modules, databases, assets
 sandbox                      the entry point: creates or attaches to a sandbox
 build-template               rebuilds the local template from this kit
+refresh-opencode-auth        keeps the shared ChatGPT login fresh
 host-lib.sh                  shared helpers for sandbox and build-template
 ```
 
@@ -53,10 +55,10 @@ development and test keys and nothing else.
 ## Agents
 
 Every sandbox has `claude` and `opencode` on `PATH`. The kit installs the
-binaries and no agent-specific configuration. `opencode` is not
-authenticated, so its first run asks you to log in. `claude` uses your
-Claude subscription when creation forwards a token; see
-[Claude subscription](#claude-subscription) below.
+binaries and no agent-specific configuration. `claude` uses your Claude
+subscription when creation forwards a token; see
+[Claude subscription](#claude-subscription) below. `opencode` uses the
+host's logins; see [opencode logins](#opencode-logins) below.
 
 `install-system` asks for the newest published version of each on every
 run, so a sandbox creation that finds its template already current starts
@@ -146,6 +148,47 @@ links into a new directory needs a recreated sandbox.
 sandboxes, such as `sbx create claude`, mount its store, and a `shell`
 sandbox does not.
 
+## opencode logins
+
+Log in with `opencode` on the host, and every sandbox that `.sbx/sandbox`
+creates after that uses the same logins. This includes a ChatGPT
+subscription login made with `/connect`, which `sbx` itself cannot give a
+`shell` sandbox.
+
+`sbx` mounts directories, not single files, and the rest of
+`~/.local/share/opencode` holds a SQLite database that must not be shared
+between machines. So `.sbx/sandbox` moves
+`~/.local/share/opencode/auth.json` into `~/.local/share/opencode-auth/`,
+leaves a symlink at the old path, and mounts that directory. In the
+sandbox, `link-opencode-auth` points the agent's `auth.json` at it.
+
+The mount is live and writable, and `opencode` reads `auth.json` before
+each request. A token that one sandbox refreshes reaches the host and
+every other sandbox.
+
+OpenAI accepts a refresh token one time only, and `opencode` refreshes a
+token only after it expires. Two `opencode` processes that find an expired
+token at the same time send the same refresh token, and one of them fails.
+To prevent this, the launchd job `homepage-rb.refresh-opencode-auth` runs
+`refresh-opencode-auth` every hour, and `.sbx/sandbox` runs it before each
+sandbox. It refreshes the ChatGPT login when it expires in less than a
+day. Its log is `~/Library/Logs/homepage-rb.refresh-opencode-auth.log`.
+
+Every run of `.sbx/sandbox` repairs this setup: it restores a missing
+symlink, moves a new host `auth.json` back into the shared directory, and
+reinstalls the job when the job is missing or out of date. The job runs a
+copy of the script in `~/Library/Application Support/homepage-rb/`, so it
+keeps working after a checkout moves or a worktree is removed.
+
+What no script can repair is a login that OpenAI revokes. The job log
+then says so; log in again with `/connect` in `opencode` on the host.
+
+Like the Claude token, these are real credentials. Every login in
+`auth.json`, not only ChatGPT, is readable and writable inside the
+sandbox, and a `/connect` or a logout in a sandbox changes the host too.
+Set `SHARE_OPENCODE_AUTH=no` to share nothing. A sandbox that was created
+without the mount needs a recreate to get it.
+
 ## Build the template
 
 ```sh
@@ -163,8 +206,9 @@ green. Set `KEEP_SANDBOXES=yes` to leave the build sandbox behind for
 inspection when the suite fails.
 
 The build never resolves or forwards a Linear key or a Claude token,
-from either source above, and never mounts the builder's skills, so the
-saved template never carries the builder's own Linear or Claude identity.
+from either source above, and never mounts the builder's skills or
+opencode logins, so the saved template never carries the builder's own
+Linear, Claude, or opencode identity.
 
 ## Settings
 
@@ -180,6 +224,8 @@ saved template never carries the builder's own Linear or Claude identity.
 | `KEEP_SANDBOXES` | `no` | Leave sandboxes behind instead of removing |
 | `SHARE_CLAUDE_SKILLS` | `yes` | Mount the host's Claude skills |
 | `CLAUDE_SKILLS_DIR` | `~/.claude/skills` | Host skills directory to mount |
+| `SHARE_OPENCODE_AUTH` | `yes` | Mount the host's opencode logins |
+| `OPENCODE_AUTH_DIR` | `~/.local/share/opencode-auth` | Host opencode login directory |
 
 The defaults for CPU and memory are deliberate. Left alone, `sbx` gives
 one sandbox every host CPU and half the host's memory, which two

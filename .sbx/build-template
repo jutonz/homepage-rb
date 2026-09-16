@@ -15,11 +15,13 @@ build_sandbox=homepage-rb-template-build
 USE_TEMPLATE=no
 
 # A saved Template is shared by every later sandbox, so it must never carry
-# the builder's own Linear or Claude identity, even when the builder has
-# LINEAR_API_KEY or CLAUDE_CODE_OAUTH_TOKEN set, or the builder's skills.
+# the builder's own Linear, Claude, or opencode identity, even when the
+# builder has LINEAR_API_KEY or CLAUDE_CODE_OAUTH_TOKEN set, or the builder's
+# skills.
 FORWARD_LINEAR_KEY=no
 FORWARD_CLAUDE_TOKEN=no
 SHARE_CLAUDE_SKILLS=no
+SHARE_OPENCODE_AUTH=no
 
 trap 'remove_sandbox "$build_sandbox"' EXIT
 
