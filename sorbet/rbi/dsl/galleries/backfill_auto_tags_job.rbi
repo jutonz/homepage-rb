@@ -9,13 +9,13 @@ class Galleries::BackfillAutoTagsJob
   class << self
     sig do
       params(
-        auto_add_tag: T.untyped,
+        auto_add_tag: ::Galleries::AutoAddTag,
         block: T.nilable(T.proc.params(job: Galleries::BackfillAutoTagsJob).void)
       ).returns(T.any(Galleries::BackfillAutoTagsJob, FalseClass))
     end
     def perform_later(auto_add_tag, &block); end
 
-    sig { params(auto_add_tag: T.untyped).returns(T.untyped) }
+    sig { params(auto_add_tag: ::Galleries::AutoAddTag).void }
     def perform_now(auto_add_tag); end
   end
 end

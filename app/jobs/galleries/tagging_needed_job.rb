@@ -1,15 +1,17 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class TaggingNeededJob < ApplicationJob
     queue_as :background
 
+    sig { void }
     def perform
       Gallery.find_each { apply_tagging_needed(it) }
     end
 
     private
 
+    sig { params(gallery: Gallery).void }
     def apply_tagging_needed(gallery)
       tag = Galleries::Tag.tagging_needed(gallery)
 
