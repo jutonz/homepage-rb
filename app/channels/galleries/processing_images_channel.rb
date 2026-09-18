@@ -1,12 +1,13 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class ProcessingImagesChannel <
     ApplicationCable::Channel
+    sig { void }
     def subscribed
       gallery = find_gallery
       if gallery
-        @gallery = gallery
+        @gallery = T.let(gallery, T.nilable(Gallery))
         stream_for(@gallery)
         transmit_unprocessed_ids
       else
@@ -14,12 +15,14 @@ module Galleries
       end
     end
 
+    sig { void }
     def sync
       transmit_unprocessed_ids
     end
 
     private
 
+    sig { void }
     def transmit_unprocessed_ids
       ids = Galleries::Image
         .unprocessed
@@ -31,9 +34,8 @@ module Galleries
       })
     end
 
+    sig { returns(T.nilable(Gallery)) }
     def find_gallery
-      current_user = T.unsafe(self).current_user
-
       Gallery
         .where(user: current_user)
         .find_by(id: params[:gallery_id])

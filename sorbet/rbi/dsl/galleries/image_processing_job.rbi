@@ -9,13 +9,13 @@ class Galleries::ImageProcessingJob
   class << self
     sig do
       params(
-        image: T.untyped,
+        image: ::Galleries::Image,
         block: T.nilable(T.proc.params(job: Galleries::ImageProcessingJob).void)
       ).returns(T.any(Galleries::ImageProcessingJob, FalseClass))
     end
     def perform_later(image, &block); end
 
-    sig { params(image: T.untyped).returns(T.untyped) }
+    sig { params(image: ::Galleries::Image).void }
     def perform_now(image); end
   end
 end
