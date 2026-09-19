@@ -18,6 +18,8 @@ CLAUDE_OP_ITEM="${CLAUDE_OP_ITEM:-op://Private/Claude AI/oauth token}"
 CLAUDE_OP_ACCOUNT="${CLAUDE_OP_ACCOUNT:-my.1password.com}"
 SHARE_CLAUDE_SKILLS="${SHARE_CLAUDE_SKILLS:-yes}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
+SHARE_CLAUDE_INSTRUCTIONS="${SHARE_CLAUDE_INSTRUCTIONS:-yes}"
+CLAUDE_INSTRUCTIONS_DIR="${CLAUDE_INSTRUCTIONS_DIR:-$HOME/.claude/instructions}"
 SHARE_OPENCODE_AUTH="${SHARE_OPENCODE_AUTH:-yes}"
 OPENCODE_AUTH_DIR="${OPENCODE_AUTH_DIR:-$HOME/.local/share/opencode-auth}"
 OPENCODE_REFRESH_JOB=homepage-rb.refresh-opencode-auth
@@ -72,6 +74,46 @@ claude_skill_directories() {
       fi
     done
   } | sort -u
+}
+
+# The skills mount carries ~/.claude/skills, so an agent in a sandbox reads
+# every skill the host has. It does not carry ~/.claude/CLAUDE.md, and a
+# brief that points an agent at that path finds nothing. The rest of
+# ~/.claude holds session transcripts and credentials, which must never
+# reach a sandbox, and sbx mounts a directory rather than a single file.
+# Thus CLAUDE.md moves into a directory of its own, and a symlink stays at
+# the old path, as auth.json does below. Returns 1 when there is no file to
+# share.
+link_host_claude_instructions() {
+  local host_file="$HOME/.claude/CLAUDE.md"
+  local shared_file="$CLAUDE_INSTRUCTIONS_DIR/CLAUDE.md"
+
+  if [ -L "$host_file" ]; then
+    if [ "$(readlink "$host_file")" = "$shared_file" ]; then
+      [ -f "$shared_file" ]
+      return
+    fi
+
+    say "$host_file links somewhere other than $shared_file;" \
+      "not sharing the global instructions" >&2
+    return 1
+  fi
+
+  if [ -f "$host_file" ]; then
+    say "moving $host_file to $shared_file, to share it with sandboxes"
+  elif [ -f "$shared_file" ]; then
+    say "restoring the symlink from $host_file to $shared_file"
+  else
+    return 1
+  fi
+
+  mkdir -p "$CLAUDE_INSTRUCTIONS_DIR"
+
+  if [ -f "$host_file" ]; then
+    mv -f "$host_file" "$shared_file"
+  fi
+
+  ln -s "$shared_file" "$host_file"
 }
 
 # sbx can mount a directory read/write, but not a single file. The rest of
@@ -271,6 +313,14 @@ build_sandbox_argv() {
     while IFS= read -r directory; do
       sandbox_paths+=("$directory")
     done < <(claude_skill_directories)
+  fi
+
+  if [ "$SHARE_CLAUDE_INSTRUCTIONS" = yes ] \
+    && link_host_claude_instructions; then
+    sandbox_argv+=(
+      --env "HOST_CLAUDE_INSTRUCTIONS_FILE=$CLAUDE_INSTRUCTIONS_DIR/CLAUDE.md"
+    )
+    sandbox_paths+=("$CLAUDE_INSTRUCTIONS_DIR")
   fi
 
   if share_opencode_auth; then
