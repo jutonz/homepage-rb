@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Recipes
   class RecipesController < ApplicationController
@@ -6,20 +6,26 @@ module Recipes
     before_action :find_recipe_group
     after_action :verify_authorized
 
+    sig { void }
     def show
-      @recipe = authorize(find_recipe)
+      @recipe = T.let(
+        authorize(find_recipe), T.nilable(Recipes::Recipe)
+      )
     end
 
+    sig { void }
     def new
       @recipe = authorize(
         current_user.recipes_recipes.new(recipe_group: @recipe_group)
       )
     end
 
+    sig { void }
     def edit
       @recipe = authorize(find_recipe)
     end
 
+    sig { void }
     def create
       @recipe = authorize(
         current_user.recipes_recipes.new(
@@ -37,6 +43,7 @@ module Recipes
       end
     end
 
+    sig { void }
     def update
       @recipe = authorize(find_recipe)
 
@@ -50,6 +57,7 @@ module Recipes
       end
     end
 
+    sig { void }
     def destroy
       @recipe = authorize(find_recipe)
       @recipe.destroy!
@@ -63,15 +71,20 @@ module Recipes
 
     private
 
+    sig { returns(RecipeGroup) }
     def find_recipe_group
-      @recipe_group = RecipeGroupPolicy.scope_for(current_user)
+      recipe_group = RecipeGroupPolicy.scope_for(current_user)
         .find(params[:recipe_group_id])
+      @recipe_group = T.let(recipe_group, T.nilable(RecipeGroup))
+      recipe_group
     end
 
+    sig { returns(Recipes::Recipe) }
     def find_recipe
-      @recipe_group.recipes.find(params[:id])
+      T.must(@recipe_group).recipes.find(params[:id])
     end
 
+    sig { returns(ActionController::Parameters) }
     def recipe_params
       params.expect(
         recipes_recipe: %i[name description instructions]
