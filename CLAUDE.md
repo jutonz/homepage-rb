@@ -89,3 +89,8 @@ Issues are tracked in the Linear team "Homepage RB" (`HPRB`). See
 ### Domain docs
 
 single-context. See `docs/agents/domain.md`.
+
+### Sorbet
+
+Raising a file to `# typed: strict`, writing an RBI shim, or guarding one
+with a type assertion. See `docs/agents/sorbet.md`.
