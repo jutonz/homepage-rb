@@ -41,13 +41,36 @@ periods.
 The sandbox runs a shell. Run `claude` or `opencode` from inside it; see
 [Agents](#agents) below.
 
+### Wait for a sandbox without attaching
+
+```sh
+.sbx/sandbox --wait my-agent
+```
+
+This creates the sandbox, or starts it when it is stopped, waits for the
+startup scripts to finish, and exits. It never attaches. Run it before a
+script or an agent starts work in a sandbox.
+
+`sbx` reports a sandbox as running before the startup scripts install the
+dependencies and prepare the databases, and a command that starts at that
+moment races them. `--wait` returns only once the checkout is ready. When
+the sandbox fails to become ready, it prints the startup log and returns
+1.
+
 Extra arguments reach `sbx`, so `.sbx/sandbox my-agent -p 3000:3000`
 publishes port 3000 at creation. To publish one later, use
 `sbx ports my-agent --publish 3000:3000`. A bare `3000` names the
 sandbox port and leaves the host port to `sbx`, which picks a free one.
 
-`--clone` gives the sandbox a private clone rather than a bind mount.
-Commits made inside come back with `git fetch sandbox-my-agent`.
+Every sandbox gets a private clone of the checkout, never a bind mount.
+The clone sits at the same absolute path as the host checkout, so a path
+names the same file on both sides, but a write inside the sandbox never
+reaches the host. Commits made inside come back with
+`git fetch sandbox-my-agent`; creation adds that remote, and `sbx rm`
+removes it again.
+
+`sbx` refuses to clone a git worktree, so create a sandbox from the main
+checkout.
 
 The production credential key stays on the host. A sandbox gets the
 development and test keys and nothing else.
