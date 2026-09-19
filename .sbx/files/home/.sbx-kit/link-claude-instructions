@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Give claude the global instructions of the host. The host directory is
+# mounted at its host path; see .sbx/host-lib.sh.
+
+. /home/agent/.sbx-kit/lib.sh
+
+agent_file=/home/agent/.claude/CLAUDE.md
+
+if [ -z "${HOST_CLAUDE_INSTRUCTIONS_FILE:-}" ]; then
+  exit 0
+fi
+
+if [ ! -f "$HOST_CLAUDE_INSTRUCTIONS_FILE" ]; then
+  say "cannot find the host instructions at" \
+    "$HOST_CLAUDE_INSTRUCTIONS_FILE" >&2
+  exit 0
+fi
+
+if [ -e "$agent_file" ] && [ ! -L "$agent_file" ]; then
+  say "$agent_file already exists; not linking the host instructions" >&2
+  exit 0
+fi
+
+say "linking the host claude instructions from $HOST_CLAUDE_INSTRUCTIONS_FILE"
+mkdir -p "$(dirname "$agent_file")"
+ln -sfn "$HOST_CLAUDE_INSTRUCTIONS_FILE" "$agent_file"

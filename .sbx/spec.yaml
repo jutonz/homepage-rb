@@ -57,6 +57,9 @@ setup:
     - command: ["bash", "/home/agent/.sbx-kit/link-claude-skills"]
       user: "1000"
       description: Give claude the skills of the host
+    - command: ["bash", "/home/agent/.sbx-kit/link-claude-instructions"]
+      user: "1000"
+      description: Give claude the global instructions of the host
     - command: ["bash", "/home/agent/.sbx-kit/link-opencode-auth"]
       user: "1000"
       description: Give opencode the logins of the host
