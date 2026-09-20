@@ -35,6 +35,20 @@ raises `TypeError` where the old code raised `NoMethodError`; both
 descend from `StandardError`. Check that no `rescue`, `rescue_from`,
 `retry_on`, or `discard_on` on the path keys on `NoMethodError`.
 
+**A strong-parameter scalar reads nilable.** `params.expect(x: [:y])`
+raises `ActionController::ParameterMissing` when `y` is missing or is
+not a scalar, which makes `String` look like a safe type for it. A
+present `y` carrying a JSON `null` passes through as `nil` instead, and
+a `String` signature then raises `TypeError` on a request that used to
+reach the model and fail a validation — a 500 where the controller
+returned a redirect and a flash. Type such a parameter
+`T.nilable(String)` and let the validation reject the value. Measure
+the `null` case before you narrow the signature, because the three
+shapes `expect` does reject say nothing about it:
+
+    bin/rails runner 'p ActionController::Parameters.new(x: {y: nil})
+      .expect(x: [:y])[:y]'
+
 **Framework lifecycle methods hold nilable ivars.** A job's `perform`
 and a channel's `subscribed` run after the framework built the object,
 so an ivar they assign cannot be declared in an `initialize`. Declare it
