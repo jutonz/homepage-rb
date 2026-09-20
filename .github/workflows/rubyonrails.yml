@@ -5,7 +5,7 @@ on:
   pull_request:
 jobs:
   unit_tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     services:
       postgres:
         image: pgvector/pgvector:pg18
@@ -66,7 +66,7 @@ jobs:
           --exclude-pattern "spec/system/**/*_spec.rb"
 
   system_tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     services:
       postgres:
         image: pgvector/pgvector:pg18
@@ -142,7 +142,7 @@ jobs:
       - run: bin/rspec spec/system
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -173,6 +173,33 @@ jobs:
       - name: Check ERB template formatting
         if: ${{ !cancelled() }}
         run: npx herb-format --check .
+
+  # Throwaway diagnostic for HPRB-125. This job and its branch are deleted
+  # together; it must never reach main.
+  perceptual_hash_canary:
+    if: github.ref != 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - run: sudo apt-get update && sudo apt-get install imagemagick libvips ffmpeg
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Report ImageMagick version and fixture hash
+        run: |
+          echo "runner: ${{ matrix.os }}"
+          (magick -version || convert -version) | head -n 1
+          bundle exec ruby -e '
+            require "image_hash"
+            fixture = "spec/fixtures/files/audiosurf.jpg"
+            puts "hash: #{ImageHash.new(fixture).binary_hash}"
+          '
 
   build_push:
     if: github.ref == 'refs/heads/main'
