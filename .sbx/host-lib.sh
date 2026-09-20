@@ -20,6 +20,7 @@ SHARE_CLAUDE_SKILLS="${SHARE_CLAUDE_SKILLS:-yes}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 SHARE_CLAUDE_INSTRUCTIONS="${SHARE_CLAUDE_INSTRUCTIONS:-yes}"
 CLAUDE_INSTRUCTIONS_DIR="${CLAUDE_INSTRUCTIONS_DIR:-$HOME/.claude/instructions}"
+SHARE_GIT_IDENTITY="${SHARE_GIT_IDENTITY:-yes}"
 SHARE_OPENCODE_AUTH="${SHARE_OPENCODE_AUTH:-yes}"
 OPENCODE_AUTH_DIR="${OPENCODE_AUTH_DIR:-$HOME/.local/share/opencode-auth}"
 OPENCODE_REFRESH_JOB=homepage-rb.refresh-opencode-auth
@@ -326,6 +327,26 @@ build_sandbox_argv() {
   if share_opencode_auth; then
     sandbox_argv+=(--env "HOST_OPENCODE_AUTH_FILE=$OPENCODE_AUTH_DIR/auth.json")
     sandbox_paths+=("$OPENCODE_AUTH_DIR")
+  fi
+
+  # A clone inherits the repository's config, never the host's ~/.gitconfig,
+  # so git inside has no identity and the first commit fails with "empty
+  # ident name". Two short strings carry it, so this needs no mount.
+  if [ "$SHARE_GIT_IDENTITY" = yes ]; then
+    local git_name git_email
+
+    git_name="$(git -C "$repo_root" config --get user.name || true)"
+    git_email="$(git -C "$repo_root" config --get user.email || true)"
+
+    if [ -n "$git_name" ] && [ -n "$git_email" ]; then
+      sandbox_argv+=(
+        --env "HOST_GIT_USER_NAME=$git_name"
+        --env "HOST_GIT_USER_EMAIL=$git_email"
+      )
+    else
+      say "the host has no git user.name and user.email;" \
+        "commits inside the sandbox will need one" >&2
+    fi
   fi
 }
 
