@@ -63,6 +63,9 @@ setup:
     - command: ["bash", "/home/agent/.sbx-kit/link-opencode-auth"]
       user: "1000"
       description: Give opencode the logins of the host
+    - command: ["bash", "/home/agent/.sbx-kit/configure-git"]
+      user: "1000"
+      description: Give git the identity of the host, so a commit inside works
     - command: ["bash", "/home/agent/.sbx-kit/start-postgres"]
       user: "0"
       description: Start PostgreSQL

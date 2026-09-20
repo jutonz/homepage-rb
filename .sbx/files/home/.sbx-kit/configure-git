@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Give git the identity of the host. A clone carries the repository's own
+# config and never the host's ~/.gitconfig, so a commit inside the sandbox
+# fails with "empty ident name" until something sets one. The host passes the
+# two values as environment variables; see .sbx/host-lib.sh.
+
+. /home/agent/.sbx-kit/lib.sh
+
+if [ -z "${HOST_GIT_USER_NAME:-}" ] || [ -z "${HOST_GIT_USER_EMAIL:-}" ]; then
+  exit 0
+fi
+
+say "setting the git identity to" \
+  "$HOST_GIT_USER_NAME <$HOST_GIT_USER_EMAIL>"
+git config --global user.name "$HOST_GIT_USER_NAME"
+git config --global user.email "$HOST_GIT_USER_EMAIL"
