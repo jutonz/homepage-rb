@@ -28,7 +28,9 @@ Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 - **Update state or labels**: `linear issue update HPRB-123 -s "In Progress"`,
   `--add-label` / `--remove-label` to change labels incrementally (`-l`
   replaces the entire set).
-- **Comment**: `linear issue comment`.
+- **Comment**: `linear issue comment add <ID> --body-file <path>`.
+  `comment` is a command group; `--body` and `--body-file` live on its
+  `add` subcommand, not on the group.
 - **Dependencies**: `linear issue relation add HPRB-123 blocked-by HPRB-456`.
 - **Close**: set state to `Done`.
 
