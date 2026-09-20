@@ -94,3 +94,9 @@ single-context. See `docs/agents/domain.md`.
 
 Raising a file to `# typed: strict`, writing an RBI shim, or guarding one
 with a type assertion. See `docs/agents/sorbet.md`.
+
+### Migrations
+
+Dropping a table, destroying rows, writing `down`, or choosing which of
+the three migration paths a migration belongs in. See
+`docs/agents/migrations.md`.
