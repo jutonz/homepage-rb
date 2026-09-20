@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class ApplicationMailer < ActionMailer::Base
   default from: Rails.application.credentials.mail.smtp_user_name

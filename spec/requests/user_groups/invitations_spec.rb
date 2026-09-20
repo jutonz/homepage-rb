@@ -66,6 +66,21 @@ RSpec.describe UserGroups::InvitationsController, type: :request do
       expect(flash[:alert]).to include("Failed to send invitation")
     end
 
+    it "handles a null email gracefully" do
+      owner = create(:user)
+      user_group = create(:user_group, owner:)
+      login_as(owner)
+
+      post(
+        user_group_invitations_path(user_group),
+        params: {user_group_invitation: {email: nil}}.to_json,
+        headers: {"CONTENT_TYPE" => "application/json"}
+      )
+
+      expect(response).to redirect_to(user_group)
+      expect(flash[:alert]).to include("Failed to send invitation")
+    end
+
     it "handles duplicate invitations gracefully" do
       owner = create(:user)
       user_group = create(:user_group, owner:)
@@ -98,7 +113,11 @@ RSpec.describe UserGroups::InvitationsController, type: :request do
     it "deletes invitation when user owns the group" do
       owner = create(:user)
       user_group = create(:user_group, owner:)
-      invitation = create(:user_group_invitation, user_group:, invited_by: owner)
+      invitation = create(
+        :user_group_invitation,
+        user_group:,
+        invited_by: owner
+      )
       login_as(owner)
 
       expect {
@@ -113,7 +132,11 @@ RSpec.describe UserGroups::InvitationsController, type: :request do
       owner = create(:user)
       non_owner = create(:user)
       user_group = create(:user_group, owner:)
-      invitation = create(:user_group_invitation, user_group:, invited_by: owner)
+      invitation = create(
+        :user_group_invitation,
+        user_group:,
+        invited_by: owner
+      )
 
       login_as(non_owner)
 
