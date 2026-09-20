@@ -19,7 +19,7 @@ CLAUDE_OP_ACCOUNT="${CLAUDE_OP_ACCOUNT:-my.1password.com}"
 SHARE_CLAUDE_SKILLS="${SHARE_CLAUDE_SKILLS:-yes}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 SHARE_CLAUDE_INSTRUCTIONS="${SHARE_CLAUDE_INSTRUCTIONS:-yes}"
-CLAUDE_INSTRUCTIONS_DIR="${CLAUDE_INSTRUCTIONS_DIR:-$HOME/.claude/instructions}"
+CLAUDE_MD_STAGE="${CLAUDE_MD_STAGE:-$HOME/.local/state/homepage-rb/claude-md}"
 SHARE_GIT_IDENTITY="${SHARE_GIT_IDENTITY:-yes}"
 SHARE_OPENCODE_AUTH="${SHARE_OPENCODE_AUTH:-yes}"
 OPENCODE_AUTH_DIR="${OPENCODE_AUTH_DIR:-$HOME/.local/share/opencode-auth}"
@@ -77,44 +77,50 @@ claude_skill_directories() {
   } | sort -u
 }
 
+# An earlier version moved ~/.claude/CLAUDE.md into a directory of its own
+# and left a symlink at the old path. Put the file back where the human
+# keeps it. An editor that rewrites the file through that symlink replaces
+# it, which deletes the shared copy and leaves every existing sandbox
+# mounting a directory that no longer exists.
+restore_moved_claude_instructions() {
+  local host_file="$HOME/.claude/CLAUDE.md"
+  local moved_dir="$HOME/.claude/instructions"
+  local moved_file="$moved_dir/CLAUDE.md"
+
+  if [ ! -L "$host_file" ] \
+    || [ "$(readlink "$host_file")" != "$moved_file" ] \
+    || [ ! -f "$moved_file" ]; then
+    return 0
+  fi
+
+  say "restoring $host_file from $moved_file"
+  rm -f "$host_file"
+  mv -f "$moved_file" "$host_file"
+  rmdir "$moved_dir" 2>/dev/null || true
+}
+
 # The skills mount carries ~/.claude/skills, so an agent in a sandbox reads
 # every skill the host has. It does not carry ~/.claude/CLAUDE.md, and a
 # brief that points an agent at that path finds nothing. The rest of
 # ~/.claude holds session transcripts and credentials, which must never
 # reach a sandbox, and sbx mounts a directory rather than a single file.
-# Thus CLAUDE.md moves into a directory of its own, and a symlink stays at
-# the old path, as auth.json does below. Returns 1 when there is no file to
-# share.
-link_host_claude_instructions() {
+# Thus a copy goes into a staging directory of its own, which the caller
+# mounts read-only. The host file itself never moves.
+#
+# The sandbox reads the copy this makes at creation, not a live view of the
+# host file. Agent instructions are read once at start, so a snapshot holds.
+# Returns 1 when there is no file to share.
+stage_host_claude_instructions() {
   local host_file="$HOME/.claude/CLAUDE.md"
-  local shared_file="$CLAUDE_INSTRUCTIONS_DIR/CLAUDE.md"
 
-  if [ -L "$host_file" ]; then
-    if [ "$(readlink "$host_file")" = "$shared_file" ]; then
-      [ -f "$shared_file" ]
-      return
-    fi
+  restore_moved_claude_instructions
 
-    say "$host_file links somewhere other than $shared_file;" \
-      "not sharing the global instructions" >&2
+  if [ ! -f "$host_file" ]; then
     return 1
   fi
 
-  if [ -f "$host_file" ]; then
-    say "moving $host_file to $shared_file, to share it with sandboxes"
-  elif [ -f "$shared_file" ]; then
-    say "restoring the symlink from $host_file to $shared_file"
-  else
-    return 1
-  fi
-
-  mkdir -p "$CLAUDE_INSTRUCTIONS_DIR"
-
-  if [ -f "$host_file" ]; then
-    mv -f "$host_file" "$shared_file"
-  fi
-
-  ln -s "$shared_file" "$host_file"
+  mkdir -p "$CLAUDE_MD_STAGE"
+  cp "$host_file" "$CLAUDE_MD_STAGE/CLAUDE.md"
 }
 
 # sbx can mount a directory read/write, but not a single file. The rest of
@@ -317,11 +323,13 @@ build_sandbox_argv() {
   fi
 
   if [ "$SHARE_CLAUDE_INSTRUCTIONS" = yes ] \
-    && link_host_claude_instructions; then
+    && stage_host_claude_instructions; then
     sandbox_argv+=(
-      --env "HOST_CLAUDE_INSTRUCTIONS_FILE=$CLAUDE_INSTRUCTIONS_DIR/CLAUDE.md"
+      --env
+      "HOST_CLAUDE_INSTRUCTIONS_FILE=$CLAUDE_MD_STAGE/CLAUDE.md"
     )
-    sandbox_paths+=("$CLAUDE_INSTRUCTIONS_DIR")
+    # The sandbox only reads the copy, so mount it read-only.
+    sandbox_paths+=("$CLAUDE_MD_STAGE:ro")
   fi
 
   if share_opencode_auth; then
