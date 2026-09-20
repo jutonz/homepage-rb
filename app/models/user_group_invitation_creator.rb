@@ -1,14 +1,31 @@
-# typed: true
+# typed: strict
 
 class UserGroupInvitationCreator
-  def self.call(...) = new(...).call
+  sig do
+    params(
+      user_group: UserGroup,
+      email: T.nilable(String),
+      invited_by: User
+    ).returns(UserGroupInvitation)
+  end
+  def self.call(user_group:, email:, invited_by:)
+    new(user_group:, email:, invited_by:).call
+  end
 
+  sig do
+    params(
+      user_group: UserGroup,
+      email: T.nilable(String),
+      invited_by: User
+    ).void
+  end
   def initialize(user_group:, email:, invited_by:)
     @user_group = user_group
     @email = email
     @invited_by = invited_by
   end
 
+  sig { returns(UserGroupInvitation) }
   def call
     user_group.user_group_invitations.create(
       email:,
@@ -20,8 +37,16 @@ class UserGroupInvitationCreator
 
   private
 
-  attr_reader :user_group, :email, :invited_by
+  sig { returns(UserGroup) }
+  attr_reader :user_group
 
+  sig { returns(T.nilable(String)) }
+  attr_reader :email
+
+  sig { returns(User) }
+  attr_reader :invited_by
+
+  sig { returns(String) }
   def generate_token
     SecureRandom.urlsafe_base64(32)
   end

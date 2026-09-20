@@ -1,13 +1,24 @@
-# typed: true
+# typed: strict
 
 class UserGroupInvitationMailer < ApplicationMailer
+  sig do
+    params(user_group_invitation: UserGroupInvitation)
+      .returns(Mail::Message)
+  end
   def invitation(user_group_invitation)
-    @invitation = user_group_invitation
-    @accept_url = invitation_url(token: @invitation.token)
+    @invitation = T.let(
+      user_group_invitation,
+      T.nilable(UserGroupInvitation)
+    )
+    @accept_url = T.let(
+      invitation_url(token: user_group_invitation.token),
+      T.nilable(String)
+    )
+    user_group = T.must(user_group_invitation.user_group)
 
     mail(
-      to: @invitation.email,
-      subject: "You're invited to join #{@invitation.user_group.name}"
+      to: user_group_invitation.email,
+      subject: "You're invited to join #{user_group.name}"
     )
   end
 end

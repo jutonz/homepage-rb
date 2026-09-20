@@ -7,7 +7,7 @@
 
 class UserGroupInvitationMailer
   class << self
-    sig { params(user_group_invitation: T.untyped).returns(::ActionMailer::MessageDelivery) }
+    sig { params(user_group_invitation: ::UserGroupInvitation).returns(::ActionMailer::MessageDelivery) }
     def invitation(user_group_invitation); end
   end
 end
