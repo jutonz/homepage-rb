@@ -33,4 +33,53 @@ RSpec.describe "Gallery filtering" do
     find("[aria-label='Remove #{tag.name} filter']").click
     expect(page).to have_css("[data-image-id='#{image.id}']")
   end
+
+  it "searches on its own once the viewer stops typing", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    tag = create(:galleries_tag, gallery:)
+    searches = []
+    login_as(user)
+    visit(gallery_path(gallery))
+    playwright.on(
+      "request",
+      ->(request) {
+        searches << request.url if request.url.include?("tag_search")
+      }
+    )
+
+    fill_in("Tag search query", with: tag.name)
+    playwright.wait_for_timeout(500)
+
+    expect(searches).not_to be_empty
+    expect(page).to have_css(
+      "[data-role=tag-search-result]",
+      text: tag.name
+    )
+  end
+
+  it "runs no further search once the viewer submits one", :js do
+    user = create(:user)
+    gallery = create(:gallery, user:)
+    tag = create(:galleries_tag, gallery:)
+    searches = []
+    login_as(user)
+    visit(gallery_path(gallery))
+    playwright.on(
+      "request",
+      ->(request) {
+        searches << request.url if request.url.include?("tag_search")
+      }
+    )
+
+    fill_in("Tag search query", with: tag.name)
+    click_on("Search")
+    expect(page).to have_css(
+      "[data-role=tag-search-result]",
+      text: tag.name
+    )
+    playwright.wait_for_timeout(500)
+
+    expect(searches.last).to include("commit=Search")
+  end
 end

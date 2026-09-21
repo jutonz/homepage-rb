@@ -243,7 +243,6 @@ Linear, Claude, or opencode identity.
 | `SANDBOX_CPUS` | `4` | CPUs per sandbox |
 | `SANDBOX_MEMORY` | `8g` | Memory per sandbox |
 | `READY_TIMEOUT` | `1800` | Seconds to wait for provisioning |
-| `SUITE_ATTEMPTS` | `3` | Suite runs `build-template` will try |
 | `KEEP_SANDBOXES` | `no` | Leave sandboxes behind instead of removing |
 | `SHARE_CLAUDE_SKILLS` | `yes` | Mount the host's Claude skills |
 | `CLAUDE_SKILLS_DIR` | `~/.claude/skills` | Host skills directory to mount |
