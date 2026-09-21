@@ -36388,24 +36388,6 @@ class Aws::S3::MultipartUpload
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_upload.rb:123
   def client; end
 
-  # Completes the upload, requires a list of completed parts. You can
-  # provide the list of parts with `:part_number` and `:etag` values.
-  #
-  #     upload.complete(multipart_upload: { parts: [
-  #       { part_number: 1, etag:'etag1' },
-  #       { part_number: 2, etag:'etag2' },
-  #       ...
-  #     ]})
-  #
-  # Alternatively, you can pass **`compute_parts: true`** and the part
-  # list will be computed by calling {Client#list_parts}.
-  #
-  #     upload.complete(compute_parts: true)
-  #
-  # @option options [Boolean] :compute_parts (false) When `true`,
-  #   the {Client#list_parts} method will be called to determine
-  #   the list of required part numbers and their ETags.
-  #
   # @example Request syntax with placeholder values
   #
   #   object = multipart_upload.complete({
@@ -36666,6 +36648,23 @@ class Aws::S3::MultipartUpload
   #
   #   [1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerSideEncryptionCustomerKeys.html
   # @return [Object]
+  # Completes the upload, requires a list of completed parts. You can
+  # provide the list of parts with `:part_number` and `:etag` values.
+  #
+  #     upload.complete(multipart_upload: { parts: [
+  #       { part_number: 1, etag:'etag1' },
+  #       { part_number: 2, etag:'etag2' },
+  #       ...
+  #     ]})
+  #
+  # Alternatively, you can pass **`compute_parts: true`** and the part
+  # list will be computed by calling {Client#list_parts}.
+  #
+  #     upload.complete(compute_parts: true)
+  #
+  # @option options [Boolean] :compute_parts (false) When `true`,
+  #   the {Client#list_parts} method will be called to determine
+  #   the list of required part numbers and their ETags.
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_upload.rb:563
   def complete(options = T.unsafe(nil)); end
@@ -37989,6 +37988,95 @@ class Aws::S3::Object
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object.rb:352
   def content_type; end
 
+  # Make the method redefinable
+  # Copies another object to this object. Use `multipart_copy: true`
+  # for large objects. This is required for objects that exceed 5GB.
+  #
+  # @param [S3::Object, S3::ObjectVersion, S3::ObjectSummary, String, Hash]
+  #   source Where to copy object data from. `source` must be one of the
+  #   following:
+  #
+  #   * {Aws::S3::Object}
+  #   * {Aws::S3::ObjectSummary}
+  #   * {Aws::S3::ObjectVersion}
+  #   * Hash - with `:bucket` and `:key` and optional `:version_id`
+  #   * String - formatted like `"source-bucket-name/uri-escaped-key"`
+  #     or `"source-bucket-name/uri-escaped-key?versionId=version-id"`
+  #
+  # @option options [Boolean] :multipart_copy (false) When `true`,
+  #   the object will be copied using the multipart APIs. This is
+  #   necessary for objects larger than 5GB and can provide
+  #   performance improvements on large objects. Amazon S3 does
+  #   not accept multipart copies for objects smaller than 5MB.
+  #   Object metadata such as Content-Type will be copied, however,
+  #   Checksums are not copied.
+  #
+  # @option options [Integer] :content_length Only used when
+  #   `:multipart_copy` is `true`. Passing this options avoids a HEAD
+  #   request to query the source object size but prevents object metadata
+  #   from being copied. Raises an `ArgumentError` if
+  #   this option is provided when `:multipart_copy` is `false` or not set.
+  #
+  # @option options [S3::Client] :copy_source_client Only used when
+  #   `:multipart_copy` is `true` and the source object is in a
+  #   different region. You do not need to specify this option
+  #   if you have provided `:content_length`.
+  #
+  # @option options [String] :copy_source_region Only used when
+  #   `:multipart_copy` is `true` and the source object is in a
+  #   different region. You do not need to specify this option
+  #   if you have provided a `:source_client` or a `:content_length`.
+  #
+  # @option options [Boolean] :use_source_parts (false) Only used when
+  #   `:multipart_copy` is `true`. Use part sizes defined on the source
+  #   object if any exist. If copying or moving an object that
+  #   is already multipart, this does not re-part the object, instead
+  #   re-using the part definitions on the original. That means the etag
+  #   and any checksums will not change. This is especially useful if the
+  #   source object has parts with varied sizes.
+  #
+  # @option options [String] :tags_directive Only used when
+  #   `:multipart_copy` is `true`. When set to `'COPY'`, source object
+  #   tags are fetched and applied to the destination via PutObjectTagging.
+  #   When set to `'REPLACE'`, the provided `:tagging` value is parsed and
+  #   applied via PutObjectTagging. When not set, `:tagging` (if provided)
+  #   is passed to CreateMultipartUpload directly. Works with or without
+  #   `:content_length` — tags are fetched from source regardless of
+  #   whether HeadObject is skipped.
+  #
+  # @option options [String] :annotations_directive Only used when
+  #   `:multipart_copy` is `true`. When set to `'COPY'`, source object
+  #   annotations are fetched and applied to the destination after the
+  #   multipart upload completes. Works with or without `:content_length`.
+  #
+  # @option options [String] :metadata_directive Only used when
+  #   `:multipart_copy` is `true`. When set to `'REPLACE'`, source metadata
+  #   from HeadObject is not merged into CreateMultipartUpload — only
+  #   caller-supplied values (e.g. `:metadata`, `:content_type`) are used.
+  #   Has no effect when `:content_length` is provided since HeadObject
+  #   is already skipped.
+  #
+  # @example Basic object copy
+  #
+  #   bucket = Aws::S3::Bucket.new('target-bucket')
+  #   object = bucket.object('target-key')
+  #
+  #   # source as String
+  #   object.copy_from('source-bucket/source-key')
+  #
+  #   # source as Hash
+  #   object.copy_from(bucket:'source-bucket', key:'source-key')
+  #
+  #   # source as Aws::S3::Object
+  #   object.copy_from(bucket.object('source-key'))
+  #
+  # @example Managed copy of large objects
+  #
+  #   # uses multipart upload APIs to copy object
+  #   object.copy_from('src-bucket/src-key', multipart_copy: true)
+  #
+  # @see #copy_to
+  #
   # @example Request syntax with placeholder values
   #
   #   object.copy_from({
@@ -38809,94 +38897,6 @@ class Aws::S3::Object
   #   the request fails with the HTTP status code `403 Forbidden` (access
   #   denied).
   # @return [Types::CopyObjectOutput]
-  # Make the method redefinable
-  # Copies another object to this object. Use `multipart_copy: true`
-  # for large objects. This is required for objects that exceed 5GB.
-  #
-  # @param [S3::Object, S3::ObjectVersion, S3::ObjectSummary, String, Hash]
-  #   source Where to copy object data from. `source` must be one of the
-  #   following:
-  #
-  #   * {Aws::S3::Object}
-  #   * {Aws::S3::ObjectSummary}
-  #   * {Aws::S3::ObjectVersion}
-  #   * Hash - with `:bucket` and `:key` and optional `:version_id`
-  #   * String - formatted like `"source-bucket-name/uri-escaped-key"`
-  #     or `"source-bucket-name/uri-escaped-key?versionId=version-id"`
-  #
-  # @option options [Boolean] :multipart_copy (false) When `true`,
-  #   the object will be copied using the multipart APIs. This is
-  #   necessary for objects larger than 5GB and can provide
-  #   performance improvements on large objects. Amazon S3 does
-  #   not accept multipart copies for objects smaller than 5MB.
-  #   Object metadata such as Content-Type will be copied, however,
-  #   Checksums are not copied.
-  #
-  # @option options [Integer] :content_length Only used when
-  #   `:multipart_copy` is `true`. Passing this options avoids a HEAD
-  #   request to query the source object size but prevents object metadata
-  #   from being copied. Raises an `ArgumentError` if
-  #   this option is provided when `:multipart_copy` is `false` or not set.
-  #
-  # @option options [S3::Client] :copy_source_client Only used when
-  #   `:multipart_copy` is `true` and the source object is in a
-  #   different region. You do not need to specify this option
-  #   if you have provided `:content_length`.
-  #
-  # @option options [String] :copy_source_region Only used when
-  #   `:multipart_copy` is `true` and the source object is in a
-  #   different region. You do not need to specify this option
-  #   if you have provided a `:source_client` or a `:content_length`.
-  #
-  # @option options [Boolean] :use_source_parts (false) Only used when
-  #   `:multipart_copy` is `true`. Use part sizes defined on the source
-  #   object if any exist. If copying or moving an object that
-  #   is already multipart, this does not re-part the object, instead
-  #   re-using the part definitions on the original. That means the etag
-  #   and any checksums will not change. This is especially useful if the
-  #   source object has parts with varied sizes.
-  #
-  # @option options [String] :tags_directive Only used when
-  #   `:multipart_copy` is `true`. When set to `'COPY'`, source object
-  #   tags are fetched and applied to the destination via PutObjectTagging.
-  #   When set to `'REPLACE'`, the provided `:tagging` value is parsed and
-  #   applied via PutObjectTagging. When not set, `:tagging` (if provided)
-  #   is passed to CreateMultipartUpload directly. Works with or without
-  #   `:content_length` — tags are fetched from source regardless of
-  #   whether HeadObject is skipped.
-  #
-  # @option options [String] :annotations_directive Only used when
-  #   `:multipart_copy` is `true`. When set to `'COPY'`, source object
-  #   annotations are fetched and applied to the destination after the
-  #   multipart upload completes. Works with or without `:content_length`.
-  #
-  # @option options [String] :metadata_directive Only used when
-  #   `:multipart_copy` is `true`. When set to `'REPLACE'`, source metadata
-  #   from HeadObject is not merged into CreateMultipartUpload — only
-  #   caller-supplied values (e.g. `:metadata`, `:content_type`) are used.
-  #   Has no effect when `:content_length` is provided since HeadObject
-  #   is already skipped.
-  #
-  # @example Basic object copy
-  #
-  #   bucket = Aws::S3::Bucket.new('target-bucket')
-  #   object = bucket.object('target-key')
-  #
-  #   # source as String
-  #   object.copy_from('source-bucket/source-key')
-  #
-  #   # source as Hash
-  #   object.copy_from(bucket:'source-bucket', key:'source-key')
-  #
-  #   # source as Aws::S3::Object
-  #   object.copy_from(bucket.object('source-key'))
-  #
-  # @example Managed copy of large objects
-  #
-  #   # uses multipart upload APIs to copy object
-  #   object.copy_from('src-bucket/src-key', multipart_copy: true)
-  #
-  # @see #copy_to
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object.rb:1654
   def copy_from(source, options = T.unsafe(nil)); end
@@ -42344,64 +42344,64 @@ class Aws::S3::ObjectMultipartCopier
 
   private
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:185
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:186
   def abort_upload(options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:224
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:225
   def byte_range(offset, part_size, size); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:210
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:211
   def calculate_part_size(part_number, default_part_size, _options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:179
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:180
   def complete_upload(parts, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:195
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:196
   def compute_parts(size, default_part_size, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:171
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:172
   def copy_part(part); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:156
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:157
   def copy_part_thread(queue); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:147
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:148
   def copy_parts(size, default_part_size, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:232
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:233
   def default_part_size(source_size); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:142
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:143
   def initiate_upload(options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:276
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:277
   def options_for(operation_name, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:251
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:252
   def put_annotations(annotations, response, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:238
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:239
   def put_tags(tags, resp, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:126
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:127
   def resolve_annotations(options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:100
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:101
   def resolve_create_opts(metadata, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:83
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:84
   def resolve_metadata(options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:218
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:219
   def resolve_part_size(part_number); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:75
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:76
   def resolve_source(copy_source); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:92
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:93
   def resolve_source_parts; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:108
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:109
   def resolve_tags(options); end
 end
 
@@ -42418,15 +42418,15 @@ Aws::S3::ObjectMultipartCopier::MIN_PART_SIZE = T.let(T.unsafe(nil), Integer)
 
 # A thread-safe work queue of part definitions for a multipart copy.
 #
-# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:283
+# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:284
 class Aws::S3::ObjectMultipartCopier::PartQueue
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:284
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:285
   def initialize(parts = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:293
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:294
   def clear!; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:289
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_multipart_copier.rb:290
   def shift; end
 end
 
