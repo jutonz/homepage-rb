@@ -30,7 +30,7 @@ module Plants
         return
       end
 
-      plant_image = T.let(result.plant_image, Plants::PlantImage)
+      plant_image = T.must(result.plant_image)
       @plant_image = plant_image
       flash.now[:alert] = plant_image.errors.full_messages.to_sentence
       render(:new, status: :unprocessable_content)

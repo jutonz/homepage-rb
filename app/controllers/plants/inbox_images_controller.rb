@@ -40,7 +40,7 @@ module Plants
         return
       end
 
-      inbox_image = T.let(result.inbox_image, Plants::InboxImage)
+      inbox_image = T.must(result.inbox_image)
       @inbox_image = inbox_image
       flash.now[:alert] = inbox_image.errors.full_messages.to_sentence
       render(:new, status: :unprocessable_content)
