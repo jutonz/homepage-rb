@@ -60,7 +60,7 @@ group :development, :test do
   gem "simplecov", require: false
   gem "simplecov_json_formatter", require: false
   gem "standard"
-  gem "tapioca", "~> 0.19.2", require: false
+  gem "tapioca", "~> 0.20.0", require: false
 end
 
 group :development do
