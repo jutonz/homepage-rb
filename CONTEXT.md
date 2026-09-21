@@ -124,6 +124,15 @@ HPRB-59 arose from that conflation. Since those implementations were
 unified they also share `Galleries::TagSearches::ResultsComponent`, so a
 `:gallery` branch inside a component named for tag searches is expected.
 
+**Automatic search** — the tag search a query field starts by itself
+once the viewer stops typing. It is the same search the Search button
+runs, started by the field rather than by the viewer. A search the
+viewer starts supersedes a pending automatic one, so an automatic
+search never runs after it.
+
+*Avoid*: "debounce". That names the timer that delays an automatic
+search, not the search itself.
+
 **Tag search mode** — the surface a tag search serves. The mode names
 one caller: the per-image tag form, the gallery sidebar, the bulk-upload
 dialog, the bulk tag dialog, or the auto-add picker. It decides which

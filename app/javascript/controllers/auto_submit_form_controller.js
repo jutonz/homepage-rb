@@ -1,18 +1,33 @@
 import { Controller } from "@hotwired/stimulus"
-import debounce from "just-debounce"
 import { isTest } from "util/rails_env"
 
 export default class extends Controller {
   connect() {
-    this.debouncedSubmit = debounce((event) => {
-      if (event.target.value.length > 2) {
-        this.element.requestSubmit()
-      }
-    }, this.timeoutDuration())
+    this.cancel = this.cancel.bind(this)
+    this.element.addEventListener("submit", this.cancel)
+  }
+
+  disconnect() {
+    this.element.removeEventListener("submit", this.cancel)
+    this.cancel()
   }
 
   submit(event) {
-    this.debouncedSubmit(event)
+    this.cancel()
+
+    const field = event.target
+    this.pendingSubmit = setTimeout(() => {
+      // The bulk tag dialog empties this field when the viewer selects
+      // a tag, and an empty query matches every tag. Read the value
+      // here, not before the timer.
+      if (field.value.length <= 2) return
+
+      this.element.requestSubmit()
+    }, this.timeoutDuration())
+  }
+
+  cancel() {
+    clearTimeout(this.pendingSubmit)
   }
 
   timeoutDuration() {

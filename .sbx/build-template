@@ -35,20 +35,11 @@ create_sandbox "$build_sandbox"
 say "waiting for provisioning to finish"
 wait_until_ready "$build_sandbox"
 
-# The suite must pass, but not necessarily on the first attempt: one flaky
-# system spec (HPRB-112) would otherwise cost a whole rebuild and become the
-# reason the template is never refreshed.
-attempt=1
-until in_sandbox "$build_sandbox" "mise exec -- bin/rspec"; do
-  attempt=$((attempt + 1))
-
-  if [ "$attempt" -gt "$SUITE_ATTEMPTS" ]; then
-    say "the suite failed $SUITE_ATTEMPTS times; not saving a template" >&2
-    exit 1
-  fi
-
-  say "the suite failed; attempt $attempt of $SUITE_ATTEMPTS"
-done
+say "running the suite"
+if ! in_sandbox "$build_sandbox" "mise exec -- bin/rspec"; then
+  say "the suite failed; not saving a template" >&2
+  exit 1
+fi
 
 TEMPLATE_TAG="${1:-$TEMPLATE_TAG}"
 say "saving $TEMPLATE_TAG"
