@@ -447,7 +447,7 @@ GEM
     opentelemetry-semantic_conventions (1.44.0)
       opentelemetry-api (~> 1.0)
     optimist (3.2.1)
-    parallel (2.1.0)
+    parallel (2.2.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
@@ -575,11 +575,10 @@ GEM
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
-    rubydex (0.4.0)
-    rubydex (0.4.0-aarch64-linux)
-    rubydex (0.4.0-arm64-darwin)
-    rubydex (0.4.0-x86_64-darwin)
-    rubydex (0.4.0-x86_64-linux)
+    rubydex (0.4.1-aarch64-linux)
+    rubydex (0.4.1-arm64-darwin)
+    rubydex (0.4.1-x86_64-darwin)
+    rubydex (0.4.1-x86_64-linux)
     securerandom (0.4.1)
     sentry-rails (7.0.0)
       railties (>= 5.2.0)
@@ -659,12 +658,12 @@ GEM
     tailwindcss-ruby (4.3.1-arm64-darwin)
     tailwindcss-ruby (4.3.1-x86_64-darwin)
     tailwindcss-ruby (4.3.1-x86_64-linux-gnu)
-    tapioca (0.19.2)
+    tapioca (0.20.0)
       benchmark
       bundler (>= 2.2.25)
       netrc (>= 0.11.0)
       parallel (>= 1.21.0)
-      rbi (>= 0.3.7)
+      rbi (>= 0.4.1)
       require-hooks (>= 0.2.2)
       rubydex (>= 0.1.0.beta10)
       sorbet-static-and-runtime (>= 0.6.12698)
@@ -762,7 +761,7 @@ DEPENDENCIES
   stimulus-rails
   super_diff
   tailwindcss-rails
-  tapioca (~> 0.19.2)
+  tapioca (~> 0.20.0)
   turbo-rails
   tzinfo-data
   view_component
