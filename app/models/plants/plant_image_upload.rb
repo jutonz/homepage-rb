@@ -1,19 +1,28 @@
-# typed: true
+# typed: strict
 
 module Plants
   class PlantImageUpload
     Result = Struct.new(:saved, :plant_image) do
+      sig { returns(T::Boolean) }
       def saved?
         saved
       end
     end
 
+    sig do
+      params(
+        plant: Plants::Plant,
+        files: T.untyped,
+        taken_at: T.untyped
+      ).void
+    end
     def initialize(plant:, files:, taken_at:)
-      @plant = plant
-      @files = files
-      @taken_at = taken_at
+      @plant = T.let(plant, Plants::Plant)
+      @files = T.let(files, T.untyped)
+      @taken_at = T.let(taken_at, T.untyped)
     end
 
+    sig { returns(Result) }
     def save
       files = Array(@files).reject(&:blank?)
       return missing_file_result if files.empty?
@@ -23,12 +32,14 @@ module Plants
 
     private
 
+    sig { returns(Result) }
     def missing_file_result
       plant_image = @plant.plant_images.new(taken_at: @taken_at)
       plant_image.validate
       Result.new(saved: false, plant_image:)
     end
 
+    sig { params(files: T::Array[T.untyped]).returns(Result) }
     def create_images(files)
       saved = T.let(true, T::Boolean)
       plant_image = T.let(nil, T.nilable(Plants::PlantImage))
