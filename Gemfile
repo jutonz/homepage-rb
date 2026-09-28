@@ -81,6 +81,6 @@ group :test do
   gem "webmock"
 end
 
-gem "solid_cable", "~> 4.0"
+gem "solid_cable", "~> 4.1"
 
 gem "sorbet-runtime", "~> 0.6.13506"
