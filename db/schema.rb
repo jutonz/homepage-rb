@@ -93,9 +93,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_20_184559) do
 
   create_table "galleries_book_images", force: :cascade do |t|
     t.bigint "book_id", null: false
-    t.datetime "created_at", null: false
     t.bigint "image_id", null: false
     t.integer "order", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["book_id", "image_id"], name: "index_galleries_book_images_on_book_id_and_image_id", unique: true
     t.index ["book_id"], name: "index_galleries_book_images_on_book_id"
@@ -103,9 +103,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_20_184559) do
   end
 
   create_table "galleries_books", force: :cascade do |t|
-    t.datetime "created_at", null: false
     t.bigint "gallery_id", null: false
     t.string "name", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["gallery_id"], name: "index_galleries_books_on_gallery_id"
   end
@@ -125,20 +125,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_20_184559) do
     t.datetime "created_at", null: false
     t.bigint "gallery_id", null: false
     t.vector "perceptual_hash", limit: 64
-    t.datetime "processed_at"
     t.datetime "updated_at", null: false
+    t.datetime "processed_at"
     t.index ["gallery_id"], name: "index_galleries_images_on_gallery_id"
   end
 
   create_table "galleries_remote_video_downloads", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "download_started_at"
-    t.text "error_message"
     t.bigint "gallery_id", null: false
     t.bigint "image_id"
-    t.enum "status", default: "pending", null: false, enum_type: "galleries_remote_video_download_status"
-    t.datetime "updated_at", null: false
     t.string "url", null: false
+    t.enum "status", default: "pending", null: false, enum_type: "galleries_remote_video_download_status"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "download_started_at"
     t.index ["gallery_id", "url"], name: "index_galleries_rvd_on_gallery_id_and_url", unique: true
     t.index ["gallery_id"], name: "index_galleries_remote_video_downloads_on_gallery_id"
     t.index ["image_id"], name: "index_galleries_remote_video_downloads_on_image_id"
@@ -155,43 +155,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_20_184559) do
   end
 
   create_table "galleries_tags", force: :cascade do |t|
-    t.enum "classification", default: "none", null: false, enum_type: "galleries_tag_classification"
     t.datetime "created_at", null: false
     t.bigint "gallery_id", null: false
     t.integer "image_tags_count", default: 0, null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.enum "classification", default: "none", null: false, enum_type: "galleries_tag_classification"
     t.index ["gallery_id", "name"], name: "index_galleries_tags_on_gallery_id_and_name", unique: true
     t.index ["gallery_id"], name: "index_galleries_tags_on_gallery_id"
     t.index ["user_id"], name: "index_galleries_tags_on_user_id"
   end
 
   create_table "plants_inbox_images", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "taken_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.datetime "taken_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_plants_inbox_images_on_user_id"
   end
 
   create_table "plants_plant_images", force: :cascade do |t|
-    t.datetime "created_at", null: false
     t.bigint "plant_id", null: false
     t.datetime "taken_at", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["plant_id"], name: "index_plants_plant_images_on_plant_id"
   end
 
   create_table "plants_plants", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "died_at"
-    t.bigint "key_image_id"
     t.string "name", null: false
     t.datetime "purchased_at"
     t.string "purchased_from"
-    t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "key_image_id"
+    t.datetime "died_at"
     t.index ["key_image_id"], name: "index_plants_plants_on_key_image_id"
     t.index ["user_id"], name: "index_plants_plants_on_user_id"
   end
