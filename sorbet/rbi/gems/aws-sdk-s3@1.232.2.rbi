@@ -42,144 +42,6 @@ module Aws; end
 # https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
 #
 # WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
-# WARNING ABOUT GENERATED CODE
-#
-# This file is generated. See the contributing guide for more information:
-# https://github.com/aws/aws-sdk-ruby/blob/version-3/CONTRIBUTING.md
-#
-# WARNING ABOUT GENERATED CODE
 #
 # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3.rb:45
 module Aws::S3
@@ -758,8 +620,8 @@ class Aws::S3::Bucket
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:1299
   def lifecycle_configuration; end
 
-  # @api private
   # @raise [NotImplementedError]
+  # @api private
   # @api private
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:78
@@ -31647,7 +31509,7 @@ class Aws::S3::Encryption::Client
   def initialize(*args, &block); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryption/client.rb:190
-  def build_request(*_arg0, **_arg1, &_arg2); end
+  def build_request(*, **, &); end
 
   # @return [S3::Client]
   #
@@ -31655,10 +31517,10 @@ class Aws::S3::Encryption::Client
   def client; end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryption/client.rb:190
-  def config(*_arg0, **_arg1, &_arg2); end
+  def config(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryption/client.rb:190
-  def delete_object(*_arg0, **_arg1, &_arg2); end
+  def delete_object(*, **, &); end
 
   # @return [Symbol<:metadata, :instruction_file>]
   #
@@ -31683,7 +31545,7 @@ class Aws::S3::Encryption::Client
   def get_object(params = T.unsafe(nil), &block); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryption/client.rb:190
-  def head_object(*_arg0, **_arg1, &_arg2); end
+  def head_object(*, **, &); end
 
   # @return [String] When {#envelope_location} is `:instruction_file`,
   #   the envelope is stored in the object with the object key suffixed
@@ -32468,7 +32330,7 @@ class Aws::S3::EncryptionV2::Client
   def initialize(options = T.unsafe(nil)); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV2/client.rb:243
-  def build_request(*_arg0, **_arg1, &_arg2); end
+  def build_request(*, **, &); end
 
   # @return [S3::Client]
   #
@@ -32483,10 +32345,10 @@ class Aws::S3::EncryptionV2::Client
   def commitment_policy; end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV2/client.rb:243
-  def config(*_arg0, **_arg1, &_arg2); end
+  def config(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV2/client.rb:243
-  def delete_object(*_arg0, **_arg1, &_arg2); end
+  def delete_object(*, **, &); end
 
   # @return [Symbol<:metadata, :instruction_file>]
   #
@@ -32529,7 +32391,7 @@ class Aws::S3::EncryptionV2::Client
   def get_object(params = T.unsafe(nil), &block); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV2/client.rb:243
-  def head_object(*_arg0, **_arg1, &_arg2); end
+  def head_object(*, **, &); end
 
   # @return [String] When {#envelope_location} is `:instruction_file`,
   #   the envelope is stored in the object with the object key suffixed
@@ -33453,7 +33315,7 @@ class Aws::S3::EncryptionV3::Client
   def initialize(options = T.unsafe(nil)); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV3/client.rb:291
-  def build_request(*_arg0, **_arg1, &_arg2); end
+  def build_request(*, **, &); end
 
   # @return [S3::Client]
   #
@@ -33467,10 +33329,10 @@ class Aws::S3::EncryptionV3::Client
   def commitment_policy; end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV3/client.rb:291
-  def config(*_arg0, **_arg1, &_arg2); end
+  def config(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV3/client.rb:291
-  def delete_object(*_arg0, **_arg1, &_arg2); end
+  def delete_object(*, **, &); end
 
   # @return [Symbol<:metadata, :instruction_file>]
   #
@@ -33512,7 +33374,7 @@ class Aws::S3::EncryptionV3::Client
   def get_object(params = T.unsafe(nil), &block); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/encryptionV3/client.rb:291
-  def head_object(*_arg0, **_arg1, &_arg2); end
+  def head_object(*, **, &); end
 
   # @return [String] When {#envelope_location} is `:instruction_file`,
   #   the envelope is stored in the object with the object key suffixed
@@ -39062,16 +38924,16 @@ class Aws::S3::Object
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object.rb:53
   def delete_marker; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:572
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:581
   def deprecated_download_file(destination, options = T.unsafe(nil)); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object.rb:3743
   def deprecated_identifiers; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:495
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:501
   def deprecated_upload_file(source, options = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:421
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:424
   def deprecated_upload_stream(options = T.unsafe(nil), &block); end
 
   # Downloads a file in S3 to a path on disk.
@@ -39140,7 +39002,7 @@ class Aws::S3::Object
   # @see Client#get_object
   # @see Client#head_object
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:562
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:568
   def download_file(*args, &block); end
 
   # An entity tag (ETag) is an opaque identifier assigned by a web server
@@ -41632,7 +41494,7 @@ class Aws::S3::Object
   # @see Client#complete_multipart_upload
   # @see Client#upload_part
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:480
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:483
   def upload_file(*args, &block); end
 
   # Uploads a stream in a streaming fashion to the current object in S3.
@@ -41948,10 +41810,10 @@ class Aws::S3::Object::Collection < ::Aws::Resources::Collection
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object.rb:3906
   def batch_delete!(options = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:575
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:584
   def delete(*args, &block); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:577
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object.rb:586
   def deprecated_delete(options = T.unsafe(nil)); end
 end
 
@@ -46820,19 +46682,19 @@ class Aws::S3::Plugins::RetryableBlockIO
   def initialize(block_io); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:13
-  def read(*_arg0, **_arg1, &_arg2); end
+  def read(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:21
   def rewind; end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:13
-  def size(*_arg0, **_arg1, &_arg2); end
+  def size(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:19
   def truncate(_integer); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:13
-  def write(*_arg0, **_arg1, &_arg2); end
+  def write(*, **, &); end
 end
 
 # A wrapper around ManagedFile that adds no-ops for truncate and rewind
@@ -46846,25 +46708,25 @@ class Aws::S3::Plugins::RetryableManagedFile
   def initialize(managed_file); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:28
-  def close(*_arg0, **_arg1, &_arg2); end
+  def close(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:28
-  def open?(*_arg0, **_arg1, &_arg2); end
+  def open?(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:28
-  def read(*_arg0, **_arg1, &_arg2); end
+  def read(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:36
   def rewind; end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:28
-  def size(*_arg0, **_arg1, &_arg2); end
+  def size(*, **, &); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:34
   def truncate(_integer); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/streaming_retry.rb:28
-  def write(*_arg0, **_arg1, &_arg2); end
+  def write(*, **, &); end
 end
 
 # Support S3 host id, more information, see:
@@ -48066,7 +47928,7 @@ class Aws::S3::TransferManager
   # @see Client#get_object
   # @see Client#head_object
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:246
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:248
   def download_file(destination, bucket:, key:, **options); end
 
   # @return [Object]
@@ -48186,7 +48048,7 @@ class Aws::S3::TransferManager
   #   * `:failed_uploads` - Number of files that failed to upload
   #   * `:errors` - Array of error objects for failed uploads (only present when failures occur)
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:361
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:366
   def upload_directory(source, bucket:, **options); end
 
   # Uploads a file from disk to S3.
@@ -48262,7 +48124,7 @@ class Aws::S3::TransferManager
   # @see Client#complete_multipart_upload
   # @see Client#upload_part
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:443
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:450
   def upload_file(source, bucket:, key:, **options); end
 
   # Uploads a stream in a streaming fashion to S3.
@@ -48318,12 +48180,12 @@ class Aws::S3::TransferManager
   # @see Client#complete_multipart_upload
   # @see Client#upload_part
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:512
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:522
   def upload_stream(bucket:, key:, **options, &block); end
 
   private
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:528
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/transfer_manager.rb:541
   def resolve_http_chunk_size(opts); end
 end
 
