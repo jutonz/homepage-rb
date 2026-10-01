@@ -1,49 +1,7 @@
 #!/usr/bin/env bash
-# Rebuild the local sandbox template from the kit, on any Mac, with one
-# command. The template is a cache, never a shipped artifact: it holds the
-# toolchain and the gem and npm caches, and no repository state.
-#
-# No template is saved until the suite passes, so a broken environment can
-# never become the thing every later sandbox starts from.
+# Rebuild the local sandbox template from the kits, on any Mac, with one
+# command. Pass a tag to save it under a name other than TEMPLATE_TAG.
 
 . "$(dirname "$0")/host-lib.sh"
 
-build_sandbox=homepage-rb-template-build
-
-# A build that started from the previous template would bake its mistakes in
-# again. This always builds from the stock agent image.
-USE_TEMPLATE=no
-
-# A saved Template is shared by every later sandbox, so it must never carry
-# the builder's own Linear, Claude, or opencode identity, even when the
-# builder has LINEAR_API_KEY or CLAUDE_CODE_OAUTH_TOKEN set, or the builder's
-# skills.
-FORWARD_LINEAR_KEY=no
-FORWARD_CLAUDE_TOKEN=no
-SHARE_CLAUDE_SKILLS=no
-SHARE_CLAUDE_INSTRUCTIONS=no
-SHARE_GIT_IDENTITY=no
-SHARE_OPENCODE_AUTH=no
-
-trap 'remove_sandbox "$build_sandbox"' EXIT
-
-remove_sandbox "$build_sandbox"
-
-say "creating $build_sandbox from the kit"
-create_sandbox "$build_sandbox"
-
-say "waiting for provisioning to finish"
-wait_until_ready "$build_sandbox"
-
-say "running the suite"
-if ! in_sandbox "$build_sandbox" "mise exec -- bin/rspec"; then
-  say "the suite failed; not saving a template" >&2
-  exit 1
-fi
-
-TEMPLATE_TAG="${1:-$TEMPLATE_TAG}"
-say "saving $TEMPLATE_TAG"
-sbx stop "$build_sandbox" >/dev/null
-sbx template save "$build_sandbox" "$TEMPLATE_TAG"
-
-say "$TEMPLATE_TAG is ready; new sandboxes will start from it"
+build_template_main "$@"

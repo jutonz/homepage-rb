@@ -16,16 +16,6 @@ permissions:
       # Bundler's compact index. Denied by the default policy, which sends
       # Bundler to the full RubyGems index instead and costs tens of minutes.
       - index.rubygems.org
-      # The Linear API, for the linear CLI installed by install-system.
-      - api.linear.app
-      # The Claude Code releases, for the claude CLI installed by
-      # install-system. https://claude.ai/install.sh redirects to this host,
-      # which also serves the manifest and the binary itself.
-      - downloads.claude.ai
-      # The OpenAI token endpoint and the Codex backend, for opencode with a
-      # ChatGPT subscription. See link-opencode-auth.
-      - auth.openai.com
-      - chatgpt.com
 
 environment:
   variables:
@@ -39,8 +29,7 @@ setup:
     - command: bash /home/agent/.sbx-kit/install-system
       user: "0"
       description: >-
-        Install system packages, PostgreSQL, pgvector, Playwright, and the
-        linear, claude, and opencode CLIs
+        Install system packages, PostgreSQL, pgvector, mise, and Playwright
     - command: bash /home/agent/.sbx-kit/install-toolchain
       user: "1000"
       description: Install the Ruby and Node versions the repository pins
@@ -49,23 +38,6 @@ setup:
     - command: ["bash", "/home/agent/.sbx-kit/enable-toolchain-path"]
       user: "0"
       description: Put the mise shims on PATH for the agent user
-    - command: ["bash", "/home/agent/.sbx-kit/configure-claude"]
-      user: "0"
-      description: >-
-        Let claude start with a forwarded subscription token, without
-        onboarding or a login
-    - command: ["bash", "/home/agent/.sbx-kit/link-claude-skills"]
-      user: "1000"
-      description: Give claude the skills of the host
-    - command: ["bash", "/home/agent/.sbx-kit/link-claude-instructions"]
-      user: "1000"
-      description: Give claude the global instructions of the host
-    - command: ["bash", "/home/agent/.sbx-kit/link-opencode-auth"]
-      user: "1000"
-      description: Give opencode the logins of the host
-    - command: ["bash", "/home/agent/.sbx-kit/configure-git"]
-      user: "1000"
-      description: Give git the identity of the host, so a commit inside works
     - command: ["bash", "/home/agent/.sbx-kit/start-postgres"]
       user: "0"
       description: Start PostgreSQL
