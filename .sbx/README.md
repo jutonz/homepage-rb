@@ -95,7 +95,12 @@ Every sandbox has the `linear` CLI on `PATH`. Creation forwards it a
 Linear API key from the first of these that has one:
 
 1. `LINEAR_API_KEY`, if exported on the host.
-2. Otherwise, the 1Password CLI, if `op` is on the host:
+2. Otherwise `.envrc`, read through `direnv exec`. direnv's shell hook
+   fires only in an interactive shell, so a script or an agent's tool
+   call sees nothing that `.envrc` exports. Creation reads it directly.
+3. Otherwise, the host's `linear` CLI, through `linear auth token`,
+   which reads the key the CLI keeps in the system keyring.
+4. Otherwise, the 1Password CLI, if `op` is on the host:
    `op read "$LINEAR_OP_ITEM" --account="$LINEAR_OP_ACCOUNT"`. Override
    `LINEAR_OP_ITEM` / `LINEAR_OP_ACCOUNT` to point at a different vault
    item; both default to this project's own key.
@@ -105,13 +110,13 @@ Linear API key from the first of these that has one:
 ```
 
 This is the real key, not a host-only proxy like the GitHub credential:
-the sandbox can do anything that key can do. Neither source is required;
+the sandbox can do anything that key can do. No source is required;
 with no export and no usable 1Password entry, the sandbox still comes
 up, just without Linear access. `linear` reports its own missing- or
 invalid-credential error in that case.
 
 Attaching to an existing sandbox reuses whatever key it was created
-with; it does not re-resolve either source. Recreate the sandbox
+with; it does not re-resolve any source. Recreate the sandbox
 (`sbx rm` it, then run `.sbx/sandbox` again) to pick up a changed key,
 or to add Linear to a sandbox created before this CLI existed in the
 kit.
@@ -121,8 +126,12 @@ kit.
 Creation forwards `claude` a subscription token, as
 `CLAUDE_CODE_OAUTH_TOKEN`, from the first of these that has one:
 
-1. `CLAUDE_CODE_OAUTH_TOKEN`, if exported on the host.
-2. Otherwise, the 1Password CLI, if `op` is on the host:
+1. `CLAUDE_CODE_OAUTH_TOKEN`, if exported on the host. Claude Code
+   strips this one variable from every process it starts for a tool
+   call, so an export never reaches a run that an agent starts.
+2. Otherwise `.envrc`, read through `direnv exec`, which is the path an
+   agent-started run takes.
+3. Otherwise, the 1Password CLI, if `op` is on the host:
    `op read "$CLAUDE_OP_ITEM" --account="$CLAUDE_OP_ACCOUNT"`. Override
    `CLAUDE_OP_ITEM` / `CLAUDE_OP_ACCOUNT` to point at a different vault
    item; both default to the owner's token.

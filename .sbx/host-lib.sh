@@ -36,7 +36,42 @@ export_credential_keys() {
   export DEVELOPMENT_KEY TEST_KEY
 }
 
-# An explicit export always wins. Otherwise, when the 1Password CLI is on
+# An explicit export always wins. Otherwise read .envrc, because direnv's
+# hook fires only in an interactive shell: the non-interactive shell behind
+# an agent's tool call, or any script, sees none of it. Claude Code also
+# strips CLAUDE_CODE_OAUTH_TOKEN from the children it starts, so an agent
+# reaches a host export through this path only.
+resolve_from_direnv() {
+  local variable="$1"
+  local value
+
+  if [ -n "${!variable:-}" ] || ! command -v direnv >/dev/null; then
+    return
+  fi
+
+  value="$(direnv exec "$repo_root" printenv "$variable" 2>/dev/null || true)"
+
+  if [ -n "$value" ]; then
+    export "$variable=$value"
+  fi
+}
+
+# The linear CLI keeps its key in the system keyring, not in
+# ~/.config/linear/credentials.toml, and `linear auth token` prints it.
+resolve_from_linear_cli() {
+  if [ -n "${LINEAR_API_KEY:-}" ] || ! command -v linear >/dev/null; then
+    return
+  fi
+
+  local value
+  value="$(cd "$repo_root" && linear auth token 2>/dev/null || true)"
+
+  if [ -n "$value" ]; then
+    export "LINEAR_API_KEY=$value"
+  fi
+}
+
+# An export or .envrc always wins. Otherwise, when the 1Password CLI is on
 # the host, read the value from there instead of requiring an export.
 resolve_from_1password() {
   local variable="$1"
@@ -296,6 +331,8 @@ build_sandbox_argv() {
   # settings to no so a cached Template never acquires or carries the
   # builder's Linear or Claude identity.
   if [ "$FORWARD_LINEAR_KEY" = yes ]; then
+    resolve_from_direnv LINEAR_API_KEY
+    resolve_from_linear_cli
     resolve_from_1password LINEAR_API_KEY "$LINEAR_OP_ITEM" \
       "$LINEAR_OP_ACCOUNT" Linear
 
@@ -305,6 +342,7 @@ build_sandbox_argv() {
   fi
 
   if [ "$FORWARD_CLAUDE_TOKEN" = yes ]; then
+    resolve_from_direnv CLAUDE_CODE_OAUTH_TOKEN
     resolve_from_1password CLAUDE_CODE_OAUTH_TOKEN "$CLAUDE_OP_ITEM" \
       "$CLAUDE_OP_ACCOUNT" "Claude subscription"
 
