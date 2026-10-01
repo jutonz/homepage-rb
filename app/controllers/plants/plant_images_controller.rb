@@ -22,7 +22,7 @@ module Plants
       result = Plants::PlantImageUpload.new(
         plant: @plant,
         files: plant_image_params[:file],
-        taken_at: plant_image_params[:taken_at]
+        taken_at: taken_at_param
       ).save
 
       if result.saved?
@@ -90,6 +90,12 @@ module Plants
     sig { returns(ActionController::Parameters) }
     def plant_image_params
       params.expect(plants_plant_image: [:taken_at, :file, {file: []}])
+    end
+
+    sig { returns(T.nilable(String)) }
+    def taken_at_param
+      value = plant_image_params[:taken_at]
+      value if value.is_a?(String)
     end
 
     sig { returns(ActionController::Parameters) }

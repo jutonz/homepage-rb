@@ -32,7 +32,7 @@ module Plants
       result = Plants::InboxImageUpload.new(
         user: current_user,
         files: inbox_image_params[:file],
-        taken_at: inbox_image_params[:taken_at]
+        taken_at: taken_at_param
       ).save
 
       if result.saved?
@@ -75,6 +75,12 @@ module Plants
     sig { returns(ActionController::Parameters) }
     def inbox_image_params
       params.expect(plants_inbox_image: [:taken_at, :file, {file: []}])
+    end
+
+    sig { returns(T.nilable(String)) }
+    def taken_at_param
+      value = inbox_image_params[:taken_at]
+      value if value.is_a?(String)
     end
   end
 end
