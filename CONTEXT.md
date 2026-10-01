@@ -91,10 +91,12 @@ installed gems stay shared. A sandbox isolates what a worktree cannot.
 reserved for that sense. The deleted `bin/workspace_setup.sh` used it
 for a machine, which is part of what made it ambiguous.
 
-**Kit** — the checked-in `.sbx/` directory, the only source of truth for
-what a sandbox contains: packages, toolchain, databases, and the network
-allowlist. It carries no agent-specific configuration, so one kit serves
-a shell sandbox and an agent sandbox alike.
+**Kit** — the checked-in `.sbx/` directory, the source of truth for what
+a sandbox of this repository contains: packages, toolchain, databases,
+and the network allowlist. Every sandbox also stacks the **shared kit**
+(`~/.config/skillshare/skills/_sbx-kit/`) under it, which carries the
+agent CLIs and the host's credentials, skills, and logins, and the host
+scripts that create a sandbox.
 
 **Template** — the local image holding an already provisioned toolchain,
 so that a new sandbox starts in seconds rather than minutes. It is a

@@ -7,7 +7,7 @@ AGENT_MISE_SHIMS=/home/agent/.local/share/mise/shims
 # The status file lives on a tmpfs, so a sandbox created from a template never
 # starts out claiming to be ready because the template froze a "ready" from the
 # machine that built it. The host side reads the same path; see
-# .sbx/host-lib.sh.
+# sandbox_status in the host-lib.sh of the shared kit.
 status_file() {
   local status_dir="/run/user/$(id -u)"
 
