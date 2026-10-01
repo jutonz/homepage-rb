@@ -101,6 +101,24 @@ RSpec.describe "Plants::PlantImages", type: :request do
       expect(response).to(have_http_status(:unprocessable_content))
     end
 
+    [12345, true].each do |taken_at|
+      it "renders errors when taken_at is #{taken_at.inspect}" do
+        user = create(:user)
+        plant = create(:plant, user:)
+        login_as(user, scope: :user)
+        body = {plants_plant_image: {taken_at:}}.to_json
+
+        post(
+          plant_plant_images_path(plant),
+          params: body,
+          headers: {"CONTENT_TYPE" => "application/json"}
+        )
+
+        expect(response).to(have_http_status(:unprocessable_content))
+        expect(flash[:alert]).to(include("Taken at can't be blank"))
+      end
+    end
+
     it "redirects when creating for another user's plant" do
       user = create(:user)
       plant = create(:plant)

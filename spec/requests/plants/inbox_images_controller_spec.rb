@@ -91,6 +91,23 @@ RSpec.describe "Plants::InboxImages", type: :request do
 
       expect(response).to(have_http_status(:unprocessable_content))
     end
+
+    [12345, true].each do |taken_at|
+      it "renders errors when taken_at is #{taken_at.inspect}" do
+        user = create(:user)
+        login_as(user, scope: :user)
+        body = {plants_inbox_image: {taken_at:}}.to_json
+
+        post(
+          inbox_images_path,
+          params: body,
+          headers: {"CONTENT_TYPE" => "application/json"}
+        )
+
+        expect(response).to(have_http_status(:unprocessable_content))
+        expect(flash[:alert]).to(include("Taken at can't be blank"))
+      end
+    end
   end
 
   describe "GET /inbox_images/:id" do
