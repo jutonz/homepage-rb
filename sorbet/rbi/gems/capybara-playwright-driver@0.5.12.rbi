@@ -8,15 +8,15 @@
 # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/tmpdir_owner.rb:1
 module Capybara; end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:172
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:188
 module Capybara::CapybaraObscuredPatch
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:188
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:204
   def capybara_obscured?(x: T.unsafe(nil), y: T.unsafe(nil)); end
 end
 
 # ref: https://github.com/teamcapybara/capybara/blob/f7ab0b5cd5da86185816c2d5c30d58145fe654ed/lib/capybara/selenium/node.rb#L523
 #
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:174
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:190
 Capybara::CapybaraObscuredPatch::OBSCURED_OR_OFFSET_SCRIPT = T.let(T.unsafe(nil), String)
 
 # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:2
@@ -25,11 +25,17 @@ module Capybara::ElementClickOptionPatch
   def perform_click_action(keys, **options); end
 end
 
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:18
+module Capybara::ElementDragToPatch
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:19
+  def drag_to(target, **options); end
+end
+
 # ref: https://github.com/teamcapybara/capybara/pull/2424
 #
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:202
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:218
 module Capybara::ElementDropPathCompatPatch
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:203
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:219
   def drop(*args); end
 end
 
@@ -41,58 +47,59 @@ end
 
 class Capybara::Node::Element < ::Capybara::Node::Base
   include ::Capybara::ElementClickOptionPatch
+  include ::Capybara::ElementDragToPatch
   include ::Capybara::WithElementHandlePatch
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:33
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:49
 module Capybara::NodeActionsAllowLabelClickPatch
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:130
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:146
   def check(locator = T.unsafe(nil), **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:126
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:142
   def choose(locator = T.unsafe(nil), **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:134
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:150
   def uncheck(locator = T.unsafe(nil), **options); end
 
   private
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:138
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:154
   def check_via_label_click(node_type, locator, checked:, allow_label_click: T.unsafe(nil), **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:154
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:170
   def should_use_label_click?(allow_label_click, options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:34
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:50
 class Capybara::NodeActionsAllowLabelClickPatch::SelectableElementHandler
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:35
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:51
   def initialize(node:, node_type:, locator:, checked:); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:42
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:58
   def set_checked_state_via_label?; end
 
   private
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:60
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:76
   def click_associated_label?(playwright_element_handle_or_locator); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:117
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:133
   def driver; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:71
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:87
   def find_playwright_element_handle_by_non_label_locator; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:93
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:109
   def non_label_playwright_element_handle_candidates(playwright_page); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:54
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:70
   def playwright_locator_by_label; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:110
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:126
   def scope_element; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:121
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:137
   def session_options; end
 end
 
@@ -114,109 +121,109 @@ class Capybara::Playwright::Browser
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:18
   def initialize(driver:, internal_logger:, playwright_browser:, page_options:, record_video: T.unsafe(nil), callback_on_save_trace: T.unsafe(nil), default_timeout: T.unsafe(nil), default_navigation_timeout: T.unsafe(nil)); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:380
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:390
   def accept_modal(dialog_type, **options, &block); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:200
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:210
   def active_element; end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:58
   def clear_browser_contexts; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:320
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:330
   def close_window(handle); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:70
   def current_url; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:288
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:298
   def current_window_handle; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:386
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:396
   def dismiss_modal(dialog_type, **options, &block); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:184
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:194
   def evaluate_async_script(script, *args); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:177
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:187
   def evaluate_script(script, *args); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:170
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:180
   def execute_script(script, *args); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:116
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:126
   def find_css(query, **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:108
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:118
   def find_xpath(query, **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:371
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:381
   def fullscreen_window(handle); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:156
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:166
   def go_back; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:163
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:173
   def go_forward; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:136
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:146
   def html; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:361
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:371
   def maximize_window(handle); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:292
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:302
   def open_new_window(kind = T.unsafe(nil)); end
 
   # Not used by Capybara::Session.
   # Intended to be directly called by user.
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:219
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:229
   def raw_screenshot(**options); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:96
   def refresh; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:336
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:346
   def resize_window_to(handle, width, height); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:124
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:134
   def response_headers; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:225
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:235
   def save_screenshot(path, **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:231
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:241
   def send_keys(*args); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:130
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:140
   def status_code; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:235
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:245
   def switch_to_frame(frame); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:312
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:322
   def switch_to_window(handle); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:150
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:160
   def title; end
 
   # Not used by Capybara::Session.
   # Intended to be directly called by user.
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:211
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:221
   def video_path; end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:76
   def visit(path); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:284
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:294
   def window_handles; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:330
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:340
   def window_size(handle); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:438
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:448
   def with_playwright_page(&block); end
 
   private
@@ -224,7 +231,7 @@ class Capybara::Playwright::Browser
   # Capybara doesn't retry at this case since it doesn't use `synchronize { ... } for driver/browser methods.`
   # We have to retry ourselves.
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:252
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:262
   def assert_page_alive(retry_count: T.unsafe(nil), &block); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:32
@@ -236,24 +243,24 @@ class Capybara::Playwright::Browser
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:92
   def firefox?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:303
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:313
   def on_window(handle, &block); end
 
   # Capybara follows Selenium's outer window size semantics.
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:343
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:353
   def outer_window_size(page); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:280
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:290
   def pages; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:392
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:402
   def unwrap_node(args); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:347
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:357
   def viewport_size_for(page, width, height); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:402
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/browser.rb:412
   def wrap_node(arg); end
 end
 
@@ -381,55 +388,55 @@ class Capybara::Playwright::Driver < ::Capybara::Driver::Base
   def initialize(app, **options); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:147
-  def accept_modal(*_arg0, **_arg1, &_arg2); end
+  def accept_modal(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:135
-  def active_element(*_arg0, **_arg1, &_arg2); end
+  def active_element(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:143
-  def close_window(*_arg0, **_arg1, &_arg2); end
+  def close_window(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:120
-  def current_url(*_arg0, **_arg1, &_arg2); end
+  def current_url(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:138
-  def current_window_handle(*_arg0, **_arg1, &_arg2); end
+  def current_window_handle(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:148
-  def dismiss_modal(*_arg0, **_arg1, &_arg2); end
+  def dismiss_modal(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:131
-  def evaluate_async_script(*_arg0, **_arg1, &_arg2); end
+  def evaluate_async_script(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:130
-  def evaluate_script(*_arg0, **_arg1, &_arg2); end
+  def evaluate_script(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:129
-  def execute_script(*_arg0, **_arg1, &_arg2); end
+  def execute_script(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:124
-  def find_css(*_arg0, **_arg1, &_arg2); end
+  def find_css(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:123
-  def find_xpath(*_arg0, **_arg1, &_arg2); end
+  def find_xpath(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:142
-  def fullscreen_window(*_arg0, **_arg1, &_arg2); end
+  def fullscreen_window(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:127
-  def go_back(*_arg0, **_arg1, &_arg2); end
+  def go_back(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:128
-  def go_forward(*_arg0, **_arg1, &_arg2); end
+  def go_forward(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:126
-  def html(*_arg0, **_arg1, &_arg2); end
+  def html(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:108
   def invalid_element_errors; end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:141
-  def maximize_window(*_arg0, **_arg1, &_arg2); end
+  def maximize_window(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:25
   def needs_server?; end
@@ -438,49 +445,49 @@ class Capybara::Playwright::Driver < ::Capybara::Driver::Base
   def no_such_window_error; end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:145
-  def open_new_window(*_arg0, **_arg1, &_arg2); end
+  def open_new_window(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:122
-  def refresh(*_arg0, **_arg1, &_arg2); end
+  def refresh(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:84
   def reset!; end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:140
-  def resize_window_to(*_arg0, **_arg1, &_arg2); end
+  def resize_window_to(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:133
-  def response_headers(*_arg0, **_arg1, &_arg2); end
+  def response_headers(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:132
-  def save_screenshot(*_arg0, **_arg1, &_arg2); end
+  def save_screenshot(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:136
-  def send_keys(*_arg0, **_arg1, &_arg2); end
+  def send_keys(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:134
-  def status_code(*_arg0, **_arg1, &_arg2); end
+  def status_code(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:137
-  def switch_to_frame(*_arg0, **_arg1, &_arg2); end
+  def switch_to_frame(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:146
-  def switch_to_window(*_arg0, **_arg1, &_arg2); end
+  def switch_to_window(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:125
-  def title(*_arg0, **_arg1, &_arg2); end
+  def title(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:121
-  def visit(*_arg0, **_arg1, &_arg2); end
+  def visit(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:24
   def wait?; end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:144
-  def window_handles(*_arg0, **_arg1, &_arg2); end
+  def window_handles(*, **, &); end
 
   # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/driver.rb:139
-  def window_size(*_arg0, **_arg1, &_arg2); end
+  def window_size(*, **, &); end
 
   private
 
@@ -581,337 +588,363 @@ end
 #   selenium:   https://github.com/teamcapybara/capybara/blob/master/lib/capybara/selenium/node.rb
 #   apparition: https://github.com/twalpole/apparition/blob/master/lib/capybara/apparition/node.rb
 #
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:222
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:238
 class Capybara::Playwright::Node < ::Capybara::Driver::Node
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:223
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:239
   def initialize(driver, internal_logger, page, element); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1184
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1290
   def ==(other); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:300
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:330
   def [](name); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:267
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:298
   def all_text; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1084
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1190
   def checked?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:572
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:645
   def click(keys = T.unsafe(nil), **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1096
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1202
   def disabled?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:584
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:661
   def double_click(keys = T.unsafe(nil), **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:846
-  def drag_to(element, **options); end
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:927
+  def drag_to(target, **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:952
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1056
   def drop(*args); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1198
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1304
   def find_css(query, **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1190
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1296
   def find_xpath(query, **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:842
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:921
   def hover; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1180
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1286
   def inspect; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1112
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1218
   def multiple?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1080
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1184
   def obscured?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1128
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1234
   def path; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1108
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1214
   def readonly?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1116
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1222
   def rect; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:577
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:652
   def right_click(keys = T.unsafe(nil), **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:963
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1067
   def scroll_by(x, y); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:978
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1082
   def scroll_to(element, location, position = T.unsafe(nil)); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:545
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:618
   def select_option; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1090
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1196
   def selected?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:668
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:747
   def send_keys(*args); end
 
   # @param value [String, Array] Array is only allowed if node has 'multiple' attribute
   # @param options [Hash] Driver specific options for how to set a value on a node
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:337
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:367
   def set(value, **options); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1169
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1275
   def shadow_root; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:329
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:359
   def style(styles); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1042
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1146
   def tag_name; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1165
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1271
   def trigger(event); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:558
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:631
   def unselect_option; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:315
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:345
   def value; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1046
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1150
   def visible?; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:278
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:309
   def visible_text; end
 
   protected
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:230
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:246
   def element; end
 
   private
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:234
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:250
   def assert_element_not_stale(&block); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:311
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:341
   def attribute(name); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:260
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:276
   def capybara_default_wait_time; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:568
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:641
   def parent_select_element; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:306
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:336
   def property(name); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:991
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1095
   def scroll_element_to_location(element, location); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1027
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1131
   def scroll_to_coords(x, y); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1013
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1117
   def scroll_to_location(location); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:920
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1024
 Capybara::Playwright::Node::ATTACH_FILE = T.let(T.unsafe(nil), String)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:390
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:422
 class Capybara::Playwright::Node::Checkbox < ::Capybara::Playwright::Node::Settable
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:391
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:423
   def set(value, **options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:589
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:668
 class Capybara::Playwright::Node::ClickOptions
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:590
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:669
   def initialize(element, keys, options, default_timeout); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:607
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:686
   def as_params; end
 
   private
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:628
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:707
   def delay_ms; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:646
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:725
   def modifiers; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:654
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:733
   def position; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:616
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:695
   def timeout; end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:636
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:715
 Capybara::Playwright::Node::ClickOptions::MODIFIERS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:931
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1035
 Capybara::Playwright::Node::DROP_FILE = T.let(T.unsafe(nil), String)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:942
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1046
 Capybara::Playwright::Node::DROP_STRING = T.let(T.unsafe(nil), String)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:501
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:574
 class Capybara::Playwright::Node::DateInput < ::Capybara::Playwright::Node::Settable
   include ::Capybara::Playwright::Node::UpdateValueJS
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:504
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:577
   def set(value, **options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:525
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:598
 class Capybara::Playwright::Node::DateTimeInput < ::Capybara::Playwright::Node::Settable
   include ::Capybara::Playwright::Node::UpdateValueJS
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:528
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:601
   def set(value, **options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:850
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:283
+class Capybara::Playwright::Node::DragInterruptedError < ::StandardError; end
+
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:935
 class Capybara::Playwright::Node::DragTo
   # @param page [Playwright::Page]
   # @param source [Playwright::ElementHandle]
   # @param target [Playwright::ElementHandle]
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:864
-  def initialize(page, source, target, options); end
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:949
+  def initialize(page, source, target, options, timeout); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:871
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:957
   def execute; end
 
   private
 
   # @param element [Playwright::ElementHandle]
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:893
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:991
   def center_of(element); end
 
   # @returns Array<String>
   #
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:905
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1009
   def drop_modifiers; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:913
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1017
   def sleep_delay; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:898
-  def with_key_pressing(keys, &block); end
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:997
+  def with_key_pressing(keys); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:851
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:936
 Capybara::Playwright::Node::DragTo::MODIFIERS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:467
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:285
+class Capybara::Playwright::Node::ElementGeometry
+  class << self
+    # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:286
+    def bounding_box(element); end
+  end
+end
+
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:540
 class Capybara::Playwright::Node::FileUpload < ::Capybara::Playwright::Node::Settable
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:468
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:541
   def set(value, **options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:537
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:610
 class Capybara::Playwright::Node::JSValueInput < ::Capybara::Playwright::Node::Settable
   include ::Capybara::Playwright::Node::UpdateValueJS
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:540
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:613
   def set(value, **options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:264
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:282
+class Capybara::Playwright::Node::MissingBoundingBoxError < ::StandardError; end
+
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:280
 class Capybara::Playwright::Node::NotActionableError < ::StandardError; end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:384
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:416
 class Capybara::Playwright::Node::RadioButton < ::Capybara::Playwright::Node::Settable
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:385
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:417
   def set(_, **options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1007
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:1111
 Capybara::Playwright::Node::SCROLL_POSITIONS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:672
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:751
 class Capybara::Playwright::Node::SendKeys
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:741
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:820
   def initialize(element_or_keyboard, keys); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:806
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:885
   def execute; end
 
   private
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:802
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:881
   def key_for(key); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:798
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:877
   def modifier_for(modifier); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:683
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:762
 Capybara::Playwright::Node::SendKeys::KEYS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:673
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:752
 Capybara::Playwright::Node::SendKeys::MODIFIERS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:812
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:891
 class Capybara::Playwright::Node::SendKeys::PressKey
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:813
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:892
   def initialize(key:, modifiers:); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:826
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:905
   def execute_for(element); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:831
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:910
 class Capybara::Playwright::Node::SendKeys::TypeText
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:832
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:911
   def initialize(text); end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:836
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:915
   def execute_for(element); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:376
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:408
 class Capybara::Playwright::Node::Settable
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:377
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:409
   def initialize(element, timeout, internal_logger); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:265
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:281
 class Capybara::Playwright::Node::StaleReferenceError < ::StandardError; end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:400
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:432
 class Capybara::Playwright::Node::TextInput < ::Capybara::Playwright::Node::Settable
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:401
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:433
   def set(value, **options); end
 
   private
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:431
-  def set_text(text, append:); end
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:534
+  def ensure_attached; end
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:455
-  def type_tab_separated_text(text, append:); end
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:487
+  def replace_text(keyboard, text); end
+
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:463
+  def set_text(text, append:, keyboard:); end
+
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:513
+  def type_lines(keyboard, parts); end
+
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:520
+  def type_tab_separated_text(text, append:, keyboard:); end
+
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:504
+  def type_text(keyboard, text); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:513
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:586
 class Capybara::Playwright::Node::TimeInput < ::Capybara::Playwright::Node::Settable
   include ::Capybara::Playwright::Node::UpdateValueJS
 
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:516
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:589
   def set(value, **options); end
 end
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:481
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:554
 module Capybara::Playwright::Node::UpdateValueJS
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:482
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:555
   def update_value_js(element, value); end
 end
 
@@ -1033,9 +1066,9 @@ end
 # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/version.rb:5
 Capybara::Playwright::VERSION = T.let(T.unsafe(nil), String)
 
-# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:20
+# pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:36
 module Capybara::WithElementHandlePatch
-  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:21
+  # pkg:gem/capybara-playwright-driver#lib/capybara/playwright/node.rb:37
   def with_playwright_element_handle(&block); end
 end
 
