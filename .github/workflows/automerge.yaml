@@ -38,6 +38,7 @@ jobs:
           opentelemetry-exporter-otlp|semver-minor semver-patch
           opentelemetry-instrumentation-all|semver-minor semver-patch
           opentelemetry-sdk|semver-minor semver-patch
+          pg|semver-patch semver-minor
           puma|semver-minor semver-patch
           ruby-lsp|semver-minor semver-patch
           sentry-rails|semver-patch semver-minor
