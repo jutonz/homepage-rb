@@ -19,7 +19,7 @@ gem "neighbor"
 gem "opentelemetry-exporter-otlp"
 gem "opentelemetry-instrumentation-all"
 gem "opentelemetry-sdk"
-gem "pg", "~> 1.6"
+gem "pg", "~> 1.7"
 gem "prometheus_exporter", require: false
 gem "puma", ">= 5.0"
 gem "pundit"
