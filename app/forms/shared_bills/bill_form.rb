@@ -67,13 +67,12 @@ module SharedBills
       @payee_amounts.to_h.filter_map do |payee_id, data|
         next unless is_selected(data)
 
-        paid = data[:paid] || data["paid"]
-        paid = paid == "1" || paid == true
+        paid = data[:paid] == "1" || data[:paid] == true
 
         SharedBills::PayeeBill.new(
           bill:,
           payee_id:,
-          amount_cents: data[:amount] || data["amount"],
+          amount_cents: data[:amount],
           paid:
         )
       end
@@ -115,8 +114,9 @@ module SharedBills
     def is_selected(data)
       selected_value = data[:selected] || data["selected"]
       # Checkbox sends "1" for checked, nothing for unchecked
-      # When explicitly set to false/0, treat as not selected
       return false if selected_value.nil?
+      # Controller params have indifferent access, so a JSON `false` reaches
+      # here as false, not nil.
       return false if selected_value == false
       return false if selected_value == "0"
 

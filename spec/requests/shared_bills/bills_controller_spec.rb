@@ -115,6 +115,30 @@ RSpec.describe SharedBills::BillsController do
       expect(response).to redirect_to(shared_bill_path(shared_bill))
     end
 
+    it "skips a payee that a JSON request marks as unselected" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      selected_payee = create(:shared_bills_payee, shared_bill:)
+      unselected_payee = create(:shared_bills_payee, shared_bill:)
+      params = {
+        bill_form: {
+          period_start: 1.month.ago,
+          period_end: Time.current,
+          payee_amounts: {
+            selected_payee.id.to_s => {selected: true, amount: 1000},
+            unselected_payee.id.to_s => {selected: false, amount: 1500}
+          }
+        }
+      }
+      login_as(user)
+
+      post(shared_bill_bills_path(shared_bill), params:, as: :json)
+
+      expect(response).to have_http_status(:found)
+      bill = SharedBills::Bill.last
+      expect(bill.payees).to contain_exactly(selected_payee)
+    end
+
     it "renders validation errors for missing period fields" do
       user = create(:user)
       shared_bill = create(:shared_bill, user:)

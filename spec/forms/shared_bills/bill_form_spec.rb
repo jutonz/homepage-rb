@@ -38,6 +38,21 @@ RSpec.describe SharedBills::BillForm do
       expect(form.payee_amounts[payee1.id.to_s][:amount]).to eql(1000)
       expect(form.payee_amounts[payee2.id.to_s]).to be_nil
     end
+
+    it "keeps the paid state of an existing bill's payees" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      paid_payee = create(:shared_bills_payee, shared_bill:)
+      unpaid_payee = create(:shared_bills_payee, shared_bill:)
+      bill = create(:shared_bills_bill, shared_bill:)
+      create(:shared_bills_payee_bill, bill:, payee: paid_payee, paid: true)
+      create(:shared_bills_payee_bill, bill:, payee: unpaid_payee, paid: false)
+
+      form = described_class.new(bill:, shared_bill:)
+
+      expect(form.payee_amounts[paid_payee.id.to_s][:paid]).to be(true)
+      expect(form.payee_amounts[unpaid_payee.id.to_s][:paid]).to be(false)
+    end
   end
 
   describe "validations" do
@@ -120,6 +135,72 @@ RSpec.describe SharedBills::BillForm do
       pb2 = bill.payee_bills.find_by(payee: payee2)
       expect(pb2.amount_cents).to eql(1500)
       expect(pb2.paid).to be(false)
+    end
+
+    it "persists the submitted period" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      payee = create(:shared_bills_payee, shared_bill:)
+      bill = shared_bill.bills.new
+      form = described_class.new(bill:, shared_bill:)
+      period_start = Time.zone.parse("2026-01-01")
+      period_end = Time.zone.parse("2026-01-31")
+      form.assign(
+        period_start:,
+        period_end:,
+        payee_amounts: {payee.id.to_s => {selected: "1", amount: 1000}}
+      )
+
+      result = form.save
+
+      expect(result).to be(true)
+      expect(bill.reload.period_start).to eql(period_start)
+      expect(bill.reload.period_end).to eql(period_end)
+    end
+
+    it "does not save a payee from another shared bill" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      payee = create(:shared_bills_payee, shared_bill:)
+      other_payee = create(:shared_bills_payee)
+      bill = shared_bill.bills.new
+      form = described_class.new(bill:, shared_bill:)
+      form.assign(
+        period_start: 1.month.ago,
+        period_end: Time.current,
+        payee_amounts: {
+          payee.id.to_s => {selected: "1", amount: 1000},
+          other_payee.id.to_s => {selected: "1", amount: 1000}
+        }
+      )
+
+      result = form.save
+
+      expect(result).to be(false)
+      expect(bill.persisted?).to be(false)
+      expect(SharedBills::PayeeBill.count).to eql(0)
+    end
+
+    it "skips a payee whose selected value is \"0\"" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      selected_payee = create(:shared_bills_payee, shared_bill:)
+      unselected_payee = create(:shared_bills_payee, shared_bill:)
+      bill = shared_bill.bills.new
+      form = described_class.new(bill:, shared_bill:)
+      form.assign(
+        period_start: 1.month.ago,
+        period_end: Time.current,
+        payee_amounts: {
+          selected_payee.id.to_s => {selected: "1", amount: 1000},
+          unselected_payee.id.to_s => {selected: "0", amount: 1500}
+        }
+      )
+
+      result = form.save
+
+      expect(result).to be(true)
+      expect(bill.payees).to contain_exactly(selected_payee)
     end
 
     it "saves bill with only selected payees" do
@@ -207,6 +288,19 @@ RSpec.describe SharedBills::BillForm do
 
       expect(form.save).to be(false)
       expect(bill.persisted?).to be(false)
+    end
+
+    it "saves a bill without payee amounts" do
+      user = create(:user)
+      shared_bill = create(:shared_bill, user:)
+      bill = shared_bill.bills.new
+      form = described_class.new(bill:, shared_bill:)
+      form.assign(period_start: 1.month.ago, period_end: Time.current)
+
+      result = form.save
+
+      expect(result).to be(true)
+      expect(bill.payee_bills).to be_empty
     end
   end
 end
