@@ -11,6 +11,22 @@ PLAYWRIGHT_OPTS = {
   viewport: {width: 1400, height: 900}
 }.freeze
 
+# When node_modules holds a Playwright version that the gem does not expect,
+# the gem fails with an unrelated protocol error, such as
+# "timeout: expected float, got undefined".
+def verify_installed_playwright!(expected_version)
+  package_json = Rails.root.join("node_modules/playwright/package.json")
+  installed_version =
+    package_json.exist? ? JSON.parse(package_json.read)["version"] : "none"
+  return if installed_version == expected_version
+
+  raise <<~MESSAGE
+    System specs need npm playwright #{expected_version}, but node_modules
+    has #{installed_version}. Run:
+      npm ci && npm exec --no -- playwright install chromium
+  MESSAGE
+end
+
 Capybara.register_driver(:playwright) do |app|
   Capybara::Playwright::Driver.new(
     app,
@@ -35,10 +51,12 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system, js: true) do
+    verify_installed_playwright!(playwright_cli_version)
     driven_by(:playwright)
   end
 
   config.before(:each, type: :system, debug: true) do
+    verify_installed_playwright!(playwright_cli_version)
     driven_by(:playwright_debug)
   end
 
