@@ -14,6 +14,9 @@ Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 - **Labels**: `Bug`, `Feature`, `Improvement` — workspace-wide labels
   available to HPRB. HPRB has no team-specific labels. Confirm the current
   list with `linear label list --team HPRB`.
+- **Triage**: a ticket ready for an agent goes in `Backlog` with `Bug` or
+  `Improvement`. HPRB has no `ready-for-agent` label, so a skill that asks
+  for one gets this pair.
 
 ## Conventions
 
