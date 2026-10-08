@@ -23,6 +23,12 @@ RSpec.describe Recipes::FractionFormatter do
       expect(described_class.format(4, 2)).to eq("2")
     end
 
+    it "formats a numerator equal to its denominator as one" do
+      expect(described_class.format(1, 1)).to eq("1")
+      expect(described_class.format(3, 3)).to eq("1")
+      expect(described_class.format(3, 3, use_unicode: true)).to eq("1")
+    end
+
     it "formats proper fractions" do
       expect(described_class.format(1, 2)).to eq("1/2")
       expect(described_class.format(3, 4)).to eq("3/4")
@@ -47,12 +53,40 @@ RSpec.describe Recipes::FractionFormatter do
     end
 
     describe "unicode formatting" do
-      it "uses unicode fractions when available" do
-        expect(described_class.format(1, 2, use_unicode: true)).to eq("½")
-        expect(described_class.format(1, 4, use_unicode: true)).to eq("¼")
-        expect(described_class.format(3, 4, use_unicode: true)).to eq("¾")
-        expect(described_class.format(1, 3, use_unicode: true)).to eq("⅓")
-        expect(described_class.format(2, 3, use_unicode: true)).to eq("⅔")
+      it "uses the matching glyph for every unicode fraction" do
+        expected_glyphs = {
+          [1, 2] => "½",
+          [1, 3] => "⅓",
+          [2, 3] => "⅔",
+          [1, 4] => "¼",
+          [3, 4] => "¾",
+          [1, 5] => "⅕",
+          [2, 5] => "⅖",
+          [3, 5] => "⅗",
+          [4, 5] => "⅘",
+          [1, 6] => "⅙",
+          [5, 6] => "⅚",
+          [1, 7] => "⅐",
+          [1, 8] => "⅛",
+          [3, 8] => "⅜",
+          [5, 8] => "⅝",
+          [7, 8] => "⅞",
+          [1, 9] => "⅑",
+          [1, 10] => "⅒"
+        }
+
+        formatted = expected_glyphs.keys.to_h do |(numerator, denominator)|
+          glyph = described_class.format(
+            numerator,
+            denominator,
+            use_unicode: true
+          )
+          [[numerator, denominator], glyph]
+        end
+
+        expect(formatted).to eq(expected_glyphs)
+        expect(expected_glyphs.keys)
+          .to match_array(described_class::UNICODE_FRACTIONS.keys)
       end
 
       it "uses unicode for mixed numbers when possible" do
