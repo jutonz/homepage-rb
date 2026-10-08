@@ -34,6 +34,8 @@ FileUtils.chdir APP_ROOT do
   puts "== Installing dependencies =="
   system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
+  system! "npm ci"
+  system! "npm exec --no -- playwright install chromium"
 
   puts "\n== Adding credentials via `op` cli =="
   %w[test development production].each do |env|
