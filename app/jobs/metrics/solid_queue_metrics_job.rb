@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 require "prometheus_exporter/client"
 
@@ -6,6 +6,7 @@ module Metrics
   class SolidQueueMetricsJob < ApplicationJob
     queue_as :priority
 
+    sig { void }
     def perform
       return unless Rails.application.config.x.enable_metrics
 

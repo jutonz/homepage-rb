@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 
 module Todo
   class SyncTaskOccurrencesJob < ApplicationJob
     queue_as :default
 
+    sig { void }
     def perform
       active_occurrences =
         Todo::TaskOccurrence
@@ -16,7 +17,7 @@ module Todo
         if todoist_task.completed? && occurrence.scheduled?
           occurrence.complete!
 
-          broadcast_task_update(occurrence.todo_task)
+          broadcast_task_update(T.must(occurrence.todo_task))
 
           Rails.logger.info "Synced completion for task #{occurrence.todoist_task_id}"
         end
@@ -24,7 +25,7 @@ module Todo
         if e.response&.status == 404
           Rails.logger.warn "Todoist task #{occurrence.todoist_task_id} not found, marking as completed"
           occurrence.complete!
-          broadcast_task_update(occurrence.todo_task)
+          broadcast_task_update(T.must(occurrence.todo_task))
         else
           Rails.logger.error "Error syncing task #{occurrence.todoist_task_id}: #{e.message}"
         end
@@ -35,6 +36,7 @@ module Todo
 
     private
 
+    sig { params(task: Todo::Task).void }
     def broadcast_task_update(task)
       task.rooms.each do |room|
         Turbo::StreamsChannel.broadcast_replace_to(
