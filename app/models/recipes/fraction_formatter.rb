@@ -27,31 +27,19 @@ module Recipes
       return "" if numerator.blank? || denominator.blank?
       return "" if denominator == 0
 
-      # Handle zero
       return "0" if numerator == 0
 
-      # Simplify the fraction
       gcd = numerator.gcd(denominator)
       num = numerator / gcd
       denom = denominator / gcd
 
-      # Handle whole numbers
       return num.to_s if denom == 1
 
-      # Handle mixed numbers
       if num > denom
-        whole = num / denom
-        remainder = num % denom
-
-        if remainder == 0
-          return whole.to_s
-        else
-          fraction_part = format_fraction_part(remainder, denom, use_unicode)
-          return "#{whole} #{fraction_part}"
-        end
+        fraction_part = format_fraction_part(num % denom, denom, use_unicode)
+        return "#{num / denom} #{fraction_part}"
       end
 
-      # Handle proper fractions
       format_fraction_part(num, denom, use_unicode)
     end
 
