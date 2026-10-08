@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Todoist
   class RescheduleRollableTasksJob < ApplicationJob
@@ -6,6 +6,7 @@ module Todoist
 
     retry_on Faraday::ServerError
 
+    sig { void }
     def perform
       Todoist::RescheduleRollableTasks.perform
     end

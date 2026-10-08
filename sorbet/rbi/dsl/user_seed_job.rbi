@@ -9,13 +9,13 @@ class UserSeedJob
   class << self
     sig do
       params(
-        user: T.untyped,
+        user: ::User,
         block: T.nilable(T.proc.params(job: UserSeedJob).void)
       ).returns(T.any(UserSeedJob, FalseClass))
     end
     def perform_later(user, &block); end
 
-    sig { params(user: T.untyped).returns(T.untyped) }
+    sig { params(user: ::User).void }
     def perform_now(user); end
   end
 end

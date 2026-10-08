@@ -10,7 +10,7 @@ class TestJob
     sig { params(block: T.nilable(T.proc.params(job: TestJob).void)).returns(T.any(TestJob, FalseClass)) }
     def perform_later(&block); end
 
-    sig { returns(T.untyped) }
+    sig { void }
     def perform_now; end
   end
 end
