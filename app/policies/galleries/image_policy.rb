@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class ImagePolicy < ApplicationPolicy
@@ -11,28 +11,34 @@ module Galleries
       model.joins(:gallery).where(gallery: {user:})
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def index?
       user_owns_gallery?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def show?
       user_owns_gallery?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def create?
       user_owns_gallery?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def update?
       user_owns_gallery?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def destroy?
       user_owns_gallery?
     end
 
     private
 
+    sig { returns(T.nilable(T::Boolean)) }
     def user_owns_gallery?
       user && record.gallery&.user == user
     end
