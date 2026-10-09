@@ -27,7 +27,9 @@ def verify_installed_playwright!(expected_version)
   MESSAGE
 end
 
-Capybara.register_driver(:playwright) do |app|
+# driven_by re-registers a driver named :playwright with Rails' own options,
+# which discards PLAYWRIGHT_OPTS. Rails leaves other driver names alone.
+Capybara.register_driver(:playwright_headless) do |app|
   Capybara::Playwright::Driver.new(
     app,
     **PLAYWRIGHT_OPTS,
@@ -52,7 +54,7 @@ RSpec.configure do |config|
 
   config.before(:each, type: :system, js: true) do
     verify_installed_playwright!(playwright_cli_version)
-    driven_by(:playwright)
+    driven_by(:playwright_headless)
   end
 
   config.before(:each, type: :system, debug: true) do
