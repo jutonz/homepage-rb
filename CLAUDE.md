@@ -13,6 +13,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Testing & Quality
 - `mise exec -- bin/rspec` - Run RSpec test suite
 - `mise exec -- bin/standardrb --fix` - Ruby linting and code style (Standard gem)
+- `mise exec -- bin/mutate` - Mutation testing: mutate the `app/` lines this
+  branch changed since its merge-base with `main`, and fail on each surviving or
+  uncovered mutation. Run it before you open a pull request.
+  - `bin/mutate spec/models/user_spec.rb` names the specs to run instead of the
+    default selection. Arguments after `--` go to mutineer.
+  - Suppress an equivalent mutation inline, with a required reason:
+    `# mutineer:disable-line <operator> -- <reason>`
 
 ### Assets & Frontend
 - TailwindCSS is used for styling via `tailwindcss-rails` gem

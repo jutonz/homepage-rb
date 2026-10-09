@@ -1,0 +1,17 @@
+rails: true
+framework: rspec
+operators:
+  - arithmetic
+  - comparison
+  - boolean_connector
+  - boolean_literal
+  - statement_removal
+  - chain_link
+  - condition_true
+  - condition_false
+  - negation_removal
+  - condition_negation
+  - return_nil
+  - safe_navigation
+  - operand_removal
+  - collection_method
