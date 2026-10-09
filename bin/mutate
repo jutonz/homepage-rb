@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+require "bundler/setup"
+require "fileutils"
+require_relative "../lib/dev/mutation_gate"
+
+root = File.expand_path("..", __dir__)
+separator = ARGV.index("--")
+specs = separator ? ARGV[0...separator] : ARGV
+passthrough = separator ? ARGV[(separator + 1)..] : []
+report = File.join(root, "tmp/mutineer/report.json")
+
+plan = MutationGate.plan(root:, base: "main", report:, specs:, passthrough:)
+
+if plan.is_a?(MutationGate::Skip)
+  puts(plan.message)
+  exit(plan.success)
+end
+
+FileUtils.rm_f(plan.report)
+FileUtils.mkdir_p(File.dirname(plan.report))
+mutineer_ok = Dir.chdir(root) do
+  system({"RAILS_ENV" => "test", "COVERAGE" => nil}, *plan.argv)
+end
+
+unless File.exist?(plan.report)
+  warn("mutineer wrote no report to #{plan.report}")
+  exit(1)
+end
+
+verdict = MutationGate.verdict(File.read(plan.report))
+puts(verdict)
+exit(verdict.passed? && mutineer_ok ? 0 : 1)

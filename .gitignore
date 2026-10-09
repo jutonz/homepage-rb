@@ -47,3 +47,5 @@ coverage/
 node_modules/
 
 docs/superpowers/
+
+/.mutineer/
