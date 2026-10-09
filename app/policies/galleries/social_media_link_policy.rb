@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class SocialMediaLinkPolicy < ApplicationPolicy
@@ -13,28 +13,34 @@ module Galleries
         .where(galleries_tags: {user:})
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def new?
       user_owns_tag?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def create?
       user_owns_tag?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def edit?
       user_owns_tag?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def update?
       user_owns_tag?
     end
 
+    sig { returns(T.nilable(T::Boolean)) }
     def destroy?
       user_owns_tag?
     end
 
     private
 
+    sig { returns(T.nilable(T::Boolean)) }
     def user_owns_tag?
       user && record.tag&.user == user
     end

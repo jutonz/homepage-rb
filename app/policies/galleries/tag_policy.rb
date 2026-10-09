@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class TagPolicy < UserOwnedPolicy

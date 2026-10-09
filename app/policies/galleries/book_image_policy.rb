@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   class BookImagePolicy < ApplicationPolicy
@@ -12,36 +12,44 @@ module Galleries
         .where(galleries: {user:})
     end
 
+    sig { returns(T::Boolean) }
     def index?
       user.present?
     end
 
+    sig { returns(T::Boolean) }
     def show?
       gallery_owner?
     end
 
+    sig { returns(T::Boolean) }
     def create?
       gallery_owner?
     end
 
+    sig { returns(T::Boolean) }
     def new?
       user.present?
     end
 
+    sig { returns(T::Boolean) }
     def edit?
       gallery_owner?
     end
 
+    sig { returns(T::Boolean) }
     def update?
       gallery_owner?
     end
 
+    sig { returns(T::Boolean) }
     def destroy?
       gallery_owner?
     end
 
     private
 
+    sig { returns(T::Boolean) }
     def gallery_owner?
       user.present? && record.book&.gallery&.user == user
     end

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   module Books
@@ -16,6 +16,7 @@ module Galleries
         model.joins(:gallery).where(galleries: {user:})
       end
 
+      sig { returns(T::Boolean) }
       def show?
         user.present? && record.gallery&.user == user
       end
