@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Plants
   class PlantImageComponent < ApplicationComponent
@@ -33,7 +33,7 @@ module Plants
     sig { params(plant_image: Plants::PlantImage).void }
     def initialize(plant_image:)
       @plant_image = plant_image
-      @plant = plant_image.plant
+      @plant = T.let(plant_image.plant, T.nilable(Plants::Plant))
     end
   end
 end

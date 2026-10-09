@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class RecipeComponent < ApplicationComponent
   erb_template <<~ERB
