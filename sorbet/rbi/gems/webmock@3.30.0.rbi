@@ -78,29 +78,29 @@ module WebMock
   include ::WebMock::API
   extend ::WebMock::API
 
-  # pkg:gem/webmock#lib/webmock/webmock.rb:168
+  # pkg:gem/webmock#lib/webmock/webmock.rb:188
   def after_request(*args, &block); end
 
-  # pkg:gem/webmock#lib/webmock/webmock.rb:168
+  # pkg:gem/webmock#lib/webmock/webmock.rb:188
   def allow_net_connect!(*args, &block); end
 
-  # pkg:gem/webmock#lib/webmock/webmock.rb:168
+  # pkg:gem/webmock#lib/webmock/webmock.rb:188
   def disable_net_connect!(*args, &block); end
 
-  # pkg:gem/webmock#lib/webmock/webmock.rb:168
+  # pkg:gem/webmock#lib/webmock/webmock.rb:188
   def net_connect_allowed?(*args, &block); end
 
-  # pkg:gem/webmock#lib/webmock/webmock.rb:168
+  # pkg:gem/webmock#lib/webmock/webmock.rb:188
   def registered_request?(*args, &block); end
 
-  # pkg:gem/webmock#lib/webmock/webmock.rb:168
+  # pkg:gem/webmock#lib/webmock/webmock.rb:188
   def reset_callbacks(*args, &block); end
 
-  # pkg:gem/webmock#lib/webmock/webmock.rb:168
+  # pkg:gem/webmock#lib/webmock/webmock.rb:188
   def reset_webmock(*args, &block); end
 
   class << self
-    # pkg:gem/webmock#lib/webmock/webmock.rb:143
+    # pkg:gem/webmock#lib/webmock/webmock.rb:163
     def after_request(options = T.unsafe(nil), &block); end
 
     # pkg:gem/webmock#lib/webmock/webmock.rb:46
@@ -121,13 +121,13 @@ module WebMock
     # pkg:gem/webmock#lib/webmock/webmock.rb:59
     def enable_net_connect!(options = T.unsafe(nil)); end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:155
+    # pkg:gem/webmock#lib/webmock/webmock.rb:175
     def globally_stub_request(order = T.unsafe(nil), &block); end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:109
+    # pkg:gem/webmock#lib/webmock/webmock.rb:129
     def hide_body_diff!; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:117
+    # pkg:gem/webmock#lib/webmock/webmock.rb:137
     def hide_stubbing_instructions!; end
 
     # pkg:gem/webmock#lib/webmock/webmock.rb:5
@@ -142,38 +142,43 @@ module WebMock
     # pkg:gem/webmock#lib/webmock/webmock.rb:75
     def net_http_connect_on_start?(uri); end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:151
+    # pkg:gem/webmock#lib/webmock/webmock.rb:171
     def print_executed_requests; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:147
+    # pkg:gem/webmock#lib/webmock/webmock.rb:167
     def registered_request?(request_signature); end
 
     # pkg:gem/webmock#lib/webmock/webmock.rb:23
     def request(method, uri); end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:129
+    # pkg:gem/webmock#lib/webmock/webmock.rb:149
     def reset!; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:139
+    # pkg:gem/webmock#lib/webmock/webmock.rb:159
     def reset_callbacks; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:134
+    # pkg:gem/webmock#lib/webmock/webmock.rb:154
     def reset_webmock; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:105
+    # pkg:gem/webmock#lib/webmock/webmock.rb:125
     def show_body_diff!; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:113
+    # pkg:gem/webmock#lib/webmock/webmock.rb:133
     def show_body_diff?; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:121
+    # pkg:gem/webmock#lib/webmock/webmock.rb:141
     def show_stubbing_instructions!; end
 
-    # pkg:gem/webmock#lib/webmock/webmock.rb:125
+    # pkg:gem/webmock#lib/webmock/webmock.rb:145
     def show_stubbing_instructions?; end
 
     # pkg:gem/webmock#lib/webmock/webmock.rb:26
     def version; end
+
+    private
+
+    # pkg:gem/webmock#lib/webmock/webmock.rb:103
+    def net_connect_allowed_url?(allowed, uri); end
   end
 end
 
@@ -536,21 +541,39 @@ WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP = Net::HTTP
 # pkg:gem/webmock#lib/webmock/json_body_hint.rb:10
 module WebMock::JsonBodyHint
   class << self
-    # True when the pattern declares its body as a JSON object or array string,
-    # the request has a JSON content type and a body that parses to the same
-    # JSON but is written differently, and the pattern's method, URI and headers
-    # match the request. A block given to the pattern is not called.
+    # True when one of the patterns declares its body as a JSON object or array
+    # string, the request has a JSON content type and a body that parses to the
+    # same JSON but is written differently, and the method, URI and headers of
+    # every pattern match the request. Any other patterns the request has to
+    # match, such as the conditions of an RSpec expectation, must not declare
+    # a body of their own.
     #
-    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:24
+    # Building a failure message must not call a block given to with, which
+    # could raise and replace the failure, or repeat side effects. So there is
+    # no hint when any of the patterns has one.
+    #
+    # The body is checked first, since that runs no user code, so URI and
+    # header matchers are only evaluated when a hint is otherwise possible.
+    #
+    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:33
     def applies?(request_pattern, request_signature); end
 
     private
 
-    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:40
+    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:51
+    def body_differs_only_in_formatting?(body_pattern, request_signature); end
+
+    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:64
     def matches_except_body?(request_pattern, request_signature); end
 
-    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:46
+    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:70
     def parse_json(string); end
+
+    # A pattern made of parts that must all match, such as an RSpec expectation
+    # with conditions, responds to #patterns. A stub stands for its pattern.
+    #
+    # pkg:gem/webmock#lib/webmock/json_body_hint.rb:46
+    def parts_of(request_pattern); end
   end
 end
 
@@ -819,6 +842,9 @@ class WebMock::RequestPattern
 
   # pkg:gem/webmock#lib/webmock/request_pattern.rb:28
   def with(options = T.unsafe(nil), &block); end
+
+  # pkg:gem/webmock#lib/webmock/request_pattern.rb:17
+  def with_block; end
 
   private
 
