@@ -1,4 +1,4 @@
-name: Regenerate Tapioca gem RBIs
+name: Sync generated files for Dependabot bumps
 
 on:
   pull_request:
@@ -29,24 +29,22 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - name: Install Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .tool-versions
+          cache: npm
       - run: sudo apt-get update && sudo apt-get install -y libvips
+      - name: Set the git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Regenerate gem RBIs when they do not match the lockfile
         run: |
           if bundle exec tapioca gem --verify; then
             echo "Gem RBIs already match the lockfile; nothing to do."
             exit 0
-          fi
-
-          if [ -z "$TOKEN" ]; then
-            echo "::error::Gem RBIs are out of date but RBI_PUSH_TOKEN \
-          is unset, so the fix cannot be pushed."
-            echo "Create a fine-grained PAT scoped to this repository"
-            echo "with 'Contents: read and write' and save it as a"
-            echo "*Dependabot* secret named RBI_PUSH_TOKEN. Actions"
-            echo "secrets are withheld from Dependabot-triggered runs."
-            echo "The token expires. When it does, this job starts"
-            echo "failing and Dependabot bumps stop auto-merging."
-            exit 1
           fi
 
           bundle exec tapioca gem
@@ -58,10 +56,43 @@ jobs:
             exit 1
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Regenerate Tapioca gem RBIs for this bump"
+      - name: Match the npm playwright version to the gem
+        # The system tests launch the browser through the npm playwright
+        # driver, which must be the exact version that playwright-ruby-client
+        # declares, so a gem bump needs a matching package.json bump.
+        run: |
+          gem_version="$(bundle exec ruby -rplaywright -e \
+            'puts Playwright::COMPATIBLE_PLAYWRIGHT_VERSION.strip')"
+          npm_version="$(node -p "require('./package-lock.json')
+            .packages['node_modules/playwright'].version")"
+
+          if [ "$gem_version" = "$npm_version" ]; then
+            echo "npm playwright already matches the gem ($gem_version)."
+            exit 0
+          fi
+
+          npm install --save-exact --ignore-scripts "playwright@$gem_version"
+          git add package.json package-lock.json
+          git commit -m "Bump npm playwright to $gem_version to match the gem"
+      - name: Push the fixes to the pull request branch
+        run: |
+          if [ "$(git rev-list --count "origin/${HEAD_REF}..HEAD")" = 0 ]; then
+            echo "Nothing to push."
+            exit 0
+          fi
+
+          if [ -z "$TOKEN" ]; then
+            echo "::error::This bump needs fixes but RBI_PUSH_TOKEN \
+          is unset, so the fixes cannot be pushed."
+            echo "Create a fine-grained PAT scoped to this repository"
+            echo "with 'Contents: read and write' and save it as a"
+            echo "*Dependabot* secret named RBI_PUSH_TOKEN. Actions"
+            echo "secrets are withheld from Dependabot-triggered runs."
+            echo "The token expires. When it does, this job starts"
+            echo "failing and Dependabot bumps stop auto-merging."
+            exit 1
+          fi
 
           git push \
             "https://x-access-token:${TOKEN}@github.com/${REPO}.git" \
