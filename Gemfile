@@ -67,7 +67,7 @@ end
 group :development do
   gem "annotaterb"
   gem "ruby-lsp"
-  gem "sorbet", "~> 0.6.13544"
+  gem "sorbet", "~> 0.6.13571"
   gem "web-console"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
