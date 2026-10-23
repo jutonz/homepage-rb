@@ -84,4 +84,4 @@ end
 
 gem "solid_cable", "~> 4.1"
 
-gem "sorbet-runtime", "~> 0.6.13573"
+gem "sorbet-runtime", "~> 0.6.13580"
