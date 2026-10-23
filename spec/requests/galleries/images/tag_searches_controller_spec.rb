@@ -35,5 +35,17 @@ RSpec.describe Galleries::Images::TagSearchesController do
 
       expect(response).to have_http_status(:success)
     end
+
+    it "links the create-tag action to the image being searched" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      login_as(user)
+      params = {tag_search: {query: "brand new", image_id: image.id}}
+
+      get(gallery_image_tag_search_path(gallery, image), params:)
+
+      expect(response.body).to include("add_to_image_id=#{image.id}")
+    end
   end
 end

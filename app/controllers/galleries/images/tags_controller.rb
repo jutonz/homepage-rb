@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Galleries
   module Images
@@ -6,19 +6,28 @@ module Galleries
       before_action :ensure_authenticated!
       after_action :verify_authorized
 
+      sig { void }
       def create
-        @gallery = find_gallery
-        @image = find_image
-        @tag = authorize(find_tag)
+        @gallery = T.let(find_gallery, T.nilable(Gallery))
+        image = find_image
+        @image = T.let(image, T.nilable(Galleries::Image))
+        tag = authorize(find_tag)
+        @tag = T.let(tag, T.nilable(Galleries::Tag))
 
-        @image.add_tag(@tag)
-        @from_related = params[:from_related].present?
+        image.add_tag(tag)
+        @from_related = T.let(
+          params[:from_related].present?,
+          T.nilable(T::Boolean)
+        )
 
         unless @from_related
-          @related_tags = Galleries::RelatedTagsQuery.call(
-            tag: @tag,
-            exclude_tag_ids: @image.tag_ids,
-            limit: 5
+          @related_tags = T.let(
+            Galleries::RelatedTagsQuery.call(
+              tag:,
+              exclude_tag_ids: image.tag_ids,
+              limit: 5
+            ),
+            T.nilable(T::Array[Galleries::RelatedTagsQuery::Result])
           )
         end
 
@@ -26,13 +35,14 @@ module Galleries
           format.turbo_stream
           format.html do
             redirect_to(
-              gallery_image_path(@gallery, @image),
+              gallery_image_path(@gallery, image),
               notice: "Added tag"
             )
           end
         end
       end
 
+      sig { void }
       def destroy
         @gallery = find_gallery
         @image = find_image
@@ -53,16 +63,19 @@ module Galleries
 
       private
 
+      sig { returns(Gallery) }
       def find_gallery
         GalleryPolicy.scope_for(current_user).find(params[:gallery_id])
       end
 
+      sig { returns(Galleries::Image) }
       def find_image
         Galleries::ImagePolicy.scope_for(current_user)
           .where(gallery: @gallery)
           .find(params[:image_id])
       end
 
+      sig { returns(Galleries::Tag) }
       def find_tag
         Galleries::TagPolicy.scope_for(current_user)
           .where(gallery: @gallery)
