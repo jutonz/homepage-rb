@@ -110,7 +110,8 @@ module Galleries
           file: {
             io: StringIO.new(bytes),
             filename: File.basename(filename)
-          }
+          },
+          source_url: rvd.url
         )
         image.add_tag(
           Galleries::Tag.tagging_needed(gallery),

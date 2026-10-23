@@ -17,6 +17,33 @@ RSpec.describe Api::Galleries::ImagesController do
       })
     end
 
+    it "stores and returns the source url" do
+      gallery = create(:gallery)
+      login_as(gallery.user)
+      params = {file: audiosurf_jpg, source_url: "https://example.com/p"}
+
+      post(api_gallery_images_path(gallery), params:)
+
+      expect(response).to have_http_status(:created)
+      expect(Galleries::Image.last.source_url).to eq("https://example.com/p")
+      expect(json_response).to include(
+        "source_url" => "https://example.com/p"
+      )
+    end
+
+    it "returns a bad request for an invalid source url" do
+      gallery = create(:gallery)
+      login_as(gallery.user)
+      params = {file: audiosurf_jpg, source_url: "javascript:alert(1)"}
+
+      post(api_gallery_images_path(gallery), params:)
+
+      expect(response).to have_http_status(:bad_request)
+      expect(json_response).to eql({
+        "errors" => ["Source url is not a valid http(s) URL"]
+      })
+    end
+
     it "adds a 'tagging needed' tag" do
       gallery = create(:gallery)
       login_as(gallery.user)

@@ -1,4 +1,5 @@
 <%= simple_form_for([@gallery, @image]) do |form| %>
   <%= form.input(:file, as: :file) %>
+  <%= form.input(:source_url, as: :url, label: "Source URL") %>
   <%= form.button(:submit) %>
 <% end %>

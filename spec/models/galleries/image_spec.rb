@@ -6,6 +6,7 @@
 #  id              :bigint           not null, primary key
 #  perceptual_hash :vector(64)
 #  processed_at    :datetime
+#  source_url      :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  gallery_id      :bigint           not null
@@ -31,6 +32,27 @@ RSpec.describe Galleries::Image do
   it do
     is_expected.to have_db_column(:processed_at)
       .of_type(:datetime)
+  end
+
+  it { is_expected.to allow_value("http://example.com/post").for(:source_url) }
+  it { is_expected.to allow_value("https://example.com/?a=b").for(:source_url) }
+  it { is_expected.to allow_value(nil).for(:source_url) }
+  it { is_expected.not_to allow_value("javascript:alert(1)").for(:source_url) }
+  it { is_expected.not_to allow_value("ftp://example.com/x").for(:source_url) }
+  it { is_expected.not_to allow_value("/relative/path").for(:source_url) }
+  it { is_expected.not_to allow_value("https://").for(:source_url) }
+  it { is_expected.not_to allow_value("https://a b.com").for(:source_url) }
+
+  it "treats a blank source_url as nil" do
+    image = build(:galleries_image, source_url: "   ")
+
+    expect(image.source_url).to be_nil
+  end
+
+  it "strips whitespace around source_url" do
+    image = build(:galleries_image, source_url: " https://example.com/p \n")
+
+    expect(image.source_url).to eq("https://example.com/p")
   end
 
   it "has a valid factory" do

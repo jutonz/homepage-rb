@@ -91,6 +91,37 @@ RSpec.describe Galleries::ImagesController do
       expect(page).to have_link("Book B")
     end
 
+    it "links to the source url in a new tab" do
+      gallery = create(:gallery)
+      image = create(
+        :galleries_image,
+        gallery:,
+        source_url: "https://example.com/post"
+      )
+      login_as(gallery.user)
+
+      get(gallery_image_path(gallery, image))
+
+      source = page.find("[data-role=source-url]")
+      expect(source).to have_text("Source")
+      link = source.find_link(
+        "https://example.com/post",
+        href: "https://example.com/post"
+      )
+      expect(link[:target]).to eq("_blank")
+      expect(link[:rel]).to eq("noopener noreferrer")
+    end
+
+    it "shows no source when the image has no source url" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:, source_url: nil)
+      login_as(gallery.user)
+
+      get(gallery_image_path(gallery, image))
+
+      expect(page).not_to have_css("[data-role=source-url]")
+    end
+
     it "does not show book section when image has no books" do
       user = create(:user)
       gallery = create(:gallery, user:)
@@ -117,7 +148,71 @@ RSpec.describe Galleries::ImagesController do
     end
   end
 
+  describe "update source_url" do
+    it "sets the source url and keeps the file" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      blob_id = image.file.blob.id
+      login_as(gallery.user)
+      params = {image: {source_url: "https://example.com/post"}}
+
+      put(gallery_image_path(gallery, image), params:)
+
+      expect(response).to redirect_to(gallery_image_path(gallery, image))
+      image.reload
+      expect(image.source_url).to eq("https://example.com/post")
+      expect(image.file.blob.id).to eq(blob_id)
+    end
+
+    it "clears the source url" do
+      gallery = create(:gallery)
+      image = create(
+        :galleries_image,
+        gallery:,
+        source_url: "https://example.com/post"
+      )
+      login_as(gallery.user)
+      params = {image: {source_url: ""}}
+
+      put(gallery_image_path(gallery, image), params:)
+
+      expect(response).to redirect_to(gallery_image_path(gallery, image))
+      expect(image.reload.source_url).to be_nil
+    end
+
+    it "rejects an invalid source url" do
+      gallery = create(:gallery)
+      image = create(:galleries_image, gallery:)
+      login_as(gallery.user)
+      params = {image: {source_url: "javascript:alert(1)"}}
+
+      put(gallery_image_path(gallery, image), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_text("is not a valid http(s) URL")
+      expect(image.reload.source_url).to be_nil
+    end
+  end
+
   describe "edit" do
+    it "has a source url field" do
+      gallery = create(:gallery)
+      image = create(
+        :galleries_image,
+        gallery:,
+        source_url: "https://example.com/post"
+      )
+      login_as(gallery.user)
+
+      get(edit_gallery_image_path(gallery, image))
+
+      expect(page).to have_field(
+        "Source URL",
+        type: "url",
+        with: "https://example.com/post"
+      )
+    end
+
     it "has crumbs" do
       user = create(:user)
       gallery = create(:gallery, user:)
