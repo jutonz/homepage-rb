@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
 # Prepare a fresh git worktree.
 #
-# A fresh worktree is missing four gitignored things it needs:
+# A fresh worktree is missing five gitignored things it needs:
 #   - per-environment credential keys (config/credentials/*.key)
 #   - Linear CLI configuration (.linear.toml)
+#   - mise.local.toml, which gives the worktree its own databases
+#     (DATABASE_SUFFIX) and its own dev server port (PORT), so that its
+#     specs and its app never touch another checkout's
 #   - compiled assets (tailwind.css, etc.)
 #   - node_modules (the Playwright driver that system specs launch via
 #     `npm exec`; without it, browser specs hang waiting on a handshake
 #     that never comes)
-# The database is shared across worktrees, so `db:prepare` is not needed.
-# Gems are shared too, but a worktree cut from a branch that bumped a gem
+# Gems are shared, but a worktree cut from a branch that bumped a gem
 # needs that gem installed. This copies the keys from the main checkout
-# (no 1Password prompt, unlike bin/setup), installs node modules, and
-# builds assets.
+# (no 1Password prompt, unlike bin/setup), installs node modules, creates
+# the worktree's databases, and builds assets. It first runs
+# bin/worktree-prune, which stops the processes and drops the databases of
+# worktrees that have since been removed.
 #
 # Idempotent. No-op when run outside a linked worktree.
 set -euo pipefail
@@ -38,6 +42,42 @@ assert_precompiled() {
   fi
 }
 
+claimed_ports() {
+  git worktree list --porcelain | sed -n 's/^worktree //p' |
+    while read -r path; do
+      sed -n 's/^PORT = "\([0-9]*\)"$/\1/p' "$path/$env_file" 2>/dev/null ||
+        true
+    done
+}
+
+# overmind passes PORT to the first Procfile.dev process as its base port,
+# and the main checkout runs on overmind's default of 5000.
+free_port() {
+  local claimed port
+  claimed="$(claimed_ports)"
+
+  for port in $(seq 5010 10 5990); do
+    if grep -qx "$port" <<<"$claimed"; then
+      continue
+    fi
+    if lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+      continue
+    fi
+    echo "$port"
+    return
+  done
+
+  echo "No free dev server port between 5010 and 5990." >&2
+  return 1
+}
+
+slug() {
+  local separator="$1"
+
+  printf '%s' "$worktree_name" | tr '[:upper:]' '[:lower:]' |
+    tr -c 'a-z0-9' "$separator"
+}
+
 git_dir="$(cd "$(git rev-parse --git-dir)" && pwd -P)"
 common_dir="$(cd "$(git rev-parse --git-common-dir)" && pwd -P)"
 
@@ -47,9 +87,15 @@ if [ "$git_dir" = "$common_dir" ]; then
 fi
 
 main_root="$(dirname "$common_dir")"
+worktree_root="$(git rev-parse --show-toplevel)"
+worktree_name="$(basename "$worktree_root")"
+env_file="mise.local.toml"
+registry="$common_dir/worktree-databases"
 
 log_file="$(mktemp)"
 trap 'rm -f "$log_file"' EXIT
+
+bin/worktree-prune
 
 echo "Copying credential keys from $main_root"
 for env in development test production; do
@@ -59,6 +105,22 @@ done
 
 echo "Copying Linear CLI configuration from $main_root"
 cp "$main_root/.linear.toml" ".linear.toml"
+
+if [ ! -e "$env_file" ]; then
+  echo "Writing $env_file with this worktree's databases and port"
+  cat >"$env_file" <<TOML
+[env]
+DATABASE_SUFFIX = "_$(slug _ | cut -c1-30)"
+PORT = "$(free_port)"
+TOML
+fi
+mise trust --quiet "$env_file"
+port="$(sed -n 's/^PORT = "\([0-9]*\)"$/\1/p' "$env_file")"
+suffix="$(sed -n 's/^DATABASE_SUFFIX = "\(.*\)"$/\1/p' "$env_file")"
+
+if ! grep -qxF "$suffix $worktree_root" "$registry" 2>/dev/null; then
+  echo "$suffix $worktree_root" >>"$registry"
+fi
 
 echo "Installing node modules (Playwright driver for system specs)"
 npm ci
@@ -74,10 +136,17 @@ if ! mise exec -- bundle check >"$log_file" 2>&1; then
   mise exec -- bundle install
 fi
 
+echo "Preparing this worktree's development and test databases"
+run_quietly "Development database prepare" \
+  mise exec -- bin/rails db:prepare
+run_quietly "Test database prepare" \
+  env RAILS_ENV=test mise exec -- bin/rails db:prepare
+
 echo "Precompiling assets"
 run_quietly "Asset precompile" mise exec -- bin/rails assets:precompile
 
 assert_precompiled "app/assets/builds/tailwind.css"
 assert_precompiled "public/assets"
 
-echo "Worktree ready"
+echo "Worktree ready. Start the app with bin/dev, then open"
+echo "http://$(slug -).localhost:$port"

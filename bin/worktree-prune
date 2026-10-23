@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# Clean up after git worktrees that no longer exist.
+#
+# bin/worktree-setup records each worktree it prepares in the registry
+# below. For each recorded worktree that `git worktree list` no longer
+# shows, this stops every process that still runs in its directory (such
+# as a bin/dev server), drops its development and test databases, and
+# forgets it. It never touches the main checkout's databases, because the
+# main checkout is never recorded.
+#
+# Safe to run from any checkout of the repository, at any time.
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+common_dir="$(cd "$(git rev-parse --git-common-dir)" && pwd -P)"
+registry="$common_dir/worktree-databases"
+
+pids_in() {
+  local dir="$1"
+
+  # macOS lsof still reports a working directory after it is deleted.
+  lsof -a -d cwd -Fpn 2>/dev/null | awk -v dir="$dir" -v self="$$" '
+    /^p/ { pid = substr($0, 2) }
+    /^n/ {
+      path = substr($0, 2)
+      if (pid != self && (path == dir || index(path, dir "/") == 1)) print pid
+    }'
+}
+
+stop_processes() {
+  local dir="$1"
+  local pids
+
+  pids="$(pids_in "$dir")"
+  if [ -z "$pids" ]; then
+    return
+  fi
+
+  echo "Stopping processes still running in $dir"
+  kill $pids 2>/dev/null || true
+  for _ in $(seq 1 20); do
+    pids="$(pids_in "$dir")"
+    if [ -z "$pids" ]; then
+      return
+    fi
+    sleep 0.5
+  done
+  kill -9 $pids 2>/dev/null || true
+}
+
+# mise applies a worktree's own mise.local.toml after the caller's
+# environment, so DATABASE_SUFFIX must be set inside `mise exec`.
+drop_databases() {
+  local suffix="$1"
+
+  echo "Dropping the development and test databases ending in $suffix"
+  mise exec -- env DATABASE_SUFFIX="$suffix" bin/rails db:drop &&
+    mise exec -- env DATABASE_SUFFIX="$suffix" RAILS_ENV=test \
+      bin/rails db:drop
+}
+
+if [ ! -s "$registry" ]; then
+  exit 0
+fi
+
+live_worktrees="$(git worktree list --porcelain | sed -n 's/^worktree //p')"
+kept="$(mktemp)"
+trap 'rm -f "$kept"' EXIT
+
+while read -r suffix path <&3; do
+  if grep -qxF "$path" <<<"$live_worktrees"; then
+    echo "$suffix $path" >>"$kept"
+    continue
+  fi
+
+  echo "Cleaning up removed worktree $path"
+  stop_processes "$path"
+  if ! drop_databases "$suffix"; then
+    echo "Could not drop the databases for $path; will retry later." >&2
+    echo "$suffix $path" >>"$kept"
+  fi
+done 3<"$registry"
+
+mv "$kept" "$registry"
+trap - EXIT

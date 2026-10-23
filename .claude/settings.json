@@ -11,6 +11,17 @@
             "statusMessage": "Preparing worktree (keys + assets)..."
           }
         ]
+      },
+      {
+        "matcher": "ExitWorktree",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mise exec -- \"$CLAUDE_PROJECT_DIR\"/bin/worktree-prune",
+            "timeout": 120,
+            "statusMessage": "Cleaning up removed worktrees..."
+          }
+        ]
       }
     ]
   }
