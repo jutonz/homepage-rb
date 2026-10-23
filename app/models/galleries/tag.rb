@@ -33,10 +33,10 @@ module Galleries
 
     enum :classification,
       {
+        artist: "artist",
         none: "none",
         subject: "subject",
-        system: "system",
-        artist: "artist"
+        system: "system"
       },
       validate: true,
       prefix: true
