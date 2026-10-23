@@ -27,6 +27,20 @@
   <%= render(Galleries::ImageComponent.new(image: @image)) %>
 </div>
 
+<% if @image.source_url %>
+  <div class="mt-5" data-role="source-url">
+    <span class="font-medium">Source</span>
+
+    <%= link_to(
+      @image.source_url,
+      @image.source_url,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      class: "break-all text-blue-600 hover:text-blue-800"
+    ) %>
+  </div>
+<% end %>
+
 <h2 class="text-xl mt-10 mb-5">Tags</h2>
 
 <div class="flex flex-col">

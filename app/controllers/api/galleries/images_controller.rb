@@ -28,7 +28,7 @@ module Api
       end
 
       def image_params
-        {file: params[:file]}
+        {file: params[:file], source_url: params[:source_url]}
       end
 
       def tagging_needed

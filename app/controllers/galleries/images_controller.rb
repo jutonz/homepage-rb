@@ -66,7 +66,7 @@ module Galleries
     end
 
     def image_params
-      params.require(:image).permit(:file)
+      params.require(:image).permit(:file, :source_url)
     end
   end
 end

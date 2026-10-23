@@ -148,6 +148,28 @@ RSpec.describe Galleries::RemoteVideoDownloadJob, "#perform" do
       .to include("tagging needed", "Video")
   end
 
+  it "sets the download url as the image source url" do
+    metube = stub_metube
+    rvd = create(
+      :galleries_remote_video_download,
+      status: "downloading",
+      url: "https://example.com/watch?v=1"
+    )
+    entry = {
+      "custom_name_prefix" => "rvd-#{rvd.id}",
+      "status" => "finished",
+      "filename" => "clip.mp4"
+    }
+    allow(metube).to receive(:history)
+      .and_return("done" => [entry], "queue" => [], "pending" => [])
+    allow(metube).to receive(:fetch_file).and_return("videobytes")
+    allow(metube).to receive(:delete)
+
+    described_class.new.perform(rvd)
+
+    expect(rvd.reload.image.source_url).to eq("https://example.com/watch?v=1")
+  end
+
   it "enqueues image processing for the new image" do
     metube = stub_metube
     rvd = create(:galleries_remote_video_download, status: "downloading")
