@@ -15,6 +15,17 @@ RSpec.describe Galleries::TagsController do
       expect(page).not_to have_tag(other_tag)
     end
 
+    it "does not N+1 query when rendering tags", :bullet do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create_pair(:galleries_tag, gallery:)
+      login_as(user)
+
+      get(gallery_tags_path(gallery))
+
+      expect(response).to have_http_status(:ok)
+    end
+
     it "orders tags by name" do
       user = create(:user)
       gallery = create(:gallery, user:)
@@ -160,6 +171,20 @@ RSpec.describe Galleries::TagsController do
       tag = Galleries::Tag.last
       expect(tag.name).to eql("hello")
       expect(response).to redirect_to(gallery_tag_path(gallery, tag))
+    end
+
+    it "adds the new tag to the image that add_to_image_id names" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      login_as(user)
+      params = {tag: {name: "hello"}}
+
+      post(gallery_tags_path(gallery, add_to_image_id: image.id), params:)
+
+      tag = Galleries::Tag.last
+      expect(image.reload.tags).to include(tag)
+      expect(response).to redirect_to(gallery_image_path(gallery, image))
     end
 
     it "creates a tag with a classification" do

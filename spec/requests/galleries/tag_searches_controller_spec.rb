@@ -43,6 +43,17 @@ RSpec.describe Galleries::TagSearchesController do
       expect(response).to have_http_status(:success)
     end
 
+    it "renders the results into the turbo frame the request names" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+      params = {tag_search: {query: "nat", turbo_frame_tag: "custom-frame"}}
+
+      get(gallery_tag_search_path(gallery), params:)
+
+      expect(response.body).to include(%(<turbo-frame id="custom-frame"))
+    end
+
     it "renders gallery mode action when mode is gallery" do
       user = create(:user)
       gallery = create(:gallery, user:)
