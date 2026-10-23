@@ -49,3 +49,5 @@ node_modules/
 docs/superpowers/
 
 /.mutineer/
+
+/mise.local.toml

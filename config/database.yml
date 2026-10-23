@@ -12,6 +12,8 @@
 # Configure Using Gemfile
 # gem "pg"
 #
+<% suffix = ENV["DATABASE_SUFFIX"] %>
+
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -42,10 +44,13 @@ cable_default: &cable_default
 development:
   primary:
     <<: *default
+    url: <%= Rails.application.credentials.dig(:db, :url) %><%= suffix %>
   cable:
     <<: *cable_default
+    url: <%= Rails.application.credentials.dig(:db, :cable_url) %><%= suffix %>
   queue:
     <<: *queue_default
+    url: <%= Rails.application.credentials.dig(:db, :queue_url) %><%= suffix %>
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -80,10 +85,13 @@ development:
 test:
   primary:
     <<: *default
+    url: <%= Rails.application.credentials.dig(:db, :url) %><%= suffix %>
   cable:
     <<: *cable_default
+    url: <%= Rails.application.credentials.dig(:db, :cable_url) %><%= suffix %>
   queue:
     <<: *queue_default
+    url: <%= Rails.application.credentials.dig(:db, :queue_url) %><%= suffix %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
