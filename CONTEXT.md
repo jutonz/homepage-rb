@@ -155,3 +155,10 @@ tag. `Galleries::AutoAddTag` is the rule.
 *Avoid*: "auto-add tag" for the rule. The class and the `auto_add_tag`
 association it holds share one word, and that is what causes the
 confusion.
+
+**Classification** — the kind of thing a tag names: `artist`, `subject`,
+`system`, or `none`. Each tag has exactly one, and a new tag starts as
+`none`.
+
+*Avoid*: "type" and "category". Both name the same concept, and "type"
+collides with Ruby and Sorbet types.

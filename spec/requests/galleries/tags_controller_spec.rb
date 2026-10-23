@@ -118,6 +118,17 @@ RSpec.describe Galleries::TagsController do
       expect(page).to have_link("Tags", href: gallery_tags_path(gallery))
     end
 
+    it "lists classifications alphabetically" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      login_as(user)
+
+      get(new_gallery_tag_path(gallery))
+
+      options = page.all("select[name='tag[classification]'] option")
+      expect(options.map(&:text)).to eq(%w[artist none subject system])
+    end
+
     it "returns 404 when accessing new tag form for gallery not owned by current user" do
       gallery = create(:gallery)
       other_user = create(:user)
