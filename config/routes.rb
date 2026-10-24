@@ -46,6 +46,7 @@ Rails.application.routes.draw do
         resource :tag_search, only: %i[show], module: :images
         resource :recent_tags, only: %i[show], module: :images
         resources :book_images, only: %i[new create], module: :images
+        resources :books, only: %i[create], module: :images
       end
       resource :bulk_upload, only: %i[new create] do
         resources :tags, only: %i[create destroy],

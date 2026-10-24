@@ -16,7 +16,7 @@ RSpec.describe Galleries::Images::BookImagesController do
       expect(page).to have_text(book2.name)
     end
 
-    it "shows message when no books exist" do
+    it "shows the new-book form when the gallery has no books" do
       user = create(:user)
       gallery = create(:gallery, user:)
       image = create(:galleries_image, gallery:)
@@ -24,8 +24,28 @@ RSpec.describe Galleries::Images::BookImagesController do
 
       get(new_gallery_image_book_image_path(gallery, image))
 
-      expect(page).to have_text("No books available")
-      expect(page).to have_link("Create a book")
+      expect(page).to have_text("No books yet")
+      expect(page).not_to have_link("Create a book")
+      form = page.find("form[data-role=new-book]")
+      expect(form[:action]).to eql(gallery_image_books_path(gallery, image))
+      expect(form[:novalidate]).to be_nil
+      expect(form).to have_css("input[name='book[name]'][required]")
+      expect(form).to have_button("Create book")
+    end
+
+    it "shows the new-book form above the list of books" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      create(:galleries_book, gallery:)
+      login_as(user)
+
+      get(new_gallery_image_book_image_path(gallery, image))
+
+      expect(page).to have_xpath(
+        "//form[@data-role='new-book']" \
+        "/following::*[@data-role='book-selection']"
+      )
     end
 
     it "has crumbs" do
@@ -82,6 +102,24 @@ RSpec.describe Galleries::Images::BookImagesController do
       expect(book_image.image).to eql(image)
       expect(book_image.book).to eql(book)
       expect(book_image.order).to eql(1)
+    end
+
+    it "re-renders the page when the image is already in the book" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      image = create(:galleries_image, gallery:)
+      book = create(:galleries_book, gallery:)
+      create(:galleries_book_image, book:, image:)
+      login_as(user)
+      params = {book_id: book.id}
+
+      post(gallery_image_book_images_path(gallery, image), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_text("Image is already added to that book")
+      form = page.find("form[data-role=new-book]")
+      expect(form.find_field("book[name]").value).to be_blank
+      expect(page).to have_text(book.name)
     end
 
     it "sets order to next available number" do

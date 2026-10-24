@@ -115,6 +115,9 @@ module GeneratedUrlHelpersModule
   def gallery_image_book_images_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def gallery_image_books_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def gallery_image_recent_tags_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

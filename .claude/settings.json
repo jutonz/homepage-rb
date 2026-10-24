@@ -22,6 +22,17 @@
             "statusMessage": "Cleaning up removed worktrees..."
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | { read -r f; case \"$f\" in *.erb) cd \"$CLAUDE_PROJECT_DIR\" && npx herb-format \"$f\" >/dev/null 2>&1;; esac; } || true",
+            "timeout": 30,
+            "statusMessage": "Formatting ERB..."
+          }
+        ]
       }
     ]
   }
