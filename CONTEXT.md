@@ -54,8 +54,8 @@ name does not name its model overrides it.
 ## Databases
 
 **Primary database** — the database holding every model this codebase
-defines: users, galleries, images, tags, todos. When something here says
-"the database" without qualifying it, this is the one.
+defines: users, galleries, images, tags, books, todos. When something here
+says "the database" without qualifying it, this is the one.
 
 **Queue database** — the database Solid Queue owns, holding queued jobs,
 their executions, and the recurring task schedule. It is authoritative
@@ -162,3 +162,7 @@ confusion.
 
 *Avoid*: "type" and "category". Both name the same concept, and "type"
 collides with Ruby and Sorbet types.
+
+**Book** — an ordered selection of a gallery's images. A book belongs
+to one gallery and holds each image at most once. An image can be in
+many books.

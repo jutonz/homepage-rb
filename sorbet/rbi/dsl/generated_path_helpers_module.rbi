@@ -115,6 +115,9 @@ module GeneratedPathHelpersModule
   def gallery_image_book_images_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def gallery_image_books_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def gallery_image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
