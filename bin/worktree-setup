@@ -14,9 +14,11 @@
 # Gems are shared, but a worktree cut from a branch that bumped a gem
 # needs that gem installed. This copies the keys from the main checkout
 # (no 1Password prompt, unlike bin/setup), installs node modules, creates
-# the worktree's databases, and builds assets. It first runs
-# bin/worktree-prune, which stops the processes and drops the databases of
-# worktrees that have since been removed.
+# the worktree's databases, and builds assets. Before it creates the
+# databases, it runs bin/worktree-prune, which stops the processes and
+# drops the databases of worktrees that have since been removed. Prune
+# boots this worktree's app, so it must follow the key copy and the gem
+# install.
 #
 # Idempotent. No-op when run outside a linked worktree.
 set -euo pipefail
@@ -95,8 +97,6 @@ registry="$common_dir/worktree-databases"
 log_file="$(mktemp)"
 trap 'rm -f "$log_file"' EXIT
 
-bin/worktree-prune
-
 echo "Copying credential keys from $main_root"
 for env in development test production; do
   cp "$main_root/config/credentials/$env.key" \
@@ -135,6 +135,8 @@ if ! mise exec -- bundle check >"$log_file" 2>&1; then
   echo "Installing missing gems"
   mise exec -- bundle install
 fi
+
+bin/worktree-prune
 
 echo "Preparing this worktree's development and test databases"
 run_quietly "Development database prepare" \
