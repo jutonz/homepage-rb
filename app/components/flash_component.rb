@@ -1,13 +1,17 @@
 # typed: true
 
 class FlashComponent < ApplicationComponent
+  DISMISS_DELAY_MS = 5000
+
   erb_template <<~ERB
     <%= tag.div(
       @message,
       class: classes,
       data: {
         role: "flash",
-        flash_type: @type
+        flash_type: @type,
+        controller: "flash",
+        flash_delay_value: DISMISS_DELAY_MS
       }
     ) %>
   ERB

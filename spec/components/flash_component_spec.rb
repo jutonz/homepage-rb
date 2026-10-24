@@ -60,4 +60,31 @@ RSpec.describe FlashComponent, type: :component do
       text: "Warning!"
     )
   end
+
+  it "attaches the flash controller" do
+    component = described_class.new(message: "hi", type: "notice")
+    render_inline(component)
+
+    expect(page).to have_css(
+      "[data-role=flash][data-controller=flash]",
+      text: "hi"
+    )
+  end
+
+  it "passes the dismiss delay to the controller" do
+    component = described_class.new(message: "hi", type: "notice")
+    render_inline(component)
+
+    expect(page).to have_css("[data-flash-delay-value='5000']")
+  end
+
+  it "attaches the flash controller to an alert" do
+    component = described_class.new(message: "Alert!", type: "alert")
+    render_inline(component)
+
+    expect(page).to have_css(
+      "[data-role=flash][data-controller=flash]",
+      text: "Alert!"
+    )
+  end
 end
