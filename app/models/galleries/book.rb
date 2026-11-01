@@ -13,7 +13,7 @@
 #
 # Indexes
 #
-#  index_galleries_books_on_gallery_id  (gallery_id)
+#  index_galleries_books_on_gallery_id_and_lower_name  (gallery_id, lower((name)::text)) UNIQUE
 #
 # Foreign Keys
 #
@@ -30,6 +30,11 @@ module Galleries
       through: :book_images,
       class_name: "Galleries::Image"
 
-    validates :name, presence: true
+    normalizes :name, with: -> { it.squish }
+
+    validates :name,
+      presence: true,
+      length: {maximum: 255},
+      uniqueness: {scope: :gallery_id, case_sensitive: false}
   end
 end
