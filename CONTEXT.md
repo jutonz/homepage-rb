@@ -173,9 +173,21 @@ many books. A book's name is unique within its gallery.
 optional rich-text description, owned by one user and visible only to
 that user.
 
-*Avoid*: "issue" for a Linear issue.
+*Avoid*: "issue" for a Linear issue; "ticket", which names a Linear
+issue.
 
 **Linear issue** — a ticket in the HPRB team in Linear, where work on
 this codebase is tracked.
 
 *Avoid*: "issue" unqualified, which names the Issue model.
+
+**Project** — a named group of a user's Issues, such as "Homepage" or
+"Infra". It belongs to one user and is visible only to that user. Its
+name and its key are each unique for that user, ignoring case.
+
+*Avoid*: "project" for a project in Linear.
+
+**Project key** — the short label a user gives a Project, such as
+"INFRA". The app keeps it as the user typed it.
+
+*Avoid*: "prefix", "code".

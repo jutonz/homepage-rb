@@ -1,0 +1,21 @@
+<%= render(HeaderComponent.new(title: @project.name)) do |header| %>
+  <%= header.with_crumb("Home", home_path) %>
+  <%= header.with_crumb("Issues", issues_path) %>
+  <%= header.with_crumb("Projects", projects_path) %>
+
+  <%= header.with_action do %>
+    <%= link_to("Edit", edit_project_path(@project), class: "button") %>
+  <% end %>
+
+  <%= header.with_action do %>
+    <%= button_to(
+      "Delete",
+      project_path(@project),
+      method: :delete,
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger"
+    ) %>
+  <% end %>
+<% end %>
+
+<%= render(DetailRowComponent.new(label: "Key", value: @project.key)) %>

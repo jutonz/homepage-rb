@@ -58,6 +58,9 @@ module GeneratedPathHelpersModule
   def edit_plant_plant_image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_project_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_recipe_group_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -244,6 +247,9 @@ module GeneratedPathHelpersModule
   def new_plant_plant_image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_project_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -302,6 +308,12 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def preview_view_components_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def project_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def projects_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_blob_path(*args); end

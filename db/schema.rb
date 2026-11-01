@@ -176,6 +176,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_171525) do
     t.index ["user_id"], name: "index_issues_on_user_id"
   end
 
+  create_table "issues_projects", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.string "key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "user_id, lower((key)::text)", name: "index_issues_projects_on_user_id_and_lower_key", unique: true
+    t.index "user_id, lower((name)::text)", name: "index_issues_projects_on_user_id_and_lower_name", unique: true
+  end
+
   create_table "plants_inbox_images", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.datetime "taken_at", null: false
@@ -426,6 +436,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_171525) do
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
   add_foreign_key "issues", "users"
+  add_foreign_key "issues_projects", "users"
   add_foreign_key "plants_inbox_images", "users"
   add_foreign_key "plants_plant_images", "plants_plants", column: "plant_id"
   add_foreign_key "plants_plants", "plants_plant_images", column: "key_image_id"

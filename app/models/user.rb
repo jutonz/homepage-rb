@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   has_many :api_tokens, class_name: "Api::Token"
   has_many :galleries
   has_many(:issues)
+  has_many(:issues_projects, class_name: "Issues::Project")
   has_many :owned_recipe_groups,
     class_name: "RecipeGroup",
     foreign_key: "owner_id"

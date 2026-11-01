@@ -440,6 +440,20 @@ class User
     def issues=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def issues_project_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def issues_project_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :issues_projects`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Issues::Project::PrivateCollectionProxy) }
+    def issues_projects; end
+
+    sig { params(value: T::Enumerable[::Issues::Project]).void }
+    def issues_projects=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def owned_recipe_group_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
