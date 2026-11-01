@@ -11,7 +11,7 @@
 #
 # Indexes
 #
-#  index_galleries_books_on_gallery_id  (gallery_id)
+#  index_galleries_books_on_gallery_id_and_lower_name  (gallery_id, lower((name)::text)) UNIQUE
 #
 # Foreign Keys
 #

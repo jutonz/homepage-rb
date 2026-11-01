@@ -113,6 +113,20 @@ RSpec.describe Galleries::BooksController do
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
     end
+
+    it "renders error on a duplicate name" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create(:galleries_book, gallery:, name: "Summer")
+      login_as(user)
+      params = {book: {name: "Summer"}}
+
+      post(gallery_books_path(gallery), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_text("has already been taken")
+      expect(gallery.books.count).to eql(1)
+    end
   end
 
   describe "show" do
@@ -212,6 +226,21 @@ RSpec.describe Galleries::BooksController do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_text("can't be blank")
+    end
+
+    it "renders error on a rename to a duplicate name" do
+      user = create(:user)
+      gallery = create(:gallery, user:)
+      create(:galleries_book, gallery:, name: "Summer")
+      book = create(:galleries_book, gallery:, name: "Winter")
+      login_as(user)
+      params = {book: {name: "Summer"}}
+
+      put(gallery_book_path(gallery, book), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_text("has already been taken")
+      expect(book.reload.name).to eql("Winter")
     end
   end
 

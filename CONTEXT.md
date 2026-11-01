@@ -165,7 +165,7 @@ collides with Ruby and Sorbet types.
 
 **Book** — an ordered selection of a gallery's images. A book belongs
 to one gallery and holds each image at most once. An image can be in
-many books.
+many books. A book's name is unique within its gallery.
 
 ## Issues
 

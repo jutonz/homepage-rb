@@ -38,7 +38,7 @@ RSpec.describe Galleries::Images::BooksController do
       gallery = create(:gallery, user:)
       image = create(:galleries_image, gallery:)
       login_as(user)
-      name = "a" * 2500
+      name = "a" * 255
       params = {book: {name:}}
 
       post(gallery_image_books_path(gallery, image), params:)
@@ -50,7 +50,7 @@ RSpec.describe Galleries::Images::BooksController do
       )
     end
 
-    it "allows a name that an existing book has" do
+    it "re-renders with the error on a duplicate name" do
       user = create(:user)
       gallery = create(:gallery, user:)
       image = create(:galleries_image, gallery:)
@@ -60,8 +60,17 @@ RSpec.describe Galleries::Images::BooksController do
 
       post(gallery_image_books_path(gallery, image), params:)
 
-      expect(response).to have_http_status(:see_other)
-      expect(gallery.books.where(name: "Summer").count).to eql(2)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_css(
+        "form[data-role=new-book]",
+        text: "has already been taken"
+      )
+      selections = page.all("[data-role=book-selection] button")
+      expect(selections.map { |button| button.text.squish }).to eql(
+        ["Summer →"]
+      )
+      expect(gallery.books.count).to eql(1)
+      expect(Galleries::BookImage.where(image:)).to be_empty
     end
 
     it "re-renders with the error on a blank name" do
