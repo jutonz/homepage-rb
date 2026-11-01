@@ -42,6 +42,37 @@ class IssuesController < ApplicationController
     @issue = authorize(find_issue)
   end
 
+  sig { void }
+  def edit
+    @issue = authorize(find_issue)
+  end
+
+  sig { void }
+  def update
+    @issue = authorize(find_issue)
+
+    if @issue.update(issue_params)
+      redirect_to(
+        issue_path(@issue),
+        notice: "Issue was successfully updated."
+      )
+    else
+      render(:edit, status: :unprocessable_content)
+    end
+  end
+
+  sig { void }
+  def destroy
+    issue = authorize(find_issue)
+    issue.destroy!
+
+    redirect_to(
+      issues_path,
+      status: :see_other,
+      notice: "Issue was successfully deleted."
+    )
+  end
+
   private
 
   sig { returns(Issue) }
