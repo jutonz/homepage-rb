@@ -8,3 +8,11 @@ ActiveStorage.start()
 
 import "trix"
 import "@rails/actiontext"
+
+// Turbo morphs a 422 re-render of the same page. The morph removes the
+// toolbar that Trix builds in the browser and empties the editor.
+document.addEventListener("turbo:before-morph-element", (event) => {
+  if (event.target.matches?.("trix-editor, trix-toolbar")) {
+    event.preventDefault()
+  }
+})

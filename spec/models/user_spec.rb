@@ -21,6 +21,7 @@ require "rails_helper"
 RSpec.describe User do
   it { is_expected.to have_many(:api_tokens) }
   it { is_expected.to have_many(:galleries) }
+  it { is_expected.to have_many(:issues) }
   it { is_expected.to have_many(:owned_recipe_groups) }
   it { is_expected.to have_many(:owned_user_groups) }
   it { is_expected.to have_many(:shared_bills) }

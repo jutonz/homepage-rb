@@ -54,6 +54,20 @@
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <%= render(CardComponent.new(title: "Issues")) do |card| %>
+    <% card.with_body do %>
+      <p class="text-gray-600 mb-4">
+        Track the work you plan to do across your projects.
+      </p>
+
+      <%= link_to(
+        "View Issues",
+        issues_path,
+        class: "button"
+      ) %>
+    <% end %>
+  <% end %>
+
   <%= render(CardComponent.new(title: "Photo Galleries")) do |card| %>
     <% card.with_body do %>
       <p class="text-gray-600 mb-4">

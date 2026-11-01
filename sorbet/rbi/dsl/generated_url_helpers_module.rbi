@@ -196,6 +196,12 @@ module GeneratedUrlHelpersModule
   def invitation_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def issue_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def issues_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_gallery_book_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -224,6 +230,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_ingredient_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_issue_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_plant_plant_image_url(*args); end

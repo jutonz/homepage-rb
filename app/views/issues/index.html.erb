@@ -1,0 +1,31 @@
+<%= render(HeaderComponent.new(title: "Issues")) do |header| %>
+  <%= header.with_crumb("Home", home_path) %>
+
+  <%= header.with_action do %>
+    <%= link_to("New Issue", new_issue_path, class: "button") %>
+  <% end %>
+<% end %>
+
+<div class="flex flex-col gap-2">
+  <% @issues.each do |issue| %>
+    <%= link_to(
+      issue.title,
+      issue_path(issue),
+      data: {role: "issue"},
+      class: "
+        block p-4 break-words border border-gray-200 rounded-lg font-medium
+        text-gray-900 hover:bg-gray-50 hover:border-gray-300
+      "
+    ) %>
+  <% end %>
+</div>
+
+<% if @issues.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No issues yet</div>
+  </div>
+<% else %>
+  <div class="flex justify-center">
+    <%= paginate(@issues) %>
+  </div>
+<% end %>

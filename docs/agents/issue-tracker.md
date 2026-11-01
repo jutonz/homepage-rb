@@ -1,14 +1,14 @@
 # Issue tracker: Linear
 
-Issues and specs for this repo live in the **Homepage RB** Linear team
-(key `HPRB`):
+Linear issues and specs for this repo live in the **Homepage RB**
+Linear team (key `HPRB`):
 https://linear.app/jt-project42/team/HPRB
 
 Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 
 ## Schema
 
-- **Title** — issue title
+- **Title** — Linear issue title
 - **State**: `Backlog` → `Todo` → `In Progress` → `In Review` → `Done`
   (`Canceled` / `Duplicate` also exist)
 - **Labels**: `Bug`, `Feature`, `Improvement` — workspace-wide labels
@@ -20,14 +20,15 @@ Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 
 ## Conventions
 
-- **Create an issue**: `linear issue create --team HPRB -t "<title>"
+- **Create a Linear issue**: `linear issue create --team HPRB -t "<title>"
   --description-file <path> -s Backlog -l <label>`. Prefer
   `--description-file` over `-d` for markdown bodies. Add `--no-interactive`
   in scripts.
-- **Read an issue**: `linear issue view HPRB-123`.
-- **List / search issues**: `linear issue query --team HPRB --all-states`.
+- **Read a Linear issue**: `linear issue view HPRB-123`.
+- **List / search Linear issues**: `linear issue query --team HPRB
+  --all-states`.
   Note `linear issue list` is an alias for `issue mine` and only shows
-  issues assigned to you — use `issue query` for the whole team.
+  Linear issues assigned to you — use `issue query` for the whole team.
 - **Update state or labels**: `linear issue update HPRB-123 -s "In Progress"`,
   `--add-label` / `--remove-label` to change labels incrementally (`-l`
   replaces the entire set).
@@ -46,7 +47,7 @@ Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 
 ## When a skill says "publish to the issue tracker"
 
-Create an issue in the HPRB team via `linear issue create --team HPRB`.
+Create a Linear issue in the HPRB team via `linear issue create --team HPRB`.
 
 ## When a skill says "fetch the relevant ticket"
 
@@ -55,9 +56,9 @@ and match on title if only given a name.
 
 ## Migration note
 
-The 35 open / in-progress issues were migrated from the former Notion
-database "Homepage RB Backlog" on 2026-09-07. Each carries a
+The 35 open / in-progress Linear issues were migrated from the former
+Notion database "Homepage RB Backlog" on 2026-09-07. Each carries a
 `Migrated from Notion` backlink at the bottom of its description. The 60
-`Done` issues were deliberately left behind; the Notion database is
+`Done` Linear issues were deliberately left behind; the Notion database is
 untouched and still readable at
 https://app.notion.com/p/288299751461805a9f70d607c7beef72

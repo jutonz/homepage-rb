@@ -12,7 +12,7 @@ class HeaderComponent < ApplicationComponent
 
       <div class="flex w-full justify-between flex-col sm:flex-row sm:items-center">
         <div class="flex flex-col">
-          <h1 class="text-2xl">
+          <h1 class="text-2xl break-words">
             <%= @title %>
           </h1>
         </div>

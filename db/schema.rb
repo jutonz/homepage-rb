@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_144857) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_31_160150) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -166,6 +166,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_144857) do
     t.index ["gallery_id", "name"], name: "index_galleries_tags_on_gallery_id_and_name", unique: true
     t.index ["gallery_id"], name: "index_galleries_tags_on_gallery_id"
     t.index ["user_id"], name: "index_galleries_tags_on_user_id"
+  end
+
+  create_table "issues", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_issues_on_user_id"
   end
 
   create_table "plants_inbox_images", force: :cascade do |t|
@@ -417,6 +425,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_144857) do
   add_foreign_key "galleries_social_media_links", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
+  add_foreign_key "issues", "users"
   add_foreign_key "plants_inbox_images", "users"
   add_foreign_key "plants_plant_images", "plants_plants", column: "plant_id"
   add_foreign_key "plants_plants", "plants_plant_images", column: "key_image_id"

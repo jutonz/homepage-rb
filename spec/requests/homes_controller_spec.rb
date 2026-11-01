@@ -16,5 +16,15 @@ RSpec.describe HomesController do
 
       expect(response.body).to include("Signed in as #{user.email}")
     end
+
+    it "shows an Issues card" do
+      user = create(:user)
+      login_as(user)
+
+      get(home_path)
+
+      expect(page).to have_css("h3", text: "Issues")
+      expect(page).to have_link("View Issues", href: issues_path)
+    end
   end
 end
