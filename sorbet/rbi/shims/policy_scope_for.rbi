@@ -81,6 +81,13 @@ class Galleries::TagPolicy
   def self.scope_for(user); end
 end
 
+class Issues::ProjectPolicy
+  sig do
+    params(user: T.nilable(User)).returns(Issues::Project::PrivateRelation)
+  end
+  def self.scope_for(user); end
+end
+
 class Plants::InboxImagePolicy
   sig do
     params(user: T.nilable(User))

@@ -58,6 +58,9 @@ module GeneratedUrlHelpersModule
   def edit_plant_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_project_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_recipe_group_recipe_ingredient_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -244,6 +247,9 @@ module GeneratedUrlHelpersModule
   def new_plant_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_project_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -302,6 +308,12 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def preview_view_components_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def project_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def projects_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_blob_representation_proxy_url(*args); end

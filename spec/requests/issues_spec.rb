@@ -64,6 +64,15 @@ RSpec.describe IssuesController do
       expect(page).to have_link("New Issue", href: new_issue_path)
       expect(page).to have_link("Home", href: home_path)
     end
+
+    it "links to my projects" do
+      user = create(:user)
+      login_as(user)
+
+      get(issues_path)
+
+      expect(page).to have_link("Projects", href: projects_path)
+    end
   end
 
   describe "new" do

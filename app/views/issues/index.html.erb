@@ -2,6 +2,14 @@
   <%= header.with_crumb("Home", home_path) %>
 
   <%= header.with_action do %>
+    <%= link_to(
+      "Projects",
+      projects_path,
+      class: "button button--secondary"
+    ) %>
+  <% end %>
+
+  <%= header.with_action do %>
     <%= link_to("New Issue", new_issue_path, class: "button") %>
   <% end %>
 <% end %>

@@ -39,6 +39,9 @@ Rails.application.routes.draw do
   end
 
   resources(:issues)
+  scope(module: :issues) do
+    resources(:projects)
+  end
 
   resources :galleries do
     scope module: :galleries do
