@@ -1,0 +1,6 @@
+<%= render(HeaderComponent.new(title: "New Issue")) do |header| %>
+  <%= header.with_crumb("Home", home_path) %>
+  <%= header.with_crumb("Issues", issues_path) %>
+<% end %>
+
+<%= render(IssueFormComponent.new(issue: @issue)) %>

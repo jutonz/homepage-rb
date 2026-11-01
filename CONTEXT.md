@@ -1,7 +1,7 @@
 # Context
 
 Shared vocabulary for this codebase. Use these terms in code, specs,
-issues, and commit messages; prefer them over the synonyms each entry
+Linear issues, and commit messages; prefer them over the synonyms each entry
 lists as avoided.
 
 ## Authentication
@@ -166,3 +166,16 @@ collides with Ruby and Sorbet types.
 **Book** — an ordered selection of a gallery's images. A book belongs
 to one gallery and holds each image at most once. An image can be in
 many books.
+
+## Issues
+
+**Issue** — a unit of work a user tracks in this app: a title and an
+optional rich-text description, owned by one user and visible only to
+that user.
+
+*Avoid*: "issue" for a Linear issue.
+
+**Linear issue** — a ticket in the HPRB team in Linear, where work on
+this codebase is tracked.
+
+*Avoid*: "issue" unqualified, which names the Issue model.

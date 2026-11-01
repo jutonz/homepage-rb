@@ -38,6 +38,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources(:issues, only: %i[index new create show])
+
   resources :galleries do
     scope module: :galleries do
       resource :processing_images, only: :show

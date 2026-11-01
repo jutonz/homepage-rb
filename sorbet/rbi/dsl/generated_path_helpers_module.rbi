@@ -196,6 +196,12 @@ module GeneratedPathHelpersModule
   def invitation_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def issue_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def issues_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_gallery_book_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -224,6 +230,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_ingredient_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_issue_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_plant_path(*args); end

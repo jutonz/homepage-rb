@@ -1,0 +1,10 @@
+<%= render(HeaderComponent.new(title: @issue.title)) do |header| %>
+  <%= header.with_crumb("Home", home_path) %>
+  <%= header.with_crumb("Issues", issues_path) %>
+<% end %>
+
+<% if @issue.description.present? %>
+  <div class="prose prose-gray max-w-none">
+    <%= @issue.description %>
+  </div>
+<% end %>
