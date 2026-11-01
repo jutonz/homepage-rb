@@ -49,6 +49,9 @@ module GeneratedUrlHelpersModule
   def edit_ingredient_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_issue_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_plant_plant_image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

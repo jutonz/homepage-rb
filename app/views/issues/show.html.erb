@@ -1,6 +1,20 @@
 <%= render(HeaderComponent.new(title: @issue.title)) do |header| %>
   <%= header.with_crumb("Home", home_path) %>
   <%= header.with_crumb("Issues", issues_path) %>
+
+  <%= header.with_action do %>
+    <%= link_to("Edit", edit_issue_path(@issue), class: "button") %>
+  <% end %>
+
+  <%= header.with_action do %>
+    <%= button_to(
+      "Delete",
+      issue_path(@issue),
+      method: :delete,
+      data: {turbo_confirm: "Are you sure?"},
+      class: "button button--danger"
+    ) %>
+  <% end %>
 <% end %>
 
 <% if @issue.description.present? %>

@@ -205,5 +205,177 @@ RSpec.describe IssuesController do
 
       expect(response).to have_http_status(:not_found)
     end
+
+    it "links to edit and offers delete" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      login_as(user)
+
+      get(issue_path(issue))
+
+      expect(page).to have_link("Edit", href: edit_issue_path(issue))
+      expect(page).to have_css(
+        "form[action='#{issue_path(issue)}'] " \
+        "input[name=_method][value=delete]",
+        visible: :all
+      )
+      expect(page).to have_css(
+        "form[action='#{issue_path(issue)}'] " \
+        "button[data-turbo-confirm='Are you sure?']",
+        text: "Delete"
+      )
+    end
+  end
+
+  describe "edit" do
+    it "redirects a signed-out visitor to sign in" do
+      issue = create(:issue)
+
+      get(edit_issue_path(issue))
+
+      expect(response).to redirect_to(new_session_path)
+    end
+
+    it "renders the form for my issue" do
+      user = create(:user)
+      issue = create(:issue, user:, title: "Fix it")
+      login_as(user)
+
+      get(edit_issue_path(issue))
+
+      expect(response).to be_successful
+      expect(page).to have_css("h1", text: "Edit Issue")
+      expect(page).to have_link("Home", href: home_path)
+      expect(page).to have_link("Issues", href: issues_path)
+      expect(page).to have_link("Fix it", href: issue_path(issue))
+      expect(page).to have_css("form[action='#{issue_path(issue)}']")
+      expect(page).to have_field("Title", with: "Fix it")
+      expect(page).to have_button("Update Issue")
+    end
+
+    it "returns not found for another user's issue" do
+      user = create(:user)
+      issue = create(:issue)
+      login_as(user)
+
+      get(edit_issue_path(issue))
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "update" do
+    it "redirects a signed-out visitor and changes nothing" do
+      issue = create(:issue, title: "Before")
+      params = {issue: {title: "After"}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to redirect_to(new_session_path)
+      expect(issue.reload.title).to eq("Before")
+    end
+
+    it "updates my issue and leaves others alone" do
+      user = create(:user)
+      issue = create(:issue, user:, title: "Before", description: "Old")
+      bystander = create(:issue, user:, title: "Bystander")
+      login_as(user)
+      params = {
+        issue: {title: "After", description: "<strong>New</strong> text"}
+      }
+
+      patch(issue_path(issue), params:)
+
+      issue.reload
+      expect(response).to redirect_to(issue_path(issue))
+      expect(flash[:notice]).to eq("Issue was successfully updated.")
+      expect(issue.title).to eq("After")
+      expect(issue.description.to_plain_text).to eq("New text")
+      expect(bystander.reload.title).to eq("Bystander")
+    end
+
+    it "rejects a blank title and keeps the description" do
+      user = create(:user)
+      issue = create(:issue, user:, title: "Before")
+      login_as(user)
+      params = {issue: {title: "", description: "Keep this text"}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("can't be blank")
+      expect(page).to have_css("h1", text: "Edit Issue")
+      expect(page).to have_link("Before", href: issue_path(issue))
+      expect(page).to have_css(
+        "input[name='issue[description]'][value*='Keep this text']",
+        visible: :all
+      )
+      expect(issue.reload.title).to eq("Before")
+    end
+
+    it "rejects a title over 255 characters and keeps it" do
+      user = create(:user)
+      issue = create(:issue, user:, title: "Before")
+      login_as(user)
+      title = "a" * 256
+      params = {issue: {title:}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("is too long")
+      expect(page).to have_field("Title", with: title)
+      expect(page).to have_link("Before", href: issue_path(issue))
+      expect(issue.reload.title).to eq("Before")
+    end
+
+    it "returns not found for another user's issue" do
+      user = create(:user)
+      issue = create(:issue, title: "Before")
+      login_as(user)
+      params = {issue: {title: "After"}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to have_http_status(:not_found)
+      expect(issue.reload.title).to eq("Before")
+    end
+  end
+
+  describe "destroy" do
+    it "redirects a signed-out visitor and deletes nothing" do
+      issue = create(:issue)
+
+      delete(issue_path(issue))
+
+      expect(response).to redirect_to(new_session_path)
+      expect(Issue.exists?(issue.id)).to be(true)
+    end
+
+    it "deletes my issue and leaves others alone" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      bystander = create(:issue, user:)
+      login_as(user)
+
+      delete(issue_path(issue))
+
+      expect(response).to redirect_to(issues_path)
+      expect(response).to have_http_status(:see_other)
+      expect(flash[:notice]).to eq("Issue was successfully deleted.")
+      expect(Issue.exists?(issue.id)).to be(false)
+      expect(Issue.exists?(bystander.id)).to be(true)
+    end
+
+    it "returns not found for another user's issue" do
+      user = create(:user)
+      issue = create(:issue)
+      login_as(user)
+
+      delete(issue_path(issue))
+
+      expect(response).to have_http_status(:not_found)
+      expect(Issue.exists?(issue.id)).to be(true)
+    end
   end
 end

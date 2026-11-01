@@ -49,6 +49,9 @@ module GeneratedPathHelpersModule
   def edit_ingredient_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_issue_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_plant_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
