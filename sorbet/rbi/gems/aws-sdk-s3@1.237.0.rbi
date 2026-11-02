@@ -63,7 +63,7 @@ module Aws::S3
 
     # @api private
     #
-    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:6
+    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:8
     def express_credentials_cache; end
   end
 end
@@ -620,8 +620,8 @@ class Aws::S3::Bucket
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:1299
   def lifecycle_configuration; end
 
-  # @api private
   # @raise [NotImplementedError]
+  # @api private
   # @api private
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:78
@@ -35581,18 +35581,18 @@ class Aws::S3::ExpressCredentials
 
   # @return [S3::Client]
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials.rb:28
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials.rb:29
   def client; end
 
   private
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials.rb:32
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials.rb:33
   def refresh; end
 
   class << self
     # @api private
     #
-    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials.rb:45
+    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials.rb:48
     def create_session_options; end
   end
 end
@@ -35608,37 +35608,43 @@ Aws::S3::ExpressCredentials::SYNC_EXPIRATION_LENGTH = T.let(T.unsafe(nil), Integ
 # Returns Credentials class for S3 Express. Accepts CreateSession
 # params as options. See {Client#create_session} for details.
 #
-# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:12
+# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:14
 class Aws::S3::ExpressCredentialsProvider
   # @param [Hash] options
   # @option options [Client] :client The S3 client used to create the
-  #  session.
+  #  session when one is not given to {#express_credentials_for}.
   # @option options [String] :session_mode (see: {Client#create_session})
   # @option options [Boolean] :caching (true) When true, credentials will
   #  be cached.
   # @option options [Callable] :before_refresh Proc called before
   #   credentials are refreshed.
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:21
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:26
   def initialize(options = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:38
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:44
   def client; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:38
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:44
   def client=(_arg0); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:30
-  def express_credentials_for(bucket); end
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:35
+  def express_credentials_for(bucket, client = T.unsafe(nil)); end
 
   private
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:42
-  def cached_credentials_for(bucket); end
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:52
+  def cache_key(bucket, credentials); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:50
-  def new_credentials_for(bucket); end
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:48
+  def cached_credentials_for(bucket, client, credentials); end
+
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:57
+  def new_credentials_for(bucket, client, credentials); end
 end
+
+# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/express_credentials_provider.rb:15
+Aws::S3::ExpressCredentialsProvider::CACHE_KEY_SECRET = T.let(T.unsafe(nil), String)
 
 # @api private
 #
@@ -36280,6 +36286,24 @@ class Aws::S3::MultipartUpload
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_upload.rb:123
   def client; end
 
+  # Completes the upload, requires a list of completed parts. You can
+  # provide the list of parts with `:part_number` and `:etag` values.
+  #
+  #     upload.complete(multipart_upload: { parts: [
+  #       { part_number: 1, etag:'etag1' },
+  #       { part_number: 2, etag:'etag2' },
+  #       ...
+  #     ]})
+  #
+  # Alternatively, you can pass **`compute_parts: true`** and the part
+  # list will be computed by calling {Client#list_parts}.
+  #
+  #     upload.complete(compute_parts: true)
+  #
+  # @option options [Boolean] :compute_parts (false) When `true`,
+  #   the {Client#list_parts} method will be called to determine
+  #   the list of required part numbers and their ETags.
+  #
   # @example Request syntax with placeholder values
   #
   #   object = multipart_upload.complete({
@@ -36540,23 +36564,6 @@ class Aws::S3::MultipartUpload
   #
   #   [1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerSideEncryptionCustomerKeys.html
   # @return [Object]
-  # Completes the upload, requires a list of completed parts. You can
-  # provide the list of parts with `:part_number` and `:etag` values.
-  #
-  #     upload.complete(multipart_upload: { parts: [
-  #       { part_number: 1, etag:'etag1' },
-  #       { part_number: 2, etag:'etag2' },
-  #       ...
-  #     ]})
-  #
-  # Alternatively, you can pass **`compute_parts: true`** and the part
-  # list will be computed by calling {Client#list_parts}.
-  #
-  #     upload.complete(compute_parts: true)
-  #
-  # @option options [Boolean] :compute_parts (false) When `true`,
-  #   the {Client#list_parts} method will be called to determine
-  #   the list of required part numbers and their ETags.
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_upload.rb:563
   def complete(options = T.unsafe(nil)); end
@@ -42380,11 +42387,6 @@ class Aws::S3::ObjectSummary
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object_summary.rb:7
   def content_length; end
 
-  # Make the method redefinable
-  # @param (see Object#copy_from)
-  # @options (see Object#copy_from)
-  # @return (see Object#copy_from)
-  # @see Object#copy_from
   # @example Request syntax with placeholder values
   #
   #   object_summary.copy_from({
@@ -43205,6 +43207,11 @@ class Aws::S3::ObjectSummary
   #   the request fails with the HTTP status code `403 Forbidden` (access
   #   denied).
   # @return [Types::CopyObjectOutput]
+  # Make the method redefinable
+  # @param (see Object#copy_from)
+  # @options (see Object#copy_from)
+  # @return (see Object#copy_from)
+  # @see Object#copy_from
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_summary.rb:1158
   def copy_from(source, options = T.unsafe(nil)); end
@@ -46532,13 +46539,13 @@ end
 class Aws::S3::Plugins::ExpressSessionAuth < ::Seahorse::Client::Plugin
   # Optimization - sets this client as the client to create sessions.
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:62
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:70
   def after_initialize(client); end
 
   class << self
     private
 
-    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:70
+    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:78
     def resolve_disable_s3_express_session_auth(cfg); end
   end
 end
@@ -46552,10 +46559,13 @@ class Aws::S3::Plugins::ExpressSessionAuth::Handler < ::Seahorse::Client::Handle
 
   private
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:54
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:47
+  def express_credentials_for(context, bucket); end
+
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:62
   def s3_express_endpoint?(context); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:48
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/plugins/express_session_auth.rb:56
   def with_metric(credentials, &block); end
 end
 
@@ -47110,7 +47120,7 @@ end
 #
 # The string `${filename}` is automatically replaced with the name of the
 # file provided by the user and is recognized by all form fields. It is
-# not supported with `starts_with` conditions.
+# not supported with `starts_with` conditions or {#tagging}.
 #
 # If the browser or client provides a full or partial path to the file,
 # only the text following the last slash (/) or backslash (\) will be used
@@ -47130,7 +47140,29 @@ end
 # })
 # ```
 #
-# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:178
+# ### Object Tags
+#
+# Use `:tagging` or {#tagging} to add tags to the uploaded object. Pass
+# the same structure as the `:tagging` parameter of
+# {Client#put_object_tagging}. The SDK serializes it to XML and adds
+# an exact-match condition to the POST policy.
+#
+# ```ruby
+# post = bucket.presigned_post(
+#   key: 'object-key',
+#   tagging: { tag_set: [{ key: 'project', value: 'example' }] }
+# )
+#
+# # Or set tags on an existing presigned post:
+# post = bucket.presigned_post(key: 'object-key')
+# post.tagging(tag_set: [{ key: 'project', value: 'example' }])
+# ```
+#
+# Include `post.fields['tagging']` unchanged in the submitted form.
+# When rendering it as an HTML input value, HTML-escape it just like
+# the other form fields.
+#
+# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:200
 class Aws::S3::PresignedPost
   # @param [Credentials] credentials Security credentials for signing
   #   the post policy.
@@ -47194,151 +47226,156 @@ class Aws::S3::PresignedPost
   #   See {PresignedPost#server_side_encryption_customer_key}.
   # @option options [String] :server_side_encryption_customer_key_starts_with
   #   See {PresignedPost#server_side_encryption_customer_key_starts_with}.
+  # @option options [Hash, Types::Tagging] :tagging
+  #   See {PresignedPost#tagging}.
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:243
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:267
   def initialize(credentials, bucket_region, bucket_name, options = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def acl(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:309
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:333
   def acl_starts_with(value); end
 
   # A list of form fields to white-list with any value.
   # @param [Sting, Array<String>] field_names
   # @return [self]
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:286
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:310
   def allow_any(*field_names); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def cache_control(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:309
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:333
   def cache_control_starts_with(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def content_disposition(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:309
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:333
   def content_disposition_starts_with(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def content_encoding(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:309
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:333
   def content_encoding_starts_with(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def content_length_range(byte_range); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def content_type(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:309
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:333
   def content_type_starts_with(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def expires(time); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def expires_starts_with(prefix); end
 
   # @return [Hash] A hash of fields to render in an HTML form
   #   as hidden input fields.
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:274
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:298
   def fields; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def key(key); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def key_starts_with(prefix); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def metadata(hash); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def metadata_starts_with(hash); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def server_side_encryption(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def server_side_encryption_aws_kms_key_id(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def server_side_encryption_customer_algorithm(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def server_side_encryption_customer_key(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:301
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
   def server_side_encryption_customer_key_starts_with(prefix); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def storage_class(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def success_action_redirect(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:309
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:333
   def success_action_redirect_starts_with(value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def success_action_status(value); end
+
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:325
+  def tagging(value); end
 
   # @return [String] The URL to post a file upload to.  This should be
   #   the form action.
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:270
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:294
   def url; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:303
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:327
   def website_redirect_location(value); end
 
   private
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:702
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:751
   def base64(str); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:640
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:689
   def bucket_url; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:632
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:681
   def check_required_values!; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:692
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:741
   def credential_scope(datetime); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:688
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:737
   def hexhmac(key, value); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:684
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:733
   def hmac(key, value); end
 
   # @return [Hash]
   #
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:653
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:702
   def policy(datetime); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:675
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:724
   def signature(datetime, string_to_sign); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:664
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:713
   def signature_fields(datetime); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:627
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:676
   def starts_with(field_name, value, &block); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:610
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:659
   def with(field_name, value); end
 
   class << self
     # @api private
     #
-    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:295
+    # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/presigned_post.rb:319
     def define_field(field, *args, &block); end
   end
 end
