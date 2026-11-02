@@ -70,19 +70,19 @@ module Kaminari::ActiveRecordRelationMethods
   #   Pro: paginates without casting an extra SELECT COUNT query
   #   Con: unable to know the total number of records/pages
   #
-  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:55
+  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:56
   def without_count; end
 
   private
 
   # SELECT COUNT(*) FROM (SELECT 1 FROM ... GROUP BY ...) subquery_for_count
   #
-  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:67
+  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:68
   def count_groups(relation); end
 
   # Overrides PageScopeMethods#limit_and_offset not to copy the Relation twice via limit and offset
   #
-  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:62
+  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:63
   def limit_and_offset(new_limit, new_offset); end
 end
 
@@ -94,29 +94,29 @@ Kaminari::Activerecord::VERSION = T.let(T.unsafe(nil), String)
 
 # A module that makes AR::Relation paginatable without having to cast another SELECT COUNT query
 #
-# pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:88
+# pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:89
 module Kaminari::PaginatableWithoutCount
   # The page wouldn't be the last page if there's "limit + 1" record
   #
-  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:136
+  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:137
   def last_page?; end
 
   # Overwrite AR::Relation#load to actually load one more record to judge if the page has next page
   # then store the result in @_has_next ivar
   #
-  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:117
+  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:118
   def load; end
 
   # Empty relation needs no pagination
   #
-  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:141
+  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:142
   def out_of_range?; end
 
   # Force to raise an exception if #total_count is called explicitly.
   #
-  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:147
+  # pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:148
   def total_count; end
 end
 
-# pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:89
+# pkg:gem/kaminari-activerecord#lib/kaminari/activerecord/active_record_relation_methods.rb:90
 module Kaminari::PaginatableWithoutCount::LimitValueSetter; end
