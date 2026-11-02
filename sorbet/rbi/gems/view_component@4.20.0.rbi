@@ -399,7 +399,7 @@ class ViewComponent::Base
   class << self
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:844
+    # pkg:gem/view_component#lib/view_component/base.rb:857
     def __vc_build_collection_arguments; end
 
     # Synthetic digest source computed at boot. Not inherited, since each
@@ -407,7 +407,7 @@ class ViewComponent::Base
     #
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:750
+    # pkg:gem/view_component#lib/view_component/base.rb:763
     def __vc_cache_digest_source; end
 
     # Synthetic digest source computed at boot. Not inherited, since each
@@ -415,47 +415,47 @@ class ViewComponent::Base
     #
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:750
+    # pkg:gem/view_component#lib/view_component/base.rb:763
     def __vc_cache_digest_source=(_arg0); end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:824
+    # pkg:gem/view_component#lib/view_component/base.rb:837
     def __vc_collection_counter_parameter; end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:834
+    # pkg:gem/view_component#lib/view_component/base.rb:847
     def __vc_collection_iteration_parameter; end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:819
+    # pkg:gem/view_component#lib/view_component/base.rb:832
     def __vc_collection_parameter; end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:673
+    # pkg:gem/view_component#lib/view_component/base.rb:686
     def __vc_compile(raise_errors: T.unsafe(nil), force: T.unsafe(nil)); end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:722
+    # pkg:gem/view_component#lib/view_component/base.rb:735
     def __vc_compiled?; end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:742
+    # pkg:gem/view_component#lib/view_component/base.rb:755
     def __vc_compiler; end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:829
+    # pkg:gem/view_component#lib/view_component/base.rb:842
     def __vc_counter_argument_present?; end
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:737
+    # pkg:gem/view_component#lib/view_component/base.rb:750
     def __vc_ensure_compiled; end
 
     # pkg:gem/view_component#lib/view_component/base.rb:72
@@ -466,8 +466,18 @@ class ViewComponent::Base
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:839
+    # pkg:gem/view_component#lib/view_component/base.rb:852
     def __vc_iteration_argument_present?; end
+
+    # `sidecar_files`, looked up once per component while eager loading:
+    # every component looks up its superclasses' templates and translations
+    # too, when it compiles, loads its translations, and computes its cache
+    # digest.
+    #
+    # @private
+    #
+    # pkg:gem/view_component#lib/view_component/base.rb:668
+    def __vc_sidecar_files(extensions); end
 
     # pkg:gem/view_component#lib/view_component/base.rb:88
     def __vc_strip_trailing_whitespace; end
@@ -477,7 +487,7 @@ class ViewComponent::Base
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:753
+    # pkg:gem/view_component#lib/view_component/base.rb:766
     def __vc_template_formats; end
 
     # Ensure the component initializer accepts the
@@ -487,7 +497,7 @@ class ViewComponent::Base
     # rendering is optional.
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:795
+    # pkg:gem/view_component#lib/view_component/base.rb:808
     def __vc_validate_collection_parameter!(validate_default: T.unsafe(nil)); end
 
     # Ensure the component initializer doesn't define
@@ -495,7 +505,7 @@ class ViewComponent::Base
     # methods.
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:812
+    # pkg:gem/view_component#lib/view_component/base.rb:825
     def __vc_validate_initialization_parameters!; end
 
     # pkg:gem/view_component#lib/view_component/base.rb:66
@@ -508,7 +518,7 @@ class ViewComponent::Base
     #
     # By default, this is a no-op.
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:732
+    # pkg:gem/view_component#lib/view_component/base.rb:745
     def after_compile; end
 
     # A digest of the component's source, ancestors, and rendered dependencies.
@@ -564,7 +574,7 @@ class ViewComponent::Base
 
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:678
+    # pkg:gem/view_component#lib/view_component/base.rb:691
     def inherited(child); end
 
     # pkg:gem/view_component#lib/view_component/base.rb:50
@@ -603,14 +613,14 @@ class ViewComponent::Base
     #
     # @param value [Boolean] Whether to strip newlines.
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:778
+    # pkg:gem/view_component#lib/view_component/base.rb:791
     def strip_trailing_whitespace(value = T.unsafe(nil)); end
 
     # Whether trailing whitespace will be stripped before compilation.
     #
     # @return [Boolean]
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:785
+    # pkg:gem/view_component#lib/view_component/base.rb:798
     def strip_trailing_whitespace?; end
 
     # @private
@@ -633,7 +643,7 @@ class ViewComponent::Base
     # @param spacer_component [ViewComponent::Base] Component instance to be rendered between items.
     # @param args [Arguments] Arguments to pass to the ViewComponent every time.
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:668
+    # pkg:gem/view_component#lib/view_component/base.rb:681
     def with_collection(collection, spacer_component: T.unsafe(nil), **args); end
 
     # Set the parameter name used when rendering elements of a collection ([documentation](/guide/collections)):
@@ -644,7 +654,7 @@ class ViewComponent::Base
     #
     # @param parameter [Symbol] The parameter name used when rendering elements of a collection.
     #
-    # pkg:gem/view_component#lib/view_component/base.rb:764
+    # pkg:gem/view_component#lib/view_component/base.rb:777
     def with_collection_parameter(parameter); end
 
     private
@@ -673,22 +683,25 @@ class ViewComponent::Base
     # pkg:gem/view_component#lib/view_component/base.rb:71
     def __class_attr_registered_slots=(new_value); end
 
-    # pkg:gem/view_component#lib/view_component/base.rb:870
+    # pkg:gem/view_component#lib/view_component/base.rb:883
     def __vc_collection_arguments; end
 
-    # pkg:gem/view_component#lib/view_component/base.rb:874
+    # pkg:gem/view_component#lib/view_component/base.rb:887
     def __vc_collection_parameter_accepted?(parameter); end
 
-    # pkg:gem/view_component#lib/view_component/base.rb:888
+    # pkg:gem/view_component#lib/view_component/base.rb:917
+    def __vc_files_ending_with(extensions, pattern); end
+
+    # pkg:gem/view_component#lib/view_component/base.rb:901
     def __vc_initialize_parameter_names; end
 
-    # pkg:gem/view_component#lib/view_component/base.rb:892
+    # pkg:gem/view_component#lib/view_component/base.rb:905
     def __vc_initialize_signatures; end
 
-    # pkg:gem/view_component#lib/view_component/base.rb:904
+    # pkg:gem/view_component#lib/view_component/base.rb:922
     def __vc_provided_collection_parameter; end
 
-    # pkg:gem/view_component#lib/view_component/base.rb:878
+    # pkg:gem/view_component#lib/view_component/base.rb:891
     def __vc_splatted_keyword_argument_present?; end
   end
 end
@@ -732,11 +745,25 @@ end
 #
 # @private
 #
-# pkg:gem/view_component#lib/view_component/cache_digest.rb:28
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:29
 module ViewComponent::CacheDigest
   extend ::ActiveSupport::Autoload
 
   class << self
+    # @private
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:260
+    def compiled(handler, source, compiled_source); end
+
+    # Compile a template to Ruby with its own handler, so ERB, Haml, Slim and
+    # any other template language can be analyzed the same way. Reuses the
+    # Ruby compiled at boot, when there is some.
+    #
+    # @return [String] Ruby source
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:110
+    def compiled_source(template); end
+
     # Resolve a synthetic virtual path back to the component that owns it.
     #
     # @return [Class, nil]
@@ -744,28 +771,28 @@ module ViewComponent::CacheDigest
     # pkg:gem/view_component#lib/view_component/cache_digest.rb:96
     def component_for(virtual_path); end
 
-    # Scan arbitrary source (a template or a component's Ruby file) for
-    # renders of components.
+    # Find the components Ruby source renders, along with the partials Action
+    # View infers from them.
     #
-    # @return [Array<String>] synthetic virtual paths
+    # Action View reads `render FooComponent.new` as a dynamic render of a
+    # partial named after the last method, inferring `news/new`. Partials also
+    # rendered some other way aren't returned.
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:116
-    def component_paths_in(source); end
+    # @param source [String] Ruby source
+    # @param name [String] virtual path the source is being digested under
+    # @return [Array(Array<String>, Array<String>)] synthetic virtual paths of
+    #   components and inferred partial virtual paths
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:158
+    def component_renders_in(source, name); end
 
     # A lookup context for digesting components outside a request, where no
     # view context (and therefore no finder) exists.
     #
     # @return [ActionView::LookupContext]
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:196
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:231
     def default_finder; end
-
-    # Scan a template's source for renders of components.
-    #
-    # @return [Array<String>] synthetic virtual paths
-    #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:108
-    def dependencies_in(template); end
 
     # Compute the digest of a component using Rails' digest tree.
     #
@@ -774,7 +801,7 @@ module ViewComponent::CacheDigest
     # @param format [Symbol]
     # @return [String]
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:184
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:219
     def digest(component, finder: T.unsafe(nil), format: T.unsafe(nil)); end
 
     # Resolve `# Template Dependency: SomeComponent` declarations.
@@ -787,7 +814,7 @@ module ViewComponent::CacheDigest
     # @return [Array<Array(String, String)>] pairs of declared name and
     #   synthetic virtual path
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:166
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:201
     def explicit_component_dependencies(source); end
 
     # Wire the tracker and resolver into Action View.
@@ -796,27 +823,8 @@ module ViewComponent::CacheDigest
     #
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:206
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:241
     def install!; end
-
-    # Scan a component's Ruby source for partials referenced by string path,
-    # such as `render "posts/byline"` inside a `#call` method.
-    #
-    # Uses Rails' own render parser — the same one `RubyTracker` runs over
-    # compiled templates — rather than a second implementation of the same
-    # analysis. Its results are then narrowed to paths that appear verbatim in
-    # the source, which keeps string literals and discards the speculative
-    # `things/_thing` entries the parser infers from dynamic renders like
-    # `render @thing` or `render FooComponent.new`. Those would resolve to
-    # nothing and only add log noise; components rendered from Ruby are
-    # already found precisely by `component_paths_in`.
-    #
-    # @param source [String] Ruby source
-    # @param name [String] virtual path the source is being digested under
-    # @return [Array<String>] partial virtual paths
-    #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:139
-    def partial_paths_in(source, name); end
 
     # Compute component digests at boot, so requests read them from memory
     # instead of reading and scanning source files.
@@ -828,7 +836,7 @@ module ViewComponent::CacheDigest
     # @return [void]
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:220
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:274
     def precompute!(components); end
 
     # @private
@@ -846,6 +854,26 @@ module ViewComponent::CacheDigest
     # pkg:gem/view_component#lib/view_component/cache_digest.rb:65
     def registry; end
 
+    # Find the components Ruby source references and the partials it
+    # renders.
+    #
+    # Every constant that names a component counts, not only one passed
+    # straight to `render`: a component can also be rendered from a method
+    # that builds it, from a local variable, or from a slot declared with its
+    # class. A component referenced without being rendered only makes the
+    # digest change more often than it needs to.
+    #
+    # Action View's render parser only sees the calls that don't render a
+    # component, so it can't infer partials from them.
+    #
+    # @param source [String] Ruby source
+    # @param name [String] virtual path the source is being digested under
+    # @return [Array(Array<String>, Array<String>)] synthetic virtual paths of
+    #   components and partial virtual paths
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:131
+    def renders_in(source, name); end
+
     # Action View has shipped its render parser as a class (Rails 7.1, and
     # again on main) and as a module holding a `Default` implementation
     # chosen from Prism or Ripper (Rails 7.2 through 8.1).
@@ -853,8 +881,30 @@ module ViewComponent::CacheDigest
     # @param parser [Class, Module] `ActionView::RenderParser`
     # @return [Class]
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:153
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:188
     def resolve_render_parser(parser); end
+
+    # Keep the Ruby that templates compile to while the block runs, so
+    # `precompute!` can analyze templates components just compiled without
+    # compiling them again. Kept in a thread local rather than on the module,
+    # which isn't writable from other Ractors.
+    #
+    # @private
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:252
+    def retaining_compiled_sources; end
+
+    # Find the components a component's slots render, from the class each
+    # slot was declared with: `renders_one :header, HeaderComponent` or
+    # `renders_many :items, "ItemComponent"`. Read from the slot definitions
+    # rather than from source, since a class named by a string, or by a name
+    # relative to the component, resolves against the component at runtime.
+    #
+    # @param component [Class]
+    # @return [Array<String>] synthetic virtual paths of components
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:176
+    def slot_renders_of(component); end
 
     # The synthetic virtual path a component is digested under.
     #
@@ -865,29 +915,86 @@ module ViewComponent::CacheDigest
 
     private
 
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:344
+    def component_paths(components); end
+
     # Resolve a constant name to any ViewComponent.
     #
     # Returns nil for anything else, including constants that don't exist.
     # Autoloading here is safe: the template is about to render this constant
     # anyway.
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:262
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:392
     def constantize_component(constant_name); end
+
+    # Visit every node of a Prism tree, in source order.
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:321
+    def each_node(program); end
 
     # Drop Action View's memoized template digests, leaving its resolver
     # caches alone: no template changed, only the set of dependencies the
     # Digestor can see.
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:253
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:383
     def expire_digests; end
+
+    # Partials Action View's render parser finds in the given calls,
+    # normalized to the form its trackers report. The calls are parsed
+    # together, so the parser runs once rather than once per call. Blocks are
+    # left out, as any renders inside them are calls of their own.
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:362
+    def partials_rendered_by(calls, name); end
+
+    # Receiverless `render` and `render_to_string` calls, split into those
+    # that render a component and the rest.
+    #
+    # @return [Array(Hash{Prism::CallNode => Class}, Array<Prism::CallNode>)]
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:299
+    def partition_render_calls(program); end
 
     # Record the actual class name rather than trying to reverse a virtual
     # path, which may contain acronyms or be overridden by the component.
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest.rb:243
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:373
     def registered_path_for(component); end
+
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:316
+    def render_call?(node); end
+
+    # The component a render call renders, from the constant at the root of
+    # its first argument: `FooComponent`, `FooComponent.new(...)`,
+    # `FooComponent.with_collection(...)`, and so on.
+    #
+    # @return [Class, nil]
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:334
+    def rendered_component(call); end
+
+    # The component a slot renders, resolving a class name the way the slot
+    # does when it's set. A name that doesn't resolve is left to fail there.
+    #
+    # pkg:gem/view_component#lib/view_component/cache_digest.rb:350
+    def slot_component(component, slot); end
   end
 end
+
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:44
+ViewComponent::CacheDigest::COMPILED_SOURCES = T.let(T.unsafe(nil), Symbol)
+
+# A constant path made only of constants, such as `Foo` or `::Foo::Bar`,
+# rather than one hanging off an expression, such as `self.class::Bar`.
+#
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:56
+ViewComponent::CacheDigest::CONSTANT_NAME = T.let(T.unsafe(nil), Regexp)
+
+# A render call whose first argument starts with a constant, such as
+# `render FooComponent.new` or `render(Foo::Bar.with_collection(...))`.
+#
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:49
+ViewComponent::CacheDigest::CONSTANT_RENDER = T.let(T.unsafe(nil), Regexp)
 
 # Teaches `ActionView::DependencyTracker` to see components.
 #
@@ -907,7 +1014,7 @@ module ViewComponent::CacheDigest::DependencyTracking
   class << self
     # @private
     #
-    # pkg:gem/view_component#lib/view_component/cache_digest/dependency_tracking.rb:33
+    # pkg:gem/view_component#lib/view_component/cache_digest/dependency_tracking.rb:41
     def install!; end
   end
 end
@@ -938,23 +1045,16 @@ end
 
 # Rails' escape hatch for dependencies static analysis can't see.
 #
-# pkg:gem/view_component#lib/view_component/cache_digest.rb:57
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:52
 ViewComponent::CacheDigest::EXPLICIT_DEPENDENCY = T.let(T.unsafe(nil), Regexp)
 
-# Matches `render FooComponent`, `render(Foo::BarComponent.new(...))`,
-# `render FooComponent.with_collection(...)`, etc.
-#
-# Deliberately a plain source scan rather than a tracker-specific hook: it
-# behaves identically for the ERB tracker, the Prism-based Ruby tracker, and
-# third-party Haml/Slim trackers.
-#
-# pkg:gem/view_component#lib/view_component/cache_digest.rb:47
-ViewComponent::CacheDigest::RENDER_CALL = T.let(T.unsafe(nil), Regexp)
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:42
+ViewComponent::CacheDigest::RENDER_METHODS = T.let(T.unsafe(nil), Array)
 
 # Resolved once at load time rather than memoized, so no class-level state
 # is written after boot.
 #
-# pkg:gem/view_component#lib/view_component/cache_digest.rb:272
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:402
 ViewComponent::CacheDigest::RENDER_PARSER = ActionView::RenderParser::PrismRenderParser
 
 # Synthesizes the templates Rails' `ActionView::Digestor` digests components from.
@@ -972,13 +1072,13 @@ ViewComponent::CacheDigest::RENDER_PARSER = ActionView::RenderParser::PrismRende
 #
 # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:17
 class ViewComponent::CacheDigest::Resolver < ::ActionView::Resolver
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:43
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:47
   def ==(other); end
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:40
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:44
   def eql?(other); end
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:27
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:31
   def find_templates(name, prefix, partial, details, locals = T.unsafe(nil)); end
 
   # The synthetic source. Every section exists to change this string when
@@ -987,58 +1087,86 @@ class ViewComponent::CacheDigest::Resolver < ::ActionView::Resolver
   # @param component [Class]
   # @return [String]
   #
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:50
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:54
   def source_for(component); end
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:38
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:42
   def to_path; end
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:35
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:39
   def to_s; end
 
   private
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:83
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:90
   def build_template(component, virtual_path, details); end
 
   # The component and any component superclasses, nearest first. Including
   # ancestors means editing `ApplicationComponent` invalidates every
   # component that inherits from it.
   #
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:97
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:104
   def component_ancestors(component); end
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:131
-  def explicit_dependencies(component); end
-
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:166
-  def file_digest(path); end
-
-  # Everything a component renders from Ruby code rather than from a
-  # template. Action View's trackers only read templates, so a `#call`
-  # method that renders another component or a partial would otherwise go
-  # unnoticed.
+  # Everything but the component and its superclasses, which a component
+  # references in its own source but are digested as part of it already.
   #
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:149
-  def ruby_dependencies(component); end
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:175
+  def dependencies(component, templates); end
 
   # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:159
+  def explicit_dependencies(sources); end
+
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:224
+  def file_digest(path); end
+
+  # Modules the component and its component superclasses include, such as
+  # a module of helpers that render other components. Modules included
+  # into `ViewComponent::Base` and above are left out, as superclasses
+  # are, and so are the modules ViewComponent adds to every component.
+  #
+  # @return [Array<String>] the files the modules are defined in
+  #
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:118
+  def module_files(component); end
+
+  # Components and partials rendered from Ruby, such as a `#call` method.
+  # Partials are narrowed to paths that appear in the source, discarding
+  # the speculative `things/thing` Action View infers from dynamic renders
+  # like `render @thing`, which would resolve to nothing.
+  #
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:192
+  def ruby_dependencies(source, virtual_path); end
+
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:132
+  def ruby_files(component); end
+
+  # Components loaded from encrypted files, as some commercial gems ship
+  # them, have binary identifiers that can't be scanned. They're still
+  # hashed by `file_digest`.
+  #
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:217
   def ruby_sources(component); end
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:105
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:127
   def source_files(component); end
 
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:111
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:200
+  def template_dependencies(component, source, extension, virtual_path); end
+
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:137
   def template_files(component); end
 
   # Sidecar template files plus inline templates, which live in the Ruby
   # file and so are invisible to Action View's trackers.
   #
-  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:120
+  # @return [Array<Array(String, String)>] pairs of source and extension
+  #
+  # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:148
   def template_sources(component); end
 
   class << self
-    # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:22
+    # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:26
     def instance; end
   end
 end
@@ -1048,7 +1176,7 @@ end
 # resolver reads from disk on every call so it can't go stale when a
 # component changes.
 #
-# pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:174
+# pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:232
 ViewComponent::CacheDigest::Resolver::INSTANCE = T.let(T.unsafe(nil), ViewComponent::CacheDigest::Resolver)
 
 # Extensions whose contents are hashed into the synthetic source.
@@ -1056,12 +1184,18 @@ ViewComponent::CacheDigest::Resolver::INSTANCE = T.let(T.unsafe(nil), ViewCompon
 # pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:19
 ViewComponent::CacheDigest::Resolver::SIDECAR_EXTENSIONS = T.let(T.unsafe(nil), Array)
 
+# Where ViewComponent's own modules, such as the ones it includes into
+# every component, are defined.
+#
+# pkg:gem/view_component#lib/view_component/cache_digest/resolver.rb:23
+ViewComponent::CacheDigest::Resolver::VIEW_COMPONENT_LIB = T.let(T.unsafe(nil), String)
+
 # Prefix for the synthetic virtual paths components are digested under.
 #
 # Namespaced under `view_component/` so it can't collide with an
 # application partial.
 #
-# pkg:gem/view_component#lib/view_component/cache_digest.rb:39
+# pkg:gem/view_component#lib/view_component/cache_digest.rb:40
 ViewComponent::CacheDigest::VIRTUAL_PATH_PREFIX = T.let(T.unsafe(nil), String)
 
 # pkg:gem/view_component#lib/view_component/errors.rb:236
@@ -1235,11 +1369,21 @@ module ViewComponent::CompileCache
   # pkg:gem/view_component#lib/view_component/compile_cache.rb:13
   def register(klass); end
 
+  # pkg:gem/view_component#lib/view_component/compile_cache.rb:39
+  def sidecar_files_for(klass, extensions); end
+
   # Invalidates the cache when a template or a translation file is added,
   # changed, or removed. Changes to Ruby files reload the application instead.
   #
-  # pkg:gem/view_component#lib/view_component/compile_cache.rb:31
+  # pkg:gem/view_component#lib/view_component/compile_cache.rb:49
   def template_watcher(file_watcher); end
+
+  # Sidecar files can't change while the application eager loads: within the
+  # block, each component's are looked up once. Fiber storage rather than
+  # module state, so the cache is gone once boot is done.
+  #
+  # pkg:gem/view_component#lib/view_component/compile_cache.rb:32
+  def with_sidecar_files_cache; end
 
   class << self
     # pkg:gem/view_component#lib/view_component/compile_cache.rb:7
@@ -1260,11 +1404,21 @@ module ViewComponent::CompileCache
     # pkg:gem/view_component#lib/view_component/compile_cache.rb:13
     def register(klass); end
 
+    # pkg:gem/view_component#lib/view_component/compile_cache.rb:39
+    def sidecar_files_for(klass, extensions); end
+
     # Invalidates the cache when a template or a translation file is added,
     # changed, or removed. Changes to Ruby files reload the application instead.
     #
-    # pkg:gem/view_component#lib/view_component/compile_cache.rb:31
+    # pkg:gem/view_component#lib/view_component/compile_cache.rb:49
     def template_watcher(file_watcher); end
+
+    # Sidecar files can't change while the application eager loads: within the
+    # block, each component's are looked up once. Fiber storage rather than
+    # module state, so the cache is gone once boot is done.
+    #
+    # pkg:gem/view_component#lib/view_component/compile_cache.rb:32
+    def with_sidecar_files_cache; end
   end
 end
 
@@ -1308,10 +1462,10 @@ class ViewComponent::Compiler
   # pkg:gem/view_component#lib/view_component/compiler.rb:91
   def define_render_template_for; end
 
-  # pkg:gem/view_component#lib/view_component/compiler.rb:180
+  # pkg:gem/view_component#lib/view_component/compiler.rb:195
   def gather_templates; end
 
-  # pkg:gem/view_component#lib/view_component/compiler.rb:117
+  # pkg:gem/view_component#lib/view_component/compiler.rb:132
   def template_errors; end
 
   # pkg:gem/view_component#lib/view_component/compiler.rb:89
@@ -2058,16 +2212,16 @@ class ViewComponent::Template
   # pkg:gem/view_component#lib/view_component/template.rb:15
   def initialize(component:, details:, lineno: T.unsafe(nil), path: T.unsafe(nil)); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:177
+  # pkg:gem/view_component#lib/view_component/template.rb:180
   def call_method_name; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:141
+  # pkg:gem/view_component#lib/view_component/template.rb:140
   def compile_to_component; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:155
+  # pkg:gem/view_component#lib/view_component/template.rb:154
   def coverage_running?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:172
+  # pkg:gem/view_component#lib/view_component/template.rb:175
   def default_format?; end
 
   # pkg:gem/view_component#lib/view_component/template.rb:10
@@ -2076,26 +2230,26 @@ class ViewComponent::Template
   # pkg:gem/view_component#lib/view_component/template.rb:13
   def format(*, **, &); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:175
+  # pkg:gem/view_component#lib/view_component/template.rb:178
   def html?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:168
+  # pkg:gem/view_component#lib/view_component/template.rb:171
   def inline_call?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:187
+  # pkg:gem/view_component#lib/view_component/template.rb:190
   def normalized_variant_name; end
 
   # pkg:gem/view_component#lib/view_component/template.rb:10
   def path; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:164
+  # pkg:gem/view_component#lib/view_component/template.rb:167
   def requires_compiled_superclass?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:183
-  def safe_method_name; end
+  # pkg:gem/view_component#lib/view_component/template.rb:158
+  def safe_method_call; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:159
-  def safe_method_name_call; end
+  # pkg:gem/view_component#lib/view_component/template.rb:186
+  def safe_method_name; end
 
   # pkg:gem/view_component#lib/view_component/template.rb:13
   def variant(*, **, &); end
@@ -2110,16 +2264,16 @@ class ViewComponent::Template
   # annotations are enabled. Compensating outside those conditions shifts
   # backtraces by a line and, under coverage, strips real template source.
   #
-  # pkg:gem/view_component#lib/view_component/template.rb:205
+  # pkg:gem/view_component#lib/view_component/template.rb:208
   def annotated?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:209
+  # pkg:gem/view_component#lib/view_component/template.rb:212
   def compiled_source; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:195
+  # pkg:gem/view_component#lib/view_component/template.rb:198
   def erb_newline_compensation_needed?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:193
+  # pkg:gem/view_component#lib/view_component/template.rb:196
   def lineno; end
 end
 
@@ -2240,11 +2394,11 @@ class ViewComponent::Template::InlineCall < ::ViewComponent::Template
   # pkg:gem/view_component#lib/view_component/template.rb:122
   def compile_to_component; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:136
+  # pkg:gem/view_component#lib/view_component/template.rb:135
   def defined_on_self?; end
 
   # pkg:gem/view_component#lib/view_component/template.rb:126
-  def safe_method_name_call; end
+  def safe_method_call; end
 
   # pkg:gem/view_component#lib/view_component/template.rb:118
   def type; end
