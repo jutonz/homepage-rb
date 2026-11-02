@@ -36,6 +36,7 @@ jobs:
           jbuilder|semver-minor semver-patch
           jwt|semver-minor semver-patch
           kaminari|semver-patch semver-minor
+          mutineer|semver-patch semver-minor
           opentelemetry-exporter-otlp|semver-minor semver-patch
           opentelemetry-instrumentation-all|semver-minor semver-patch
           opentelemetry-sdk|semver-minor semver-patch
