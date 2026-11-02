@@ -45,30 +45,74 @@ class MutationGate
     end
   end
 
+  class Unscored < T::Struct
+    extend T::Sig
+
+    const :file, T.nilable(String)
+    const :line, T.nilable(Integer)
+    const :status, String
+    const :subject, T.nilable(String)
+    const :id, T.nilable(String)
+    const :details, T.nilable(String)
+
+    sig { params(entry: T::Hash[String, T.untyped]).returns(Unscored) }
+    def self.from_report(entry)
+      new(
+        file: entry.fetch("file"),
+        line: entry.fetch("line"),
+        status: entry.fetch("status"),
+        subject: entry.fetch("subject"),
+        id: entry.fetch("id"),
+        details: entry.fetch("details")
+      )
+    end
+
+    sig { returns(String) }
+    def to_s
+      text = file ? "#{file}:#{line} #{status} #{subject} (#{id})" : status
+      details ? "#{text}: #{details}" : text
+    end
+  end
+
   class Verdict < T::Struct
     extend T::Sig
 
     const :survivors, T::Array[Mutant]
     const :uncovered, T::Array[Mutant]
+    const :unscored, T::Array[Unscored]
+    const :unplaceable, T::Array[Mutant]
+    const :ran_at_load, T::Array[Mutant]
 
     sig { returns(T::Boolean) }
     def passed?
-      survivors.empty? && uncovered.empty?
+      survivors.empty? && uncovered.empty? && unscored.empty?
     end
 
     sig { returns(String) }
     def to_s
-      return "No surviving or uncovered mutations.\n" if passed?
-
-      [
-        listing("Survived", survivors),
-        listing("No coverage", uncovered)
-      ].join
+      [failures, listing("Unplaceable", unplaceable),
+        listing("Ran at load", ran_at_load)].join
     end
 
     private
 
-    sig { params(title: String, mutants: T::Array[Mutant]).returns(String) }
+    sig { returns(String) }
+    def failures
+      return "No surviving or uncovered mutations.\n" if passed?
+
+      [
+        listing("Survived", survivors),
+        listing("No coverage", uncovered),
+        listing("No verdict", unscored)
+      ].join
+    end
+
+    sig do
+      params(
+        title: String,
+        mutants: T::Array[T.any(Mutant, Unscored)]
+      ).returns(String)
+    end
     def listing(title, mutants)
       return "" if mutants.empty?
 
@@ -95,7 +139,10 @@ class MutationGate
     data = JSON.parse(json)
     Verdict.new(
       survivors: data.fetch("survivors").map { Mutant.from_report(it) },
-      uncovered: data.fetch("no_coverage").map { Mutant.from_report(it) }
+      uncovered: data.fetch("no_coverage").map { Mutant.from_report(it) },
+      unscored: data.fetch("no_verdict").map { Unscored.from_report(it) },
+      unplaceable: data.fetch("unplaceable").map { Mutant.from_report(it) },
+      ran_at_load: data.fetch("ran_at_load").map { Mutant.from_report(it) }
     )
   end
 

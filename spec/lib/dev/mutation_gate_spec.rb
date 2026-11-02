@@ -230,19 +230,29 @@ RSpec.describe MutationGate do
   end
 
   describe ".verdict" do
-    def report(survivors: [], no_coverage: [])
+    def report(survivors: [], no_coverage: [], no_verdict: [],
+      unplaceable: [], ran_at_load: [])
       JSON.generate({
-        schema_version: "1.7",
+        schema_version: "1.9",
         summary: {total: 3, killed: 3 - survivors.size,
-                  survived: survivors.size, no_coverage: no_coverage.size},
+                  survived: survivors.size, no_coverage: no_coverage.size,
+                  no_verdict: no_verdict.size},
         survivors:,
-        no_coverage:
+        no_coverage:,
+        no_verdict:,
+        unplaceable:,
+        ran_at_load:
       })
     end
 
     def mutant(line:, operator:)
       {subject: "User#name", file: "app/models/user.rb", line:, operator:,
        id: "abc123def456", token: "x"}
+    end
+
+    def unscored(status:, details: nil, file: "app/models/user.rb", line: 9,
+      subject: "User#name", id: "abc123def456")
+      {subject:, file:, line:, id:, status:, details:}
     end
 
     it "passes when every mutation was killed" do
@@ -274,6 +284,50 @@ RSpec.describe MutationGate do
       expect(verdict.uncovered.map(&:to_s)).to eq([
         "app/models/user.rb:7 return_nil User#name (abc123def456)"
       ])
+    end
+
+    it "fails and lists a mutation that produced no verdict" do
+      json = report(no_verdict: [unscored(status: "timeout")])
+
+      verdict = MutationGate.verdict(json)
+
+      expect(verdict).not_to be_passed
+      expect(verdict.to_s).to eq(<<~TEXT)
+        No verdict (1):
+          app/models/user.rb:9 timeout User#name (abc123def456)
+      TEXT
+    end
+
+    it "fails on an error that struck before any mutant ran" do
+      crash = unscored(status: "error", details: "daemon exited",
+        file: nil, line: nil, subject: nil, id: nil)
+      json = report(no_verdict: [crash])
+
+      verdict = MutationGate.verdict(json)
+
+      expect(verdict).not_to be_passed
+      expect(verdict.to_s).to eq(<<~TEXT)
+        No verdict (1):
+          error: daemon exited
+      TEXT
+    end
+
+    it "passes but lists mutations that no test could run" do
+      json = report(
+        unplaceable: [mutant(line: 3, operator: "return_nil")],
+        ran_at_load: [mutant(line: 5, operator: "statement_removal")]
+      )
+
+      verdict = MutationGate.verdict(json)
+
+      expect(verdict).to be_passed
+      expect(verdict.to_s).to eq(<<~TEXT)
+        No surviving or uncovered mutations.
+        Unplaceable (1):
+          app/models/user.rb:3 return_nil User#name (abc123def456)
+        Ran at load (1):
+          app/models/user.rb:5 statement_removal User#name (abc123def456)
+      TEXT
     end
 
     it "lists survivors and uncovered mutations together" do
