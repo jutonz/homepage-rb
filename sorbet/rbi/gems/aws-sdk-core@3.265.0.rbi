@@ -3676,40 +3676,40 @@ class Aws::Log::Formatter
   # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:125
   def _client_class(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:195
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:196
   def _error_class(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:199
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:200
   def _error_message(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:173
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:174
   def _http_request_body(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:149
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:150
   def _http_request_endpoint(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:169
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:170
   def _http_request_headers(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:157
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:158
   def _http_request_host(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:165
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:166
   def _http_request_method(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:161
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:162
   def _http_request_port(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:153
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:154
   def _http_request_scheme(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:185
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:186
   def _http_response_body(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:181
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:182
   def _http_response_headers(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:177
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:178
   def _http_response_status_code(response); end
 
   # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:129
@@ -3721,10 +3721,10 @@ class Aws::Log::Formatter
   # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:133
   def _request_params(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:145
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:146
   def _retries(response); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:139
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:140
   def _time(response); end
 
   class << self
@@ -3736,7 +3736,7 @@ class Aws::Log::Formatter
     #
     # @return [Formatter]
     #
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:249
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:250
     def colored(options = T.unsafe(nil)); end
 
     # The default log format.
@@ -3747,7 +3747,7 @@ class Aws::Log::Formatter
     #
     # @return [Formatter]
     #
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:212
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:213
     def default(options = T.unsafe(nil)); end
 
     # The short log format.  Similar to default, but it does not
@@ -3759,7 +3759,7 @@ class Aws::Log::Formatter
     #
     # @return [Formatter]
     #
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:232
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/formatter.rb:233
     def short(options = T.unsafe(nil)); end
   end
 end
@@ -3771,19 +3771,41 @@ class Aws::Log::ParamFilter
   # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:22
   def initialize(options = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:27
+  # Returns a copy with sensitive values replaced by "[FILTERED]".
+  #
+  # Uses generated SENSITIVE lists to choose which members to redact.
+  # Nested request hashes also use the global list for backwards compatibility.
+  # A ShapeRef preserves model types while filtering nested request parameters.
+  # Structure classes are also accepted for Structure#to_s and older callers.
+  #
+  # @param [Hash, Struct, Array, Object] values
+  # @param [Seahorse::Model::Shapes::ShapeRef, Class, nil] type
+  #
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:36
   def filter(values, type); end
 
   private
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:64
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:128
   def filter_array(values, type); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:45
-  def filter_hash(values, type); end
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:88
+  def filter_by_class(values, type); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:38
-  def filter_struct(values, type); end
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:104
+  def filter_hash(values, type, shape = T.unsafe(nil), use_global_filters: T.unsafe(nil)); end
+
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:69
+  def filter_map(values, shape); end
+
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:44
+  def filter_ref(value, ref, root: T.unsafe(nil)); end
+
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:97
+  def filter_struct(values, type, shape = T.unsafe(nil), use_global_filters: T.unsafe(nil)); end
+
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/log/param_filter.rb:82
+  def member_ref(shape, key); end
 end
 
 # DEPRECATED - This must exist for backwards compatibility. Sensitive
@@ -3853,9 +3875,11 @@ Aws::Log::ParamFormatter::MAX_STRING_SIZE = T.let(T.unsafe(nil), Integer)
 #     ec2 = Aws::EC2::Client.new(credentials: login_credentials)
 #
 # If you omit the `:client` option, a new {Aws::Signin::Client} object will
-# be constructed with additional options that were provided.
+# be constructed with additional options that were provided. When the cached
+# token records a different `signInRegion`, a client for that region is
+# constructed the same way and used to refresh.
 #
-# pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:16
+# pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:18
 class Aws::LoginCredentials
   include ::Aws::CredentialProvider
   include ::Aws::RefreshingCredentials
@@ -3866,60 +3890,70 @@ class Aws::LoginCredentials
   #   PowerShell automatically.
   #
   # @option options [Signin::Client] :client Optional `Signin::Client`.
-  #   If not provided, a client will be constructed.
+  #   If not provided, a client will be constructed. A provided client is
+  #   used for every refresh, so it must be configured for the region the
+  #   login token was issued in.
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:27
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:31
   def initialize(options = T.unsafe(nil)); end
 
-  # @return [Signin::Client]
+  # @return [Signin::Client] The client built from the given options. A refresh
+  #   uses a client for another region when the cached token records a different
+  #   `signInRegion`.
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:42
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:48
   def client; end
 
   private
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:113
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:119
   def attempt_refresh(token_json); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:165
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:180
   def build_header(x_bytes, y_bytes); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:187
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:202
   def build_message(header, payload); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:178
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:193
   def build_payload(htu); end
 
   # Converts DER-encoded ASN.1 signature to JWS
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:194
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:209
   def der_to_jws(der_signature); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:149
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:164
   def dpop_proof(dpop_key, endpoint); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:79
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:85
   def login_cache_file; end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:133
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:139
   def make_request(token_json); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:205
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:220
   def parse_resp(resp, token_json); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:70
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:76
   def read_cached_token; end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:46
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:52
   def refresh; end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:103
+  # Refresh tokens can only be redeemed in the region they were issued in,
+  # which the login tool records in the cached token as `signInRegion`.
+  #
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:157
+  def signin_client(signin_region); end
+
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:109
   def update_creds(access_token); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:216
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:231
   def update_token_cache(token_json); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:85
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/login_credentials.rb:91
   def validate_cached_token(cached_token); end
 end
 
@@ -5290,7 +5324,7 @@ class Aws::Plugins::Retries::ClockSkew
 
   # Whether a response indicates skew large enough to warrant a retry; records nothing.
   # @param context [Seahorse::Client::RequestContext]
-  # @param sent_at [Time, nil] raw (pre-skew) send time, for the midpoint calculation
+  # @param sent_at [Time, nil] raw (pre-skew) send time, to discard slow requests
   #
   # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:43
   def clock_skewed?(context, sent_at = T.unsafe(nil)); end
@@ -5308,7 +5342,7 @@ class Aws::Plugins::Retries::ClockSkew
 
   # Called on every response; records the skew candidate when one can be computed.
   # @param context [Seahorse::Client::RequestContext]
-  # @param sent_at [Time, nil] raw (pre-skew) send time, for the midpoint calculation
+  # @param sent_at [Time, nil] raw (pre-skew) send time, to discard slow requests
   #
   # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:51
   def update_clock_correction(context, sent_at = T.unsafe(nil)); end
@@ -5324,11 +5358,13 @@ class Aws::Plugins::Retries::ClockSkew
   private
 
   # Single source of truth for skew computation; returns a Float skew or nil.
+  # The candidate is the server Date minus the time the response headers were
+  # received (the current time if that was not recorded).
   # @param context [Seahorse::Client::RequestContext]
-  # @param sent_at [Time, nil] raw (pre-skew) send time; midpoint when present, else server - now
+  # @param sent_at [Time, nil] raw (pre-skew) send time; used only to discard slow requests
   # @return [Float, nil]
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:80
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:82
   def candidate_skew(context, sent_at = T.unsafe(nil)); end
 
   # @param endpoint [URI, String]
@@ -5337,19 +5373,19 @@ class Aws::Plugins::Retries::ClockSkew
   # @return [String]
   #     the endpoint's schema, host, and port - without any path or query arguments
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:102
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:101
   def normalized_endpoint(endpoint); end
 
   # @param response [Seahorse::Client::Http::Response:]
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:113
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:112
   def server_time(response); end
 
   # Sets the clock correction for an endpoint
   # @param endpoint [URI / String]
   # @param correction [Number]
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:122
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retries/clock_skew.rb:121
   def set_clock_correction(endpoint, correction); end
 end
 
@@ -5481,11 +5517,11 @@ Aws::Plugins::Retries::RetryQuota::TIMEOUT_RETRY_COST = T.let(T.unsafe(nil), Int
 #
 # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:12
 class Aws::Plugins::RetryErrors < ::Seahorse::Client::Plugin
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:560
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:574
   def add_handlers(handlers, config); end
 
   class << self
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:227
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:237
     def default_max_attempts(cfg); end
 
     # TODO: Remove this gate and hardcode new retry behavior once
@@ -5496,23 +5532,29 @@ class Aws::Plugins::RetryErrors < ::Seahorse::Client::Plugin
     # - Remove the old retries branch in #exponential_backoff
     # - Remove LEGACY_RETRY_COST and TIMEOUT_RETRY_COST from RetryQuota
     #
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:187
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:197
     def new_retries?; end
 
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:235
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:245
     def resolve_adaptive_retry_wait_to_fill(cfg); end
 
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:249
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:259
     def resolve_correct_clock_skew(cfg); end
 
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:263
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:273
     def resolve_disable_clock_skew_correction(cfg); end
 
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:210
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:220
     def resolve_max_attempts(cfg); end
 
-    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:191
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:201
     def resolve_retry_mode(cfg); end
+
+    # @api private
+    # HTTP retries preserve the listener, so register it only once.
+    #
+    # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:182
+    def track_response_time(context); end
   end
 end
 
@@ -5530,61 +5572,61 @@ Aws::Plugins::RetryErrors::EQUAL_JITTER = T.let(T.unsafe(nil), Proc)
 # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:15
 Aws::Plugins::RetryErrors::FULL_JITTER = T.let(T.unsafe(nil), Proc)
 
-# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:281
+# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:291
 class Aws::Plugins::RetryErrors::Handler < ::Seahorse::Client::Handler
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:294
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:304
   def call(context); end
 
   private
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:462
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:474
   def add_retry_headers(context); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:410
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:421
   def backoff(context, error_inspector, service_id); end
 
   # True when clock skew correction is turned off. The fallback
   # correct_clock_skew option is folded in by the option resolver.
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:357
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:368
   def clock_skew_correction_disabled?(config); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:476
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:488
   def compute_request_ttl(context); end
 
   # TODO: Remove gate, remove default nil params, keep only new retries branch
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:420
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:431
   def exponential_backoff(retries, error_inspector = T.unsafe(nil), service_id = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:366
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:377
   def get_send_token(config); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:402
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:413
   def long_polling_operation?(context); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:351
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:362
   def new_retries?; end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:435
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:446
   def parse_retry_after(context); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:457
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:469
   def refresh_credentials?(context, error); end
 
   # maxsendrate is updated if on adaptive mode and based on response
   # retry quota is updated if the request is successful (both modes)
   #
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:381
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:392
   def request_bookkeeping(context, response, error_inspector); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:449
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:460
   def retry_request(context, error); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:395
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:406
   def retryable?(context, response, error_inspector); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:362
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:373
   def with_metric(retry_mode, &block); end
 end
 
@@ -5592,46 +5634,46 @@ end
 # Hard-coded combination of services and operations as having the
 # longPoll trait. To be removed when trait is enabled.
 #
-# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:288
+# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:298
 Aws::Plugins::RetryErrors::Handler::LONG_POLLING_OPERATIONS = T.let(T.unsafe(nil), Hash)
 
 # Max backoff (in seconds)
 #
-# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:283
+# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:293
 Aws::Plugins::RetryErrors::Handler::MAX_BACKOFF = T.let(T.unsafe(nil), Integer)
 
 # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:18
 Aws::Plugins::RetryErrors::JITTERS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:492
+# pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:504
 class Aws::Plugins::RetryErrors::LegacyHandler < ::Seahorse::Client::Handler
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:494
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:506
   def call(context); end
 
   private
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:536
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:550
   def delay_retry(context); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:546
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:560
   def refresh_credentials?(context, error); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:555
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:569
   def response_truncatable?(context); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:518
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:531
   def retry_if_possible(response, error_inspector); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:551
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:565
   def retry_limit(context); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:527
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:540
   def retry_request(context, error); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:540
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:554
   def should_retry?(context, error); end
 
-  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:514
+  # pkg:gem/aws-sdk-core#lib/aws-sdk-core/plugins/retry_errors.rb:527
   def with_metric(&block); end
 end
 
