@@ -659,6 +659,7 @@ class ActionMailbox::Record < ::ActiveRecord::Base
 
   class << self
     def page(num = T.unsafe(nil)); end
+    def paginated?; end
 
     private
 
@@ -863,7 +864,7 @@ ActionMailbox::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActionMailbox::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
 
 # pkg:gem/actionmailbox#lib/action_mailbox/gem_version.rb:13
-ActionMailbox::VERSION::PRE = T.let(T.unsafe(nil), T.untyped)
+ActionMailbox::VERSION::PRE = T.let(T.unsafe(nil), String)
 
 # pkg:gem/actionmailbox#lib/action_mailbox/gem_version.rb:15
 ActionMailbox::VERSION::STRING = T.let(T.unsafe(nil), String)
