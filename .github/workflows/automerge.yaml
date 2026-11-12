@@ -25,6 +25,7 @@ jobs:
           # dependency|allowed-types (pipe-delimited)
           POLICIES="
           annotaterb|semver-patch semver-minor
+          archspec|semver-patch semver-minor
           aws-sdk-s3|semver-patch semver-minor
           bootsnap|semver-minor semver-patch
           brakeman|semver-patch semver-minor
