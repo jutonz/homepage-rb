@@ -12,6 +12,11 @@ updates:
       time: "03:00"
       timezone: America/New_York
     open-pull-requests-limit: 10
+    groups:
+      sorbet:
+        patterns:
+          - "sorbet"
+          - "sorbet-*"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
