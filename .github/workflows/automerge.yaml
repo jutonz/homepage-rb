@@ -42,6 +42,7 @@ jobs:
           opentelemetry-sdk|semver-minor semver-patch
           pg|semver-patch semver-minor
           puma|semver-minor semver-patch
+          rspec-rails|semver-patch semver-minor
           ruby-lsp|semver-minor semver-patch
           sentry-rails|semver-patch semver-minor
           simplecov|semver-patch semver-minor
