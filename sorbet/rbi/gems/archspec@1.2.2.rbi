@@ -144,165 +144,185 @@ class ArchSpec::Analyzer::SyntaxOverlay
   # pkg:gem/archspec#lib/archspec/analyzer.rb:252
   def apply(graph, call_resolutions: T.unsafe(nil)); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:295
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:307
   def apply_concerns(graph); end
 
   # pkg:gem/archspec#lib/archspec/analyzer.rb:228
   def call_sites; end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:320
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:332
   def constant_name_at(path, location); end
 
   # pkg:gem/archspec#lib/archspec/analyzer.rb:228
   def constant_sites; end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:291
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:303
   def declaration_kind(name, path); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:299
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:311
   def declaration_name(name, path = T.unsafe(nil), location = T.unsafe(nil)); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:332
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:344
   def method_owner(name, scope); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:325
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:337
   def method_owner_override(path, location); end
 
   # pkg:gem/archspec#lib/archspec/analyzer.rb:248
   def scan(path, node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:316
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:328
   def superclass_fallback(name, path); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:312
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:324
   def superclass_override(name, path); end
+
+  # A constant the index can't resolve, such as a gem's, is still the
+  # receiver its name says: a nested constant of that name if the graph has
+  # one, otherwise the name as written.
+  #
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:294
+  def undeclared_receiver(graph, site); end
 
   private
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:859
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:895
   def accessors_for(message, name); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:810
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:828
   def add_fallback_ancestry(graph, fallback); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:766
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:784
   def apply_generated_methods(graph); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:791
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:809
   def apply_method_fallbacks(graph); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:826
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:844
   def apply_mixin_fallbacks(graph); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:721
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:733
   def apply_visibility_modifier(path, owner, node, namespace, nesting, current, spec, default_scope, forced_method_owner); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:681
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:693
   def assigned_constant_name(node, namespace); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:687
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:699
   def builder_kind(value); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:701
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:713
   def builder_superclass(value); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:694
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:706
   def class_superclass(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:906
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:942
   def constant_arguments(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:966
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:1002
   def constant_node?(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:957
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:993
   def constant_reference_name(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:970
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:1006
   def contains?(outer, inner); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:877
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:913
   def current_attributes?(constant); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:869
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:905
   def generated_method_names(constant, node, message); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:940
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:976
   def instantiates_and_invokes(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:898
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:934
   def literal_require_argument(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:675
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:868
+  def mixin_owner(graph, fallback); end
+
+  # The receiver's own node resolves its mixins from its own scope, so a
+  # module named from another class's body is recorded by its full name.
+  #
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:876
+  def mixin_target(graph, fallback); end
+
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:687
   def namespace_only_body?(body); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:979
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:1015
   def normalize(name); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:975
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:1011
   def position(line, column); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:912
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:948
   def prism_signatures(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:949
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:985
   def qualified_constant_name(node, namespace); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:932
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:968
   def receiver_kind(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:643
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:655
   def record_constant_site(path, node, current_constant, nesting); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:752
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:764
   def record_generated_method(path, node, message, owner, location, visibility, scope); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:758
+  # Worker.prepend(Poller) mixes Poller into Worker, not into the class
+  # whose body makes the call. A receiver that isn't a constant, such as
+  # tool.class.prepend(Guard), names nothing we can record it on.
+  #
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:773
   def record_mixin_fallback(path, node, message, owner, location, nesting); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:667
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:679
   def record_namespace(name, path, namespace_only, declared_as:, location:); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:847
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:883
   def set_fallback_visibility(path, owner, names, scope, visibility); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:709
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:721
   def singleton_target(expression, current_constant); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:881
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:917
   def symbol_arguments(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:887
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:923
   def truthy_keyword_argument?(node, name); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:715
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:727
   def visibility_modifier(node); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:338
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:350
   def visit(path, node, current_constant: T.unsafe(nil), namespace: T.unsafe(nil), nesting: T.unsafe(nil), visibility: T.unsafe(nil), default_scope: T.unsafe(nil), forced_method_owner: T.unsafe(nil)); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:582
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:594
   def visit_call(path, node, current_constant:, namespace:, nesting:, visibility:, default_scope:, forced_method_owner:); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:658
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:670
   def visit_children(path, node, current_constant:, namespace:, nesting:, visibility: T.unsafe(nil), default_scope: T.unsafe(nil), forced_method_owner: T.unsafe(nil)); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:375
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:387
   def visit_class(path, node, current_constant:, namespace:, nesting:); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:443
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:455
   def visit_constant_assignment(path, node, current_constant:, namespace:, nesting:); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:509
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:521
   def visit_constant_body(path, name, body, namespace, nesting:, default_scope: T.unsafe(nil), forced_method_owner: T.unsafe(nil)); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:540
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:552
   def visit_def(path, node, current_constant:, namespace:, nesting:, visibility:, default_scope:, forced_method_owner:); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:414
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:426
   def visit_module(path, node, current_constant:, namespace:, nesting:); end
 
-  # pkg:gem/archspec#lib/archspec/analyzer.rb:495
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:507
   def visit_singleton_class(path, node, current_constant:, namespace:, nesting:, visibility:, forced_method_owner:); end
 end
 
@@ -602,6 +622,9 @@ class ArchSpec::Analyzer::SyntaxOverlay::MixinFallback < ::Data
 
   # pkg:gem/archspec#lib/archspec/analyzer.rb:165
   def path; end
+
+  # pkg:gem/archspec#lib/archspec/analyzer.rb:165
+  def receiver; end
 
   # pkg:gem/archspec#lib/archspec/analyzer.rb:165
   def target; end
@@ -3477,13 +3500,19 @@ class ArchSpec::Rules::ConcernIndependenceRule
 
   private
 
+  # The class or module a reference reaches: the constant itself when it
+  # names one, or the namespace whose body defines a value constant.
+  # Chat::Interruptions::GRACE belongs to the concern Chat::Interruptions,
+  # and Chat::Closure is a class of its own, so neither names the includer
+  # Chat; Chat::LIMIT does.
+  #
+  # pkg:gem/archspec#lib/archspec/rules/concern_rules.rb:57
+  def definer(graph, constant); end
+
   # Maps each mixed-in module to the set of constants that mix it in.
   #
-  # pkg:gem/archspec#lib/archspec/rules/concern_rules.rb:59
+  # pkg:gem/archspec#lib/archspec/rules/concern_rules.rb:65
   def includers_by_module(graph); end
-
-  # pkg:gem/archspec#lib/archspec/rules/concern_rules.rb:54
-  def within_namespace?(constant, namespace); end
 end
 
 # pkg:gem/archspec#lib/archspec/rules/concern_rules.rb:9
