@@ -8,6 +8,8 @@ My homepage!
 bin/setup
 ```
 
+To start the app after setup, run `bin/setup --server`.
+
 # Mutation testing
 
 `bin/mutate` checks that your specs catch a broken version of your change. It
