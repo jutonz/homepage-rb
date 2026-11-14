@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_171525) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_185934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -19,6 +19,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_171525) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "galleries_remote_video_download_status", ["pending", "downloading", "completed", "failed"]
   create_enum "galleries_tag_classification", ["none", "subject", "system", "artist"]
+  create_enum "issue_status", ["Backlog", "Ready", "In Progress", "In Review", "Done", "Cancelled"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -173,6 +174,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_171525) do
     t.string "title", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.enum "status", default: "Backlog", null: false, enum_type: "issue_status"
     t.index ["user_id"], name: "index_issues_on_user_id"
   end
 

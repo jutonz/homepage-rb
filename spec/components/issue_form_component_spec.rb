@@ -42,4 +42,61 @@ RSpec.describe IssueFormComponent, type: :component do
 
     expect(page).to have_content("can't be blank")
   end
+
+  it "lists the six status labels in order with no blank option" do
+    issue = build(:issue, user: nil)
+
+    render_inline(described_class.new(issue:))
+
+    options = page.all("select#issue_status option")
+    expect(options.map(&:text)).to eq(
+      ["Backlog", "Ready", "In Progress", "In Review", "Done", "Cancelled"]
+    )
+    expect(options.map { it[:value] }).to eq(
+      %w[backlog ready in_progress in_review done cancelled]
+    )
+  end
+
+  it "preselects Backlog for a new issue" do
+    issue = build(:issue, user: nil)
+
+    render_inline(described_class.new(issue:))
+
+    expect(page).to have_select("Status", selected: "Backlog")
+  end
+
+  it "preselects the status of the issue" do
+    issue = build(:issue, user: nil, status: :in_review)
+
+    render_inline(described_class.new(issue:))
+
+    expect(page).to have_select("Status", selected: "In Review")
+  end
+
+  it "preselects the saved status when the submitted status is unknown" do
+    issue = build_stubbed(:issue, user: nil, status: :ready)
+    issue.status = "bogus"
+
+    render_inline(described_class.new(issue:))
+
+    expect(page).to have_select("Status", selected: "Ready")
+  end
+
+  it "preselects the saved status when the submitted status is blank" do
+    issue = build_stubbed(:issue, user: nil, status: :ready)
+    issue.status = ""
+
+    render_inline(described_class.new(issue:))
+
+    expect(page).to have_select("Status", selected: "Ready")
+  end
+
+  it "keeps a valid status the user chose over the saved one" do
+    issue = build_stubbed(:issue, user: nil, status: :ready)
+    issue.status = :done
+
+    render_inline(described_class.new(issue:))
+
+    expect(page).to have_select("Status", selected: "Done")
+  end
 end

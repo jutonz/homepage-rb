@@ -169,12 +169,19 @@ many books. A book's name is unique within its gallery.
 
 ## Issues
 
-**Issue** — a unit of work a user tracks in this app: a title and an
-optional rich-text description, owned by one user and visible only to
-that user.
+**Issue** — a unit of work a user tracks in this app: a title, an
+optional rich-text description and an Issue status, owned by one user
+and visible only to that user.
 
 *Avoid*: "issue" for a Linear issue; "ticket", which names a Linear
 issue.
+
+**Issue status** — the stage of an Issue's work: Backlog, Ready, In
+Progress, In Review, Done or Cancelled. Each Issue has exactly one, and
+a new Issue starts in Backlog.
+
+*Avoid*: "state", which names a Linear issue's stage; "Todo" and
+"Canceled", which are Linear's names.
 
 **Linear issue** — a ticket in the HPRB team in Linear, where work on
 this codebase is tracked.

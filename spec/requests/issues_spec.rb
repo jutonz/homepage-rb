@@ -73,6 +73,18 @@ RSpec.describe IssuesController do
 
       expect(page).to have_link("Projects", href: projects_path)
     end
+
+    it "does not show a status on a row" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      login_as(user)
+
+      get(issues_path)
+
+      expect(page).to have_css("[data-role=issue]", text: issue.title)
+      expect(page).not_to have_content("Backlog")
+      expect(page).not_to have_css("span.rounded-full")
+    end
   end
 
   describe "new" do
@@ -132,6 +144,32 @@ RSpec.describe IssuesController do
 
       issue = Issue.last
       expect(response).to redirect_to(issue_path(issue))
+      expect(issue.status).to eq("backlog")
+    end
+
+    it "creates an issue with the chosen status" do
+      user = create(:user)
+      login_as(user)
+      params = {issue: {title: "Fix it", status: "in_progress"}}
+
+      post(issues_path, params:)
+
+      issue = Issue.last
+      expect(response).to redirect_to(issue_path(issue))
+      expect(issue.status).to eq("in_progress")
+    end
+
+    it "rejects a blank status and creates nothing" do
+      user = create(:user)
+      login_as(user)
+      params = {issue: {title: "Fix it", status: ""}}
+
+      post(issues_path, params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("is not included in the list")
+      expect(page).to have_field("Title", with: "Fix it")
+      expect(Issue.count).to eq(0)
     end
 
     it "rejects a blank title and keeps the description" do
@@ -191,6 +229,24 @@ RSpec.describe IssuesController do
       expect(page).to have_css(".prose strong", text: "Bold")
       expect(page).to have_link("Home", href: home_path)
       expect(page).to have_link("Issues", href: issues_path)
+    end
+
+    it "shows the status pill between the header and the description" do
+      user = create(:user)
+      issue = create(
+        :issue,
+        user:,
+        status: :in_progress,
+        description: "Some text"
+      )
+      login_as(user)
+
+      get(issue_path(issue))
+
+      expect(page).to have_css("div.mb-4 span", text: "In Progress")
+      expect(page.native.to_html).to match(
+        /<h1.*In Progress.*class="prose/m
+      )
     end
 
     it "shows my issue without a description" do
@@ -301,6 +357,47 @@ RSpec.describe IssuesController do
       expect(issue.title).to eq("After")
       expect(issue.description.to_plain_text).to eq("New text")
       expect(bystander.reload.title).to eq("Bystander")
+    end
+
+    it "changes the status" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      login_as(user)
+      params = {issue: {status: "done"}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to redirect_to(issue_path(issue))
+      expect(flash[:notice]).to eq("Issue was successfully updated.")
+      expect(issue.reload.status).to eq("done")
+    end
+
+    it "keeps the status when the request omits it" do
+      user = create(:user)
+      issue = create(:issue, user:, title: "Before", status: :ready)
+      login_as(user)
+      params = {issue: {title: "After"}}
+
+      patch(issue_path(issue), params:)
+
+      issue.reload
+      expect(response).to redirect_to(issue_path(issue))
+      expect(issue.title).to eq("After")
+      expect(issue.status).to eq("ready")
+    end
+
+    it "rejects a blank status and keeps the old one" do
+      user = create(:user)
+      issue = create(:issue, user:, status: :ready)
+      login_as(user)
+      params = {issue: {title: "Typed", status: ""}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("is not included in the list")
+      expect(page).to have_field("Title", with: "Typed")
+      expect(issue.reload.status).to eq("ready")
     end
 
     it "rejects a blank title and keeps the description" do

@@ -4,6 +4,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
+#  status     :enum             default("Backlog"), not null
 #  title      :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
