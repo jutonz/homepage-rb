@@ -17,6 +17,10 @@
   <% end %>
 <% end %>
 
+<div class="mb-4">
+  <%= render(IssueStatusPillComponent.new(issue: @issue)) %>
+</div>
+
 <% if @issue.description.present? %>
   <div class="prose prose-gray max-w-none">
     <%= @issue.description %>

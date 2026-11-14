@@ -8,6 +8,7 @@
 class Issue
   include GeneratedAssociationMethods
   include GeneratedAttributeMethods
+  include EnumMethodsModule
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
@@ -28,6 +29,9 @@ class Issue
   class << self
     sig { params(attributes: T.untyped, block: T.nilable(T.proc.params(object: ::Issue).void)).returns(::Issue) }
     def new(attributes = nil, &block); end
+
+    sig { returns(T::Hash[T.any(String, Symbol), String]) }
+    def statuses; end
   end
 
   module CommonRelationMethods
@@ -369,6 +373,44 @@ class Issue
     def third_to_last!; end
   end
 
+  module EnumMethodsModule
+    sig { void }
+    def status_backlog!; end
+
+    sig { returns(T::Boolean) }
+    def status_backlog?; end
+
+    sig { void }
+    def status_cancelled!; end
+
+    sig { returns(T::Boolean) }
+    def status_cancelled?; end
+
+    sig { void }
+    def status_done!; end
+
+    sig { returns(T::Boolean) }
+    def status_done?; end
+
+    sig { void }
+    def status_in_progress!; end
+
+    sig { returns(T::Boolean) }
+    def status_in_progress?; end
+
+    sig { void }
+    def status_in_review!; end
+
+    sig { returns(T::Boolean) }
+    def status_in_review?; end
+
+    sig { void }
+    def status_ready!; end
+
+    sig { returns(T::Boolean) }
+    def status_ready?; end
+  end
+
   module GeneratedAssociationMethods
     sig { params(args: T.untyped, blk: T.untyped).returns(::ActionText::RichText) }
     def build_rich_text_description(*args, &blk); end
@@ -493,6 +535,24 @@ class Issue
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_status_backlog(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_status_cancelled(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_status_done(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_status_in_progress(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_status_in_review(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_status_ready(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -537,6 +597,24 @@ class Issue
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     sig { params(blk: T.proc.params(record: ::Issue).returns(BasicObject)).returns(T::Array[::Issue]) }
     def select(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def status_backlog(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def status_cancelled(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def status_done(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def status_in_progress(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def status_in_review(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def status_ready(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def strict_loading(*args, &blk); end
@@ -720,6 +798,9 @@ class Issue
     def restore_id_value!; end
 
     sig { void }
+    def restore_status!; end
+
+    sig { void }
     def restore_title!; end
 
     sig { void }
@@ -747,6 +828,12 @@ class Issue
     def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
+    def saved_change_to_status; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_status?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_title; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -763,6 +850,51 @@ class Issue
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(::String) }
+    def status; end
+
+    sig { params(value: T.any(::String, ::Symbol)).returns(T.any(::String, ::Symbol)) }
+    def status=(value); end
+
+    sig { returns(T::Boolean) }
+    def status?; end
+
+    sig { returns(T.nilable(::String)) }
+    def status_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def status_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def status_came_from_user?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def status_change; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def status_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def status_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def status_in_database; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def status_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def status_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def status_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def status_was; end
+
+    sig { void }
+    def status_will_change!; end
 
     sig { returns(::String) }
     def title; end
@@ -909,6 +1041,9 @@ class Issue
     def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_status?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_title?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -992,6 +1127,24 @@ class Issue
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_status_backlog(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_status_cancelled(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_status_done(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_status_in_progress(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_status_in_review(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_status_ready(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1036,6 +1189,24 @@ class Issue
     sig { params(args: T.untyped).returns(PrivateRelation) }
     sig { params(blk: T.proc.params(record: ::Issue).returns(BasicObject)).returns(T::Array[::Issue]) }
     def select(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def status_backlog(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def status_cancelled(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def status_done(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def status_in_progress(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def status_in_review(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def status_ready(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def strict_loading(*args, &blk); end
