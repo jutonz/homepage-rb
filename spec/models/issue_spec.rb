@@ -10,18 +10,26 @@ require "rails_helper"
 #  title      :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  project_id :bigint           not null
 #  user_id    :bigint           not null
 #
 # Indexes
 #
-#  index_issues_on_user_id  (user_id)
+#  index_issues_on_project_id  (project_id)
+#  index_issues_on_user_id     (user_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (project_id => issues_projects.id)
 #  fk_rails_...  (user_id => users.id)
 #
 RSpec.describe Issue do
   it { is_expected.to belong_to(:user) }
+
+  it do
+    is_expected.to belong_to(:project).class_name("Issues::Project")
+  end
+
   it { is_expected.to have_rich_text(:description) }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_length_of(:title).is_at_most(255) }
@@ -63,11 +71,12 @@ RSpec.describe Issue do
   end
 
   it "fills the status of a row inserted without one" do
-    user = create(:user)
+    project = create(:issues_project)
 
     Issue.connection.execute(
-      "INSERT INTO issues (title, user_id, created_at, updated_at) " \
-      "VALUES ('Old', #{user.id}, NOW(), NOW())"
+      "INSERT INTO issues " \
+      "(title, user_id, project_id, created_at, updated_at) " \
+      "VALUES ('Old', #{project.user_id}, #{project.id}, NOW(), NOW())"
     )
 
     expect(Issue.find_by!(title: "Old").status).to eq("backlog")
@@ -99,6 +108,21 @@ RSpec.describe Issue do
     issue = build(:issue)
 
     expect(issue).to be_valid
+  end
+
+  it "requires a project" do
+    issue = build(:issue, project: nil)
+
+    expect(issue).not_to be_valid
+    expect(issue.errors.full_messages).to eq(["Project must exist"])
+  end
+
+  it "rejects a project of a different user" do
+    project = build(:issues_project)
+    issue = build(:issue, project:)
+
+    expect(issue).not_to be_valid
+    expect(issue.errors.full_messages).to eq(["Project must exist"])
   end
 
   it "allows a blank description" do

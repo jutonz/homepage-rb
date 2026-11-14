@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_185934) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -175,6 +175,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_185934) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.enum "status", default: "Backlog", null: false, enum_type: "issue_status"
+    t.bigint "project_id", null: false
+    t.index ["project_id"], name: "index_issues_on_project_id"
     t.index ["user_id"], name: "index_issues_on_user_id"
   end
 
@@ -437,6 +439,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_185934) do
   add_foreign_key "galleries_social_media_links", "galleries_tags", column: "tag_id"
   add_foreign_key "galleries_tags", "galleries"
   add_foreign_key "galleries_tags", "users"
+  add_foreign_key "issues", "issues_projects", column: "project_id"
   add_foreign_key "issues", "users"
   add_foreign_key "issues_projects", "users"
   add_foreign_key "plants_inbox_images", "users"

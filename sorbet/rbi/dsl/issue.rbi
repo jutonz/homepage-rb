@@ -412,11 +412,20 @@ class Issue
   end
 
   module GeneratedAssociationMethods
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Issues::Project) }
+    def build_project(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::ActionText::RichText) }
     def build_rich_text_description(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Issues::Project) }
+    def create_project(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Issues::Project) }
+    def create_project!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::ActionText::RichText) }
     def create_rich_text_description(*args, &blk); end
@@ -430,11 +439,29 @@ class Issue
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
+    sig { returns(T.nilable(::Issues::Project)) }
+    def project; end
+
+    sig { params(value: T.nilable(::Issues::Project)).void }
+    def project=(value); end
+
+    sig { returns(T::Boolean) }
+    def project_changed?; end
+
+    sig { returns(T::Boolean) }
+    def project_previously_changed?; end
+
+    sig { returns(T.nilable(::Issues::Project)) }
+    def reload_project; end
+
     sig { returns(T.nilable(::ActionText::RichText)) }
     def reload_rich_text_description; end
 
     sig { returns(T.nilable(::User)) }
     def reload_user; end
+
+    sig { void }
+    def reset_project; end
 
     sig { void }
     def reset_rich_text_description; end
@@ -788,6 +815,51 @@ class Issue
     sig { void }
     def id_will_change!; end
 
+    sig { returns(::Integer) }
+    def project_id; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def project_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def project_id?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def project_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def project_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def project_id_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def project_id_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def project_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def project_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def project_id_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def project_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def project_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def project_id_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def project_id_was; end
+
+    sig { void }
+    def project_id_will_change!; end
+
     sig { void }
     def restore_created_at!; end
 
@@ -796,6 +868,9 @@ class Issue
 
     sig { void }
     def restore_id_value!; end
+
+    sig { void }
+    def restore_project_id!; end
 
     sig { void }
     def restore_status!; end
@@ -826,6 +901,12 @@ class Issue
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_project_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_project_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_status; end
@@ -1039,6 +1120,9 @@ class Issue
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_project_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_status?(from: T.unsafe(nil), to: T.unsafe(nil)); end

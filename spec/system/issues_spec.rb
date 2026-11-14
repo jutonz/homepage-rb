@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe "Issue management", type: :system do
   it "creates, edits, and deletes an issue from the dashboard", :js do
     user = create(:user)
+    create(:issues_project, user:, name: "Homepage")
+    create(:issues_project, user:, name: "Infra")
     login_as(user)
 
     visit(home_path)
@@ -12,6 +14,7 @@ RSpec.describe "Issue management", type: :system do
 
     click_link("New Issue")
     fill_in("Title", with: "Fix the login bug")
+    select("Homepage", from: "Project")
     fill_in_rich_text_area("issue_description", with: "Steps to reproduce")
     click_button("Create Issue")
 
@@ -21,6 +24,7 @@ RSpec.describe "Issue management", type: :system do
 
     click_link("Edit")
     fill_in("Title", with: "Fix the signup bug")
+    select("Infra", from: "Project")
     fill_in_rich_text_area("issue_description", with: "New steps")
     click_button("Update Issue")
 
@@ -34,8 +38,20 @@ RSpec.describe "Issue management", type: :system do
     expect(page).to have_content("No issues yet")
   end
 
+  it "asks me to create a project first when I have none" do
+    user = create(:user)
+    login_as(user)
+
+    visit(new_issue_path)
+
+    expect(page).to have_content("Create a project first")
+    expect(page).to have_link("New Project", href: new_project_path)
+    expect(page).not_to have_field("Title")
+  end
+
   it "keeps the description when the title is blank", :js do
     user = create(:user)
+    create(:issues_project, user:)
     login_as(user)
 
     visit(new_issue_path)

@@ -96,6 +96,7 @@ RSpec.describe IssuesController do
 
     it "renders the form" do
       user = create(:user)
+      create(:issues_project, user:)
       login_as(user)
 
       get(new_issue_path)
@@ -105,6 +106,34 @@ RSpec.describe IssuesController do
       expect(page).to have_link("Home", href: home_path)
       expect(page).to have_link("Issues", href: issues_path)
       expect(page).to have_field("Title")
+    end
+
+    it "lists only my projects by name, with a blank prompt first" do
+      me, them = create_pair(:user)
+      create(:issues_project, user: me, name: "Beta")
+      create(:issues_project, user: me, name: "Alpha")
+      create(:issues_project, user: them, name: "Theirs")
+      login_as(me)
+
+      get(new_issue_path)
+
+      options = page.all("select[name='issue[project_id]'] option")
+      expect(options.map(&:text)).to eq(["Select a project", "Alpha", "Beta"])
+      expect(page).not_to have_content("Theirs")
+    end
+
+    it "asks me to create a project first when I have none" do
+      user = create(:user)
+      create(:issues_project, name: "Theirs")
+      login_as(user)
+
+      get(new_issue_path)
+
+      expect(response).to be_successful
+      expect(page).to have_content("Create a project first")
+      expect(page).to have_link("New Project", href: new_project_path)
+      expect(page).not_to have_field("Title")
+      expect(page).not_to have_css("select")
     end
   end
 
@@ -120,9 +149,14 @@ RSpec.describe IssuesController do
 
     it "creates an issue for the current user" do
       user = create(:user)
+      project = create(:issues_project, user:)
       login_as(user)
       params = {
-        issue: {title: "Fix it", description: "<strong>Bold</strong> text"}
+        issue: {
+          title: "Fix it",
+          description: "<strong>Bold</strong> text",
+          project_id: project.id
+        }
       }
 
       post(issues_path, params:)
@@ -131,14 +165,16 @@ RSpec.describe IssuesController do
       expect(response).to redirect_to(issue_path(issue))
       expect(flash[:notice]).to eq("Issue was successfully created.")
       expect(issue.user).to eq(user)
+      expect(issue.project).to eq(project)
       expect(issue.title).to eq("Fix it")
       expect(issue.description.to_plain_text).to include("Bold text")
     end
 
-    it "creates an issue with only a title" do
+    it "defaults the status to backlog" do
       user = create(:user)
+      project = create(:issues_project, user:)
       login_as(user)
-      params = {issue: {title: "Fix it"}}
+      params = {issue: {title: "Fix it", project_id: project.id}}
 
       post(issues_path, params:)
 
@@ -149,8 +185,11 @@ RSpec.describe IssuesController do
 
     it "creates an issue with the chosen status" do
       user = create(:user)
+      project = create(:issues_project, user:)
       login_as(user)
-      params = {issue: {title: "Fix it", status: "in_progress"}}
+      params = {
+        issue: {title: "Fix it", status: "in_progress", project_id: project.id}
+      }
 
       post(issues_path, params:)
 
@@ -161,8 +200,9 @@ RSpec.describe IssuesController do
 
     it "rejects a blank status and creates nothing" do
       user = create(:user)
+      project = create(:issues_project, user:)
       login_as(user)
-      params = {issue: {title: "Fix it", status: ""}}
+      params = {issue: {title: "Fix it", status: "", project_id: project.id}}
 
       post(issues_path, params:)
 
@@ -174,8 +214,15 @@ RSpec.describe IssuesController do
 
     it "rejects a blank title and keeps the description" do
       user = create(:user)
+      project = create(:issues_project, user:)
       login_as(user)
-      params = {issue: {title: "", description: "Keep this text"}}
+      params = {
+        issue: {
+          title: "",
+          description: "Keep this text",
+          project_id: project.id
+        }
+      }
 
       post(issues_path, params:)
 
@@ -190,15 +237,57 @@ RSpec.describe IssuesController do
 
     it "rejects a title over 255 characters and keeps it" do
       user = create(:user)
+      project = create(:issues_project, user:)
       login_as(user)
       title = "a" * 256
-      params = {issue: {title:}}
+      params = {issue: {title:, project_id: project.id}}
 
       post(issues_path, params:)
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_content("is too long")
       expect(page).to have_field("Title", with: title)
+      expect(Issue.count).to eq(0)
+    end
+
+    it "rejects a project of another user and shows the form" do
+      user = create(:user)
+      create(:issues_project, user:, name: "Mine")
+      theirs = create(:issues_project, name: "Theirs")
+      login_as(user)
+      params = {issue: {title: "Fix it", project_id: theirs.id}}
+
+      post(issues_path, params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_css(".issue_project span.error", text: "must exist")
+      expect(page).to have_field("Title", with: "Fix it")
+      expect(page).not_to have_content("Theirs")
+      expect(Issue.count).to eq(0)
+    end
+
+    it "rejects a project that does not exist" do
+      user = create(:user)
+      create(:issues_project, user:)
+      login_as(user)
+      params = {issue: {title: "Fix it", project_id: 0}}
+
+      post(issues_path, params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_css(".issue_project span.error", text: "must exist")
+      expect(Issue.count).to eq(0)
+    end
+
+    it "asks me to create a project first when I have none" do
+      user = create(:user)
+      login_as(user)
+      params = {issue: {title: "Fix it"}}
+
+      post(issues_path, params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("Create a project first")
       expect(Issue.count).to eq(0)
     end
   end
@@ -318,6 +407,22 @@ RSpec.describe IssuesController do
       expect(page).to have_button("Update Issue")
     end
 
+    it "selects the current project among only my projects" do
+      me = create(:user)
+      current = create(:issues_project, user: me, name: "Beta")
+      create(:issues_project, user: me, name: "Alpha")
+      create(:issues_project, name: "Theirs")
+      issue = create(:issue, user: me, project: current)
+      login_as(me)
+
+      get(edit_issue_path(issue))
+
+      options = page.all("select[name='issue[project_id]'] option")
+      expect(options.map(&:text)).to eq(["Alpha", "Beta"])
+      expect(page).to have_select("Project", selected: "Beta")
+      expect(page).not_to have_content("Theirs")
+    end
+
     it "returns not found for another user's issue" do
       user = create(:user)
       issue = create(:issue)
@@ -398,6 +503,50 @@ RSpec.describe IssuesController do
       expect(page).to have_content("is not included in the list")
       expect(page).to have_field("Title", with: "Typed")
       expect(issue.reload.status).to eq("ready")
+    end
+
+    it "moves my issue to another of my projects" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      target = create(:issues_project, user:)
+      login_as(user)
+      params = {issue: {project_id: target.id}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to redirect_to(issue_path(issue))
+      expect(flash[:notice]).to eq("Issue was successfully updated.")
+      expect(issue.reload.project).to eq(target)
+    end
+
+    it "rejects a project of another user and keeps the project" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      original = issue.project
+      theirs = create(:issues_project, name: "Theirs")
+      login_as(user)
+      params = {issue: {project_id: theirs.id}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("must exist")
+      expect(page).not_to have_content("Theirs")
+      expect(issue.reload.project).to eq(original)
+    end
+
+    it "rejects a project that does not exist and keeps the project" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      original = issue.project
+      login_as(user)
+      params = {issue: {project_id: 0}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("must exist")
+      expect(issue.reload.project).to eq(original)
     end
 
     it "rejects a blank title and keeps the description" do

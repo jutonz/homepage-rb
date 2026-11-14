@@ -33,4 +33,25 @@ RSpec.describe "Project management", type: :system do
     expect(page).to have_content("Project was successfully deleted.")
     expect(page).to have_content("No projects yet")
   end
+
+  it "counts a project's issues and refuses to delete it", :js do
+    user = create(:user)
+    project = create(:issues_project, user:, name: "Infra")
+    create_list(:issue, 2, user:, project:)
+    create(:issue, user:)
+    login_as(user)
+
+    visit(project_path(project))
+
+    expect(page).to have_css("div.flex", text: /Issues:\s+2\b/)
+
+    accept_confirm { click_button("Delete") }
+
+    expect(page).to have_css(
+      "[data-role='flash'][data-flash-type='alert']",
+      text: "Project still has 2 issues. Move or delete them first."
+    )
+    expect(page).to have_css("h1", text: "Infra")
+    expect(page).to have_css("div.flex", text: /Issues:\s+2\b/)
+  end
 end
