@@ -6,6 +6,7 @@
 
 
 # Mutineer is the top-level namespace for the mutation-testing library.
+# loads on its own only from Ruby 3.2; the daemon runs on the app's Ruby
 #
 # pkg:gem/mutineer#lib/mutineer/version.rb:3
 module Mutineer
@@ -344,7 +345,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:641
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:644
     def autopair!(config); end
 
     # Formats the dry run's declined count: the total, then each operator's
@@ -355,7 +356,7 @@ class Mutineer::CLI
     # @param since [String, nil] the `--since` ref, when set.
     # @return [String] e.g. `2 declined (range: 2)`.
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:939
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:942
     def declined_summary(declined, since:); end
 
     # Runs dry-run mode. Reuses JobPlan.collect_jobs (+ scope_since) so the
@@ -364,7 +365,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:898
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:901
     def dry_run(config); end
 
     # Executes the run command.
@@ -372,14 +373,14 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:732
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:735
     def execute(config); end
 
     # Lists available operators.
     #
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:336
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:339
     def list_operators; end
 
     # Rewrites old-format ids in the loaded `.mutineer.yml` `ignore:` list.
@@ -394,7 +395,7 @@ class Mutineer::CLI
     # @param file_path [String] the `.mutineer.yml` to edit.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:269
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:272
     def migrate(config, file_path); end
 
     # A missing/unreadable/unparseable baseline is a usage error (exit 2),
@@ -406,7 +407,7 @@ class Mutineer::CLI
     # @param path [String] baseline file path.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:670
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:673
     def preflight_baseline!(path); end
 
     # Preflights an output path. A missing parent is a usage error (exit 2),
@@ -421,7 +422,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration (for the cache directory).
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:709
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:712
     def preflight_output!(path, config); end
 
     # #281: a report written over its own baseline turns a failed gate into the
@@ -436,7 +437,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration (output and baseline set).
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:688
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:691
     def preflight_same_file!(config); end
 
     # Replaces `path` with `contents` without truncating the original first.
@@ -451,7 +452,7 @@ class Mutineer::CLI
     # @param contents [String] the full new text.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:309
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:312
     def replace_file(path, contents); end
 
     # Runs the requested command after validation.
@@ -459,7 +460,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:348
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:351
     def run(config); end
 
     # Parses arguments, executes the command, and exits.
@@ -467,7 +468,7 @@ class Mutineer::CLI
     # @param argv [Array<String>] raw command-line arguments.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:118
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:121
     def start(argv); end
 
     # The tier-2 operators not in the active set, as a one-line hint (or nil when
@@ -476,7 +477,7 @@ class Mutineer::CLI
     # @param active [Array<String>, nil] active operator names.
     # @return [String, nil] hint text or nil.
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:825
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:828
     def tier2_hint(active); end
 
     # Flag validation: every flag/usage failure exits 2, consistent with the
@@ -486,7 +487,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:417
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:420
     def validate!(config); end
 
     # --daemon selects the persistent-daemon backend (boot once, fork per mutant,
@@ -499,7 +500,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:491
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:494
     def validate_daemon!(config); end
 
     # --matrix runs on the in-process backend and needs every mutant's whole
@@ -510,7 +511,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:563
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:566
     def validate_matrix!(config); end
 
     # Validate path existence up front so a typo is a clean usage error (exit 2),
@@ -521,7 +522,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:620
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:623
     def validate_paths!(config); end
 
     # --since needs a real git repo and a resolvable ref; either failure is a
@@ -531,7 +532,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:595
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:598
     def validate_since!(config); end
 
     # --test-command runs the target suite in the app's own runtime. Validate its
@@ -545,7 +546,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:456
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:459
     def validate_test_command!(config); end
 
     # Warns once when the loaded .mutineer.yml sits outside the run directory
@@ -558,7 +559,7 @@ class Mutineer::CLI
     # @param project_root [String] the run directory ids are relative to.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:843
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:846
     def warn_config_root_mismatch(file_path, project_root); end
 
     # Says why a run has no mutants, on stderr for every format. A --since run
@@ -572,7 +573,7 @@ class Mutineer::CLI
     #   suppressed) before --since, and `:declined` the candidates each operator did not mutate.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:803
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:806
     def warn_empty_run(config, extras); end
 
     # Warns once that the --baseline file stores old-format ids (#126), so the
@@ -581,7 +582,7 @@ class Mutineer::CLI
     #
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:886
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:889
     def warn_legacy_baseline; end
 
     # Warns once per old-format `ignore:` entry (#126), naming each new id it
@@ -596,7 +597,7 @@ class Mutineer::CLI
     #   entry => one `{id:, file:, subject:}` hash per matched mutant.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:864
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:867
     def warn_legacy_ignore_matches(matches); end
 
     # Warns when `--coverage-from` is set on a run that captures no coverage.
@@ -605,7 +606,7 @@ class Mutineer::CLI
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:527
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:530
     def warn_unused_coverage_from(config); end
 
     # A backend that never reads a setting the user set would silently do
@@ -620,7 +621,7 @@ class Mutineer::CLI
     # @param keys [Array<Symbol>] the settings that backend ignores.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/cli.rb:547
+    # pkg:gem/mutineer#lib/mutineer/cli.rb:550
     def warn_unused_settings(config, backend, keys); end
   end
 end
@@ -632,7 +633,7 @@ Mutineer::CLI::BANNER = T.let(T.unsafe(nil), String)
 
 # Where each setting a backend may ignore applies, for the warning.
 #
-# pkg:gem/mutineer#lib/mutineer/cli.rb:515
+# pkg:gem/mutineer#lib/mutineer/cli.rb:518
 Mutineer::CLI::UNUSED_SETTING_SCOPE = T.let(T.unsafe(nil), Hash)
 
 # Config file name.
@@ -926,10 +927,13 @@ end
 # ActiveSupport does not run the block again in a class that already includes
 # the concern, so that class keeps what the original block defined. For a def
 # in the block, the mutant file also passes the mutated def to
-# {.store_hook_def}, just before the `included` or `prepended` call, and
-# {.place_hook_def} then loads only that def into each class that has the
-# method (#297). Nothing else in the block runs again. Discovery decides which
-# defs can be placed this way (see {Subject#unplaceable?}).
+# {.store_hook_def}, just before the `included` or `prepended` call. Under
+# {.load_mutant} with a `hook_def`, {.store_hook_def} then calls
+# {.place_hook_def} at once, which loads only that def into each class that
+# has the method (#297). It runs before the rest of the file, so a later
+# line of the file that calls the method while the file loads gets the
+# mutant (#348). Nothing else in the block runs again. Discovery decides
+# which defs can be placed this way (see {Subject#unplaceable?}).
 #
 # Call it only in a forked child that loads the mutant. Without
 # ActiveSupport, {.replace} and {.forget} do nothing; {.store_hook_def} and
@@ -937,7 +941,7 @@ end
 #
 # Stdlib-only, so the app-side daemon can load it.
 #
-# pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:28
+# pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:33
 module Mutineer::ConcernBlocks
   class << self
     # Each other name any module has for the original def: an alias made
@@ -952,8 +956,19 @@ module Mutineer::ConcernBlocks
     # @param singleton [Boolean] true for a class method.
     # @return [Array<Array(Module, Symbol)>] each module and its alias name.
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:184
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:224
     def aliases(modules, source_file:, line:, name:, singleton:); end
+
+    # True for Rails' `DeprecatedConstantProxy`: a Module that forwards every
+    # call to its target and prints a deprecation warning, so asking it for
+    # methods would print one per mutant (#387). `Kernel#class` reads its real
+    # class without forwarding.
+    #
+    # @param mod [Module] a module from the ObjectSpace walk.
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:313
+    def deprecation_proxy?(mod); end
 
     # Removes every stored `included` and `prepended` block that the source
     # file defined, from every concern. Blocks from other files stay.
@@ -962,20 +977,32 @@ module Mutineer::ConcernBlocks
     # @return [Array<Array(Module, Symbol, Proc)>] each concern, where it stored
     #   the block, and the block removed.
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:74
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:105
     def forget(source_file); end
 
-    # Loads the mutant file at `path` over `source_file`, through {.replace}.
-    # The load assigns each of the file's constants a second time, so Ruby
-    # would warn twice per constant, per mutant (#364). Warnings are off for
-    # the load only, and back on before the tests run.
+    # Loads the mutant file at `path` over `source_file`, through {.replace}
+    # inside {ReloadGuards.during_load}, so Rails macros in the class body can
+    # run a second time (#378, #383, #384). The load assigns each of the file's
+    # constants a second time, so Ruby would warn twice per constant, per
+    # mutant (#364). Warnings are off for the load only, and back on before
+    # the tests run.
+    #
+    # With a `hook_def`, the file's {.store_hook_def} call places the mutated
+    # def during the load (#348). A load that never reached that call raises.
+    # When a handle to the original is live at placement, the kept-handle
+    # check runs again after the load, so a handle the file holds only while
+    # it loads does not count. Placement leaves no other way to reach the
+    # original, so no handle seen then means none after the load.
     #
     # @param source_file [String] the file the mutant replaces.
     # @param path [String] the mutant file to load.
+    # @param hook_def [Hash{Symbol => Object}, nil] the original def's `line`,
+    #   `name` and `singleton`, from {JobPlan.hook_mutant}.
+    # @raise [RuntimeError] from {.place_hook_def}, so the child scores `error`.
     # @return [Object] what `load` returns.
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:57
-    def load_mutant(source_file, path); end
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:74
+    def load_mutant(source_file, path, hook_def: T.unsafe(nil)); end
 
     # True when the heap contains a handle for this original definition. Return
     # only a boolean, so the first check does not itself retain a dead handle
@@ -986,7 +1013,7 @@ module Mutineer::ConcernBlocks
     # @param name [Symbol] the original method name.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:242
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:297
     def method_handle_at?(path, line, name); end
 
     # True when the module's own method `name` starts at this file and line.
@@ -1001,7 +1028,7 @@ module Mutineer::ConcernBlocks
     #   distinguishes an alias from another definition on the same line.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:205
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:245
     def own_method_at?(target, name, path, line, original_name: T.unsafe(nil)); end
 
     # Each module whose own method `name` (its singleton class's, for a class
@@ -1017,7 +1044,7 @@ module Mutineer::ConcernBlocks
     # @param singleton [Boolean] true for a class method.
     # @return [Array<Module>]
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:168
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:208
     def owners(modules, source_file:, line:, name:, singleton:); end
 
     # Takes the def {.store_hook_def} kept, clears it, and runs it with
@@ -1030,14 +1057,16 @@ module Mutineer::ConcernBlocks
     # @param line [Integer] the original def's first line.
     # @param name [Symbol] the method name.
     # @param singleton [Boolean] true for a class method.
+    # @param check_retained [Boolean] false when the caller checks for a kept
+    #   method handle itself, after the load ({.load_mutant}).
     # @raise [RuntimeError] when no def was kept (the mutant file did not reach
     #   its hook call), or when a module keeps the original under another name
     #   (see {.aliases}) or in a live method handle; the child then scores the
     #   mutant `error`.
     # @return [Integer] how many owners got the mutated def.
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:120
-    def place_hook_def(source_file:, line:, name:, singleton:); end
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:163
+    def place_hook_def(source_file:, line:, name:, singleton:, check_retained: T.unsafe(nil)); end
 
     # The file's real path, so a symlinked or relative path matches the path
     # Ruby recorded when it loaded the file.
@@ -1045,8 +1074,20 @@ module Mutineer::ConcernBlocks
     # @param file [String] a file path.
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:256
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:327
     def real_path(file); end
+
+    # Raises when a live Method or UnboundMethod keeps the original definition
+    # (see {.retained_hook_def?}), so the child scores the mutant `error`.
+    #
+    # @param source_file [String] the file the mutant replaces.
+    # @param line [Integer] the original def's first line.
+    # @param name [Symbol] the original method name.
+    # @raise [RuntimeError] when such a handle is live.
+    # @return [nil]
+    #
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:264
+    def refuse_retained_hook_def(source_file:, line:, name:); end
 
     # Forgets the source file's stored blocks, runs the block that loads the
     # mutant, then puts back each forgotten block the load did not store again.
@@ -1057,7 +1098,7 @@ module Mutineer::ConcernBlocks
     # @yield the mutant's load.
     # @return [Object] what the block returns.
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:40
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:45
     def replace(source_file); end
 
     # True when a live Method or UnboundMethod keeps the original definition.
@@ -1071,24 +1112,32 @@ module Mutineer::ConcernBlocks
     # @param name [Symbol] the original method name.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:226
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:281
     def retained_hook_def?(source_file:, line:, name:); end
 
     # Keeps the mutated hook-block def for {.place_hook_def}. The mutant file
     # calls it in the concern's body, just before the hook call, so the block has
-    # the same constant scope as the hook block (#297).
+    # the same constant scope as the hook block (#297). Under {.load_mutant}
+    # with a `hook_def`, it places the def now, before the rest of the file
+    # runs (#348).
     #
-    # @yield the mutated def, run later with `class_eval` in each owner.
+    # @yield the mutated def, run with `class_eval` in each owner.
+    # @raise [RuntimeError] from {.place_hook_def}.
     # @return [nil]
     #
-    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:100
+    # pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:134
     def store_hook_def(&block); end
   end
 end
 
+# `Kernel#class`, unbound, so a proxy that redefines `class` cannot answer.
+#
+# pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:320
+Mutineer::ConcernBlocks::KERNEL_CLASS = T.let(T.unsafe(nil), UnboundMethod)
+
 # Where ActiveSupport::Concern stores each block.
 #
-# pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:30
+# pkg:gem/mutineer#lib/mutineer/concern_blocks.rb:35
 Mutineer::ConcernBlocks::STORED_BLOCKS = T.let(T.unsafe(nil), Array)
 
 # Raised when another process already holds exclusive ownership of a source
@@ -2683,7 +2732,7 @@ class Mutineer::DaemonClient
   # @param gemfile [String, nil] BUNDLE_GEMFILE for the app's bundle (nil = app_root/Gemfile).
   # @param errio [IO] where daemon stderr is drained.
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:61
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:65
   def initialize(boot:, app_root:, ruby_version: T.unsafe(nil), gemfile: T.unsafe(nil), errio: T.unsafe(nil)); end
 
   # Ask the daemon to build the coverage map app-side and return it. One-shot
@@ -2697,7 +2746,7 @@ class Mutineer::DaemonClient
   #
   # @return [Hash, nil] the coverage payload, or nil on a dead pipe.
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:149
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:153
   def coverage; end
 
   # The booted test environment's databases, as the daemon reported them:
@@ -2706,7 +2755,7 @@ class Mutineer::DaemonClient
   #
   # @return [Hash, nil]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:84
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:88
   def databases; end
 
   # Ask the daemon to create `slots` worker databases. Raises when the copy
@@ -2717,14 +2766,14 @@ class Mutineer::DaemonClient
   # @return [void]
   # @raise [Mutineer::DaemonBootError]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:93
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:97
   def provision(slots); end
 
   # Graceful shutdown; leaves no orphaned daemon/child.
   #
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:159
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:163
   def quit; end
 
   # Run one mutant: ship the payload + covering tests, return the verdict string.
@@ -2739,7 +2788,7 @@ class Mutineer::DaemonClient
   #   `<db>-<worker>` for isolation. Defaults to 0 (serial).
   # @return [String] one of survived/killed/error/timeout.
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:115
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:119
   def request(id:, payload:, tests:, timeout:, worker: T.unsafe(nil)); end
 
   # Spawn the daemon and complete the ready handshake. Raises DaemonBootError on
@@ -2747,7 +2796,7 @@ class Mutineer::DaemonClient
   #
   # @return [self]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:74
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:78
   def start; end
 
   private
@@ -2759,7 +2808,7 @@ class Mutineer::DaemonClient
   # @api private
   # @return [Hash{String => String}]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:176
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:180
   def app_env; end
 
   # Existing asdf shim directories. A custom install uses +ASDF_DATA_DIR+.
@@ -2768,7 +2817,7 @@ class Mutineer::DaemonClient
   # @param env [Hash{String => String}]
   # @return [Array<String>]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:282
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:286
   def asdf_shim_dirs(env); end
 
   # True when `part` is an asdf Ruby version bin under ~/.asdf or +ASDF_DATA_DIR+.
@@ -2778,7 +2827,7 @@ class Mutineer::DaemonClient
   # @param env [Hash{String => String}]
   # @return [Boolean]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:311
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:315
   def asdf_version_bin?(part, env); end
 
   # Close the IPC pipes, stop the stderr-drain thread, and reap the daemon so a
@@ -2786,23 +2835,27 @@ class Mutineer::DaemonClient
   #
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:449
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:484
   def close_io; end
 
   # Copy each line of the daemon's stderr to the tool's stderr, redacted.
   # A line is the unit the daemon and the app write, so a password is never
   # split across two redaction calls. The line break is kept outside the
   # redaction, so a line redaction hides as a whole still ends its line.
-  # After a write fails (EPIPE from a tool stderr that went away), the drain
-  # keeps reading and drops the lines, so the daemon never blocks on a full
-  # pipe. The outer rescue swallows the benign EBADF/IOError raised when
-  # close_io closes the pipe under an in-flight read, so the thread never
-  # ends with an error that close_io's join would re-raise.
+  # The drain ends at EOF, or once the daemon has exited and the pipe is
+  # empty: a grandchild that keeps the pipe open would otherwise hold it
+  # until close_io's DRAIN_GRACE (#341). Either way it writes a last line
+  # that has no newline. After a write fails (EPIPE from a tool stderr that
+  # went away), the drain keeps reading and drops the lines, so the daemon
+  # never blocks on a full pipe. The outer rescue swallows the benign
+  # EBADF/IOError raised when close_io closes the pipe under an in-flight
+  # read, so the thread never ends with an error that close_io's join would
+  # re-raise.
   #
   # @param io [IO] the daemon's stderr pipe.
   # @return [nil]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:430
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:438
   def drain_stderr(io); end
 
   # True when this daemon boots a Rails app.
@@ -2810,7 +2863,7 @@ class Mutineer::DaemonClient
   # @api private
   # @return [Boolean]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:325
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:329
   def rails_boot?; end
 
   # rbenv install root. +RBENV_ROOT+ wins over <tt>~/.rbenv</tt>.
@@ -2819,7 +2872,7 @@ class Mutineer::DaemonClient
   # @param env [Hash{String => String}]
   # @return [String, nil]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:267
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:271
   def rbenv_root(env); end
 
   # Existing rbenv shim directory. +RBENV_ROOT+ wins. Otherwise the home
@@ -2829,7 +2882,7 @@ class Mutineer::DaemonClient
   # @param env [Hash{String => String}]
   # @return [Array<String>]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:254
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:258
   def rbenv_shim_dirs(env); end
 
   # True when `part` is a version bin under the active rbenv root.
@@ -2839,7 +2892,7 @@ class Mutineer::DaemonClient
   # @param env [Hash{String => String}]
   # @return [Boolean]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:297
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:301
   def rbenv_version_bin?(part, env); end
 
   # Read one JSON reply line; nil on EOF/dead pipe, or when no line arrives
@@ -2848,12 +2901,12 @@ class Mutineer::DaemonClient
   # @param timeout [Numeric, nil] seconds to wait; nil waits for the reply.
   # @return [Hash, nil]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:408
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:412
   def read_line(timeout = T.unsafe(nil)); end
 
   # Respawn after a crash, up to MAX_RESTARTS, then hard-fail loudly.
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:382
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:386
   def restart!; end
 
   # Environment with every <tt>BUNDLER_ORIG_*</tt> value put back. Bundler
@@ -2863,7 +2916,7 @@ class Mutineer::DaemonClient
   # @api private
   # @return [Hash{String => String}]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:194
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:198
   def restored_user_env; end
 
   # Drop rbenv and asdf version bins so shims can select the app Ruby.
@@ -2874,7 +2927,7 @@ class Mutineer::DaemonClient
   # @param env [Hash{String => String}]
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:225
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:229
   def scrub_managed_ruby_bins!(env); end
 
   # Write one JSON object as a line to the daemon.
@@ -2882,7 +2935,7 @@ class Mutineer::DaemonClient
   # @param obj [Hash] the message to encode.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:398
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:402
   def send_line(obj); end
 
   # Spawn the daemon under the app bundle and complete the ready handshake.
@@ -2890,8 +2943,16 @@ class Mutineer::DaemonClient
   # @return [void]
   # @raise [Mutineer::DaemonBootError] when the daemon fails to boot.
   #
-  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:333
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:337
   def spawn_daemon; end
+
+  # Write one line of daemon stderr to the tool's stderr, redacted.
+  #
+  # @param line [String] raw bytes, with or without the trailing newline.
+  # @return [Boolean] false when the write failed.
+  #
+  # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:472
+  def write_redacted(line); end
 end
 
 # Seconds the daemon gets to boot the app and answer the handshake. A boot
@@ -2902,7 +2963,7 @@ Mutineer::DaemonClient::BOOT_TIMEOUT = T.let(T.unsafe(nil), Integer)
 
 # Bundler's marker for a variable that was unset before it activated.
 #
-# pkg:gem/mutineer#lib/mutineer/daemon_client.rb:51
+# pkg:gem/mutineer#lib/mutineer/daemon_client.rb:55
 Mutineer::DaemonClient::BUNDLER_UNSET = T.let(T.unsafe(nil), String)
 
 # Absolute path to the daemon entry, loaded app-side by `-r` (bypasses the bundle).
@@ -2910,11 +2971,18 @@ Mutineer::DaemonClient::BUNDLER_UNSET = T.let(T.unsafe(nil), String)
 # pkg:gem/mutineer#lib/mutineer/daemon_client.rb:37
 Mutineer::DaemonClient::DAEMON_PATH = T.let(T.unsafe(nil), String)
 
-# Seconds close_io waits for the stderr drain to reach EOF before it stops
-# the thread, so a last line without a newline is not lost.
+# Most seconds close_io waits for the stderr drain to finish. The drain
+# ends at EOF, or once the daemon has exited and the pipe is empty, so
+# only a grandchild that keeps writing makes close_io wait this long.
 #
-# pkg:gem/mutineer#lib/mutineer/daemon_client.rb:49
+# pkg:gem/mutineer#lib/mutineer/daemon_client.rb:50
 Mutineer::DaemonClient::DRAIN_GRACE = T.let(T.unsafe(nil), Integer)
+
+# Seconds the stderr drain waits for output before it checks whether the
+# daemon has exited. A grandchild that holds the pipe open never sends EOF.
+#
+# pkg:gem/mutineer#lib/mutineer/daemon_client.rb:53
+Mutineer::DaemonClient::DRAIN_POLL = T.let(T.unsafe(nil), Float)
 
 # How many times to respawn a crashing daemon before aborting the run.
 #
@@ -2960,7 +3028,7 @@ module Mutineer::ExternalBackend
     # @param files [Array<String>] test file paths to substitute.
     # @return [Array<String>] argv.
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:91
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:102
     def build_argv(command, files); end
 
     # Environment delta for the test-command child. Process.spawn merges this
@@ -2980,7 +3048,7 @@ module Mutineer::ExternalBackend
     # @api private
     # @return [Hash{String => String, nil}] env for Process.spawn.
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:111
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:122
     def child_env; end
 
     # True when the key must be unset in the child (bundler/gem/version-manager).
@@ -2989,7 +3057,7 @@ module Mutineer::ExternalBackend
     # @param key [String] environment variable name.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:140
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:151
     def clear_env_key?(key); end
 
     # True when Minitest started its tests and the process then ended with no
@@ -3006,7 +3074,7 @@ module Mutineer::ExternalBackend
     # @param text [String] output from {summary_text}.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:258
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:269
     def exited_during_tests?(text); end
 
     # True when a summary line reports a failing test: a Minitest failure or
@@ -3019,7 +3087,7 @@ module Mutineer::ExternalBackend
     # @param text [String] output from {summary_text}.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:240
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:251
     def failure_reported?(text); end
 
     # Generic smoke-failure framing when no Ruby-version mismatch is detected.
@@ -3027,8 +3095,26 @@ module Mutineer::ExternalBackend
     # @api private
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:320
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:361
     def generic_env_hint; end
+
+    # The runner and seed of a random test order the output shows, or nil.
+    # Nil also when Mutineer sees a fixed seed: for Minitest, SEED, TESTOPTS
+    # or the command sets one; for RSpec, SPEC_OPTS or the command does. RSpec
+    # `--order defined` prints no seed line. Each runner is checked on its
+    # own, so a seeded Minitest suite does not hide an unseeded RSpec suite
+    # that the same command runs. Ceiling: a seed set in a wrapper script or
+    # `.rspec`, or Minitest's `test_order`, is not seen, so the warning still
+    # prints; a seed-like argument meant for a wrapper hides it (#338, limits
+    # tracked in #368).
+    #
+    # @api private
+    # @param command [String] the --test-command template.
+    # @param text [String] output from {summary_text}.
+    # @return [Array(Symbol, String), nil] `[:minitest | :rspec, seed]`.
+    #
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:314
+    def random_order(command, text); end
 
     # Targeted hint when Bundler reports a RubyVersionMismatch (common under
     # rbenv/asdf/chruby when Mutineer's version bin sits ahead of shims on PATH).
@@ -3037,7 +3123,7 @@ module Mutineer::ExternalBackend
     # @param output [String] captured child stdout+stderr.
     # @return [String, nil] hint text, or nil when not a version mismatch.
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:331
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:372
     def ruby_version_mismatch_hint(output); end
 
     # Runs the command for ONE mutant against whatever is currently on disk (the
@@ -3054,22 +3140,24 @@ module Mutineer::ExternalBackend
     #   The runner turns this on when the clean smoke run printed a summary line.
     # @return [Mutineer::Result]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:171
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:182
     def run(command, files, timeout:, verbose: T.unsafe(nil), check_summary: T.unsafe(nil)); end
 
     # Pre-flight: run the command once against the UNMUTATED tree. Green (exit 0)
-    # returns the elapsed seconds (used to calibrate the per-mutant timeout) and
+    # returns the elapsed seconds (used to calibrate the per-mutant timeout),
     # whether the output has a Minitest or RSpec summary line (used to turn on
-    # the summary check in {run}); anything else raises SmokeCheckError so the
-    # run aborts before scoring.
+    # the summary check in {run}), and the runner and seed of a random test
+    # order (see {random_order}); anything else raises SmokeCheckError so the run
+    # aborts before scoring.
     #
     # @param command [String] the --test-command template.
     # @param files [Array<String>] test file paths.
     # @param timeout [Numeric] ceiling for the calibration run.
-    # @return [Array(Float, Boolean)] `[elapsed_seconds, summary_seen]`.
+    # @return [Array(Float, Boolean, Array(Symbol, String), nil)]
+    #   `[elapsed_seconds, summary_seen, random_order]`.
     # @raise [Mutineer::SmokeCheckError] when the clean suite is not green.
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:300
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:338
     def smoke_check!(command, files, timeout: T.unsafe(nil)); end
 
     # Spawns the command to a captured combined-output tempfile, enforces a
@@ -3080,7 +3168,7 @@ module Mutineer::ExternalBackend
     #
     # @api private
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:355
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:396
     def spawn_capture(command, files, timeout); end
 
     # True when the text has a Minitest or RSpec summary line.
@@ -3089,7 +3177,7 @@ module Mutineer::ExternalBackend
     # @param text [String] output from {summary_text}.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:227
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:238
     def summary_line?(text); end
 
     # The output as binary with ANSI colour codes removed. Binary, so bytes that
@@ -3100,14 +3188,14 @@ module Mutineer::ExternalBackend
     # @param output [String] captured child stdout+stderr.
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:285
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:296
     def summary_text(output); end
 
     # Last ~40 lines of captured output, for a smoke-failure message.
     #
     # @api private
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:428
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:469
     def tail(output, lines = T.unsafe(nil)); end
 
     # True when a recognized summary line is present and none shows a failing
@@ -3119,7 +3207,7 @@ module Mutineer::ExternalBackend
     # @param text [String] output from {summary_text}.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:274
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:285
     def tests_passed?(text); end
 
     # Existing shim directories for rbenv / asdf (chruby uses PATH without shims).
@@ -3127,7 +3215,7 @@ module Mutineer::ExternalBackend
     # @api private
     # @return [Array<String>] absolute shim paths that exist.
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:148
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:159
     def version_manager_shim_dirs; end
 
     # Waits for the spawned pid, SIGKILLing its process group past the deadline.
@@ -3139,7 +3227,7 @@ module Mutineer::ExternalBackend
     # @param timeout [Numeric] wall-clock deadline in seconds.
     # @return [Array(Symbol, Integer, nil)] `[:exited, code]` or `[:timeout, nil]`.
     #
-    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:397
+    # pkg:gem/mutineer#lib/mutineer/external_backend.rb:438
     def wait_with_timeout(pid, timeout); end
   end
 end
@@ -3159,7 +3247,7 @@ Mutineer::ExternalBackend::CANNOT_RUN_CODES = T.let(T.unsafe(nil), Array)
 # context does not leak. Spawn merges env onto the parent; omitting a key
 # does NOT clear it.
 #
-# pkg:gem/mutineer#lib/mutineer/external_backend.rb:79
+# pkg:gem/mutineer#lib/mutineer/external_backend.rb:90
 Mutineer::ExternalBackend::CLEAR_ENV_KEYS = T.let(T.unsafe(nil), Array)
 
 # The exit code Minitest, `bin/rails test` and RSpec use for a failing test.
@@ -3174,6 +3262,18 @@ Mutineer::ExternalBackend::FAILURE_CODE = T.let(T.unsafe(nil), Integer)
 #
 # pkg:gem/mutineer#lib/mutineer/external_backend.rb:57
 Mutineer::ExternalBackend::MINITEST_RUNNING = T.let(T.unsafe(nil), String)
+
+# The seed line Minitest prints before every run. Captures the seed.
+#
+# pkg:gem/mutineer#lib/mutineer/external_backend.rb:65
+Mutineer::ExternalBackend::MINITEST_SEED = T.let(T.unsafe(nil), Regexp)
+
+# A Minitest seed given on the command or in TESTOPTS (`SEED=N`, `--seed N`
+# `-s N` or `-sN`). Minitest prints its seed line for a fixed seed too, so
+# the line alone cannot tell.
+#
+# pkg:gem/mutineer#lib/mutineer/external_backend.rb:71
+Mutineer::ExternalBackend::MINITEST_SEED_GIVEN = T.let(T.unsafe(nil), Regexp)
 
 # The end-of-run summary line of Minitest 5 and 6 ("N runs") and of
 # minitest-reporters ("N tests"). Captures the failure and error counts.
@@ -3191,6 +3291,17 @@ Mutineer::ExternalBackend::POLL = T.let(T.unsafe(nil), Float)
 #
 # pkg:gem/mutineer#lib/mutineer/external_backend.rb:61
 Mutineer::ExternalBackend::RSPEC_OUTSIDE_ERROR = T.let(T.unsafe(nil), Regexp)
+
+# The seed line RSpec prints when it shuffles the tests. Captures the seed.
+#
+# pkg:gem/mutineer#lib/mutineer/external_backend.rb:67
+Mutineer::ExternalBackend::RSPEC_SEED = T.let(T.unsafe(nil), Regexp)
+
+# An RSpec seed given on the command or in SPEC_OPTS (`--seed N` or
+# `--order rand:N`). RSpec ignores SEED.
+#
+# pkg:gem/mutineer#lib/mutineer/external_backend.rb:74
+Mutineer::ExternalBackend::RSPEC_SEED_GIVEN = T.let(T.unsafe(nil), Regexp)
 
 # The end-of-run summary line of RSpec ("N examples, N failures").
 # Captures the failure count.
@@ -3212,7 +3323,7 @@ Mutineer::ExternalBackend::SMOKE_TIMEOUT = T.let(T.unsafe(nil), Integer)
 # PATH entries that pin a concrete Ruby under a version manager (ahead of
 # shims). Optional trailing slash; normal bins are left alone.
 #
-# pkg:gem/mutineer#lib/mutineer/external_backend.rb:67
+# pkg:gem/mutineer#lib/mutineer/external_backend.rb:78
 Mutineer::ExternalBackend::VERSION_BIN_PATH = T.let(T.unsafe(nil), Regexp)
 
 # Apply one whole-file mutant to the REAL source path for the external
@@ -3424,7 +3535,7 @@ class Mutineer::Isolation
     # @param source [String] full source text.
     # @return [Object] whatever `load` returns.
     #
-    # pkg:gem/mutineer#lib/mutineer/isolation.rb:252
+    # pkg:gem/mutineer#lib/mutineer/isolation.rb:253
     def apply_surgical(mutation, subject, source); end
 
     # Strategy 7a (default): write the whole mutated file and `load` it, which
@@ -3445,8 +3556,8 @@ class Mutineer::Isolation
     # A concern's stored `included` and `prepended` blocks from the source file
     # are forgotten around the load, so ActiveSupport accepts the blocks the
     # temp file stores (#256). For a def in such a block, the caller passes the
-    # text from {JobPlan.hook_mutant} and then calls
-    # {ConcernBlocks.place_hook_def} (#297).
+    # text and `hook_def` from {JobPlan.hook_mutant}, and the load places the
+    # mutated def (#297, #348).
     #
     # {ConcernBlocks.load_mutant} turns Ruby's warnings off for the load, so
     # the constants it assigns again do not warn (#364).
@@ -3454,10 +3565,11 @@ class Mutineer::Isolation
     # @api private
     # @param mutated [String] mutated source text.
     # @param source_file [String] original source file path.
+    # @param hook_def [Hash{Symbol => Object}, nil] see {ConcernBlocks.load_mutant}.
     # @return [Object] whatever `load` returns.
     #
-    # pkg:gem/mutineer#lib/mutineer/isolation.rb:206
-    def apply_whole_file(mutated, source_file); end
+    # pkg:gem/mutineer#lib/mutineer/isolation.rb:207
+    def apply_whole_file(mutated, source_file, hook_def: T.unsafe(nil)); end
 
     # Decodes a child status into a Result.
     #
@@ -3465,7 +3577,7 @@ class Mutineer::Isolation
     # @param status [Process::Status] child exit status.
     # @return [Mutineer::Result] decoded result.
     #
-    # pkg:gem/mutineer#lib/mutineer/isolation.rb:369
+    # pkg:gem/mutineer#lib/mutineer/isolation.rb:370
     def decode(status); end
 
     # Reads what the channel holds now, without blocking.
@@ -3517,7 +3629,7 @@ class Mutineer::Isolation
     # @param name [Symbol] method name.
     # @return [Symbol, nil] `:public`, `:protected`, `:private`, or nil.
     #
-    # pkg:gem/mutineer#lib/mutineer/isolation.rb:356
+    # pkg:gem/mutineer#lib/mutineer/isolation.rb:357
     def method_visibility(mod, name); end
 
     # The enclosing def with the mutation applied, wrapped in `class << self`
@@ -3530,7 +3642,7 @@ class Mutineer::Isolation
     # @param source [String] full source text.
     # @return [String] the mutated def.
     #
-    # pkg:gem/mutineer#lib/mutineer/isolation.rb:314
+    # pkg:gem/mutineer#lib/mutineer/isolation.rb:315
     def mutated_def(mutation, subject, source); end
 
     # Resolve each namespace ELEMENT to its live Module and pick the correct
@@ -3551,7 +3663,7 @@ class Mutineer::Isolation
     # @param namespace [Array<String>] class/module chain as written.
     # @return [Array<[String, String]>] wrapper keywords and names.
     #
-    # pkg:gem/mutineer#lib/mutineer/isolation.rb:341
+    # pkg:gem/mutineer#lib/mutineer/isolation.rb:342
     def nesting_keywords(namespace); end
 
     # Runs the block in a forked child. The block's return value (an Integer
@@ -3594,7 +3706,7 @@ class Mutineer::Isolation
     # @yieldparam path [String] absolute path of the written file.
     # @return [Object] whatever the block returns.
     #
-    # pkg:gem/mutineer#lib/mutineer/isolation.rb:227
+    # pkg:gem/mutineer#lib/mutineer/isolation.rb:228
     def write_beside(code, source_file, fallback: T.unsafe(nil)); end
   end
 end
@@ -3709,7 +3821,7 @@ module Mutineer::JobPlan
     # @return [Array(Symbol, Object)] `[:run, Array<String>]`, `[:maybe, Array<String>]`
     #   or `[:verdict, Result]`.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:261
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:262
     def coverage_selection(source_file, mutation, subject, source, coverage_map); end
 
     # --since: keep only jobs whose mutation lands on a line changed since the git
@@ -3718,15 +3830,16 @@ module Mutineer::JobPlan
     # no changed lines (absent from the diff) contributes no jobs. Line is computed
     # exactly as Runner.run does, from the already-read source in source_map.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:479
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:480
     def filter_since(jobs, source_map, config); end
 
     # The reload mutant text for a def in a concern's `included` or `prepended`
     # block (#297): the mutated file with one statement added just before the
     # hook call, `::Mutineer::ConcernBlocks.store_hook_def do <mutated def> end`.
     # The statement sits in the same body as the hook call, so the stored def has
-    # the block's constant scope. After the load, the child passes the hook-def
-    # values to {ConcernBlocks.place_hook_def}. Shared by {Runner.run} and
+    # the block's constant scope. The child passes the hook-def values to
+    # {ConcernBlocks.load_mutant}, which places the def when the load reaches
+    # that statement (#348). Shared by {Runner.run} and
     # {DaemonBackend.job_result}, so both build the same text. The hook call starts
     # before the def, so the mutation does not move its offset. A bad insert is
     # not checked here: the child's `load` raises `SyntaxError` before any test
@@ -3739,7 +3852,7 @@ module Mutineer::JobPlan
     # @return [Array(String, Hash{Symbol => Object})] the mutant text, and the
     #   original def's `line`, `name` and `singleton`.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:222
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:223
     def hook_mutant(mutated, mutation, subject, source); end
 
     # The operator set for one suppress-map entry. A Hash is the current shape
@@ -3749,7 +3862,7 @@ module Mutineer::JobPlan
     # @param entry [Hash, Symbol, Set, nil] one line's suppress-map value.
     # @return [Symbol, Set, nil] `:all`, the operator set, or nil.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:400
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:401
     def line_ops(entry); end
 
     # The reason text on one suppress-map entry, when the entry stores one.
@@ -3757,7 +3870,7 @@ module Mutineer::JobPlan
     # @param entry [Hash, Object] one line's suppress-map value.
     # @return [String, nil]
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:408
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:409
     def line_reason(entry); end
 
     # A survivor whose line ran at load becomes `ran_at_load` ({ran_at_load?});
@@ -3771,7 +3884,7 @@ module Mutineer::JobPlan
     # @param coverage_map [Mutineer::CoverageMap, nil] the coverage map.
     # @return [Mutineer::Result]
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:353
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:354
     def load_verdict(result, source_file, mutation, subject, source, coverage_map); end
 
     # Names the configured seed, and accounts for helper overrides.
@@ -3803,7 +3916,7 @@ module Mutineer::JobPlan
     # @param coverage_map [Mutineer::CoverageMap, nil] the coverage map.
     # @return [Boolean]
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:327
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:328
     def ran_at_load?(source_file, mutation, subject, source, coverage_map); end
 
     # One key per mutation; two mutations share a key exactly when they are on
@@ -3834,7 +3947,7 @@ module Mutineer::JobPlan
     # @return [Array(Array, Array<Mutineer::Result>, Integer), Array(Array, Array<Mutineer::Result>, nil)]
     #   the jobs to run, the ignored results to report, and the count before --since.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:464
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:465
     def scope_since(jobs, ignored_results, source_map, config); end
 
     # The verdict of a mutant whose tests {coverage_selection} chose as `:maybe`:
@@ -3850,7 +3963,7 @@ module Mutineer::JobPlan
     # @param result [Mutineer::Result] the mutant's verdict.
     # @return [Mutineer::Result]
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:301
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:302
     def selection_verdict(kind, result); end
 
     # The unique absolute directories holding the sources. Sweep target for both
@@ -3861,7 +3974,7 @@ module Mutineer::JobPlan
     # @param config [Mutineer::Config] run configuration.
     # @return [Array<String>] unique absolute source directories.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:518
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:519
     def source_dirs(config); end
 
     # Map each line number to `{ ops:, reason: }`, using inline
@@ -3878,7 +3991,7 @@ module Mutineer::JobPlan
     # @param file [String] the file name, for warnings.
     # @return [Hash{Integer => Hash}] line => `{ ops:, reason: }`.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:372
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:373
     def suppress_map(source, file); end
 
     # True when this mutant is suppressed: its line bears a disable-line marker
@@ -3889,7 +4002,7 @@ module Mutineer::JobPlan
     # @param ids [Array<String>, String] the mutant's new id and its old-format
     #   id, or a single id (the pre-#126 call shape).
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:419
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:420
     def suppressed?(operator, line, ids, disabled, ignore_set); end
 
     # Why an ignored mutant was suppressed. An inline reason wins. Otherwise
@@ -3902,7 +4015,7 @@ module Mutineer::JobPlan
     # @param ignore_reasons [Hash{String => String}] id => reason.
     # @return [String, nil]
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:438
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:439
     def suppression_reason(operator, line, ids, disabled, ignore_reasons); end
 
     # Removes stale mutant tempfiles from the given directories. The default
@@ -3916,14 +4029,14 @@ module Mutineer::JobPlan
     # @param glob [String] filename pattern to remove.
     # @return [Array<String>] the files left in place because a process owns them.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:532
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:533
     def sweep_orphans(dirs, glob = T.unsafe(nil)); end
 
     # For each test file, the directory to add to $LOAD_PATH so its
     # `require "test_helper"` (or spec_helper) resolves: the nearest ancestor
     # holding that helper, plus the file's own dir as a fallback.
     #
-    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:493
+    # pkg:gem/mutineer#lib/mutineer/job_plan.rb:494
     def test_load_roots(test_files); end
   end
 end
@@ -5895,7 +6008,7 @@ class Mutineer::Mutation < ::Data
   # pkg:gem/mutineer#lib/mutineer/mutation.rb:10
   def start_offset; end
 
-  # pkg:gem/mutineer#lib/mutineer/mutation.rb:23
+  # pkg:gem/mutineer#lib/mutineer/mutation.rb:24
   def valid?(source); end
 
   class << self
@@ -7740,8 +7853,21 @@ class Mutineer::Parser
     # @param source [String] source text.
     # @return [Array<Prism::Comment>] its comments, in source order.
     #
-    # pkg:gem/mutineer#lib/mutineer/parser.rb:41
+    # pkg:gem/mutineer#lib/mutineer/parser.rb:80
     def comments(source); end
+
+    # True when Ruby cannot load `source`: the loaded Prism reports a parse
+    # error and the running Ruby cannot compile the text either. Prism alone is
+    # not enough. Prism 2 reports a bare-constant operator write inside a
+    # method (`T += 1`) as a dynamic constant assignment, while the Prism 1
+    # that Ruby 3.4 and 4.0 load files with accepts it (#392). Compiling does
+    # not run the code.
+    #
+    # @param source [String] source text.
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/parser.rb:45
+    def invalid?(source); end
 
     # Parses a file with Prism.
     #
@@ -7759,8 +7885,26 @@ class Mutineer::Parser
     #
     # pkg:gem/mutineer#lib/mutineer/parser.rb:32
     def parse_string(source); end
+
+    private
+
+    # Whether the running Ruby compiles `source`, without running it. Mutineer
+    # forks, so it runs on CRuby, which has RubyVM. Warnings are off for the
+    # compile: a mutant can trigger one (`if a = 1`).
+    #
+    # @param source [String] source text.
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/parser.rb:61
+    def compiles?(source); end
   end
 end
+
+# Serializes {.compiles?}: it swaps the process-wide `$VERBOSE`, and
+# `--daemon` checks mutants on several threads.
+#
+# pkg:gem/mutineer#lib/mutineer/parser.rb:53
+Mutineer::Parser::COMPILE_LOCK = T.let(T.unsafe(nil), Thread::Mutex)
 
 # Coarse run progress on stderr: one line per 10% step of completed mutants
 # (which means every completion on a run smaller than ten). Shared by every
@@ -8446,10 +8590,10 @@ Mutineer::RailsRunEnv::PARALLEL_WORKERS = T.let(T.unsafe(nil), String)
 
 # Hides database credentials in text bound for a terminal: an error reply,
 # a log line, a warning. Rails parses DATABASE_URL itself, so an error about
-# a malformed one can quote the whole URL. Outside a URL a password of 3
-# characters or fewer is hidden only as a whole token, so it cannot blank
-# letters inside other words. A password that exactly equals the username is
-# left visible outside a URL, so `role "postgres"` stays readable.
+# a malformed one can quote the whole URL. Outside a URL a password form
+# made only of word characters is hidden only as a whole token, so it cannot
+# blank letters inside other words (#341). A password that exactly equals the
+# username is left visible outside a URL, so `role "postgres"` stays readable.
 #
 # Stdlib only: the app-side daemon loads this file without the rest of
 # mutineer.
@@ -8464,7 +8608,7 @@ module Mutineer::Redaction
   # @param url [String]
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:144
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:172
   def authority(url); end
 
   # Split DATABASE_URL into its `scheme://user:` head and its raw password.
@@ -8475,7 +8619,7 @@ module Mutineer::Redaction
   # @param url [String]
   # @return [Array(String, String), nil]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:127
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:155
   def database_url_parts(url); end
 
   # An exception as `Class: message`, redacted. Each part is redacted on its
@@ -8487,7 +8631,7 @@ module Mutineer::Redaction
   # @param error [Exception]
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:114
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:142
   def describe(error); end
 
   # The password as it may appear in a message: raw, percent-decoded, and
@@ -8497,7 +8641,7 @@ module Mutineer::Redaction
   # @param raw [String]
   # @return [Array<String>]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:167
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:195
   def password_forms(raw); end
 
   # The raw value of each `password=` query parameter, which Rails and libpq
@@ -8507,7 +8651,7 @@ module Mutineer::Redaction
   # @param url [String]
   # @return [Array<String>]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:157
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:185
   def query_passwords(url); end
 
   # Hide what follows each `head` while it matches the start of `secret`,
@@ -8519,31 +8663,35 @@ module Mutineer::Redaction
   # @param secret [String]
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:186
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:214
   def redact_prefixes(text, head, secret); end
 
   # Replace `form` in `text` only where it is a whole token: no ASCII word
-  # character touches either edge, including a punctuation edge.
+  # character touches either edge, including a punctuation edge. A form
+  # right after an {ESCAPE} also counts as a whole token, and the escape is
+  # kept. An escape may not start where a copy of the form starts, so it
+  # cannot swallow that copy (`%41%41` with password `%41`).
   #
   # @param text [String]
   # @param form [String] one form of the password.
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:101
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:128
   def redact_word(text, form); end
 
   # Hide the password in any URL, and the DATABASE_URL password (from its
   # `user:password@` pair and from its `password=` query parameter) wherever
   # it appears: whole, percent-decoded, `inspect` escaped, or cut short after
-  # its `scheme://user:` prefix. Outside a URL a form of {SHORT_FORM}
-  # characters or fewer is hidden only as a whole token. Never raises: text in
+  # its `scheme://user:` prefix. Outside a URL a form of word characters, or
+  # of {SHORT_FORM} characters or fewer, is hidden only as a whole token; a
+  # longer form with another character is hidden anywhere. Never raises: text in
   # any encoding comes back as UTF-8, and an internal error returns {FAILED}.
   #
   # @param text [#to_s]
   # @param env [Hash{String => String}] where DATABASE_URL is read.
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:44
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:67
   def text(text, env: T.unsafe(nil)); end
 
   # A UTF-8 copy of `str` that every pattern here can match. Valid UTF-8 and
@@ -8556,7 +8704,7 @@ module Mutineer::Redaction
   # @param str [String]
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/redaction.rb:86
+  # pkg:gem/mutineer#lib/mutineer/redaction.rb:110
   def utf8(str); end
 
   class << self
@@ -8566,7 +8714,7 @@ module Mutineer::Redaction
     # @param url [String]
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:144
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:172
     def authority(url); end
 
     # Split DATABASE_URL into its `scheme://user:` head and its raw password.
@@ -8577,7 +8725,7 @@ module Mutineer::Redaction
     # @param url [String]
     # @return [Array(String, String), nil]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:127
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:155
     def database_url_parts(url); end
 
     # An exception as `Class: message`, redacted. Each part is redacted on its
@@ -8589,7 +8737,7 @@ module Mutineer::Redaction
     # @param error [Exception]
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:114
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:142
     def describe(error); end
 
     # The password as it may appear in a message: raw, percent-decoded, and
@@ -8599,7 +8747,7 @@ module Mutineer::Redaction
     # @param raw [String]
     # @return [Array<String>]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:167
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:195
     def password_forms(raw); end
 
     # The raw value of each `password=` query parameter, which Rails and libpq
@@ -8609,7 +8757,7 @@ module Mutineer::Redaction
     # @param url [String]
     # @return [Array<String>]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:157
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:185
     def query_passwords(url); end
 
     # Hide what follows each `head` while it matches the start of `secret`,
@@ -8621,31 +8769,35 @@ module Mutineer::Redaction
     # @param secret [String]
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:186
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:214
     def redact_prefixes(text, head, secret); end
 
     # Replace `form` in `text` only where it is a whole token: no ASCII word
-    # character touches either edge, including a punctuation edge.
+    # character touches either edge, including a punctuation edge. A form
+    # right after an {ESCAPE} also counts as a whole token, and the escape is
+    # kept. An escape may not start where a copy of the form starts, so it
+    # cannot swallow that copy (`%41%41` with password `%41`).
     #
     # @param text [String]
     # @param form [String] one form of the password.
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:101
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:128
     def redact_word(text, form); end
 
     # Hide the password in any URL, and the DATABASE_URL password (from its
     # `user:password@` pair and from its `password=` query parameter) wherever
     # it appears: whole, percent-decoded, `inspect` escaped, or cut short after
-    # its `scheme://user:` prefix. Outside a URL a form of {SHORT_FORM}
-    # characters or fewer is hidden only as a whole token. Never raises: text in
+    # its `scheme://user:` prefix. Outside a URL a form of word characters, or
+    # of {SHORT_FORM} characters or fewer, is hidden only as a whole token; a
+    # longer form with another character is hidden anywhere. Never raises: text in
     # any encoding comes back as UTF-8, and an internal error returns {FAILED}.
     #
     # @param text [#to_s]
     # @param env [Hash{String => String}] where DATABASE_URL is read.
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:44
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:67
     def text(text, env: T.unsafe(nil)); end
 
     # A UTF-8 copy of `str` that every pattern here can match. Valid UTF-8 and
@@ -8658,40 +8810,486 @@ module Mutineer::Redaction
     # @param str [String]
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/redaction.rb:86
+    # pkg:gem/mutineer#lib/mutineer/redaction.rb:110
     def utf8(str); end
   end
 end
 
+# An escape or prefix that glues a word character to the left of a
+# password form in a message: `%40`, `\x41`, `\u0041`, `\u{41}`, `\101`,
+# `\n`, an ANSI code such as the colour Rails logs put on a span (raw,
+# escaped as `\e`, `\033`, `\x1b` or `\u001b`, or with its ESC byte
+# stripped), or a `-p` flag after a space, quote, bracket, comma or `=`
+# (`mysql -ps3cret`, `["-ps3cret"]`). A form right after one is still a
+# whole token.
+#
+# pkg:gem/mutineer#lib/mutineer/redaction.rb:52
+Mutineer::Redaction::ESCAPE = T.let(T.unsafe(nil), String)
+
 # What {text} returns when it fails: never the input, which may hold the
 # password.
 #
-# pkg:gem/mutineer#lib/mutineer/redaction.rb:24
+# pkg:gem/mutineer#lib/mutineer/redaction.rb:38
 Mutineer::Redaction::FAILED = T.let(T.unsafe(nil), String)
 
 # What replaces a hidden password.
 #
-# pkg:gem/mutineer#lib/mutineer/redaction.rb:21
+# pkg:gem/mutineer#lib/mutineer/redaction.rb:35
 Mutineer::Redaction::REDACTED = T.let(T.unsafe(nil), String)
 
-# The longest password form hidden only as a whole token. A longer form is
-# hidden wherever it appears, even glued to an escape such as `%40` or
-# `\x41`: failing toward hiding too much is safer for a long secret.
+# The longest password form hidden only as a whole token whatever its
+# characters. A longer form with a non-word character is hidden wherever
+# it appears, because its edges are no reliable token boundary.
 #
-# pkg:gem/mutineer#lib/mutineer/redaction.rb:30
+# pkg:gem/mutineer#lib/mutineer/redaction.rb:44
 Mutineer::Redaction::SHORT_FORM = T.let(T.unsafe(nil), Integer)
 
-# The password in a `scheme://user:password@host` URL. Greedy up to the last
-# `@` before an unescaped quote or line end, so a malformed password with a
-# space, an unescaped `@`, or a quote `inspect` escaped (`\"`) is hidden too.
+# The password in a `scheme://user:password@host` URL. It ends at the last
+# `@` before an unescaped quote or line end that starts a host: a run with
+# no `@`, then a `/`, `:`, `?` or `#`, and no other `@` before the next
+# space. So in `u:p@ss@h/db and p@ss` only `p@ss` is hidden (#341). With no
+# such `@`, it ends at the last `@`, as before. A malformed password with
+# an `@`, a `:`, a space, or a quote `inspect` escaped (`\"`) is hidden
+# too, so when the two goals conflict, hiding wins: in
+# `u:pw@h/x and y@h2/db` the text up to `h2` is hidden. One case still
+# shows part of a password: one that holds an `@`, a host, a `/`, `:`,
+# `?` or `#`, and a space (`a@b/c d`), in a URL whose own host has no
+# port, path or query, or has an `@` in them (`?n=ci@corp`).
 #
-# pkg:gem/mutineer#lib/mutineer/redaction.rb:19
+# pkg:gem/mutineer#lib/mutineer/redaction.rb:27
 Mutineer::Redaction::URL_PASSWORD = T.let(T.unsafe(nil), Regexp)
 
 # An ASCII word character, the edge a whole-token match must not touch.
 #
-# pkg:gem/mutineer#lib/mutineer/redaction.rb:26
+# pkg:gem/mutineer#lib/mutineer/redaction.rb:40
 Mutineer::Redaction::WORD_CHAR = T.let(T.unsafe(nil), String)
+
+# Lets the reload strategy run a Rails class body a second time.
+#
+# Reload `load`s the mutant file over a class that is already defined, so the
+# class body runs again. Two Rails macros refuse that:
+#
+# - `enum` raises because the enum's methods already exist (#378).
+# - `skip_callback` (and `skip_before_action`, which calls it) raises because
+#   the first run already removed the callback (#384).
+#
+# While {.during_load} runs, an `enum` the class had before the load skips
+# its conflict check, and `skip_callback` does not raise for a callback the
+# first run already removed (see {CallbackReskipping}).
+# The original file ran the same macros once with the full checks, so the
+# second run repeats work Rails already accepted. Outside the load, for
+# example while the tests run, both macros check as usual.
+#
+# {.during_load} also loads the original file first when the app autoloads it
+# and nothing has loaded it yet (#383). Ruby would do that anyway when the
+# mutant reopens the constant, but inside the load, after
+# {ConcernBlocks.forget}, so the concern's original `included` block would
+# come back and the mutant's block would raise `MultipleIncludedBlocks`.
+#
+# A second run of the class body also adds each block callback, lambda
+# callback and validator again. Rails replaces a repeated callback only when
+# it names a method. So {.during_load} removes the original's copy of each
+# one the load added again (see {RepeatedCallbacks}, #390). Otherwise a
+# `validates` or a `before_save do ... end` would run twice in every mutant
+# of the file, and a test that counts errors or side effects would give a
+# false kill.
+#
+# Call it only in a forked child that loads the mutant: it prepends onto
+# Rails modules in that process. Without Rails it only runs the block.
+#
+# Stdlib-only, so the app-side daemon can load it.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:40
+module Mutineer::ReloadGuards
+  class << self
+    # `defined?` does not load an autoloaded constant, but using it does.
+    #
+    # @return [Boolean] true when `ActiveSupport::Callbacks` is loaded, not
+    #   only set to autoload.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:527
+    def callbacks_loaded?; end
+
+    # Loads the original file if the app autoloads it, then runs the block that
+    # loads the mutant with the guards on. After the block, removes the
+    # original's copy of each callback and validator the load added again.
+    #
+    # @param source_file [String] the file the mutant replaces.
+    # @param mutant_path [String, nil] the file the block loads.
+    # @yield the mutant's load.
+    # @return [Object] what the block returns.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:90
+    def during_load(source_file, mutant_path = T.unsafe(nil)); end
+
+    # Whether `klass` had the enum before this load. Rails records a new enum
+    # after its first conflict check, so the answer is read once, at the first
+    # check of each enum, and kept for the rest of the load.
+    #
+    # @param klass [Class] the model declaring the enum.
+    # @param enum_name [Symbol, String] the enum being declared.
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:480
+    def enum_existed?(klass, enum_name); end
+
+    # Prepends the guards once, onto the Rails modules this process has loaded.
+    # A module Rails only set to autoload stays unloaded, so the mutant run
+    # sees the same Ruby as the clean run.
+    #
+    # @return [void]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:514
+    def install!; end
+
+    # Asks each Rails autoloader for the constant `source_file` defines. A
+    # loader that does not manage the file raises `Zeitwerk::Error`; the next
+    # one is asked. A managed file that does not define the constant Zeitwerk
+    # expects raises `Zeitwerk::NameError`, a `NameError`; the mutant load goes
+    # on as before. A file already loaded only costs a constant lookup.
+    # Autoload roots are real paths, so the loaders get the real path.
+    #
+    # @param source_file [String] the file the mutant replaces.
+    # @return [void]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:547
+    def load_original(source_file); end
+
+    # True while a mutant file loads.
+    #
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:78
+    def loading?; end
+
+    # @param target [Module] the Rails module.
+    # @param guard [Module] the guard to put in front of it.
+    # @return [void]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:534
+    def prepend_once(target, guard); end
+
+    # True when every filter of this skip is a method `klass` has, or a callback
+    # of that kind on chain `name` that the superclass still has. The kind is
+    # optional and defaults to `:before`, as in Rails. With no filters there is
+    # nothing to compare, so false.
+    #
+    # @param klass [Class] the class calling `skip_callback`.
+    # @param name [Symbol] the callback chain, such as `:save`.
+    # @param args [Array] the optional kind, then the filters.
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:497
+    def repeated_skip?(klass, name, *args); end
+  end
+end
+
+# The callback kinds `skip_callback` takes before its filters.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:486
+Mutineer::ReloadGuards::CALLBACK_KINDS = T.let(T.unsafe(nil), Array)
+
+# Makes a repeated skip a no-op, during a mutant load only. The class body
+# outside methods is the original's, and the original's first run already
+# removed the callback from this class, so a skip there is a repeat. It
+# counts as one when each filter is a method the class has (a callback the
+# parent or an included concern installed) or a callback the parent still
+# has. A skip that names neither keeps Rails' check and still raises
+# (scored `error`), so a typo is not hidden.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:62
+module Mutineer::ReloadGuards::CallbackReskipping
+  # @param name [Symbol] the callback chain, such as `:save`.
+  # @param filter_list [Array] the kind, the filters, and options.
+  # @return [void]
+  #
+  # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:66
+  def skip_callback(name, *filter_list, &block); end
+end
+
+# Skips the conflict check for an enum the class defined before the mutant
+# load began, during that load only.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:43
+module Mutineer::ReloadGuards::EnumRedeclaration
+  private
+
+  # @param enum_name [Symbol, String] the enum being declared.
+  # @return [void]
+  #
+  # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:48
+  def detect_enum_conflict!(enum_name, *); end
+end
+
+# Puts back one copy of each callback and validator that a second run of a
+# class body added again (#390).
+#
+# Each class body the load runs again appends its block callbacks, lambda
+# callbacks and validators a second time. Rails drops the old copy only of
+# a callback that names a method, and appends the new one at the end. For
+# each class whose chains the load changed, {.replacements} pairs each
+# entry the load added to the class's own chain with the class's own entry
+# from before the load that it repeats. {.restore} then puts each new entry
+# where its old entry was and drops the old one, in every changed chain and
+# in `_validators`. So each macro runs once, in its original order.
+#
+# An included concern adds its entries to the class, and the reload does
+# not run its block again, so it adds no new copy of them. Its entries can
+# look like the class body's own, so entries pair first with old entries
+# that are the same ({.same?}): a validator with equivalent options, a
+# lambda that captured equivalent values, a block from the same place in
+# the code. They pair only when there are as many old ones as new ones
+# ({.exact_pairs}). An entry left over, such as a `validates` whose options come
+# from a method the mutant changed, pairs by {.key} only when no concern
+# entry could be the one it repeats ({.by_key}). Otherwise both copies stay,
+# as before this fix.
+#
+# ActiveSupport gives a class a new chain object each time a callback is
+# added or skipped, so a class whose chain objects all stay the same was
+# not changed by the load and is skipped.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:129
+module Mutineer::ReloadGuards::RepeatedCallbacks
+  class << self
+    # Where a block sits in the code: the file and Ruby's label for it, such
+    # as "block in <class:Parcel>", plus the line for a file the load did
+    # not run. The source file and the mutant file count as one file, and
+    # their lines are left out, because a mutant can move lines.
+    #
+    # @param block [Proc]
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @return [Array]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:420
+    def block_key(block, reloaded); end
+
+    # Pairs the entries no exact match took, by {.key}, but only for a key
+    # with as many old entries left as new ones. More old entries means an
+    # included concern added some of them, and a guess could drop the
+    # concern's entry. Those keep both copies, as before #390.
+    #
+    # @param added [Array] new entries with no exact match.
+    # @param pool [Array] old entries no exact match took.
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @return [Array<Array(Object, Object)>] each old entry and the new entry that replaces it.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:227
+    def by_key(added, pool, reloaded); end
+
+    # The block's receiver and the values it captured, or nil when Ruby
+    # cannot show them. The receiver tells apart `method(:x).to_proc` of
+    # two objects; a class body's blocks share the class as receiver.
+    #
+    # @param block [Proc]
+    # @return [Array, nil]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:405
+    def captured(block); end
+
+    # @param callback [Object] an ActiveSupport callback.
+    # @return [Array] its `if:` and `unless:` conditions, as ActiveSupport
+    #   keeps them (empty lists when it keeps none).
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:299
+    def conditions(callback); end
+
+    # True when two values would make the same callback or validator. Each
+    # run of a class body builds new blocks, so a block matches another
+    # from the same place in the code ({.block_key}) that captured
+    # equivalent values. Hashes and arrays match element by element. A class
+    # or module matches only itself. Other objects, such as a validator or a
+    # callback object, match when they are equal, or of one class with
+    # equivalent instance variables. Past {EQUIVALENT_DEPTH} levels nothing
+    # matches, so a deep object pairs only by key ({.by_key}).
+    #
+    # A pair already being compared, such as a lambda that captures itself
+    # (Rails's `belongs_to touch:` lambda does), counts as a match: nothing
+    # else in it differs. Each answer is kept in `seen`, so a value many
+    # blocks capture is compared once. A value that cannot be compared, such
+    # as the proxy `with_options` yields, matches nothing, so both copies stay.
+    #
+    # @param left [Object]
+    # @param right [Object]
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @param depth [Integer] levels already compared.
+    # @param seen [Hash{Array => Boolean, Symbol}] each pair's answer, or
+    #   `:open` while it is being compared, by object id.
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:328
+    def equivalent?(left, right, reloaded, depth = T.unsafe(nil), seen = T.unsafe(nil)); end
+
+    # Pairs new entries with the old entries that are the same ({.same?}),
+    # in order, but only when there are as many old ones as new ones. The
+    # class body can add a callback once only (`@done ||= ...`), or a
+    # concern can hold a look-alike, so a different count keeps both
+    # copies, as before #390. Removes the paired old entries from `pool`.
+    #
+    # @param added [Array] the entries the load added.
+    # @param pool [Array] the old entries that could be repeated.
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @return [Array<Array(Object, Object)>] each old entry and the new entry that replaces it.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:202
+    def exact_pairs(added, pool, reloaded); end
+
+    # A set that compares by identity. Building it first keeps entries that
+    # are equal by value but not the same object.
+    #
+    # @param list [Array]
+    # @return [Set]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:458
+    def identity_set(list); end
+
+    # What two entries share when they are copies of one macro call, apart
+    # from its arguments. A callback that names a method matches the same
+    # name. A block or lambda matches by {.block_key}. A validator matches by
+    # class and attributes.
+    #
+    # @param callback [Object] an ActiveSupport callback.
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @return [Array]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:435
+    def key(callback, reloaded); end
+
+    # @param file [String]
+    # @return [String] the real path, so a symlinked path still matches.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:464
+    def real_path(file); end
+
+    # Keeps one copy of each entry the load added again.
+    #
+    # @param before [Hash] the {.snapshot} from before the load.
+    # @param files [Array<String>] the source file and the mutant file. A
+    #   block from either one counts as a block from the same file.
+    # @return [void]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:147
+    def remove(before, files); end
+
+    # @param old [Array] the chain's entries before the load.
+    # @param now [Array] its entries after the load.
+    # @param swap [Hash{Object => Object}] each old entry to its new entry.
+    # @return [Array] `old` with each new entry swapped in, then the other new entries.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:272
+    def reorder(old, now, swap); end
+
+    # Pairs each entry the load added to `klass`'s own chains with the old
+    # entry it repeats: first with old entries that are the same
+    # ({.exact_pairs}), then by key.
+    #
+    # @param klass [Class] a class whose chains the load changed.
+    # @param old [Hash{Class => Hash{Symbol => Array}}] each class's entries before the load.
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @return [Array<Array(Object, Object)>] each old entry and the new entry that replaces it.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:177
+    def replacements(klass, old, reloaded); end
+
+    # Rebuilds each changed chain in its order from before the load, with
+    # each old entry swapped for its new entry, and entries the load added
+    # unpaired at the end. Swaps each validator in `_validators` the same way.
+    #
+    # @param changed [Array<Class>] the classes whose chains the load changed.
+    # @param old [Hash{Class => Hash{Symbol => Array}}] each class's entries before the load.
+    # @param swap [Hash{Object => Object}] each old entry to its new entry.
+    # @return [void]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:243
+    def restore(changed, old, swap); end
+
+    # True when two entries come from the same macro call with the same
+    # arguments: the same kind, and filters and `if:`/`unless:` conditions
+    # that are {.equivalent?}. A concern and the class body can add one
+    # callback class under different conditions; those are different entries.
+    #
+    # @param old_entry [Object] an ActiveSupport callback from before the load.
+    # @param new_entry [Object] one the load added.
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @param seen [Hash] answers already found ({.equivalent?}).
+    # @return [Boolean]
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:291
+    def same?(old_entry, new_entry, reloaded, seen = T.unsafe(nil)); end
+
+    # @param left [Proc]
+    # @param right [Proc]
+    # @param reloaded [Array<String>] real paths of the source and mutant files.
+    # @param same [Proc] compares two values one level deeper.
+    # @return [Boolean] true for blocks from the same place in the code that
+    #   captured equivalent values. A block with no source, such as
+    #   `&:save` or `method(:x).to_proc`, matches only itself.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:379
+    def same_block?(left, right, reloaded, same); end
+
+    # @param left [Proc]
+    # @param right [Proc] a block from the same place in the code.
+    # @param same [Proc] compares two values one level deeper.
+    # @return [Boolean] true when both captured equivalent values. The list
+    #   itself is not a level, so blocks that capture each other in a loop
+    #   reach the pair already being compared before the depth limit.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:391
+    def same_captures?(left, right, same); end
+
+    # @param now [Hash{Symbol => Object}] a class's chains after the load.
+    # @param before [Hash{Symbol => Object}] its chains before the load.
+    # @return [Boolean] true when every chain is the same object as before.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:165
+    def same_chains?(now, before); end
+
+    # @param left [Object]
+    # @param right [Object] an object of the same class.
+    # @param same [Proc] compares two values one level deeper.
+    # @return [Boolean] true when the instance variables both have are
+    #   equivalent. One of them can hold a value the other has not cached
+    #   yet, such as a Rails reflection's memoized lookups, so the others are
+    #   skipped.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:365
+    def same_state?(left, right, same); end
+
+    # Every loaded class with ActiveSupport callbacks, with its chain objects.
+    #
+    # @return [Hash{Class => Hash{Symbol => Object}}] empty without ActiveSupport.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:133
+    def snapshot; end
+
+    # @param list [Array]
+    # @param others [Array]
+    # @return [Array] the entries of `list` that are not in `others`, by identity.
+    #
+    # pkg:gem/mutineer#lib/mutineer/reload_guards.rb:448
+    def without(list, others); end
+  end
+end
+
+# How deep {.equivalent?} looks into objects before it gives up.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:304
+Mutineer::ReloadGuards::RepeatedCallbacks::EQUIVALENT_DEPTH = T.let(T.unsafe(nil), Integer)
+
+# `Kernel#instance_of?`, unbound, for the same reason.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:353
+Mutineer::ReloadGuards::RepeatedCallbacks::INSTANCE_OF = T.let(T.unsafe(nil), UnboundMethod)
+
+# `Kernel#class`, unbound, for the same reason.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:356
+Mutineer::ReloadGuards::RepeatedCallbacks::KERNEL_CLASS = T.let(T.unsafe(nil), UnboundMethod)
+
+# `BasicObject#equal?`, unbound, so a proxy cannot answer for its target.
+#
+# pkg:gem/mutineer#lib/mutineer/reload_guards.rb:350
+Mutineer::ReloadGuards::RepeatedCallbacks::SAME_OBJECT = T.let(T.unsafe(nil), UnboundMethod)
 
 # Renders an AggregateResult: the summary block, mutation score, and per-file
 # survivor diffs. Stream discipline: the report goes to `out` (stdout),
@@ -8717,7 +9315,7 @@ class Mutineer::Reporter
   # errored, timed out, or uncapturable, fail the gate so a broken harness
   # cannot green CI under --threshold.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:177
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:178
   def exit_code(threshold:); end
 
   # Renders the human report.
@@ -8729,7 +9327,7 @@ class Mutineer::Reporter
   # @param scoped [Boolean] the run was diff-scoped (`--since`).
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:155
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:156
   def human_report(out, err, threshold, declined: T.unsafe(nil), scoped: T.unsafe(nil)); end
 
   # Single entry point. Branches on `format` ("human" | "json" | "html") and
@@ -8782,21 +9380,21 @@ class Mutineer::Reporter
   # @api private
   # @return [Integer] killed + survived + no-verdict.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:887
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:888
   def attempted_count; end
 
   # The same delta facts the human report prints, for dashboards. new_survivors
   # reuse the mutant_json shape (subject/file/line/operator/token/id) and sort
   # byte-stably so output does not depend on --jobs finish order.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:618
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:619
   def baseline_json(delta); end
 
   # The --baseline delta, appended after the normal report. Names every NEW
   # survivor (subject (file:line) operator) and the score delta when it dropped,
   # then a one-line REGRESSION/OK verdict so CI logs show which gate fired.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:949
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:950
   def baseline_section(out, delta); end
 
   # Human-readable counts of the states that produced no verdict. Used by both
@@ -8805,7 +9403,7 @@ class Mutineer::Reporter
   # @api private
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:917
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:918
   def broken_counts_detail; end
 
   # True when nil score is due to errors/timeouts/uncapturable (gate must fail).
@@ -8813,7 +9411,7 @@ class Mutineer::Reporter
   # @api private
   # @return [Boolean]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:850
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:851
   def broken_nil_score?; end
 
   # Mutants that were attempted but produced no verdict, over everything
@@ -8823,7 +9421,7 @@ class Mutineer::Reporter
   # @api private
   # @return [Boolean] true when too much of the run failed to produce a verdict.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:861
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:862
   def broken_share_exceeded?; end
 
   # The `-` or `+` lines of one side. A line with no newline is the file's
@@ -8834,7 +9432,7 @@ class Mutineer::Reporter
   # @param lines [Array<String>] the side's lines, with their endings.
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:701
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:702
   def diff_body(sign, lines); end
 
   # Builds a line-aligned diff for a mutation whose byte range may span several
@@ -8842,12 +9440,12 @@ class Mutineer::Reporter
   # mutation's 1-based start line, the full original line-block it touches, the
   # spliced mutated block, and a single-line token label for the header.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:756
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:757
   def diff_for(m, source); end
 
   # HTML-escapes any text destined for the document (stdlib CGI).
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:613
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:614
   def esc(text); end
 
   # One self-contained HTML file (inline CSS, no external assets): the overall
@@ -8857,7 +9455,7 @@ class Mutineer::Reporter
   # survivor_json/per_source_json so one run yields one set of facts regardless
   # of --format.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:305
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:306
   def html_report; end
 
   # One side of a unified diff hunk header: `start` for one line, else
@@ -8868,7 +9466,7 @@ class Mutineer::Reporter
   # @param lines [Array<String>] the block's lines.
   # @return [String] the range, e.g. "3", "3,2" or "2,0".
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:712
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:713
   def hunk_range(start_line, lines); end
 
   # Ignored mutants, each with its id and its reason when the user gave one.
@@ -8876,7 +9474,7 @@ class Mutineer::Reporter
   # @api private
   # @return [String] HTML, or "" when none were ignored.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:414
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:415
   def ignored_html; end
 
   # One ignored mutant. `reason` is present only when the user wrote one.
@@ -8885,7 +9483,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] an ignored result.
   # @return [Hash]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:723
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:724
   def ignored_json(result); end
 
   # Canonical machine-readable schema. survivors/no_coverage are sorted by
@@ -8904,7 +9502,7 @@ class Mutineer::Reporter
   #   candidates that operator did not mutate (additive `summary.declined`
   #   and `summary.declined_by_operator` keys).
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:213
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:214
   def json_report(baseline = T.unsafe(nil), scoped: T.unsafe(nil), legacy_id_matches: T.unsafe(nil), declined: T.unsafe(nil)); end
 
   # The counts sentence both matrix renderers open with.
@@ -8912,7 +9510,7 @@ class Mutineer::Reporter
   # @api private
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:596
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:597
   def matrix_counts_line; end
 
   # The kill-matrix section of the HTML report: the counts, then the blind and
@@ -8921,7 +9519,7 @@ class Mutineer::Reporter
   # @api private
   # @return [String] HTML.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:437
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:438
   def matrix_html; end
 
   # Every incomplete row of the HTML kill-matrix section.
@@ -8929,7 +9527,7 @@ class Mutineer::Reporter
   # @api private
   # @return [String] HTML.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:454
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:455
   def matrix_incomplete_html; end
 
   # The warning both matrix renderers give when a row is incomplete.
@@ -8937,7 +9535,7 @@ class Mutineer::Reporter
   # @api private
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:606
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:607
   def matrix_incomplete_note; end
 
   # The human report's warning about incomplete rows, with the first
@@ -8947,7 +9545,7 @@ class Mutineer::Reporter
   # @param out [IO] output stream.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:542
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:543
   def matrix_incomplete_section(out); end
 
   # The JSON `matrix` block: every test with its kill count, one row per
@@ -8958,7 +9556,7 @@ class Mutineer::Reporter
   # @api private
   # @return [Hash] the matrix JSON object.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:466
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:467
   def matrix_json; end
 
   # One titled list of tests in the human kill-matrix section, cut at
@@ -8970,7 +9568,7 @@ class Mutineer::Reporter
   # @param tests [Array<Array(String, String, String)>] `[file, name, id]` tests.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:584
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:585
   def matrix_list(out, title, tests); end
 
   # One mutant's row under `matrix.mutants`.
@@ -8980,7 +9578,7 @@ class Mutineer::Reporter
   # @param index [Hash{Array => Integer}] test => its index in `matrix.tests`.
   # @return [Hash] the row JSON object.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:507
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:508
   def matrix_row_json(result, index); end
 
   # A row's label: subject, place, operator, status and id.
@@ -8989,7 +9587,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] a result with a {Kills} row.
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:556
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:557
   def matrix_row_label(result); end
 
   # The kill-matrix section of the human report.
@@ -8998,7 +9596,7 @@ class Mutineer::Reporter
   # @param out [IO] output stream.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:523
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:524
   def matrix_section(out); end
 
   # The fields that name one mutant, for the lists that point at mutants:
@@ -9009,7 +9607,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] the mutant result.
   # @return [Hash] subject, file, line, operator, token, and id.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:737
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:738
   def mutant_json(result); end
 
   # Mutants that were attempted and produced no verdict, whatever the reason.
@@ -9017,7 +9615,7 @@ class Mutineer::Reporter
   # @api private
   # @return [Integer] errored + timed out + uncapturable.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:871
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:872
   def no_verdict_count; end
 
   # An entry under the JSON `no_verdict:` key: an attempted mutant with no verdict.
@@ -9029,7 +9627,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] an errored or timed-out result.
   # @return [Hash] no-verdict JSON object.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:779
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:780
   def no_verdict_json(result); end
 
   # The sentence both the verdict line and the stderr note are built from, so a
@@ -9038,7 +9636,7 @@ class Mutineer::Reporter
   # @api private
   # @return [String] e.g. "90 of 100 attempted mutants produced no verdict (90.0%, limit 10%)".
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:906
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:907
   def no_verdict_ratio; end
 
   # One line per source after the global summary, so a multi-source run shows
@@ -9048,12 +9646,12 @@ class Mutineer::Reporter
   # @param out [IO] output stream.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:931
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:932
   def per_source(out); end
 
   # The per-source breakdown table.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:370
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:371
   def per_source_html(per_source); end
 
   # Builds per-source JSON.
@@ -9063,7 +9661,7 @@ class Mutineer::Reporter
   # @param agg [Mutineer::AggregateResult] source aggregate.
   # @return [Hash] per-source JSON object.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:643
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:644
   def per_source_json(file, agg); end
 
   # Source text, a method name or a file path made safe for a terminal (#163):
@@ -9076,7 +9674,7 @@ class Mutineer::Reporter
   # @param text [String] source text.
   # @return [String] the text with control characters and invalid bytes escaped.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1031
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1032
   def printable(text); end
 
   # The 1-based line of a result's mutation, or nil without one (a pre-fork
@@ -9086,7 +9684,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] any result.
   # @return [Integer, nil]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:568
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:569
   def result_line(result); end
 
   # Writes the score line.
@@ -9095,7 +9693,7 @@ class Mutineer::Reporter
   # @param err [IO] error stream.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:826
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:827
   def score_line(out, err); end
 
   # One side of the diff as the file holds it: the {#diff_for} block plus the
@@ -9108,7 +9706,7 @@ class Mutineer::Reporter
   # @param at_eof [Boolean] no newline follows the block in the file.
   # @return [Array<String>] its lines, with their endings.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:690
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:691
   def side_lines(block, at_eof); end
 
   # The source text of `file`: the run's copy when it has one, else the file
@@ -9118,7 +9716,7 @@ class Mutineer::Reporter
   # @param file [String] source file path.
   # @return [String] source text.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1020
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1021
   def source_for(file); end
 
   # Writes the summary block.
@@ -9129,12 +9727,12 @@ class Mutineer::Reporter
   #   narrow the declined count.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:797
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:798
   def summary(out, declined: T.unsafe(nil), scoped: T.unsafe(nil)); end
 
   # The summary counts block for the HTML header.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:356
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:357
   def summary_html; end
 
   # Writes one survivor entry.
@@ -9144,7 +9742,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] survivor result.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1003
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1004
   def survivor(out, file, result); end
 
   # Builds survivor JSON.
@@ -9153,7 +9751,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] survivor result.
   # @return [Hash] survivor JSON object.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:656
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:657
   def survivor_json(result); end
 
   # Writes the survivors block.
@@ -9161,13 +9759,13 @@ class Mutineer::Reporter
   # @param out [IO] output stream.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:983
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:984
   def survivors(out); end
 
   # The surviving-mutants list, each with subject, location, operator, stable
   # id, and a colorized diff. All text is HTML-escaped.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:390
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:391
   def survivors_html(survivors); end
 
   # One test as JSON: its file, display name and id.
@@ -9176,7 +9774,7 @@ class Mutineer::Reporter
   # @param test [Array(String, String, String)] a `[file, name, id]` test.
   # @return [Hash]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:484
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:485
   def test_json(test); end
 
   # A test's name for people: the display name, plus the id when it differs
@@ -9187,7 +9785,7 @@ class Mutineer::Reporter
   # @param test [Array(String, String, String)] a `[file, name, id]` test.
   # @return [String]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:496
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:497
   def test_label(test); end
 
   # Orders mutants in one file: by offset, then operator and replacement, so
@@ -9196,7 +9794,7 @@ class Mutineer::Reporter
   # @param result [Mutineer::Result] a result with a mutation.
   # @return [Array] the sort key.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:974
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:975
   def tie_key(result); end
 
   # Whether the unrun mutants (unplaceable plus skipped invalid) are more than
@@ -9205,7 +9803,7 @@ class Mutineer::Reporter
   # @api private
   # @return [Boolean] true when the unrun-share warning applies.
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:896
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:897
   def unrun_share_exceeded?; end
 
   # Writes the final verdict line.
@@ -9214,7 +9812,7 @@ class Mutineer::Reporter
   # @param threshold [Float] score threshold.
   # @return [void]
   #
-  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1042
+  # pkg:gem/mutineer#lib/mutineer/reporter.rb:1043
   def verdict(out, threshold); end
 end
 
@@ -9441,7 +10039,7 @@ class Mutineer::Runner
     # before the app boots. Otherwise it boots development and nothing is measured.
     # An explicitly-set RAILS_ENV is always respected.
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:340
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:356
     def ensure_rails_env(config); end
 
     # Full orchestration: resolve operators, discover subjects, build the
@@ -9489,7 +10087,7 @@ class Mutineer::Runner
     # @param config [Mutineer::Config] run configuration.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:324
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:340
     def preload_owners(config); end
 
     # Rewrites the test files of a result's {Kills} row relative to the project
@@ -9501,7 +10099,7 @@ class Mutineer::Runner
     # @param root [String] project root.
     # @return [Mutineer::Result]
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:420
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:435
     def relative_kills(result, root); end
 
     # Runs a single mutation through isolation.
@@ -9519,7 +10117,7 @@ class Mutineer::Runner
     #   attach the {Kills} row, with project-relative test files.
     # @return [Mutineer::Result] mutant result.
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:362
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:378
     def run(mutation, source_file:, coverage_map: T.unsafe(nil), subject: T.unsafe(nil), strategy: T.unsafe(nil), timeout: T.unsafe(nil), rails: T.unsafe(nil), framework: T.unsafe(nil), matrix: T.unsafe(nil)); end
 
     # Runs one mutant through the external backend: apply the whole-file mutation
@@ -9531,7 +10129,7 @@ class Mutineer::Runner
     # @param check_summary [Boolean] passed to {ExternalBackend.run}.
     # @return [Mutineer::Result] verdict for this mutant.
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:304
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:320
     def run_external(subject, mutation, command, abs_tests, timeout:, verbose:, check_summary:); end
 
     # Makes every {Kills} row refer to one shared, frozen array per test. Each
@@ -9548,7 +10146,7 @@ class Mutineer::Runner
     # @param results [Array<Mutineer::Result>] mutant results.
     # @return [Array<Mutineer::Result>]
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:443
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:458
     def share_tests(results); end
 
     # A `--matrix` error that carries no {Kills} row (the worker crashed, or its
@@ -9568,7 +10166,7 @@ class Mutineer::Runner
     # whenever the transaction exists, regardless of when it opened. Any probe
     # error degrades safe to false -> caller clears (existing behaviour).
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:530
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:545
     def fixture_transaction_open?(base); end
 
     # The absolute path of a project file `require` can load: as given, or
@@ -9581,7 +10179,7 @@ class Mutineer::Runner
     # @raise [ArgumentError] when Ruby cannot expand the path.
     # @return [String]
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:483
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:498
     def project_file!(root, path); end
 
     # Reconnects ActiveRecord in a forked child when available.
@@ -9589,7 +10187,7 @@ class Mutineer::Runner
     # @api private
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:459
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:474
     def reconnect_active_record; end
 
     # Require one project file in the tool process. A failure becomes a
@@ -9604,7 +10202,7 @@ class Mutineer::Runner
     # @raise [ProjectLoadError] when the file raises while it loads.
     # @return [void]
     #
-    # pkg:gem/mutineer#lib/mutineer/runner.rb:503
+    # pkg:gem/mutineer#lib/mutineer/runner.rb:518
     def require_project_file(root, path); end
   end
 end
