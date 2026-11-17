@@ -16,6 +16,10 @@ module Homepage
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets dev tasks])
 
+    # ActiveStorage keeps the previewer classes it boots with, so a
+    # reloaded previewer would never reach it.
+    config.autoload_once_paths << "#{root}/app/previewers"
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

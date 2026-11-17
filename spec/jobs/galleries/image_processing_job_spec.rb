@@ -65,3 +65,34 @@ RSpec.describe Galleries::ImageProcessingJob, "#perform" do
     described_class.new.perform(image)
   end
 end
+
+RSpec.describe Galleries::ImageProcessingJob, "concurrency" do
+  it "runs one video poster at a time" do
+    first_video = build(:galleries_image, :webm)
+    second_video = build(:galleries_image, :webm)
+
+    first_key = described_class.new(first_video).concurrency_key
+    second_key = described_class.new(second_video).concurrency_key
+
+    expect(first_key).to eq(second_key)
+    expect(described_class.concurrency_limit).to eq(1)
+  end
+
+  it "does not hold still images behind video posters" do
+    video = build(:galleries_image, :webm)
+    first_image = build_stubbed(:galleries_image)
+    second_image = build_stubbed(:galleries_image)
+
+    keys = [video, first_image, second_image].map do |image|
+      described_class.new(image).concurrency_key
+    end
+
+    expect(keys.uniq.size).to eq(3)
+  end
+
+  it "holds the lock longer than the default period" do
+    duration = described_class.concurrency_duration
+
+    expect(duration).to eq(15.minutes)
+  end
+end
