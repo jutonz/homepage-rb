@@ -17,7 +17,14 @@ module Galleries
         <div class="flex justify-center">
           <% if @image.video? %>
             <div class="relative" data-role="video-thumbnail">
-              <%= image_tag(@image.poster) %>
+              <% if @image.poster_processed? %>
+                <%= image_tag(@image.poster) %>
+              <% else %>
+                <div
+                  data-role="video-poster-placeholder"
+                  class="size-50 bg-gray-700"
+                ></div>
+              <% end %>
               <span
                 data-role="video-overlay"
                 class="absolute inset-0 flex items-center

@@ -165,6 +165,11 @@ module Galleries
     sig { returns(ActiveStorage::Preview) }
     def poster = file.preview(resize_to_limit: THUMB_SIZE)
 
+    sig { returns(T::Boolean) }
+    def poster_processed?
+      T.must(file.blob).preview_image.attached?
+    end
+
     sig { returns(T.nilable(T::Boolean)) }
     def calculate_perceptual_hash!
       return if video?
