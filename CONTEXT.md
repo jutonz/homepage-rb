@@ -171,7 +171,9 @@ many books. A book's name is unique within its gallery.
 
 **Issue** — a unit of work a user tracks in this app: a title, an
 optional rich-text description and an Issue status, owned by one user
-and visible only to that user.
+and visible only to that user. An Issue belongs to exactly one Project
+of the same user, and the user can move it to another of their
+Projects.
 
 *Avoid*: "issue" for a Linear issue; "ticket", which names a Linear
 issue.
@@ -190,7 +192,8 @@ this codebase is tracked.
 
 **Project** — a named group of a user's Issues, such as "Homepage" or
 "Infra". It belongs to one user and is visible only to that user. Its
-name and its key are each unique for that user, ignoring case.
+name and its key are each unique for that user, ignoring case. A user
+cannot delete a Project that holds Issues.
 
 *Avoid*: "project" for a project in Linear.
 

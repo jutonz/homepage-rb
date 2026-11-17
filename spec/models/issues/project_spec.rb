@@ -23,6 +23,11 @@ require "rails_helper"
 #
 RSpec.describe Issues::Project do
   it { is_expected.to belong_to(:user) }
+
+  it do
+    is_expected.to have_many(:issues).dependent(:restrict_with_error)
+  end
+
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:key) }
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
@@ -50,6 +55,19 @@ RSpec.describe Issues::Project do
 
   it do
     is_expected.to have_db_index("user_id, lower((key)::text)").unique
+  end
+
+  it "refuses to destroy a project that holds issues" do
+    issue = create(:issue)
+    project = issue.project
+
+    result = project.destroy
+
+    expect(result).to be(false)
+    expect(Issues::Project.exists?(project.id)).to be(true)
+    expect(project.errors.full_messages).to eq(
+      ["Cannot delete record because dependent issues exist"]
+    )
   end
 
   it "has a valid factory" do

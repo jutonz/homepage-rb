@@ -3,4 +3,11 @@
   <%= header.with_crumb("Issues", issues_path) %>
 <% end %>
 
-<%= render(IssueFormComponent.new(issue: @issue)) %>
+<% if @projects.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">Create a project first</div>
+    <%= link_to("New Project", new_project_path, class: "button") %>
+  </div>
+<% else %>
+  <%= render(IssueFormComponent.new(issue: @issue, projects: @projects)) %>
+<% end %>

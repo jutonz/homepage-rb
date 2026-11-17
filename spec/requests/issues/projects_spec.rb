@@ -179,6 +179,31 @@ RSpec.describe Issues::ProjectsController do
       )
     end
 
+    it "counts only the issues in this project" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      other = create(:issues_project, user:)
+      create_list(:issue, 2, user:, project:)
+      create_list(:issue, 3, user:, project: other)
+      login_as(user)
+
+      get(project_path(project))
+
+      expect(page).to have_css("div.flex", text: /Issues:\s+2\b/)
+    end
+
+    it "counts 0 for a project with no issues" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      other = create(:issues_project, user:)
+      create_list(:issue, 3, user:, project: other)
+      login_as(user)
+
+      get(project_path(project))
+
+      expect(page).to have_css("div.flex", text: /Issues:\s+0\b/)
+    end
+
     it "returns not found for another user's project" do
       user = create(:user)
       project = create(:issues_project)
@@ -324,6 +349,41 @@ RSpec.describe Issues::ProjectsController do
       expect(flash[:notice]).to eq("Project was successfully deleted.")
       expect(Issues::Project.exists?(project.id)).to be(false)
       expect(Issues::Project.exists?(bystander.id)).to be(true)
+    end
+
+    it "refuses to delete a project with issues and says how many" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      issues = create_list(:issue, 2, user:, project:)
+      create(:issue, user:)
+      login_as(user)
+
+      delete(project_path(project))
+
+      expect(response).to redirect_to(project_path(project))
+      expect(response).to have_http_status(:see_other)
+      expect(flash[:alert]).to eq(
+        "Project still has 2 issues. Move or delete them first."
+      )
+      expect(Issues::Project.exists?(project.id)).to be(true)
+      expect(Issue.where(id: issues.map(&:id)).count).to eq(2)
+    end
+
+    it "uses the singular for a project with one issue" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      issue = create(:issue, user:, project:)
+      login_as(user)
+
+      delete(project_path(project))
+
+      expect(response).to redirect_to(project_path(project))
+      expect(response).to have_http_status(:see_other)
+      expect(flash[:alert]).to eq(
+        "Project still has 1 issue. Move or delete them first."
+      )
+      expect(Issues::Project.exists?(project.id)).to be(true)
+      expect(Issue.exists?(issue.id)).to be(true)
     end
 
     it "returns not found for another user's project" do

@@ -21,11 +21,13 @@ class IssuesController < ApplicationController
   sig { void }
   def new
     @issue = T.let(authorize(current_user.issues.new), T.nilable(Issue))
+    @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
   end
 
   sig { void }
   def create
     @issue = authorize(T.let(current_user.issues.new(issue_params), Issue))
+    @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
 
     if @issue.save
       redirect_to(
@@ -45,11 +47,13 @@ class IssuesController < ApplicationController
   sig { void }
   def edit
     @issue = authorize(find_issue)
+    @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
   end
 
   sig { void }
   def update
     @issue = authorize(find_issue)
+    @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
 
     if @issue.update(issue_params)
       redirect_to(
@@ -80,8 +84,13 @@ class IssuesController < ApplicationController
     IssuePolicy.scope_for(current_user).find(params[:id])
   end
 
+  sig { returns(ActiveRecord::Relation) }
+  def user_projects
+    Issues::ProjectPolicy.scope_for(current_user).order(:name)
+  end
+
   sig { returns(ActionController::Parameters) }
   def issue_params
-    params.expect(issue: %i[title status description])
+    params.expect(issue: %i[title status description project_id])
   end
 end

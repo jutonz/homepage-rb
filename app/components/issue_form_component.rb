@@ -4,6 +4,12 @@ class IssueFormComponent < ApplicationComponent
   erb_template <<~ERB
     <%= helpers.simple_form_for(@issue) do |form| %>
       <%= form.input(:title, autofocus: true) %>
+      <%= form.association(
+        :project,
+        collection: @projects,
+        prompt: "Select a project",
+        required: true
+      ) %>
       <%= form.input(
         :status,
         collection: Issue.statuses.map { |key, label| [label, key] },
@@ -16,9 +22,15 @@ class IssueFormComponent < ApplicationComponent
     <% end %>
   ERB
 
-  sig { params(issue: Issue).void }
-  def initialize(issue:)
+  sig do
+    params(
+      issue: Issue,
+      projects: T::Enumerable[Issues::Project]
+    ).void
+  end
+  def initialize(issue:, projects:)
     @issue = issue
+    @projects = projects
   end
 
   private

@@ -2,8 +2,9 @@ require "rails_helper"
 
 RSpec.describe IssueFormComponent, type: :component do
   it "renders the title field, description editor, and submit button" do
+    projects = build_stubbed_list(:issues_project, 2)
     issue = build(:issue, user: nil)
-    component = described_class.new(issue:)
+    component = described_class.new(issue:, projects:)
 
     render_inline(component)
 
@@ -15,14 +16,57 @@ RSpec.describe IssueFormComponent, type: :component do
     expect(page).to have_button("Create Issue")
   end
 
+  it "lists the given projects under a blank prompt" do
+    projects = [
+      build_stubbed(:issues_project, name: "Alpha"),
+      build_stubbed(:issues_project, name: "Beta")
+    ]
+    issue = build(:issue, user: nil, project: nil)
+    component = described_class.new(issue:, projects:)
+
+    render_inline(component)
+
+    select = page.find("select[name='issue[project_id]']")
+    options = select.all("option")
+    expect(options.map(&:text)).to eq(["Select a project", "Alpha", "Beta"])
+    expect(options.first.value).to eq("")
+    expect(select.value).to eq("")
+  end
+
+  it "selects the issue's project and omits the prompt" do
+    alpha = build_stubbed(:issues_project, name: "Alpha")
+    beta = build_stubbed(:issues_project, name: "Beta")
+    issue = build(:issue, user: nil, project: beta)
+    component = described_class.new(issue:, projects: [alpha, beta])
+
+    render_inline(component)
+
+    select = page.find("select[name='issue[project_id]']")
+    expect(select.all("option").map(&:text)).to eq(["Alpha", "Beta"])
+    expect(select.value).to eq(beta.id.to_s)
+  end
+
+  it "marks the project and title as required" do
+    projects = build_stubbed_list(:issues_project, 2)
+    issue = build(:issue, user: nil)
+    component = described_class.new(issue:, projects:)
+
+    render_inline(component)
+
+    expect(page).to have_css("label.required", text: "Title")
+    expect(page).to have_css("label.required", text: "Project")
+    expect(page).to have_css("select#issue_project_id[required]")
+  end
+
   it "fills the title and description from the issue" do
+    projects = build_stubbed_list(:issues_project, 2)
     issue = build(
       :issue,
       user: nil,
       title: "Broken thing",
       description: "<strong>Bold</strong> text"
     )
-    component = described_class.new(issue:)
+    component = described_class.new(issue:, projects:)
 
     render_inline(component)
 
@@ -34,9 +78,10 @@ RSpec.describe IssueFormComponent, type: :component do
   end
 
   it "shows validation errors" do
+    projects = build_stubbed_list(:issues_project, 2)
     issue = build(:issue, user: nil, title: "")
     issue.validate
-    component = described_class.new(issue:)
+    component = described_class.new(issue:, projects:)
 
     render_inline(component)
 
@@ -46,7 +91,7 @@ RSpec.describe IssueFormComponent, type: :component do
   it "lists the six status labels in order with no blank option" do
     issue = build(:issue, user: nil)
 
-    render_inline(described_class.new(issue:))
+    render_inline(described_class.new(issue:, projects: []))
 
     options = page.all("select#issue_status option")
     expect(options.map(&:text)).to eq(
@@ -60,7 +105,7 @@ RSpec.describe IssueFormComponent, type: :component do
   it "preselects Backlog for a new issue" do
     issue = build(:issue, user: nil)
 
-    render_inline(described_class.new(issue:))
+    render_inline(described_class.new(issue:, projects: []))
 
     expect(page).to have_select("Status", selected: "Backlog")
   end
@@ -68,7 +113,7 @@ RSpec.describe IssueFormComponent, type: :component do
   it "preselects the status of the issue" do
     issue = build(:issue, user: nil, status: :in_review)
 
-    render_inline(described_class.new(issue:))
+    render_inline(described_class.new(issue:, projects: []))
 
     expect(page).to have_select("Status", selected: "In Review")
   end
@@ -77,7 +122,7 @@ RSpec.describe IssueFormComponent, type: :component do
     issue = build_stubbed(:issue, user: nil, status: :ready)
     issue.status = "bogus"
 
-    render_inline(described_class.new(issue:))
+    render_inline(described_class.new(issue:, projects: []))
 
     expect(page).to have_select("Status", selected: "Ready")
   end
@@ -86,7 +131,7 @@ RSpec.describe IssueFormComponent, type: :component do
     issue = build_stubbed(:issue, user: nil, status: :ready)
     issue.status = ""
 
-    render_inline(described_class.new(issue:))
+    render_inline(described_class.new(issue:, projects: []))
 
     expect(page).to have_select("Status", selected: "Ready")
   end
@@ -95,7 +140,7 @@ RSpec.describe IssueFormComponent, type: :component do
     issue = build_stubbed(:issue, user: nil, status: :ready)
     issue.status = :done
 
-    render_inline(described_class.new(issue:))
+    render_inline(described_class.new(issue:, projects: []))
 
     expect(page).to have_select("Status", selected: "Done")
   end

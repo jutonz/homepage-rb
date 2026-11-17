@@ -24,6 +24,7 @@
 module Issues
   class Project < ApplicationRecord
     belongs_to(:user)
+    has_many(:issues, dependent: :restrict_with_error)
 
     normalizes(:name, :key, with: ->(value) { value.strip })
 

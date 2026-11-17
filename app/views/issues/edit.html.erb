@@ -4,4 +4,4 @@
   <%= header.with_crumb(@issue.title_in_database, issue_path(@issue)) %>
 <% end %>
 
-<%= render(IssueFormComponent.new(issue: @issue)) %>
+<%= render(IssueFormComponent.new(issue: @issue, projects: @projects)) %>

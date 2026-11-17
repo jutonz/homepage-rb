@@ -19,3 +19,7 @@
 <% end %>
 
 <%= render(DetailRowComponent.new(label: "Key", value: @project.key)) %>
+
+<%= render(
+  DetailRowComponent.new(label: "Issues", value: @project.issues.count)
+) %>

@@ -67,13 +67,20 @@ module Issues
     sig { void }
     def destroy
       project = authorize(find_project)
-      project.destroy!
 
-      redirect_to(
-        projects_path,
-        status: :see_other,
-        notice: "Project was successfully deleted."
-      )
+      if project.destroy
+        redirect_to(
+          projects_path,
+          status: :see_other,
+          notice: "Project was successfully deleted."
+        )
+      else
+        redirect_to(
+          project_path(project),
+          status: :see_other,
+          alert: issues_remain_alert(project)
+        )
+      end
     end
 
     private
@@ -81,6 +88,12 @@ module Issues
     sig { returns(Issues::Project) }
     def find_project
       Issues::ProjectPolicy.scope_for(current_user).find(params[:id])
+    end
+
+    sig { params(project: Issues::Project).returns(String) }
+    def issues_remain_alert(project)
+      issue_count = helpers.pluralize(project.issues.count, "issue")
+      "Project still has #{issue_count}. Move or delete them first."
     end
 
     sig { returns(ActionController::Parameters) }
