@@ -4,6 +4,16 @@ module Galleries
   class ImageProcessingJob < ApplicationJob
     queue_as :background
 
+    VIDEO_POSTER_CONCURRENCY_KEY = "video_poster"
+
+    # Solid Queue releases the lock after `duration` even while the job
+    # still runs, so `duration` must exceed the slowest video poster.
+    limits_concurrency(
+      key: ->(image) { image.video? ? VIDEO_POSTER_CONCURRENCY_KEY : image },
+      to: 1,
+      duration: 15.minutes
+    )
+
     sig { params(image: Galleries::Image).void }
     def perform(image)
       if image.file.variable?
