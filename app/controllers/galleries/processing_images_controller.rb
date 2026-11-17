@@ -15,7 +15,10 @@ module Galleries
         Galleries::ImagePolicy.scope_for(current_user)
           .where(gallery: @gallery)
           .unprocessed
-          .includes(:gallery, file_attachment: :blob)
+          .includes(
+            :gallery,
+            file_attachment: {blob: :preview_image_attachment}
+          )
     end
 
     private

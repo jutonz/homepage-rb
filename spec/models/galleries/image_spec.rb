@@ -231,6 +231,25 @@ RSpec.describe Galleries::Image do
     end
   end
 
+  describe "#poster_processed?" do
+    it "is false before the poster is generated" do
+      image = create(:galleries_image, :webm)
+
+      result = image.poster_processed?
+
+      expect(result).to be(false)
+    end
+
+    it "is true after the poster is generated" do
+      image = create(:galleries_image, :webm)
+      image.poster.processed
+
+      result = image.reload.poster_processed?
+
+      expect(result).to be(true)
+    end
+  end
+
   describe "#calculate_perceptual_hash!" do
     it "calculates and saves a perceptual_hash" do
       image = create(:galleries_image, :with_real_file, perceptual_hash: nil)
