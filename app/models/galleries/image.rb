@@ -45,7 +45,7 @@ module Galleries
       class_name: "Galleries::Book"
 
     validates :file, presence: true
-    validate :validate_source_url
+    validates(:source_url, http_url: true)
 
     normalizes :source_url, with: -> { it.strip.presence }
 
@@ -190,24 +190,6 @@ module Galleries
         vector[n] = binary_hash[n].to_i
       end
       vector
-    end
-
-    private
-
-    sig { void }
-    def validate_source_url
-      url = source_url
-      return if url.nil? || http_url?(url)
-
-      errors.add(:source_url, "is not a valid http(s) URL")
-    end
-
-    sig { params(url: String).returns(T::Boolean) }
-    def http_url?(url)
-      uri = URI.parse(url)
-      uri.is_a?(URI::HTTP) && uri.host.present?
-    rescue URI::InvalidURIError
-      false
     end
   end
 end

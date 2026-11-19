@@ -19,6 +19,16 @@
 
 <div class="mb-4">
   <%= render(IssueStatusPillComponent.new(issue: @issue)) %>
+
+  <% if @issue.pr_url %>
+    <%= link_to(
+      "Pull request",
+      @issue.pr_url,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      class: "ml-3 text-blue-600 hover:text-blue-800"
+    ) %>
+  <% end %>
 </div>
 
 <% if @issue.description.present? %>

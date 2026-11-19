@@ -6,6 +6,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
+#  pr_url     :string
 #  status     :enum             default("backlog"), not null
 #  title      :string           not null
 #  created_at :datetime         not null
@@ -43,6 +44,8 @@ class Issue < ApplicationRecord
   )
 
   validates(:title, presence: true, length: {maximum: 255})
+  validates(:pr_url, http_url: true)
+  normalizes(:pr_url, with: -> { it.strip.presence })
   validate(:project_belongs_to_user)
 
   private

@@ -9,6 +9,8 @@ CI.run do
 
   step "importmap audit", "bin/importmap audit"
   step "brakeman", "bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error"
+  step "ERB lint", "npx herb-lint"
+  step "ERB format", "npx herb-format --check ."
 
   step "rspec", "bin/rspec"
 

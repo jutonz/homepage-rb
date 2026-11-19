@@ -4,6 +4,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
+#  pr_url     :string
 #  status     :enum             default("backlog"), not null
 #  title      :string           not null
 #  created_at :datetime         not null
@@ -26,5 +27,7 @@ FactoryBot.define do
     user
     project { association(:issues_project, user:) }
     sequence(:title) { "Issue #{it}" }
+
+    trait(:with_pr_url) { pr_url { "https://github.com/o/r/pull/1" } }
   end
 end

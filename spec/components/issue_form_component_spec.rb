@@ -144,4 +144,21 @@ RSpec.describe IssueFormComponent, type: :component do
 
     expect(page).to have_select("Status", selected: "Done")
   end
+
+  it "renders a URL input for the pull request" do
+    issue = build(:issue, user: nil)
+
+    render_inline(described_class.new(issue:, projects: []))
+
+    expect(page).to have_field("Pull request URL", type: "url")
+    expect(page).to have_css("input[name='issue[pr_url]']")
+  end
+
+  it "shows the stored pull request URL" do
+    issue = build(:issue, :with_pr_url, user: nil)
+
+    render_inline(described_class.new(issue:, projects: []))
+
+    expect(page).to have_field("Pull request URL", with: issue.pr_url)
+  end
 end

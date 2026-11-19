@@ -6,6 +6,7 @@ require "rails_helper"
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
+#  pr_url     :string
 #  status     :enum             default("backlog"), not null
 #  title      :string           not null
 #  created_at :datetime         not null
@@ -33,6 +34,29 @@ RSpec.describe Issue do
   it { is_expected.to have_rich_text(:description) }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_length_of(:title).is_at_most(255) }
+
+  it do
+    is_expected.to allow_value("http://github.com/o/r/pull/1").for(:pr_url)
+  end
+
+  it do
+    is_expected.to allow_value("https://github.com/o/r/pull/1").for(:pr_url)
+  end
+
+  it do
+    is_expected.not_to allow_value("github.com/o/r/pull/1").for(:pr_url)
+  end
+
+  it { is_expected.not_to allow_value("ftp://example.com/x").for(:pr_url) }
+  it { is_expected.not_to allow_value("https://a b.com").for(:pr_url) }
+  it { is_expected.not_to allow_value("https://").for(:pr_url) }
+  it { is_expected.to normalize(:pr_url).from("   ").to(nil) }
+
+  it do
+    is_expected.to normalize(:pr_url)
+      .from(" https://github.com/o/r/pull/1 \n")
+      .to("https://github.com/o/r/pull/1")
+  end
 
   it {
     is_expected.to define_enum_for(:status)
