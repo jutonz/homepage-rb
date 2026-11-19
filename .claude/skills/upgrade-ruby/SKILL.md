@@ -1,6 +1,6 @@
 ---
 name: upgrade-ruby
-description: Upgrade this project's Ruby version, with a gem-prep PR first when the new Ruby breaks gems.
+description: Upgrade this project's Ruby version in one PR, and stop to ask when the new Ruby breaks gems.
 disable-model-invocation: true
 allowed-tools: Read, Edit, Write, Bash, Grep, Glob
 ---
@@ -60,40 +60,39 @@ Done when you have a version that mise lists and Docker Hub has as
    Run every command through `mise exec --` until you open a new shell.
    Otherwise the shim cache can still resolve `ruby` to the old version.
 
-`Gemfile.lock` can gain a generic `ffi (x.y.z)` line beside the
-platform-specific ones. That line is expected (#604). Leave it.
+The Bundler update can delete generic-platform entries, such as
+`nokogiri (x.y.z)` beside `nokogiri (x.y.z-arm64-darwin)`. Dependabot adds
+them, but `PLATFORMS` lists no generic `ruby` platform, so nothing uses
+them. Keep the deletions. The Docker build in Step 4 proves the Linux
+platforms still resolve.
 
-The `Gemfile` pins `openssl` until the default gem of Ruby catches up.
+The `Gemfile` can pin `openssl` until the default gem of Ruby catches up.
 Compare the pin to `mise exec -- ruby -ropenssl -e 'puts OpenSSL::VERSION'`.
 If the default version is the same or newer, delete the pin and its
-comment. Treat that change as gem prep in Step 5.
+comment, run `mise exec -- bundle install`, and run
+`mise exec -- bin/tapioca gem` to delete its RBI.
 
 Done when `git diff Gemfile.lock` shows the new `RUBY VERSION` and
 `BUNDLED WITH`.
 
-## Step 3 — Find and fix gem fallout
+## Step 3 — Check for gem fallout
 
 A `bundle install` that fails on `required_ruby_version` shows fallout. A
-new deprecation warning in spec output shows it too. For each gem:
+new deprecation warning in the `bin/ci` output of Step 4 shows it too.
 
-1. Find a release that supports the new Ruby:
+When you find fallout, stop and ask the user what to do. Leave the gems
+as they are until the user answers. For each gem, give the error and the
+newest releases with the Ruby versions that they accept:
 
-   ```bash
-   curl -s https://rubygems.org/api/v1/versions/<gem>.json \
-     | ruby -rjson -e 'JSON.parse($stdin.read).first(8).each do |v|
-         puts v.values_at("number", "ruby_version").join(" ")
-       end'
-   ```
+```bash
+curl -s https://rubygems.org/api/v1/versions/<gem>.json \
+  | ruby -rjson -e 'JSON.parse($stdin.read).first(8).each do |v|
+      puts v.values_at("number", "ruby_version").join(" ")
+    end'
+```
 
-2. Bump it with `mise exec -- bundle update --conservative <gem>`. Read
-   the `Gemfile.lock` diff, so you know which other gems moved and why.
-3. Regenerate its RBIs with `mise exec -- bin/tapioca gem <gem>`.
-
-If no release supports the new Ruby, stop and report the gem to the user.
-That is the signal to hold the upgrade, as with `after_party` on 4.0.0.
-Keep warnings visible. Fix the cause, never the warning level.
-
-Done when `bundle install` succeeds and every gem bump has fresh RBIs.
+Done when `bundle install` succeeds with no fallout, or the user has
+told you what to do.
 
 ## Step 4 — Verify
 
@@ -101,6 +100,9 @@ Done when `bundle install` succeeds and every gem bump has fresh RBIs.
 mise exec -- bin/ci
 docker build -t homepage-rb:ruby-upgrade-test .
 ```
+
+A new deprecation warning in the `bin/ci` output is fallout. Stop and ask,
+as in Step 3.
 
 Then run the smoke test on the image, because the specs do not start
 `prometheus_exporter`. `bin/docker-entrypoint` starts it in the
@@ -133,35 +135,8 @@ docker rmi homepage-rb:ruby-upgrade-test
 Done when `bin/ci` is green, the image builds, and the exporter serves
 `200` for the full 90 seconds.
 
-## Step 5 — Open the PRs
+## Step 5 — Open the PR
 
-Read `git log --oneline -i --grep='upgrade ruby'` to see the title
-convention ("Upgrade ruby to X.Y.Z").
-
-**No gem fallout:** open one PR with the pins and the lockfile.
-
-**Gem fallout:** open two stacked PRs, so each one is small and can be
-reverted alone.
-
-1. **Gem prep PR.** It has the gem bumps, their RBIs, the `openssl` pin
-   removal, and any code fixes. It must stay green on the *current* Ruby.
-2. **Bump PR.** It has `.tool-versions`, the `Dockerfile`, and the
-   `RUBY VERSION` and `BUNDLED WITH` lines of `Gemfile.lock`. Stack it on
-   the prep PR.
-
-To split the work tree:
-
-1. `git checkout -b upgrade-ruby-X.Y.Z-prep main`, then
-   `git stash push -m ruby-bump -- .tool-versions Dockerfile`.
-2. In `Gemfile.lock`, set `RUBY VERSION` and `BUNDLED WITH` back to their
-   values on `main`. Keep the gem changes.
-3. Run `mise exec -- bin/ci` on the current Ruby, commit, push, and open
-   the PR against `main`.
-4. `git checkout -b upgrade-ruby-X.Y.Z`, then `git stash pop`. Repeat
-   Step 2.3 to write the new lockfile sections, commit, push, and open the
-   PR with `--base upgrade-ruby-X.Y.Z-prep`.
-
-After the prep PR merges, check the bump PR. If GitHub closed it when the
-prep branch was deleted, rebase the bump branch onto `main`. Then
-force-push it with `--force-with-lease` and open a new PR. Say in the new
-PR that it replaces the closed one.
+Open one PR from an `upgrade-ruby-X.Y.Z` branch off `main`. Read
+`git log --oneline -i --grep='upgrade ruby'` to see the title convention
+("Upgrade ruby to X.Y.Z").
