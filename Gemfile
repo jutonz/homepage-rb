@@ -2,9 +2,6 @@ source "https://rubygems.org"
 
 ruby file: ".tool-versions"
 
-# remove after this is the ruby default version
-gem "openssl", "3.3.2"
-
 gem "after_party"
 gem "aws-sdk-s3"
 gem "csv"
