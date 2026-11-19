@@ -5,6 +5,8 @@ module Issues
     before_action :ensure_authenticated!
     after_action :verify_authorized
 
+    PER_PAGE = 20
+
     sig { void }
     def index
       authorize(Issues::Project)
@@ -43,6 +45,14 @@ module Issues
     sig { void }
     def show
       @project = authorize(find_project)
+      @issues = T.let(
+        IssuePolicy.scope_for(current_user)
+          .where(project: @project)
+          .order(created_at: :desc)
+          .page(params[:page])
+          .per(PER_PAGE),
+        T.nilable(T.all(ActiveRecord::Relation, T::Enumerable[Issue]))
+      )
     end
 
     sig { void }

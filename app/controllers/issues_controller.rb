@@ -4,24 +4,17 @@ class IssuesController < ApplicationController
   before_action :ensure_authenticated!
   after_action :verify_authorized
 
-  PER_PAGE = 20
-
-  sig { void }
-  def index
-    authorize(Issue)
-    @issues = T.let(
-      IssuePolicy.scope_for(current_user)
-        .order(created_at: :desc)
-        .page(params[:page])
-        .per(PER_PAGE),
-      T.nilable(T.all(ActiveRecord::Relation, T::Enumerable[Issue]))
-    )
-  end
-
   sig { void }
   def new
-    @issue = T.let(authorize(current_user.issues.new), T.nilable(Issue))
     @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
+    @project = T.let(
+      user_projects.find_by(id: params[:project_id]),
+      T.nilable(Issues::Project)
+    )
+    @issue = T.let(
+      authorize(current_user.issues.new(project: @project)),
+      T.nilable(Issue)
+    )
   end
 
   sig { void }
@@ -47,12 +40,14 @@ class IssuesController < ApplicationController
   sig { void }
   def edit
     @issue = authorize(find_issue)
+    @project = T.let(@issue.project, T.nilable(Issues::Project))
     @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
   end
 
   sig { void }
   def update
     @issue = authorize(find_issue)
+    @project = T.let(@issue.project, T.nilable(Issues::Project))
     @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
 
     if @issue.update(issue_params)
@@ -71,7 +66,7 @@ class IssuesController < ApplicationController
     issue.destroy!
 
     redirect_to(
-      issues_path,
+      project_path(issue.project),
       status: :see_other,
       notice: "Issue was successfully deleted."
     )
