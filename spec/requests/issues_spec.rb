@@ -170,6 +170,53 @@ RSpec.describe IssuesController do
       expect(issue.description.to_plain_text).to include("Bold text")
     end
 
+    it "stores a pull request URL" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      login_as(user)
+      url = "https://github.com/o/r/pull/1"
+      params = {issue: {title: "Fix it", pr_url: url, project_id: project.id}}
+
+      post(issues_path, params:)
+
+      issue = Issue.last
+      expect(response).to redirect_to(issue_path(issue))
+      expect(issue.pr_url).to eq(url)
+    end
+
+    it "stores a blank pull request URL as nil" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      login_as(user)
+      params = {issue: {title: "Fix it", pr_url: "  ", project_id: project.id}}
+
+      post(issues_path, params:)
+
+      issue = Issue.last
+      expect(response).to redirect_to(issue_path(issue))
+      expect(issue.pr_url).to be_nil
+    end
+
+    it "rejects an invalid pull request URL and creates nothing" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      login_as(user)
+      params = {
+        issue: {
+          title: "Fix it",
+          pr_url: "ftp://example.com/x",
+          project_id: project.id
+        }
+      }
+
+      post(issues_path, params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(page).to have_content("is not a valid http(s) URL")
+      expect(page).to have_field("Title", with: "Fix it")
+      expect(Issue.count).to eq(0)
+    end
+
     it "defaults the status to backlog" do
       user = create(:user)
       project = create(:issues_project, user:)
@@ -338,6 +385,31 @@ RSpec.describe IssuesController do
       )
     end
 
+    it "links to the pull request beside the status pill" do
+      user = create(:user)
+      issue = create(:issue, :with_pr_url, user:)
+      login_as(user)
+
+      get(issue_path(issue))
+
+      expect(page).to have_css(
+        "div.mb-4 a[href='#{issue.pr_url}'][target='_blank']" \
+        "[rel='noopener noreferrer']",
+        text: "Pull request"
+      )
+    end
+
+    it "shows no pull request link when there is none" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      login_as(user)
+
+      get(issue_path(issue))
+
+      expect(page).to have_css("div.mb-4 span", text: "Backlog")
+      expect(page).not_to have_link("Pull request")
+    end
+
     it "shows my issue without a description" do
       user = create(:user)
       issue = create(:issue, user:, title: "Fix it")
@@ -462,6 +534,31 @@ RSpec.describe IssuesController do
       expect(issue.title).to eq("After")
       expect(issue.description.to_plain_text).to eq("New text")
       expect(bystander.reload.title).to eq("Bystander")
+    end
+
+    it "stores a pull request URL" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      login_as(user)
+      url = "https://github.com/o/r/pull/2"
+      params = {issue: {pr_url: url}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to redirect_to(issue_path(issue))
+      expect(issue.reload.pr_url).to eq(url)
+    end
+
+    it "clears the pull request URL when the field is empty" do
+      user = create(:user)
+      issue = create(:issue, :with_pr_url, user:)
+      login_as(user)
+      params = {issue: {pr_url: ""}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to redirect_to(issue_path(issue))
+      expect(issue.reload.pr_url).to be_nil
     end
 
     it "changes the status" do

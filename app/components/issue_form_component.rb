@@ -16,6 +16,7 @@ class IssueFormComponent < ApplicationComponent
         include_blank: false,
         selected: selected_status
       ) %>
+      <%= form.input(:pr_url, label: "Pull request URL") %>
       <%= form.label(:description) %>
       <%= form.rich_text_area(:description) %>
       <%= form.button(:submit, class: "mt-4") %>

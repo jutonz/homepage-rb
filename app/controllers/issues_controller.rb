@@ -91,6 +91,8 @@ class IssuesController < ApplicationController
 
   sig { returns(ActionController::Parameters) }
   def issue_params
-    params.expect(issue: %i[title status description project_id])
+    params.expect(
+      issue: %i[title status description project_id pr_url]
+    )
   end
 end
