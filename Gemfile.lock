@@ -160,6 +160,7 @@ GEM
       logger
     faraday-net_http (3.5.0)
       net-http (~> 0.5)
+    ffi (1.17.4)
     ffi (1.17.4-aarch64-linux-gnu)
     ffi (1.17.4-arm64-darwin)
     ffi (1.17.4-x86_64-darwin)
@@ -169,6 +170,9 @@ GEM
       raabro (~> 1.4)
     globalid (1.4.0)
       activesupport (>= 6.1)
+    google-protobuf (4.36.2)
+      bigdecimal
+      rake (~> 13.3)
     google-protobuf (4.36.2-aarch64-linux-gnu)
       bigdecimal
       rake (~> 13.3)
@@ -184,6 +188,7 @@ GEM
     googleapis-common-protos-types (1.23.0)
       google-protobuf (~> 4.26)
     hashdiff (1.2.1)
+    herb (0.11.1)
     herb (0.11.1-aarch64-linux-gnu)
     herb (0.11.1-arm64-darwin)
     herb (0.11.1-x86_64-darwin)
@@ -243,11 +248,12 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (6.1.0)
       drb (~> 2.0)
       prism (>= 1.5, < 3)
     msgpack (1.8.6)
-    mutineer (1.8.2)
+    mutineer (1.9.0)
     neighbor (1.2.0)
       activerecord (>= 7.2)
     net-http (0.10.0)
@@ -264,6 +270,9 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
+    nokogiri (1.19.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.19.7-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.7-arm64-darwin)
@@ -469,6 +478,7 @@ GEM
       racc
     patience_diff (1.2.0)
       optimist (~> 3.0)
+    pg (1.7.0)
     pg (1.7.0-aarch64-linux)
     pg (1.7.0-arm64-darwin)
     pg (1.7.0-x86_64-darwin)
@@ -590,6 +600,7 @@ GEM
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
+    rubydex (0.4.4)
     rubydex (0.4.4-aarch64-linux)
     rubydex (0.4.4-arm64-darwin)
     rubydex (0.4.4-x86_64-darwin)
@@ -668,6 +679,7 @@ GEM
     tailwindcss-rails (4.7.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
+    tailwindcss-ruby (4.3.3)
     tailwindcss-ruby (4.3.3-aarch64-linux-gnu)
     tailwindcss-ruby (4.3.3-arm64-darwin)
     tailwindcss-ruby (4.3.3-x86_64-darwin)
