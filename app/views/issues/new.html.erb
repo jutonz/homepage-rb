@@ -1,6 +1,9 @@
 <%= render(HeaderComponent.new(title: "New Issue")) do |header| %>
   <%= header.with_crumb("Home", home_path) %>
-  <%= header.with_crumb("Issues", issues_path) %>
+  <%= header.with_crumb("Projects", projects_path) %>
+  <% if @project %>
+    <%= header.with_crumb(@project.name, project_path(@project)) %>
+  <% end %>
 <% end %>
 
 <% if @projects.empty? %>

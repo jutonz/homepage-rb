@@ -1,89 +1,18 @@
 require "rails_helper"
 
 RSpec.describe IssuesController do
-  def row_titles
-    page.all("[data-role=issue]").map(&:text)
+  def crumbs
+    page.all("div.text-md a").map { [it.text, it[:href]] }
   end
 
   describe "index" do
-    it "redirects a signed-out visitor to sign in" do
-      get(issues_path)
-
-      expect(response).to redirect_to(new_session_path)
-      expect(session[:return_to]).to eql(issues_path)
-    end
-
-    it "lists only my issues" do
-      me, them = create_pair(:user)
-      mine = create(:issue, user: me)
-      theirs = create(:issue, user: them)
-      login_as(me)
-
-      get(issues_path)
-
-      expect(page).to have_css("[data-role=issue]", text: mine.title)
-      expect(page).not_to have_content(theirs.title)
-      expect(page).not_to have_content("No issues yet")
-    end
-
-    it "lists the newest issue first" do
-      user = create(:user)
-      old = create(:issue, user:, created_at: 2.days.ago)
-      newer = create(:issue, user:, created_at: 1.day.ago)
-      login_as(user)
-
-      get(issues_path)
-
-      expect(row_titles).to eq([newer.title, old.title])
-    end
-
-    it "paginates issues" do
-      user = create(:user)
-      old = create(:issue, user:, created_at: 2.days.ago)
-      newer = create(:issue, user:, created_at: 1.day.ago)
-      login_as(user)
-      stub_const("IssuesController::PER_PAGE", 1)
-
-      get(issues_path)
-      first_page = row_titles
-      get(issues_path(page: 2))
-      second_page = row_titles
-
-      expect(first_page).to eq([newer.title])
-      expect(second_page).to eq([old.title])
-      expect(page).to have_link("1", href: issues_path)
-    end
-
-    it "shows an empty state with a link to add an issue" do
+    it "returns not found" do
       user = create(:user)
       login_as(user)
 
       get(issues_path)
 
-      expect(page).to have_content("No issues yet")
-      expect(page).to have_link("New Issue", href: new_issue_path)
-      expect(page).to have_link("Home", href: home_path)
-    end
-
-    it "links to my projects" do
-      user = create(:user)
-      login_as(user)
-
-      get(issues_path)
-
-      expect(page).to have_link("Projects", href: projects_path)
-    end
-
-    it "does not show a status on a row" do
-      user = create(:user)
-      issue = create(:issue, user:)
-      login_as(user)
-
-      get(issues_path)
-
-      expect(page).to have_css("[data-role=issue]", text: issue.title)
-      expect(page).not_to have_content("Backlog")
-      expect(page).not_to have_css("span.rounded-full")
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -103,9 +32,50 @@ RSpec.describe IssuesController do
 
       expect(response).to be_successful
       expect(page).to have_css("h1", text: "New Issue")
-      expect(page).to have_link("Home", href: home_path)
-      expect(page).to have_link("Issues", href: issues_path)
+      expect(crumbs).to eq([["Home", home_path], ["Projects", projects_path]])
       expect(page).to have_field("Title")
+    end
+
+    it "preselects a project I own" do
+      user = create(:user)
+      create(:issues_project, user:, name: "Alpha")
+      beta = create(:issues_project, user:, name: "Beta")
+      login_as(user)
+
+      get(new_issue_path(project_id: beta.id))
+
+      options = page.all("select[name='issue[project_id]'] option")
+      expect(options.map(&:text)).to eq(["Alpha", "Beta"])
+      expect(page).to have_css(
+        "select[name='issue[project_id]'] " \
+        "option[selected][value='#{beta.id}']"
+      )
+      expect(crumbs).to eq(
+        [
+          ["Home", home_path],
+          ["Projects", projects_path],
+          ["Beta", project_path(beta)]
+        ]
+      )
+    end
+
+    it "ignores a project I do not own" do
+      me, them = create_pair(:user)
+      create(:issues_project, user: me, name: "Mine")
+      theirs = create(:issues_project, user: them, name: "Theirs")
+      login_as(me)
+
+      get(new_issue_path(project_id: theirs.id))
+
+      expect(response).to be_successful
+      expect(page).to have_field("Title")
+      options = page.all("select[name='issue[project_id]'] option")
+      expect(options.map(&:text)).to eq(["Select a project", "Mine"])
+      expect(page).not_to have_css(
+        "select[name='issue[project_id]'] option[selected]"
+      )
+      expect(page).not_to have_content("Theirs")
+      expect(crumbs).to eq([["Home", home_path], ["Projects", projects_path]])
     end
 
     it "lists only my projects by name, with a blank prompt first" do
@@ -310,6 +280,7 @@ RSpec.describe IssuesController do
       expect(page).to have_css(".issue_project span.error", text: "must exist")
       expect(page).to have_field("Title", with: "Fix it")
       expect(page).not_to have_content("Theirs")
+      expect(crumbs).to eq([["Home", home_path], ["Projects", projects_path]])
       expect(Issue.count).to eq(0)
     end
 
@@ -363,8 +334,13 @@ RSpec.describe IssuesController do
       expect(response).to be_successful
       expect(page).to have_css("h1", text: "Fix it")
       expect(page).to have_css(".prose strong", text: "Bold")
-      expect(page).to have_link("Home", href: home_path)
-      expect(page).to have_link("Issues", href: issues_path)
+      expect(crumbs).to eq(
+        [
+          ["Home", home_path],
+          ["Projects", projects_path],
+          [issue.project.name, project_path(issue.project)]
+        ]
+      )
     end
 
     it "shows the status pill between the header and the description" do
@@ -471,9 +447,14 @@ RSpec.describe IssuesController do
 
       expect(response).to be_successful
       expect(page).to have_css("h1", text: "Edit Issue")
-      expect(page).to have_link("Home", href: home_path)
-      expect(page).to have_link("Issues", href: issues_path)
-      expect(page).to have_link("Fix it", href: issue_path(issue))
+      expect(crumbs).to eq(
+        [
+          ["Home", home_path],
+          ["Projects", projects_path],
+          [issue.project.name, project_path(issue.project)],
+          ["Fix it", issue_path(issue)]
+        ]
+      )
       expect(page).to have_css("form[action='#{issue_path(issue)}']")
       expect(page).to have_field("Title", with: "Fix it")
       expect(page).to have_button("Update Issue")
@@ -628,6 +609,7 @@ RSpec.describe IssuesController do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_content("must exist")
+      expect(page).to have_link(original.name, href: project_path(original))
       expect(page).not_to have_content("Theirs")
       expect(issue.reload.project).to eq(original)
     end
@@ -643,6 +625,7 @@ RSpec.describe IssuesController do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(page).to have_content("must exist")
+      expect(page).to have_link(original.name, href: project_path(original))
       expect(issue.reload.project).to eq(original)
     end
 
@@ -707,12 +690,13 @@ RSpec.describe IssuesController do
     it "deletes my issue and leaves others alone" do
       user = create(:user)
       issue = create(:issue, user:)
+      project = issue.project
       bystander = create(:issue, user:)
       login_as(user)
 
       delete(issue_path(issue))
 
-      expect(response).to redirect_to(issues_path)
+      expect(response).to redirect_to(project_path(project))
       expect(response).to have_http_status(:see_other)
       expect(flash[:notice]).to eq("Issue was successfully deleted.")
       expect(Issue.exists?(issue.id)).to be(false)

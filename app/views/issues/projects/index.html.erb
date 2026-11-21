@@ -1,6 +1,5 @@
 <%= render(HeaderComponent.new(title: "Projects")) do |header| %>
   <%= header.with_crumb("Home", home_path) %>
-  <%= header.with_crumb("Issues", issues_path) %>
 
   <%= header.with_action do %>
     <%= link_to("New Project", new_project_path, class: "button") %>

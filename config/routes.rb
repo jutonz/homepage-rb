@@ -38,7 +38,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources(:issues)
+  resources(:issues, except: :index)
   scope(module: :issues) do
     resources(:projects)
   end

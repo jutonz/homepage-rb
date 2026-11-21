@@ -1,20 +1,21 @@
 require "rails_helper"
 
 RSpec.describe "Issue management", type: :system do
-  it "creates, edits, and deletes an issue from the dashboard", :js do
+  it "creates, edits, and deletes an issue from a project", :js do
     user = create(:user)
     create(:issues_project, user:, name: "Homepage")
     create(:issues_project, user:, name: "Infra")
     login_as(user)
 
     visit(home_path)
-    click_link("View Issues")
+    click_link("View Projects")
+    click_link("Homepage")
 
     expect(page).to have_content("No issues yet")
 
     click_link("New Issue")
+
     fill_in("Title", with: "Fix the login bug")
-    select("Homepage", from: "Project")
     fill_in_rich_text_area("issue_description", with: "Steps to reproduce")
     click_button("Create Issue")
 
@@ -35,6 +36,7 @@ RSpec.describe "Issue management", type: :system do
     accept_confirm { click_button("Delete") }
 
     expect(page).to have_content("Issue was successfully deleted.")
+    expect(page).to have_css("h1", text: "Infra")
     expect(page).to have_content("No issues yet")
   end
 

@@ -5,6 +5,14 @@ RSpec.describe Issues::ProjectsController do
     page.all("[data-role=project]").map { it.text.squish }
   end
 
+  def crumbs
+    page.all("div.text-md a").map { [it.text, it[:href]] }
+  end
+
+  def issue_rows
+    page.all("[data-role=issue]").map { it.text.squish }
+  end
+
   describe "index" do
     it "redirects a signed-out visitor to sign in" do
       get(projects_path)
@@ -48,8 +56,7 @@ RSpec.describe Issues::ProjectsController do
       expect(page).to have_css("h1", text: "Projects")
       expect(page).to have_content("No projects yet")
       expect(page).to have_link("New Project", href: new_project_path)
-      expect(page).to have_link("Home", href: home_path)
-      expect(page).to have_link("Issues", href: issues_path)
+      expect(crumbs).to eq([["Home", home_path]])
     end
   end
 
@@ -68,9 +75,7 @@ RSpec.describe Issues::ProjectsController do
 
       expect(response).to be_successful
       expect(page).to have_css("h1", text: "New Project")
-      expect(page).to have_link("Home", href: home_path)
-      expect(page).to have_link("Issues", href: issues_path)
-      expect(page).to have_link("Projects", href: projects_path)
+      expect(crumbs).to eq([["Home", home_path], ["Projects", projects_path]])
       expect(page).to have_css("form[action='#{projects_path}']")
       expect(page).to have_field("Name")
       expect(page).to have_field("Key")
@@ -163,9 +168,11 @@ RSpec.describe Issues::ProjectsController do
       expect(response).to be_successful
       expect(page).to have_css("h1", text: "Infra")
       expect(page).to have_css("div.flex", text: /Key:\s+INF\b/)
-      expect(page).to have_link("Home", href: home_path)
-      expect(page).to have_link("Issues", href: issues_path)
-      expect(page).to have_link("Projects", href: projects_path)
+      expect(crumbs).to eq([["Home", home_path], ["Projects", projects_path]])
+      expect(page).to have_link(
+        "New Issue",
+        href: new_issue_path(project_id: project.id)
+      )
       expect(page).to have_link("Edit", href: edit_project_path(project))
       expect(page).to have_css(
         "form[action='#{project_path(project)}'] " \
@@ -204,6 +211,92 @@ RSpec.describe Issues::ProjectsController do
       expect(page).to have_css("div.flex", text: /Issues:\s+0\b/)
     end
 
+    it "lists this project's issues newest first with status pills" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      old = create(
+        :issue,
+        user:,
+        project:,
+        title: "Old",
+        status: :done,
+        created_at: 2.days.ago
+      )
+      newer = create(
+        :issue,
+        user:,
+        project:,
+        title: "Newer",
+        status: :cancelled,
+        created_at: 1.day.ago
+      )
+      login_as(user)
+
+      get(project_path(project))
+
+      expect(issue_rows).to eq(["Newer Cancelled", "Old Done"])
+      expect(page).to have_link(href: issue_path(old))
+      expect(page).to have_link(href: issue_path(newer))
+      expect(page).not_to have_content("No issues yet")
+    end
+
+    it "lists only this project's issues and only mine" do
+      me, them = create_pair(:user)
+      project = create(:issues_project, user: me)
+      other = create(:issues_project, user: me)
+      create(:issue, user: me, project:, title: "Mine here")
+      create(:issue, user: me, project: other, title: "Mine elsewhere")
+      build(:issue, user: them, project:, title: "Theirs").save!(
+        validate: false
+      )
+      login_as(me)
+
+      get(project_path(project))
+
+      expect(issue_rows).to eq(["Mine here Backlog"])
+    end
+
+    it "paginates issues" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      create(
+        :issue,
+        user:,
+        project:,
+        title: "Old",
+        created_at: 2.days.ago
+      )
+      create(
+        :issue,
+        user:,
+        project:,
+        title: "Newer",
+        created_at: 1.day.ago
+      )
+      stub_const("Issues::ProjectsController::PER_PAGE", 1)
+      login_as(user)
+
+      get(project_path(project))
+      first_page = issue_rows
+      get(project_path(project, page: 2))
+      second_page = issue_rows
+
+      expect(first_page).to eq(["Newer Backlog"])
+      expect(second_page).to eq(["Old Backlog"])
+      expect(page).to have_link("1", href: project_path(project))
+    end
+
+    it "shows an empty state" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      login_as(user)
+
+      get(project_path(project))
+
+      expect(page).to have_content("No issues yet")
+      expect(issue_rows).to eq([])
+    end
+
     it "returns not found for another user's project" do
       user = create(:user)
       project = create(:issues_project)
@@ -233,8 +326,13 @@ RSpec.describe Issues::ProjectsController do
 
       expect(response).to be_successful
       expect(page).to have_css("h1", text: "Edit Project")
-      expect(page).to have_link("Projects", href: projects_path)
-      expect(page).to have_link("Infra", href: project_path(project))
+      expect(crumbs).to eq(
+        [
+          ["Home", home_path],
+          ["Projects", projects_path],
+          ["Infra", project_path(project)]
+        ]
+      )
       expect(page).to have_css("form[action='#{project_path(project)}']")
       expect(page).to have_field("Name", with: "Infra")
       expect(page).to have_field("Key", with: "INF")
