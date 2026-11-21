@@ -1,12 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Project management", type: :system do
-  it "creates, edits, and deletes a project from the issues index", :js do
+  it "creates, edits, and deletes a project from the projects index", :js do
     user = create(:user)
     login_as(user)
 
-    visit(issues_path)
-    click_link("Projects")
+    visit(projects_path)
 
     expect(page).to have_content("No projects yet")
 

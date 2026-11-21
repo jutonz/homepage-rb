@@ -1,7 +1,14 @@
 <%= render(HeaderComponent.new(title: @project.name)) do |header| %>
   <%= header.with_crumb("Home", home_path) %>
-  <%= header.with_crumb("Issues", issues_path) %>
   <%= header.with_crumb("Projects", projects_path) %>
+
+  <%= header.with_action do %>
+    <%= link_to(
+      "New Issue",
+      new_issue_path(project_id: @project.id),
+      class: "button"
+    ) %>
+  <% end %>
 
   <%= header.with_action do %>
     <%= link_to("Edit", edit_project_path(@project), class: "button") %>
@@ -23,3 +30,30 @@
 <%= render(
   DetailRowComponent.new(label: "Issues", value: @project.issues.count)
 ) %>
+
+<div class="flex flex-col gap-2 mt-6">
+  <% @issues.each do |issue| %>
+    <%= link_to(
+      issue_path(issue),
+      data: {role: "issue"},
+      class: "
+        flex items-center justify-between gap-3 p-4 break-words border
+        border-gray-200 rounded-lg font-medium text-gray-900
+        hover:bg-gray-50 hover:border-gray-300
+      "
+    ) do %>
+      <span class="min-w-0"><%= issue.title %></span>
+      <%= render(IssueStatusPillComponent.new(issue:)) %>
+    <% end %>
+  <% end %>
+</div>
+
+<% if @issues.empty? %>
+  <div class="text-center py-12 text-gray-500">
+    <div class="text-lg font-medium mb-2">No issues yet</div>
+  </div>
+<% else %>
+  <div class="flex justify-center mt-4">
+    <%= paginate(@issues) %>
+  </div>
+<% end %>
