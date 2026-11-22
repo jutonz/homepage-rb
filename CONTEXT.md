@@ -185,6 +185,12 @@ a new Issue starts in Backlog.
 *Avoid*: "state", which names a Linear issue's stage; "Todo" and
 "Canceled", which are Linear's names.
 
+**Issue identifier** — an Issue's Project key plus its number in that
+Project, such as `INFRA-3`. It changes when the Issue moves or when the
+key changes. The app never reuses a number.
+
+*Avoid*: "issue id" for this, because that names the database id.
+
 **Linear issue** — a ticket in the HPRB team in Linear, where work on
 this codebase is tracked.
 
@@ -198,6 +204,7 @@ cannot delete a Project that holds Issues.
 *Avoid*: "project" for a project in Linear.
 
 **Project key** — the short label a user gives a Project, such as
-"INFRA". The app keeps it as the user typed it.
+"INFRA". The app keeps it as the user typed it. It starts each Issue
+identifier in that Project.
 
 *Avoid*: "prefix", "code".

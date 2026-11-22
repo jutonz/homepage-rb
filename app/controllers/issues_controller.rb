@@ -22,7 +22,7 @@ class IssuesController < ApplicationController
     @issue = authorize(T.let(current_user.issues.new(issue_params), Issue))
     @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
 
-    if @issue.save
+    if @issue.save_with_number
       redirect_to(
         issue_path(@issue),
         notice: "Issue was successfully created."
@@ -50,7 +50,9 @@ class IssuesController < ApplicationController
     @project = T.let(@issue.project, T.nilable(Issues::Project))
     @projects = T.let(user_projects, T.nilable(ActiveRecord::Relation))
 
-    if @issue.update(issue_params)
+    @issue.assign_attributes(issue_params)
+
+    if @issue.save_with_number
       redirect_to(
         issue_path(@issue),
         notice: "Issue was successfully updated."

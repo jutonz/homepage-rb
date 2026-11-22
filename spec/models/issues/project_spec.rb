@@ -5,12 +5,13 @@ require "rails_helper"
 # Table name: issues_projects
 # Database name: primary
 #
-#  id         :bigint           not null, primary key
-#  key        :string           not null
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :bigint           not null
+#  id                :bigint           not null, primary key
+#  key               :string           not null
+#  last_issue_number :integer          default(0), not null
+#  name              :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  user_id           :bigint           not null
 #
 # Indexes
 #
@@ -72,6 +73,43 @@ RSpec.describe Issues::Project do
 
   it "has a valid factory" do
     expect(build(:issues_project)).to be_valid
+  end
+
+  it do
+    is_expected.to have_db_column(:last_issue_number)
+      .of_type(:integer)
+      .with_options(null: false, default: 0)
+  end
+
+  describe "#take_next_issue_number" do
+    it "continues from the stored counter on a stale object" do
+      project = create(:issues_project)
+      stale = Issues::Project.find(project.id)
+      project.take_next_issue_number
+
+      number = stale.take_next_issue_number
+
+      expect(number).to eq(2)
+      expect(project.reload.last_issue_number).to eq(2)
+    end
+
+    it "leaves the counter of another project alone" do
+      project = create(:issues_project)
+      bystander = create(:issues_project)
+
+      project.take_next_issue_number
+
+      expect(bystander.reload.last_issue_number).to eq(0)
+    end
+
+    it "keeps the counter when the key changes" do
+      project = create(:issues_project, key: "INFRA")
+      project.take_next_issue_number
+
+      project.update!(key: "OPS")
+
+      expect(project.reload.take_next_issue_number).to eq(2)
+    end
   end
 
   it "rejects a name of only spaces" do

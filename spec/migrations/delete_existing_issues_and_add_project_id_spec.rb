@@ -70,6 +70,7 @@ RSpec.describe DeleteExistingIssuesAndAddProjectId do
     insert_row(
       :issues,
       title: "Old",
+      number: 1,
       user_id: user.id,
       created_at: Time.current,
       updated_at: Time.current

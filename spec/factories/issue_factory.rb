@@ -4,6 +4,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
+#  number     :integer          not null
 #  pr_url     :string
 #  status     :enum             default("backlog"), not null
 #  title      :string           not null
@@ -14,8 +15,9 @@
 #
 # Indexes
 #
-#  index_issues_on_project_id  (project_id)
-#  index_issues_on_user_id     (user_id)
+#  index_issues_on_project_id             (project_id)
+#  index_issues_on_project_id_and_number  (project_id,number) UNIQUE
+#  index_issues_on_user_id                (user_id)
 #
 # Foreign Keys
 #
@@ -27,6 +29,10 @@ FactoryBot.define do
     user
     project { association(:issues_project, user:) }
     sequence(:title) { "Issue #{it}" }
+
+    to_create do |issue|
+      issue.save_with_number || raise(ActiveRecord::RecordInvalid, issue)
+    end
 
     trait(:with_pr_url) { pr_url { "https://github.com/o/r/pull/1" } }
   end

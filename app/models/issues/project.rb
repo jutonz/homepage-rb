@@ -5,12 +5,13 @@
 # Table name: issues_projects
 # Database name: primary
 #
-#  id         :bigint           not null, primary key
-#  key        :string           not null
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :bigint           not null
+#  id                :bigint           not null, primary key
+#  key               :string           not null
+#  last_issue_number :integer          default(0), not null
+#  name              :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  user_id           :bigint           not null
 #
 # Indexes
 #
@@ -35,5 +36,13 @@ module Issues
       uniqueness: {scope: :user_id, case_sensitive: false}
     )
     validates(:name, length: {maximum: 255})
+
+    sig { returns(Integer) }
+    def take_next_issue_number
+      with_lock do
+        increment!(:last_issue_number)
+        last_issue_number
+      end
+    end
   end
 end

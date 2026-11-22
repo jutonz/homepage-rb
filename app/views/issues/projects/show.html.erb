@@ -42,7 +42,11 @@
         hover:bg-gray-50 hover:border-gray-300
       "
     ) do %>
-      <span class="min-w-0"><%= issue.title %></span>
+      <span class="min-w-0">
+        <span class="text-gray-500"><%= issue.identifier %></span>
+        <%= issue.title %>
+      </span>
+
       <%= render(IssueStatusPillComponent.new(issue:)) %>
     <% end %>
   <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_015627) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_21_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -177,6 +177,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_015627) do
     t.enum "status", default: "Backlog", null: false, enum_type: "issue_status"
     t.bigint "project_id", null: false
     t.string "pr_url"
+    t.integer "number", null: false
+    t.index ["project_id", "number"], name: "index_issues_on_project_id_and_number", unique: true
     t.index ["project_id"], name: "index_issues_on_project_id"
     t.index ["user_id"], name: "index_issues_on_user_id"
   end
@@ -187,6 +189,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_015627) do
     t.string "key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "last_issue_number", default: 0, null: false
     t.index "user_id, lower((key)::text)", name: "index_issues_projects_on_user_id_and_lower_key", unique: true
     t.index "user_id, lower((name)::text)", name: "index_issues_projects_on_user_id_and_lower_name", unique: true
   end

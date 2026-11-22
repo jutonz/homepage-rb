@@ -792,6 +792,51 @@ class Issues::Project
     sig { void }
     def key_will_change!; end
 
+    sig { returns(::Integer) }
+    def last_issue_number; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def last_issue_number=(value); end
+
+    sig { returns(T::Boolean) }
+    def last_issue_number?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def last_issue_number_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def last_issue_number_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def last_issue_number_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def last_issue_number_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def last_issue_number_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def last_issue_number_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def last_issue_number_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def last_issue_number_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def last_issue_number_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def last_issue_number_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def last_issue_number_was; end
+
+    sig { void }
+    def last_issue_number_will_change!; end
+
     sig { returns(::String) }
     def name; end
 
@@ -850,6 +895,9 @@ class Issues::Project
     def restore_key!; end
 
     sig { void }
+    def restore_last_issue_number!; end
+
+    sig { void }
     def restore_name!; end
 
     sig { void }
@@ -881,6 +929,12 @@ class Issues::Project
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_key?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_last_issue_number; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_last_issue_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_name; end
@@ -1001,6 +1055,9 @@ class Issues::Project
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_key?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_last_issue_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
