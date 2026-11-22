@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { UploadStats, formatSize } from "util/upload_stats"
 
 export default class extends Controller {
   static targets = [
@@ -13,18 +14,32 @@ export default class extends Controller {
     this.blobUrls = []
     this.dragCounter = 0
     this.uploading = false
+    this.uploadStats = new Map()
 
     this.boundInit =
       this.directUploadInit.bind(this)
+    this.boundStart =
+      this.directUploadStart.bind(this)
+    this.boundBeforeStorage =
+      this.directUploadBeforeStorageRequest.bind(this)
     this.boundProgress =
       this.directUploadProgress.bind(this)
     this.boundEnd =
       this.directUploadEnd.bind(this)
     this.boundError =
       this.directUploadError.bind(this)
+    this.boundUploadsEnd =
+      this.directUploadsEnd.bind(this)
 
     document.addEventListener(
       "direct-upload:initialize", this.boundInit
+    )
+    document.addEventListener(
+      "direct-upload:start", this.boundStart
+    )
+    document.addEventListener(
+      "direct-upload:before-storage-request",
+      this.boundBeforeStorage
     )
     document.addEventListener(
       "direct-upload:progress", this.boundProgress
@@ -34,6 +49,9 @@ export default class extends Controller {
     )
     document.addEventListener(
       "direct-upload:error", this.boundError
+    )
+    document.addEventListener(
+      "direct-uploads:end", this.boundUploadsEnd
     )
   }
 
@@ -42,6 +60,13 @@ export default class extends Controller {
       "direct-upload:initialize", this.boundInit
     )
     document.removeEventListener(
+      "direct-upload:start", this.boundStart
+    )
+    document.removeEventListener(
+      "direct-upload:before-storage-request",
+      this.boundBeforeStorage
+    )
+    document.removeEventListener(
       "direct-upload:progress", this.boundProgress
     )
     document.removeEventListener(
@@ -49,6 +74,9 @@ export default class extends Controller {
     )
     document.removeEventListener(
       "direct-upload:error", this.boundError
+    )
+    document.removeEventListener(
+      "direct-uploads:end", this.boundUploadsEnd
     )
     this.revokeBlobUrls()
   }
@@ -116,10 +144,11 @@ export default class extends Controller {
 
   handleSubmit() {
     if (this.files.length === 0) return
+    if (this.uploading) return
 
     this.uploading = true
     this.submitButtonTarget.disabled = true
-    this.submitButtonTarget.textContent =
+    this.submitButtonTarget.value =
       "Uploading..."
 
     this.fileListTarget
@@ -133,28 +162,48 @@ export default class extends Controller {
     if (!row) return
 
     row.dataset.uploadId = id
-    row.classList.add(
-      "dropzone__file-row--uploading"
-    )
-    const bar = row.querySelector(
-      ".dropzone__progress"
-    )
-    if (bar) bar.classList.remove("hidden")
+    this.setStatus(row, "Queued")
   }
 
-  directUploadProgress(event) {
+  directUploadStart(event) {
     const row = this.fileRowByUploadId(
       event.detail.id
     )
     if (!row) return
 
+    this.setStatus(row, "")
+    row.classList.add(
+      "dropzone__file-row--uploading"
+    )
+    row.querySelector(".dropzone__transfer")
+      .classList.remove("hidden")
+  }
+
+  directUploadBeforeStorageRequest(event) {
+    const { id, file } = event.detail
+    if (!this.fileRowByUploadId(id)) return
+
+    this.uploadStats.set(id, new UploadStats(file.size))
+  }
+
+  directUploadProgress(event) {
+    const { id, progress } = event.detail
+    const row = this.fileRowByUploadId(id)
+    if (!row) return
+    if (this.isSettled(row)) return
+
     const bar = row.querySelector(
       ".dropzone__progress-bar"
     )
-    if (bar) {
-      bar.style.width =
-        `${event.detail.progress}%`
-    }
+    if (bar) bar.style.width = `${progress}%`
+
+    const stats = this.uploadStats.get(id)
+    if (!stats) return
+
+    stats.record(Math.round(progress * stats.size / 100))
+    const line = row.querySelector("[data-stats]")
+    line.textContent = stats.summary()
+    line.classList.remove("hidden")
   }
 
   directUploadEnd(event) {
@@ -163,6 +212,11 @@ export default class extends Controller {
     )
     if (!row) return
 
+    this.uploadStats.delete(event.detail.id)
+    if (row.classList.contains("dropzone__file-row--error")) {
+      return
+    }
+
     row.classList.remove(
       "dropzone__file-row--uploading"
     )
@@ -170,15 +224,9 @@ export default class extends Controller {
       "dropzone__file-row--complete"
     )
 
-    const bar = row.querySelector(
-      ".dropzone__progress"
-    )
-    if (bar) bar.classList.add("hidden")
-
-    const status = row.querySelector(
-      "[data-status]"
-    )
-    if (status) status.textContent = "\u2713"
+    row.querySelector(".dropzone__transfer")
+      .classList.add("hidden")
+    this.setStatus(row, "\u2713")
   }
 
   directUploadError(event) {
@@ -195,18 +243,30 @@ export default class extends Controller {
       "dropzone__file-row--error"
     )
 
-    const status = row.querySelector(
-      "[data-status]"
-    )
-    if (status) status.textContent = "Failed"
+    this.setStatus(row, "Failed")
 
+    const stats = this.uploadStats.get(event.detail.id)
+    const line = row.querySelector("[data-stats]")
+    if (stats) {
+      line.textContent = stats.bytesText()
+    }
+    this.uploadStats.delete(event.detail.id)
+
+    this.clearQueued()
     this.recoverFromError()
+  }
+
+  directUploadsEnd() {
+    if (!this.uploading) return
+
+    this.submitButtonTarget.value =
+      "Finishing..."
   }
 
   recoverFromError() {
     this.uploading = false
     this.submitButtonTarget.disabled = false
-    this.submitButtonTarget.textContent =
+    this.submitButtonTarget.value =
       "Create Bulk upload"
 
     this.fileListTarget
@@ -218,6 +278,25 @@ export default class extends Controller {
   }
 
   // Private
+
+  setStatus(row, text) {
+    row.querySelector("[data-status]").textContent = text
+  }
+
+  isSettled(row) {
+    return row.classList.contains("dropzone__file-row--error") ||
+      row.classList.contains("dropzone__file-row--complete")
+  }
+
+  clearQueued() {
+    this.fileListTarget
+      .querySelectorAll("[data-status]")
+      .forEach((status) => {
+        if (status.textContent === "Queued") {
+          status.textContent = ""
+        }
+      })
+  }
 
   syncFileInput() {
     const dt = new DataTransfer()
@@ -275,22 +354,30 @@ export default class extends Controller {
       size.classList.add(
         "text-xs", "text-gray-500"
       )
-      size.textContent = this.formatSize(file.size)
+      size.textContent = formatSize(file.size)
       info.appendChild(size)
 
       row.appendChild(info)
 
-      // Progress bar (hidden until upload starts)
+      const transfer =
+        document.createElement("div")
+      transfer.classList.add(
+        "dropzone__transfer", "hidden"
+      )
       const progress =
         document.createElement("div")
-      progress.classList.add(
-        "dropzone__progress", "hidden"
-      )
+      progress.classList.add("dropzone__progress")
       const bar = document.createElement("div")
       bar.classList.add("dropzone__progress-bar")
       bar.style.width = "0%"
       progress.appendChild(bar)
-      row.appendChild(progress)
+      transfer.appendChild(progress)
+
+      const stats = document.createElement("div")
+      stats.dataset.stats = ""
+      stats.classList.add("dropzone__stats", "hidden")
+      transfer.appendChild(stats)
+      row.appendChild(transfer)
 
       // Status indicator
       const status =
@@ -347,14 +434,6 @@ export default class extends Controller {
     return this.fileListTarget.querySelector(
       `[data-upload-id="${id}"]`
     )
-  }
-
-  formatSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`
-    if (bytes < 1024 * 1024) {
-      return `${(bytes / 1024).toFixed(1)} KB`
-    }
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
   }
 
   revokeBlobUrls() {
