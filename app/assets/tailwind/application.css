@@ -100,9 +100,17 @@
   @apply bg-red-50;
 }
 
+.dropzone__transfer {
+  @apply flex-1 min-w-0;
+}
+
 .dropzone__progress {
   @apply h-1.5 rounded-full bg-gray-200;
-  @apply overflow-hidden flex-1;
+  @apply overflow-hidden;
+}
+
+.dropzone__stats {
+  @apply mt-1 text-xs text-gray-500;
 }
 
 .dropzone__progress-bar {
