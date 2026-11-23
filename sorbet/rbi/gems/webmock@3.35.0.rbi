@@ -1497,7 +1497,7 @@ class WebMock::Util::QueryMapper
 
     # new_query_values have form [['key1', 'value1'], ['key2', 'value2']]
     #
-    # pkg:gem/webmock#lib/webmock/util/query_mapper.rb:247
+    # pkg:gem/webmock#lib/webmock/util/query_mapper.rb:246
     def to_query(parent, value, options = T.unsafe(nil)); end
 
     # Sets the query component for this URI from a Hash object.
