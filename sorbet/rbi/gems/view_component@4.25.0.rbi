@@ -2364,52 +2364,52 @@ end
 
 # pkg:gem/view_component#lib/view_component/template.rb:4
 class ViewComponent::Template
-  # pkg:gem/view_component#lib/view_component/template.rb:19
+  # pkg:gem/view_component#lib/view_component/template.rb:18
   def initialize(component:, details:, lineno: T.unsafe(nil), path: T.unsafe(nil)); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:197
+  # pkg:gem/view_component#lib/view_component/template.rb:196
   def call_method_name; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:157
+  # pkg:gem/view_component#lib/view_component/template.rb:156
   def compile_to_component; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:171
+  # pkg:gem/view_component#lib/view_component/template.rb:170
   def coverage_running?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:192
+  # pkg:gem/view_component#lib/view_component/template.rb:191
   def default_format?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:14
+  # pkg:gem/view_component#lib/view_component/template.rb:13
   def details; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:17
+  # pkg:gem/view_component#lib/view_component/template.rb:16
   def format(*, **, &); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:195
+  # pkg:gem/view_component#lib/view_component/template.rb:194
   def html?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:188
+  # pkg:gem/view_component#lib/view_component/template.rb:187
   def inline_call?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:207
+  # pkg:gem/view_component#lib/view_component/template.rb:206
   def normalized_variant_name; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:14
+  # pkg:gem/view_component#lib/view_component/template.rb:13
   def path; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:184
+  # pkg:gem/view_component#lib/view_component/template.rb:183
   def requires_compiled_superclass?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:175
+  # pkg:gem/view_component#lib/view_component/template.rb:174
   def safe_method_call; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:203
+  # pkg:gem/view_component#lib/view_component/template.rb:202
   def safe_method_name; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:17
+  # pkg:gem/view_component#lib/view_component/template.rb:16
   def variant(*, **, &); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:16
+  # pkg:gem/view_component#lib/view_component/template.rb:15
   def virtual_path(*, **, &); end
 
   private
@@ -2419,87 +2419,87 @@ class ViewComponent::Template
   # annotations are enabled. Compensating outside those conditions shifts
   # backtraces by a line and, under coverage, strips real template source.
   #
-  # pkg:gem/view_component#lib/view_component/template.rb:225
+  # pkg:gem/view_component#lib/view_component/template.rb:224
   def annotated?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:229
+  # pkg:gem/view_component#lib/view_component/template.rb:228
   def compiled_source; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:215
+  # pkg:gem/view_component#lib/view_component/template.rb:214
   def erb_newline_compensation_needed?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:213
+  # pkg:gem/view_component#lib/view_component/template.rb:212
   def lineno; end
 end
 
 # pkg:gem/view_component#lib/view_component/template.rb:5
 ViewComponent::Template::DEFAULT_FORMAT = T.let(T.unsafe(nil), Symbol)
 
-# pkg:gem/view_component#lib/view_component/template.rb:12
+# pkg:gem/view_component#lib/view_component/template.rb:11
 class ViewComponent::Template::DataWithSource < ::Struct
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def format; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def format=(_); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def identifier; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def identifier=(_); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def short_identifier; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def short_identifier=(_); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def type; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:12
+  # pkg:gem/view_component#lib/view_component/template.rb:11
   def type=(_); end
 
   class << self
-    # pkg:gem/view_component#lib/view_component/template.rb:12
+    # pkg:gem/view_component#lib/view_component/template.rb:11
     def [](*_arg0); end
 
-    # pkg:gem/view_component#lib/view_component/template.rb:12
+    # pkg:gem/view_component#lib/view_component/template.rb:11
     def inspect; end
 
-    # pkg:gem/view_component#lib/view_component/template.rb:12
+    # pkg:gem/view_component#lib/view_component/template.rb:11
     def keyword_init?; end
 
-    # pkg:gem/view_component#lib/view_component/template.rb:12
+    # pkg:gem/view_component#lib/view_component/template.rb:11
     def members; end
 
-    # pkg:gem/view_component#lib/view_component/template.rb:12
+    # pkg:gem/view_component#lib/view_component/template.rb:11
     def new(*_arg0); end
   end
 end
 
 # Rails 8.1 added a newline to compiled ERB output (rails/rails#53731).
 #
-# pkg:gem/view_component#lib/view_component/template.rb:9
+# pkg:gem/view_component#lib/view_component/template.rb:8
 ViewComponent::Template::ERB_NEWLINE_RAILS_VERSION = T.let(T.unsafe(nil), Gem::Version)
 
-# pkg:gem/view_component#lib/view_component/template.rb:26
+# pkg:gem/view_component#lib/view_component/template.rb:25
 class ViewComponent::Template::File < ::ViewComponent::Template
-  # pkg:gem/view_component#lib/view_component/template.rb:27
+  # pkg:gem/view_component#lib/view_component/template.rb:26
   def initialize(component:, details:, path:); end
 
   # Only reuse file contents while eager loading; otherwise reflect edits.
   #
-  # pkg:gem/view_component#lib/view_component/template.rb:43
+  # pkg:gem/view_component#lib/view_component/template.rb:42
   def source; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:38
+  # pkg:gem/view_component#lib/view_component/template.rb:37
   def type; end
 
   private
 
-  # pkg:gem/view_component#lib/view_component/template.rb:70
+  # pkg:gem/view_component#lib/view_component/template.rb:69
   def compiled_source; end
 
   # Rails 8.1 added a newline to compiled ERB output (rails/rails#53731).
@@ -2511,34 +2511,34 @@ class ViewComponent::Template::File < ::ViewComponent::Template
   # Computed at compile time rather than at initialization because both
   # coverage and annotation settings can change between the two.
   #
-  # pkg:gem/view_component#lib/view_component/template.rb:57
+  # pkg:gem/view_component#lib/view_component/template.rb:56
   def lineno; end
 
   # Strip the annotation line to maintain correct line numbers when coverage
   # is running (avoids segfault from negative lineno)
   #
-  # pkg:gem/view_component#lib/view_component/template.rb:66
+  # pkg:gem/view_component#lib/view_component/template.rb:65
   def strip_annotation_line?; end
 end
 
-# pkg:gem/view_component#lib/view_component/template.rb:144
+# pkg:gem/view_component#lib/view_component/template.rb:143
 class ViewComponent::Template::Inherited < ::ViewComponent::Template::InlineCall
-  # pkg:gem/view_component#lib/view_component/template.rb:145
+  # pkg:gem/view_component#lib/view_component/template.rb:144
   def initialize(component:, template:); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:152
+  # pkg:gem/view_component#lib/view_component/template.rb:151
   def compile_to_component; end
 end
 
-# pkg:gem/view_component#lib/view_component/template.rb:77
+# pkg:gem/view_component#lib/view_component/template.rb:76
 class ViewComponent::Template::Inline < ::ViewComponent::Template
-  # pkg:gem/view_component#lib/view_component/template.rb:80
+  # pkg:gem/view_component#lib/view_component/template.rb:79
   def initialize(component:, inline_template:); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:78
+  # pkg:gem/view_component#lib/view_component/template.rb:77
   def source; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:93
+  # pkg:gem/view_component#lib/view_component/template.rb:92
   def type; end
 
   private
@@ -2551,25 +2551,25 @@ class ViewComponent::Template::Inline < ::ViewComponent::Template
   # Computed at compile time rather than at initialization because the
   # annotation setting can change between the two.
   #
-  # pkg:gem/view_component#lib/view_component/template.rb:106
+  # pkg:gem/view_component#lib/view_component/template.rb:105
   def lineno; end
 end
 
-# pkg:gem/view_component#lib/view_component/template.rb:111
+# pkg:gem/view_component#lib/view_component/template.rb:110
 class ViewComponent::Template::InlineCall < ::ViewComponent::Template
-  # pkg:gem/view_component#lib/view_component/template.rb:112
+  # pkg:gem/view_component#lib/view_component/template.rb:111
   def initialize(component:, method_name:, defined_on_self:); end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:126
+  # pkg:gem/view_component#lib/view_component/template.rb:125
   def compile_to_component; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:139
+  # pkg:gem/view_component#lib/view_component/template.rb:138
   def defined_on_self?; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:130
+  # pkg:gem/view_component#lib/view_component/template.rb:129
   def safe_method_call; end
 
-  # pkg:gem/view_component#lib/view_component/template.rb:122
+  # pkg:gem/view_component#lib/view_component/template.rb:121
   def type; end
 end
 
