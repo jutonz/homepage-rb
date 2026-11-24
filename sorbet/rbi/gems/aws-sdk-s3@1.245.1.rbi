@@ -620,8 +620,8 @@ class Aws::S3::Bucket
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:1299
   def lifecycle_configuration; end
 
-  # @api private
   # @raise [NotImplementedError]
+  # @api private
   # @api private
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:78
@@ -36090,7 +36090,7 @@ class Aws::S3::MultipartFileUploader
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:75
   def abort_upload(upload_id, options, errors); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:181
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:182
   def apply_part_checksum(resp, part); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:108
@@ -36105,7 +36105,7 @@ class Aws::S3::MultipartFileUploader
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:53
   def complete_upload(upload_id, parts, file_size, options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:188
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:189
   def compute_default_part_size(file_size); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:87
@@ -36120,10 +36120,10 @@ class Aws::S3::MultipartFileUploader
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:49
   def initiate_upload(options); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:192
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:193
   def part_size(total_size, part_size, offset); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:200
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:201
   def update_progress(progress, part); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:135
@@ -36155,41 +36155,41 @@ Aws::S3::MultipartFileUploader::MIN_PART_SIZE = T.let(T.unsafe(nil), Integer)
 
 # @api private
 #
-# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:242
+# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:243
 class Aws::S3::MultipartFileUploader::MultipartProgress
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:243
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:244
   def initialize(parts, progress_callback); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:251
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:252
   def call(part_number, bytes_read); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:249
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:250
   def progress_callback; end
 end
 
 # @api private
 #
-# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:210
+# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:211
 class Aws::S3::MultipartFileUploader::PartList
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:211
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:212
   def initialize(parts = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:224
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:225
   def clear!; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:232
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:233
   def part_sizes; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:216
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:217
   def push(part); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:220
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:221
   def shift; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:228
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:229
   def size; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:236
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_file_uploader.rb:237
   def to_a; end
 end
 
