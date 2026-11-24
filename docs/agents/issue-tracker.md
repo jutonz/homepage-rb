@@ -9,7 +9,7 @@ Tooling: the `linear` CLI (v2.6). Run `linear <command> --help` for flags.
 ## Schema
 
 - **Title** — Linear issue title
-- **State**: `Backlog` → `Todo` → `In Progress` → `In Review` → `Done`
+- **State**: `Backlog` → `Ready` → `In Progress` → `In Review` → `Done`
   (`Canceled` / `Duplicate` also exist)
 - **Labels**: `Bug`, `Feature`, `Improvement` — workspace-wide labels
   available to HPRB. HPRB has no team-specific labels. Confirm the current
