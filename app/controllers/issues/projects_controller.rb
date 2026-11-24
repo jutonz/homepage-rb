@@ -48,6 +48,7 @@ module Issues
       @issues = T.let(
         IssuePolicy.scope_for(current_user)
           .where(project: @project)
+          .includes(:project)
           .order(created_at: :desc)
           .page(params[:page])
           .per(PER_PAGE),

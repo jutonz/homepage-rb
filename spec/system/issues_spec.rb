@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe "Issue management", type: :system do
   it "creates, edits, and deletes an issue from a project", :js do
     user = create(:user)
-    create(:issues_project, user:, name: "Homepage")
-    create(:issues_project, user:, name: "Infra")
+    create(:issues_project, user:, name: "Homepage", key: "HOME")
+    create(:issues_project, user:, name: "Infra", key: "INFRA")
     login_as(user)
 
     visit(home_path)
@@ -20,7 +20,7 @@ RSpec.describe "Issue management", type: :system do
     click_button("Create Issue")
 
     expect(page).to have_content("Issue was successfully created.")
-    expect(page).to have_css("h1", text: "Fix the login bug")
+    expect(page).to have_css("h1", text: "HOME-1 Fix the login bug")
     expect(page).to have_content("Steps to reproduce")
 
     click_link("Edit")
@@ -30,8 +30,18 @@ RSpec.describe "Issue management", type: :system do
     click_button("Update Issue")
 
     expect(page).to have_content("Issue was successfully updated.")
-    expect(page).to have_css("h1", text: "Fix the signup bug")
+    expect(page).to have_css("h1", text: "INFRA-1 Fix the signup bug")
     expect(page).to have_content("New steps")
+
+    click_link("Infra")
+
+    expect(page).to have_css(
+      "[data-role=issue]", text: "INFRA-1 Fix the signup bug"
+    )
+
+    find("[data-role=issue]").click
+
+    expect(page).to have_css("h1", text: "INFRA-1 Fix the signup bug")
 
     accept_confirm { click_button("Delete") }
 

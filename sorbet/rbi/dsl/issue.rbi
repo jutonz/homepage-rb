@@ -815,6 +815,51 @@ class Issue
     sig { void }
     def id_will_change!; end
 
+    sig { returns(::Integer) }
+    def number; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def number=(value); end
+
+    sig { returns(T::Boolean) }
+    def number?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def number_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def number_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def number_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def number_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def number_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def number_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def number_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def number_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def number_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def number_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def number_was; end
+
+    sig { void }
+    def number_will_change!; end
+
     sig { returns(T.nilable(::String)) }
     def pr_url; end
 
@@ -915,6 +960,9 @@ class Issue
     def restore_id_value!; end
 
     sig { void }
+    def restore_number!; end
+
+    sig { void }
     def restore_pr_url!; end
 
     sig { void }
@@ -949,6 +997,12 @@ class Issue
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_number; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_pr_url; end
@@ -1174,6 +1228,9 @@ class Issue
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_pr_url?(from: T.unsafe(nil), to: T.unsafe(nil)); end

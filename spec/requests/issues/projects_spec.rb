@@ -213,7 +213,7 @@ RSpec.describe Issues::ProjectsController do
 
     it "lists this project's issues newest first with status pills" do
       user = create(:user)
-      project = create(:issues_project, user:)
+      project = create(:issues_project, user:, key: "P1")
       old = create(
         :issue,
         user:,
@@ -234,7 +234,7 @@ RSpec.describe Issues::ProjectsController do
 
       get(project_path(project))
 
-      expect(issue_rows).to eq(["Newer Cancelled", "Old Done"])
+      expect(issue_rows).to eq(["P1-2 Newer Cancelled", "P1-1 Old Done"])
       expect(page).to have_link(href: issue_path(old))
       expect(page).to have_link(href: issue_path(newer))
       expect(page).not_to have_content("No issues yet")
@@ -242,23 +242,47 @@ RSpec.describe Issues::ProjectsController do
 
     it "lists only this project's issues and only mine" do
       me, them = create_pair(:user)
-      project = create(:issues_project, user: me)
+      project = create(:issues_project, user: me, key: "HERE")
       other = create(:issues_project, user: me)
       create(:issue, user: me, project:, title: "Mine here")
       create(:issue, user: me, project: other, title: "Mine elsewhere")
-      build(:issue, user: them, project:, title: "Theirs").save!(
-        validate: false
-      )
+      build(:issue, user: them, project:, title: "Theirs", number: 99)
+        .save!(validate: false)
       login_as(me)
 
       get(project_path(project))
 
-      expect(issue_rows).to eq(["Mine here Backlog"])
+      expect(issue_rows).to eq(["HERE-1 Mine here Backlog"])
+    end
+
+    it "shows the identifier in grey before the title" do
+      user = create(:user)
+      project = create(:issues_project, user:, key: "web")
+      create(:issue, user:, project:, title: "Fix it")
+      login_as(user)
+
+      get(project_path(project))
+
+      expect(page).to have_css(
+        "[data-role=issue] span.text-gray-500", text: "web-1", exact_text: true
+      )
+    end
+
+    it "loads the project of each listed issue once", :bullet do
+      user = create(:user)
+      project = create(:issues_project, user:, key: "P1")
+      create_list(:issue, 3, user:, project:)
+      login_as(user)
+
+      get(project_path(project))
+
+      expect(response).to be_successful
+      expect(issue_rows.size).to eq(3)
     end
 
     it "paginates issues" do
       user = create(:user)
-      project = create(:issues_project, user:)
+      project = create(:issues_project, user:, key: "P1")
       create(
         :issue,
         user:,
@@ -281,8 +305,8 @@ RSpec.describe Issues::ProjectsController do
       get(project_path(project, page: 2))
       second_page = issue_rows
 
-      expect(first_page).to eq(["Newer Backlog"])
-      expect(second_page).to eq(["Old Backlog"])
+      expect(first_page).to eq(["P1-2 Newer Backlog"])
+      expect(second_page).to eq(["P1-1 Old Backlog"])
       expect(page).to have_link("1", href: project_path(project))
     end
 

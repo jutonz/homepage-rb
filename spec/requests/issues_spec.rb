@@ -140,6 +140,35 @@ RSpec.describe IssuesController do
       expect(issue.description.to_plain_text).to include("Bold text")
     end
 
+    it "numbers each new issue from its project counter" do
+      user = create(:user)
+      project = create(:issues_project, user:, key: "INFRA")
+      bystander = create(:issues_project, user:)
+      login_as(user)
+      params = {issue: {title: "Fix it", project_id: project.id}}
+
+      post(issues_path, params:)
+      post(issues_path, params:)
+
+      numbers = project.issues.order(:number).map(&:identifier)
+      expect(numbers).to eq(["INFRA-1", "INFRA-2"])
+      expect(project.reload.last_issue_number).to eq(2)
+      expect(bystander.reload.last_issue_number).to eq(0)
+    end
+
+    it "takes no number when the create is refused" do
+      user = create(:user)
+      project = create(:issues_project, user:)
+      login_as(user)
+      params = {issue: {title: "", project_id: project.id}}
+
+      post(issues_path, params:)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(Issue.count).to eq(0)
+      expect(project.reload.last_issue_number).to eq(0)
+    end
+
     it "stores a pull request URL" do
       user = create(:user)
       project = create(:issues_project, user:)
@@ -343,6 +372,30 @@ RSpec.describe IssuesController do
       )
     end
 
+    it "shows the identifier before the title in the heading" do
+      user = create(:user)
+      project = create(:issues_project, user:, key: "INFRA")
+      issue = create(:issue, user:, project:, title: "Fix the login bug")
+      login_as(user)
+
+      get(issue_path(issue))
+
+      expect(page.find("h1").text.squish).to start_with(
+        "INFRA-1 Fix the login bug"
+      )
+    end
+
+    it "ignores an identifier in the path" do
+      user = create(:user)
+      project = create(:issues_project, user:, key: "INFRA")
+      create(:issue, user:, project:)
+      login_as(user)
+
+      get("/issues/INFRA-1")
+
+      expect(response).to have_http_status(:not_found)
+    end
+
     it "shows the status pill between the header and the description" do
       user = create(:user)
       issue = create(
@@ -515,6 +568,9 @@ RSpec.describe IssuesController do
       expect(issue.title).to eq("After")
       expect(issue.description.to_plain_text).to eq("New text")
       expect(bystander.reload.title).to eq("Bystander")
+      expect(issue.number).to eq(1)
+      expect(issue.project.last_issue_number).to eq(1)
+      expect(bystander.number).to eq(1)
     end
 
     it "stores a pull request URL" do
@@ -586,7 +642,9 @@ RSpec.describe IssuesController do
     it "moves my issue to another of my projects" do
       user = create(:user)
       issue = create(:issue, user:)
-      target = create(:issues_project, user:)
+      source = issue.project
+      target = create(:issues_project, user:, key: "OPS")
+      create(:issue, user:, project: target)
       login_as(user)
       params = {issue: {project_id: target.id}}
 
@@ -595,6 +653,22 @@ RSpec.describe IssuesController do
       expect(response).to redirect_to(issue_path(issue))
       expect(flash[:notice]).to eq("Issue was successfully updated.")
       expect(issue.reload.project).to eq(target)
+      expect(issue.identifier).to eq("OPS-2")
+      expect(target.reload.last_issue_number).to eq(2)
+      expect(source.reload.last_issue_number).to eq(1)
+    end
+
+    it "ignores a submitted number" do
+      user = create(:user)
+      issue = create(:issue, user:, title: "Before")
+      login_as(user)
+      params = {issue: {title: "After", number: 99}}
+
+      patch(issue_path(issue), params:)
+
+      expect(response).to redirect_to(issue_path(issue))
+      expect(issue.reload.title).to eq("After")
+      expect(issue.number).to eq(1)
     end
 
     it "rejects a project of another user and keeps the project" do
@@ -612,6 +686,9 @@ RSpec.describe IssuesController do
       expect(page).to have_link(original.name, href: project_path(original))
       expect(page).not_to have_content("Theirs")
       expect(issue.reload.project).to eq(original)
+      expect(issue.number).to eq(1)
+      expect(original.reload.last_issue_number).to eq(1)
+      expect(theirs.reload.last_issue_number).to eq(0)
     end
 
     it "rejects a project that does not exist and keeps the project" do
@@ -627,6 +704,8 @@ RSpec.describe IssuesController do
       expect(page).to have_content("must exist")
       expect(page).to have_link(original.name, href: project_path(original))
       expect(issue.reload.project).to eq(original)
+      expect(issue.number).to eq(1)
+      expect(original.reload.last_issue_number).to eq(1)
     end
 
     it "rejects a blank title and keeps the description" do

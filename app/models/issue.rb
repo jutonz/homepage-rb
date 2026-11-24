@@ -6,6 +6,7 @@
 # Database name: primary
 #
 #  id         :bigint           not null, primary key
+#  number     :integer          not null
 #  pr_url     :string
 #  status     :enum             default("backlog"), not null
 #  title      :string           not null
@@ -16,8 +17,9 @@
 #
 # Indexes
 #
-#  index_issues_on_project_id  (project_id)
-#  index_issues_on_user_id     (user_id)
+#  index_issues_on_project_id             (project_id)
+#  index_issues_on_project_id_and_number  (project_id,number) UNIQUE
+#  index_issues_on_user_id                (user_id)
 #
 # Foreign Keys
 #
@@ -47,6 +49,21 @@ class Issue < ApplicationRecord
   validates(:pr_url, http_url: true)
   normalizes(:pr_url, with: -> { it.strip.presence })
   validate(:project_belongs_to_user)
+
+  sig { returns(String) }
+  def identifier
+    "#{T.must(project).key}-#{number}"
+  end
+
+  sig { returns(T::Boolean) }
+  def save_with_number
+    return false unless valid?
+
+    if project_id_changed?
+      self.number = T.must(project).take_next_issue_number
+    end
+    save!
+  end
 
   private
 

@@ -1,4 +1,6 @@
-<%= render(HeaderComponent.new(title: @issue.title)) do |header| %>
+<%= render(
+  HeaderComponent.new(title: "#{@issue.identifier} #{@issue.title}")
+) do |header| %>
   <%= header.with_crumb("Home", home_path) %>
   <%= header.with_crumb("Projects", projects_path) %>
   <%= header.with_crumb(@issue.project.name, project_path(@issue.project)) %>
