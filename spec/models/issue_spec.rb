@@ -175,6 +175,31 @@ RSpec.describe Issue do
     end
   end
 
+  describe "#branch_name" do
+    it "keeps case and inner characters of the key" do
+      project = build_stubbed(:issues_project, key: "In-fra x")
+      issue = build_stubbed(:issue, project:, number: 12)
+
+      expect(issue.branch_name).to eq("jutonz/In-fra x-12")
+    end
+
+    it "follows a key change and keeps the number" do
+      issue = create(:issue)
+      issue.project.update!(key: "OPS")
+
+      expect(issue.branch_name).to eq("jutonz/OPS-#{issue.number}")
+    end
+
+    it "follows a move to another project" do
+      user = create(:user)
+      issue = create(:issue, user:)
+      other = create(:issues_project, user:, key: "MOVED")
+      issue.update!(project: other, number: 7)
+
+      expect(issue.branch_name).to eq("jutonz/MOVED-7")
+    end
+  end
+
   describe "#save_with_number" do
     it "never reuses the number of a deleted issue" do
       user = create(:user)

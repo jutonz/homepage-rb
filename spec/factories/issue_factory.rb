@@ -26,8 +26,14 @@
 #
 FactoryBot.define do
   factory :issue do
+    transient do
+      project_key { nil }
+    end
+
     user
-    project { association(:issues_project, user:) }
+    project do
+      association(:issues_project, user:, **{key: project_key}.compact)
+    end
     sequence(:title) { "Issue #{it}" }
 
     to_create do |issue|

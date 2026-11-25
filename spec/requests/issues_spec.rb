@@ -414,6 +414,39 @@ RSpec.describe IssuesController do
       )
     end
 
+    it "shows the branch name with a copy button below the pill" do
+      user = create(:user)
+      issue = create(
+        :issue,
+        :with_pr_url,
+        user:,
+        project_key: "INFRA",
+        description: "Some text"
+      )
+      issue.update!(number: 3)
+      login_as(user)
+
+      get(issue_path(issue))
+
+      expect(page).to have_css(
+        "[data-role=branch-name] code.font-mono",
+        text: "jutonz/INFRA-3",
+        exact_text: true
+      )
+      expect(page).to have_css(
+        "[data-role=branch-name] button[data-controller=copy]" \
+        "[data-copy-value-value='jutonz/INFRA-3']",
+        text: "Copy"
+      )
+      expect(page).not_to have_css("[data-role=branch-name] code button")
+      expect(page.native.to_html).to match(
+        /Backlog.*data-role="branch-name".*class="prose/m
+      )
+      expect(page).to have_css("div.mb-4 span", text: "Backlog")
+      expect(page).to have_css("div.mb-4 a", text: "Pull request")
+      expect(page).not_to have_css("div.mb-4 [data-role=branch-name]")
+    end
+
     it "links to the pull request beside the status pill" do
       user = create(:user)
       issue = create(:issue, :with_pr_url, user:)
