@@ -268,6 +268,19 @@ RSpec.describe Issues::ProjectsController do
       )
     end
 
+    it "shows no branch name or copy button on the issue rows" do
+      user = create(:user)
+      project = create(:issues_project, user:, key: "web")
+      create(:issue, user:, project:, title: "Fix it")
+      login_as(user)
+
+      get(project_path(project))
+
+      expect(page).to have_css("[data-role=issue]", text: "Fix it")
+      expect(page).not_to have_css("[data-role=branch-name]")
+      expect(page).not_to have_css("[data-controller=copy]")
+    end
+
     it "loads the project of each listed issue once", :bullet do
       user = create(:user)
       project = create(:issues_project, user:, key: "P1")

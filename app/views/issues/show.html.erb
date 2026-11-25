@@ -34,6 +34,11 @@
   <% end %>
 </div>
 
+<div class="mb-4 flex flex-wrap items-center gap-2" data-role="branch-name">
+  <code class="max-w-full break-words font-mono"><%= @issue.branch_name %></code>
+  <%= render(CopyButtonComponent.new(value: @issue.branch_name)) %>
+</div>
+
 <% if @issue.description.present? %>
   <div class="prose prose-gray max-w-none">
     <%= @issue.description %>

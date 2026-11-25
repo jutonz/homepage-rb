@@ -27,6 +27,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Issue < ApplicationRecord
+  BRANCH_PREFIX = "jutonz/"
+
   belongs_to(:user)
   belongs_to(:project, class_name: "Issues::Project")
   has_rich_text(:description)
@@ -53,6 +55,11 @@ class Issue < ApplicationRecord
   sig { returns(String) }
   def identifier
     "#{T.must(project).key}-#{number}"
+  end
+
+  sig { returns(String) }
+  def branch_name
+    "#{BRANCH_PREFIX}#{identifier}"
   end
 
   sig { returns(T::Boolean) }
