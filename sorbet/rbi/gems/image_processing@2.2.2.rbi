@@ -11,7 +11,9 @@ module ImageProcessing
     # Whether +name+ can be safely dispatched on +receiver+ when the name comes
     # from user input. A name is allowed if the receiver doesn't define it, in
     # which case it falls through to #method_missing and becomes an image
-    # operation, or if it's defined by one of +allowed_owners+ (or a subclass).
+    # operation, or if it's defined by one of +allowed_owners+, a subclass, or a
+    # module mixed into either (e.g. custom macros added to a processor with
+    # `Processor.include(MyMacros)`).
     #
     # Any other method is rejected: Ruby core methods such as Kernel#send or
     # BasicObject#instance_eval, but also methods that other libraries mix into
@@ -22,7 +24,7 @@ module ImageProcessing
     # forwards them to #method_missing instead. This keeps CLI options named
     # like private Kernel methods (e.g. -format, -print) working.
     #
-    # pkg:gem/image_processing#lib/image_processing.rb:23
+    # pkg:gem/image_processing#lib/image_processing.rb:25
     def allowed_method?(receiver, name, allowed_owners); end
   end
 end
@@ -411,7 +413,7 @@ class ImageProcessing::Processor
   # Calls the given block with the accumulator object. Useful for when you
   # want to access the accumulator object directly.
   #
-  # pkg:gem/image_processing#lib/image_processing/processor.rb:87
+  # pkg:gem/image_processing#lib/image_processing/processor.rb:88
   def custom(&block); end
 
   class << self
