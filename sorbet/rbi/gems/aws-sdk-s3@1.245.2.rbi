@@ -620,8 +620,8 @@ class Aws::S3::Bucket
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:1299
   def lifecycle_configuration; end
 
-  # @raise [NotImplementedError]
   # @api private
+  # @raise [NotImplementedError]
   # @api private
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/bucket.rb:78
@@ -31353,10 +31353,10 @@ class Aws::S3::DirectoryUploader::FileProducer
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:207
   def find_recursively; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:240
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:238
   def get_file_stat(full_path); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:249
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:247
   def handle_directory(dir_path, dir_name, key_prefix, ancestors); end
 
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:217
@@ -31374,15 +31374,15 @@ Aws::S3::DirectoryUploader::FileProducer::DONE_MARKER = T.let(T.unsafe(nil), Sym
 
 # @api private
 #
-# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:263
+# pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:261
 class Aws::S3::DirectoryUploader::FileProducer::UploadEntry
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:264
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:262
   def initialize(opts = T.unsafe(nil)); end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:269
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:267
   def params; end
 
-  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:269
+  # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/directory_uploader.rb:267
   def path; end
 end
 
@@ -36363,6 +36363,24 @@ class Aws::S3::MultipartUpload
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_upload.rb:136
   def client; end
 
+  # Completes the upload, requires a list of completed parts. You can
+  # provide the list of parts with `:part_number` and `:etag` values.
+  #
+  #     upload.complete(multipart_upload: { parts: [
+  #       { part_number: 1, etag:'etag1' },
+  #       { part_number: 2, etag:'etag2' },
+  #       ...
+  #     ]})
+  #
+  # Alternatively, you can pass **`compute_parts: true`** and the part
+  # list will be computed by calling {Client#list_parts}.
+  #
+  #     upload.complete(compute_parts: true)
+  #
+  # @option options [Boolean] :compute_parts (false) When `true`,
+  #   the {Client#list_parts} method will be called to determine
+  #   the list of required part numbers and their ETags.
+  #
   # @example Request syntax with placeholder values
   #
   #   object = multipart_upload.complete({
@@ -36623,23 +36641,6 @@ class Aws::S3::MultipartUpload
   #
   #   [1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerSideEncryptionCustomerKeys.html
   # @return [Object]
-  # Completes the upload, requires a list of completed parts. You can
-  # provide the list of parts with `:part_number` and `:etag` values.
-  #
-  #     upload.complete(multipart_upload: { parts: [
-  #       { part_number: 1, etag:'etag1' },
-  #       { part_number: 2, etag:'etag2' },
-  #       ...
-  #     ]})
-  #
-  # Alternatively, you can pass **`compute_parts: true`** and the part
-  # list will be computed by calling {Client#list_parts}.
-  #
-  #     upload.complete(compute_parts: true)
-  #
-  # @option options [Boolean] :compute_parts (false) When `true`,
-  #   the {Client#list_parts} method will be called to determine
-  #   the list of required part numbers and their ETags.
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/multipart_upload.rb:576
   def complete(options = T.unsafe(nil)); end
@@ -42476,11 +42477,6 @@ class Aws::S3::ObjectSummary
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/customizations/object_summary.rb:7
   def content_length; end
 
-  # Make the method redefinable
-  # @param (see Object#copy_from)
-  # @options (see Object#copy_from)
-  # @return (see Object#copy_from)
-  # @see Object#copy_from
   # @example Request syntax with placeholder values
   #
   #   object_summary.copy_from({
@@ -43301,6 +43297,11 @@ class Aws::S3::ObjectSummary
   #   the request fails with the HTTP status code `403 Forbidden` (access
   #   denied).
   # @return [Types::CopyObjectOutput]
+  # Make the method redefinable
+  # @param (see Object#copy_from)
+  # @options (see Object#copy_from)
+  # @return (see Object#copy_from)
+  # @see Object#copy_from
   #
   # pkg:gem/aws-sdk-s3#lib/aws-sdk-s3/object_summary.rb:1158
   def copy_from(source, options = T.unsafe(nil)); end
